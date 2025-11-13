@@ -92,7 +92,8 @@ export default function UserDetail() {
                     id="email"
                     type="email"
                     defaultValue={user.email}
-                    className="rounded-[2px] border-bluegrey-100"
+                    readOnly
+                    className="rounded-[2px] border-bluegrey-100 cursor-text"
                   />
                 </div>
 
