@@ -5,8 +5,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogClose,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { X } from "lucide-react";
 
 interface ConfirmationModalProps {
   open: boolean;
@@ -36,26 +38,33 @@ export default function ConfirmationModal({
   secondaryAction,
   tertiaryAction,
 }: ConfirmationModalProps) {
-  const handleClose = () => {
+  const handlePrimaryClick = () => {
     primaryAction?.onClick();
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-md rounded-[2px] bg-white p-0 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-        <DialogHeader className="border-b border-bluegrey-200 px-6 py-4 text-left">
-          <DialogTitle className="text-xl font-medium text-bluegrey-900">
-            {title}
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="w-full max-w-[480px] rounded-[2px] border-0 bg-white p-0 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+        <div className="flex items-start justify-between border-b border-[#DEDEE6] px-6 py-4">
+          <DialogHeader className="text-left">
+            <DialogTitle className="text-xl font-medium leading-8 text-bluegrey-900">
+              {title}
+            </DialogTitle>
+          </DialogHeader>
+          <DialogClose className="rounded-[2px] p-2 text-bluegrey-700 transition-colors hover:bg-bluegrey-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <X className="h-6 w-6" />
+          </DialogClose>
+        </div>
+
         <div className="px-6 py-4">
-          <DialogDescription className="text-base text-bluegrey-500">
+          <DialogDescription className="text-base leading-5 text-bluegrey-500">
             {description}
           </DialogDescription>
         </div>
-        <DialogFooter className="border-t border-bluegrey-200 px-6 py-4">
-          <div className="flex justify-between gap-2">
+
+        <div className="border-t border-[#DEDEE6] px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
             {tertiaryAction && (
               <Button
                 variant="ghost"
@@ -63,11 +72,12 @@ export default function ConfirmationModal({
                   tertiaryAction.onClick();
                   onOpenChange(false);
                 }}
-                className="text-bluegrey-700"
+                className="rounded-[2px] text-bluegrey-700"
               >
                 {tertiaryAction.label}
               </Button>
             )}
+            {!tertiaryAction && <div />}
             <div className="flex gap-2">
               {secondaryAction && (
                 <Button
@@ -76,21 +86,22 @@ export default function ConfirmationModal({
                     secondaryAction.onClick();
                     onOpenChange(false);
                   }}
+                  className="rounded-[2px] border-2 border-blue-700 text-blue-700 hover:bg-blue-50"
                 >
                   {secondaryAction.label}
                 </Button>
               )}
               {primaryAction && (
                 <Button
-                  onClick={handleClose}
-                  className="bg-blue-700 hover:bg-blue-800 text-white"
+                  onClick={handlePrimaryClick}
+                  className="rounded-[2px] bg-blue-700 text-white hover:bg-blue-800"
                 >
                   {primaryAction.label}
                 </Button>
               )}
             </div>
           </div>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
