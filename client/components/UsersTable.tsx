@@ -481,9 +481,9 @@ function UserActionsMenu({ user }: { user: User }) {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="w-10 h-10 flex items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
+        <button className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${isOpen ? "bg-bluegrey-100" : "hover:bg-bluegrey-100"}`}>
           <MoreVertical className="w-6 h-6 text-blue-500" />
         </button>
       </DropdownMenuTrigger>
