@@ -16,14 +16,12 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
             <Menu className="w-6 h-6 text-bluegrey-700" />
           </button>
 
-          <div className="flex items-center gap-4 h-full py-3">
-            <div className="flex items-center gap-2 h-10">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2Fbdd4b384c28d4324be102c97f6f95202"
-                alt="InsurCar Inc."
-                className="h-10 w-auto"
-              />
-            </div>
+          <div className="flex items-center gap-4 h-full">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2Fbdd4b384c28d4324be102c97f6f95202"
+              alt="InsurCar Inc."
+              className="h-full w-auto"
+            />
           </div>
 
           <div className="hidden lg:block h-10 w-px bg-bluegrey-100" />
