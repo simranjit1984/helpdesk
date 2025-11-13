@@ -1,10 +1,4 @@
-import {
-  Users,
-  Building2,
-  Badge,
-  ShieldCheck,
-  ChevronDown,
-} from "lucide-react";
+import { Users, History, ChevronDown } from "lucide-react";
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -66,17 +60,8 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             active
           />
           <MenuItem
-            icon={<Building2 className="w-6 h-6 text-bluegrey-900" />}
-            label="Organizations"
-          />
-          <MenuItem
-            icon={<Badge className="w-6 h-6 text-bluegrey-900" />}
-            label="Access roles"
-          />
-          <MenuItem
-            icon={<ShieldCheck className="w-6 h-6 text-bluegrey-900" />}
-            label="Administrators"
-            hasSubmenu
+            icon={<History className="w-6 h-6 text-bluegrey-900" />}
+            label="Event log"
           />
         </nav>
       </div>
