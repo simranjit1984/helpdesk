@@ -58,7 +58,7 @@ export default function ConfirmationModal({
           </DialogDescription>
         </div>
 
-        <div className="border-t border-[#DEDEE6] px-6 py-4">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between gap-2">
             {tertiaryAction && (
               <Button
