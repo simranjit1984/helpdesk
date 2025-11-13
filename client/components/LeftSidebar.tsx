@@ -45,6 +45,9 @@ interface LeftSidebarProps {
 export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const location = useLocation();
 
+  // Check if on users page or user detail page
+  const isUsersActive = location.pathname === "/" || location.pathname.startsWith("/users/");
+
   return (
     <>
       {isOpen && (
@@ -63,7 +66,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             icon={<Users className="w-6 h-6 text-bluegrey-900" />}
             label="Users"
             href="/"
-            active={location.pathname === "/"}
+            active={isUsersActive}
           />
           <MenuItem
             icon={<History className="w-6 h-6 text-bluegrey-900" />}
