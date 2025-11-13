@@ -7,8 +7,7 @@ type StatusType =
   | "invitation-expired"
   | "blocked"
   | "grace"
-  | "inactive"
-  | "invitation-accepted";
+  | "inactive";
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -21,12 +20,6 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
       text: "text-green-900",
       icon: <CheckCircle className="w-5 h-5" />,
       label: "Active",
-    },
-    "invitation-accepted": {
-      bg: "bg-green-100",
-      text: "text-green-900",
-      icon: <CheckCircle className="w-5 h-5" />,
-      label: "Invitation accepted",
     },
     invited: {
       bg: "bg-orange-100",

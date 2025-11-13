@@ -9,8 +9,7 @@ type StatusType =
   | "invitation-expired"
   | "blocked"
   | "grace"
-  | "inactive"
-  | "invitation-accepted";
+  | "inactive";
 
 interface User {
   username: string;
@@ -156,7 +155,7 @@ const users: User[] = [
     lastName: "Quinn",
     phoneNumber: "+353 666555444",
     dateCreated: "2024-07-07 15:10:35",
-    status: "invitation-accepted",
+    status: "active",
   },
   {
     username: "rachel.rogers@example.com",
