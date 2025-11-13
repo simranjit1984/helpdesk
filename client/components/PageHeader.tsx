@@ -9,13 +9,21 @@ export default function PageHeader({ title }: PageHeaderProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Collapse header after scrolling down 80px
-      setIsCollapsed(window.scrollY > 80);
+      const scrollY = window.scrollY;
+
+      // Use hysteresis to prevent jumping:
+      // Collapse when scrolling past 100px
+      // Expand only when scrolling back above 50px
+      if (scrollY > 100 && !isCollapsed) {
+        setIsCollapsed(true);
+      } else if (scrollY < 50 && isCollapsed) {
+        setIsCollapsed(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isCollapsed]);
 
   return (
     <div
