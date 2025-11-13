@@ -111,6 +111,7 @@ export default function UserDetail() {
                   <Label htmlFor="phone">Phone number</Label>
                   <Input
                     id="phone"
+                    type="tel"
                     defaultValue={user.phone}
                     className="rounded-[2px] border-bluegrey-500"
                   />
