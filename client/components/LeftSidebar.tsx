@@ -1,17 +1,20 @@
 import { Users, History, ChevronDown } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 interface MenuItemProps {
   icon: React.ReactNode;
   label: string;
+  href: string;
   active?: boolean;
   hasSubmenu?: boolean;
 }
 
-function MenuItem({ icon, label, active, hasSubmenu }: MenuItemProps) {
+function MenuItem({ icon, label, href, active, hasSubmenu }: MenuItemProps) {
   return (
     <div className="relative">
-      <button
-        className={`w-full flex items-center gap-3 px-4 py-[18px] transition-colors ${
+      <Link
+        to={href}
+        className={`w-full flex items-center gap-3 px-4 py-[18px] transition-colors block ${
           active ? "bg-blue-50" : "hover:bg-bluegrey-25"
         }`}
       >
@@ -26,7 +29,7 @@ function MenuItem({ icon, label, active, hasSubmenu }: MenuItemProps) {
           </span>
         </div>
         {hasSubmenu && <ChevronDown className="w-6 h-6 text-bluegrey-900" />}
-      </button>
+      </Link>
       {active && (
         <div className="absolute right-0 top-0 w-1 h-full bg-blue-500 rounded-l" />
       )}
@@ -40,6 +43,8 @@ interface LeftSidebarProps {
 }
 
 export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
+  const location = useLocation();
+
   return (
     <>
       {isOpen && (
@@ -57,11 +62,14 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
           <MenuItem
             icon={<Users className="w-6 h-6 text-bluegrey-900" />}
             label="Users"
-            active
+            href="/"
+            active={location.pathname === "/"}
           />
           <MenuItem
             icon={<History className="w-6 h-6 text-bluegrey-900" />}
             label="Event log"
+            href="/event-log"
+            active={location.pathname === "/event-log"}
           />
         </nav>
       </div>
