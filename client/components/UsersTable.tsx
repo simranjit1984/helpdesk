@@ -419,10 +419,17 @@ type SortDirection = "asc" | "desc";
 
 function UserActionsMenu({ user }: { user: User }) {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAction = (action: string) => {
+    // Navigate to user detail page
+    if (action === "View details") {
+      navigate(`/users/${user.id}`);
+      return;
+    }
+
     // Show modal for "Reset password" action on blocked users
     if (action === "Reset password" && user.status === "blocked") {
       setIsModalOpen(true);
