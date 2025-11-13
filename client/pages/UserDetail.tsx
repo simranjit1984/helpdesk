@@ -1,8 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Save } from "lucide-react";
 import Layout from "@/components/Layout";
-import PageHeader from "@/components/PageHeader";
+import UserDetailHeader from "@/components/UserDetailHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
