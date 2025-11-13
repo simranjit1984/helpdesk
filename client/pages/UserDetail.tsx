@@ -18,6 +18,7 @@ import {
 
 export default function UserDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [endDateOption, setEndDateOption] = useState<"no-end" | "custom">("custom");
 
   // Mock user data - in real app, fetch based on id
@@ -25,7 +26,7 @@ export default function UserDetail() {
     firstName: "Andy",
     lastName: "April",
     email: "andy.april@example.com",
-    phone: "1234567890",
+    phone: "+1239292929",
     address1: "1223, Fancy Street",
     address2: "",
     city: "Amsterdam",
@@ -33,6 +34,8 @@ export default function UserDetail() {
     country: "Netherlands",
     startDate: "2025/04/18",
     endDate: "2025/04/18",
+    organization: "InsurCar",
+    status: "active" as const,
   };
 
   return (
