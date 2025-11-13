@@ -419,8 +419,15 @@ type SortDirection = "asc" | "desc";
 function UserActionsMenu({ user }: { user: User }) {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAction = (action: string) => {
+    // Show modal for "Reset password" action on blocked users
+    if (action === "Reset password" && user.status === "blocked") {
+      setIsModalOpen(true);
+      return;
+    }
+
     toast({
       title: action,
       description: `Action performed for ${user.username}`,
