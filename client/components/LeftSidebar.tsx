@@ -40,29 +40,46 @@ function MenuItem({ icon, label, active, hasSubmenu }: MenuItemProps) {
   );
 }
 
-export default function LeftSidebar() {
+interface LeftSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   return (
-    <div className="fixed left-0 top-16 bottom-0 w-60 bg-white shadow-[0_2px_2px_0_rgba(1,5,50,0.02),0_3px_4px_0_rgba(1,5,50,0.02),0_1px_5px_0_rgba(1,5,50,0.04)] z-40">
-      <nav className="flex flex-col">
-        <MenuItem
-          icon={<Users className="w-6 h-6 text-bluegrey-900" />}
-          label="Users"
-          active
+    <>
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={onClose}
         />
-        <MenuItem
-          icon={<Building2 className="w-6 h-6 text-bluegrey-900" />}
-          label="Organizations"
-        />
-        <MenuItem
-          icon={<Badge className="w-6 h-6 text-bluegrey-900" />}
-          label="Access roles"
-        />
-        <MenuItem
-          icon={<ShieldCheck className="w-6 h-6 text-bluegrey-900" />}
-          label="Administrators"
-          hasSubmenu
-        />
-      </nav>
-    </div>
+      )}
+      <div
+        className={`fixed left-0 top-16 bottom-0 w-60 bg-white shadow-[0_2px_2px_0_rgba(1,5,50,0.02),0_3px_4px_0_rgba(1,5,50,0.02),0_1px_5px_0_rgba(1,5,50,0.04)] z-40 transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        <nav className="flex flex-col">
+          <MenuItem
+            icon={<Users className="w-6 h-6 text-bluegrey-900" />}
+            label="Users"
+            active
+          />
+          <MenuItem
+            icon={<Building2 className="w-6 h-6 text-bluegrey-900" />}
+            label="Organizations"
+          />
+          <MenuItem
+            icon={<Badge className="w-6 h-6 text-bluegrey-900" />}
+            label="Access roles"
+          />
+          <MenuItem
+            icon={<ShieldCheck className="w-6 h-6 text-bluegrey-900" />}
+            label="Administrators"
+            hasSubmenu
+          />
+        </nav>
+      </div>
+    </>
   );
 }

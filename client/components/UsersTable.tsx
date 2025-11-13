@@ -95,47 +95,47 @@ const users: User[] = [
 
 export default function UsersTable() {
   return (
-    <div className="bg-white rounded">
+    <div className="bg-white rounded border-2 border-bluegrey-100 lg:border-0">
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[900px]">
           <thead>
             <tr className="border-b-2 border-bluegrey-100">
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5">
+              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Username
                   </span>
                 </div>
               </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5">
+              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     First name
                   </span>
                 </div>
               </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5">
+              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Last name
                   </span>
                 </div>
               </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5">
+              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Phone number
                   </span>
                 </div>
               </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5">
+              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Date created
                   </span>
                 </div>
               </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5">
+              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Status

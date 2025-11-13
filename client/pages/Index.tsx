@@ -10,11 +10,13 @@ export default function Index() {
     <Layout>
       <PageHeader title="Users" />
 
-      <div className="px-8 py-8">
-        <div className="space-y-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="space-y-6 lg:space-y-8">
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-2 flex-wrap">
-              <SearchBar />
+              <div className="w-full sm:w-auto">
+                <SearchBar />
+              </div>
               <FilterTag
                 label="Status is"
                 boldText="Active"
