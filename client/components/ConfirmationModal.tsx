@@ -5,10 +5,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
 
 interface ConfirmationModalProps {
   open: boolean;
