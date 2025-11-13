@@ -44,18 +44,29 @@ export default function UserDetailHeader({
       }`}
     >
       <div className="flex flex-col gap-4">
-        {/* Back button */}
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-blue-500 hover:underline transition-all w-fit"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="text-sm">Back to users</span>
-        </button>
+        {/* Back button - visible above title when expanded */}
+        {!isCollapsed && (
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 text-blue-500 hover:underline transition-all w-fit"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm">Back to users</span>
+          </button>
+        )}
 
         {/* Title row */}
         <div className="flex items-center justify-between gap-8">
           <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Back button - positioned in front when collapsed */}
+            {isCollapsed && (
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center justify-center text-blue-500 hover:opacity-70 transition-all flex-shrink-0"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+            )}
             <h1
               className={`font-medium text-bluegrey-750 transition-all duration-300 ${
                 isCollapsed
