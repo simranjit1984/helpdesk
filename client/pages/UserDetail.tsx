@@ -36,10 +36,11 @@ export default function UserDetail() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <Layout>
       <PageHeader title={`${user.firstName} ${user.lastName}`} />
 
-      <div className="bg-white">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="bg-white">
         <Tabs defaultValue="basic" className="w-full">
           <div className="border-b border-bluegrey-100">
             <TabsList className="h-auto bg-transparent p-0 pt-6">
@@ -242,6 +243,7 @@ export default function UserDetail() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+      </div>
+    </Layout>
   );
 }
