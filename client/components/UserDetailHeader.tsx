@@ -26,16 +26,12 @@ export default function UserDetailHeader({
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      if (scrollY > 100 && !isCollapsed) {
-        setIsCollapsed(true);
-      } else if (scrollY < 50 && isCollapsed) {
-        setIsCollapsed(false);
-      }
+      setIsCollapsed(scrollY > 80);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isCollapsed]);
+  }, []);
 
   return (
     <div
