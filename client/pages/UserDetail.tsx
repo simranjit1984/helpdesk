@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { Save } from "lucide-react";
+import Layout from "@/components/Layout";
+import PageHeader from "@/components/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import PageHeader from "@/components/PageHeader";
 
 export default function UserDetail() {
   const { id } = useParams();
