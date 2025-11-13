@@ -1,4 +1,5 @@
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, ChevronUp, ChevronDown } from "lucide-react";
+import { useState } from "react";
 import StatusBadge from "./StatusBadge";
 
 type StatusType =
@@ -399,7 +400,74 @@ const users: User[] = [
   },
 ];
 
+type SortColumn =
+  | "username"
+  | "firstName"
+  | "lastName"
+  | "phoneNumber"
+  | "dateCreated"
+  | "status";
+type SortDirection = "asc" | "desc";
+
 export default function UsersTable() {
+  const [sortColumn, setSortColumn] = useState<SortColumn>("username");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const getSortedUsers = () => {
+    const sorted = [...users].sort((a, b) => {
+      let aVal: any = a[sortColumn];
+      let bVal: any = b[sortColumn];
+
+      if (typeof aVal === "string") {
+        aVal = aVal.toLowerCase();
+        bVal = (bVal as string).toLowerCase();
+      }
+
+      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  };
+
+  const SortHeader = ({
+    column,
+    label,
+  }: {
+    column: SortColumn;
+    label: string;
+  }) => {
+    const isActive = sortColumn === column;
+    return (
+      <button
+        onClick={() => handleSort(column)}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer"
+      >
+        <span className="text-sm font-bold text-bluegrey-900">
+          {label}
+        </span>
+        <div className="w-4 h-4">
+          {isActive && (
+            sortDirection === "asc" ? (
+              <ChevronUp className="w-4 h-4 text-blue-500" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-blue-500" />
+            )
+          )}
+        </div>
+      </button>
+    );
+  };
+
   return (
     <div className="bg-white rounded border-2 border-bluegrey-100 lg:border-0">
       <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-bluegrey-300 scrollbar-track-bluegrey-50">
@@ -407,52 +475,28 @@ export default function UsersTable() {
           <thead>
             <tr className="border-b-2 border-bluegrey-100">
               <th className="sticky left-0 z-10 bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap w-64 shadow-[1px_0_3px_rgba(0,0,0,0.05)]">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-bluegrey-900">
-                    Username
-                  </span>
-                </div>
+                <SortHeader column="username" label="Username" />
               </th>
               <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-bluegrey-900">
-                    First name
-                  </span>
-                </div>
+                <SortHeader column="firstName" label="First name" />
               </th>
               <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-bluegrey-900">
-                    Last name
-                  </span>
-                </div>
+                <SortHeader column="lastName" label="Last name" />
               </th>
               <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-bluegrey-900">
-                    Phone number
-                  </span>
-                </div>
+                <SortHeader column="phoneNumber" label="Phone number" />
               </th>
               <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-bluegrey-900">
-                    Date created
-                  </span>
-                </div>
+                <SortHeader column="dateCreated" label="Date created" />
               </th>
               <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-bluegrey-900">
-                    Status
-                  </span>
-                </div>
+                <SortHeader column="status" label="Status" />
               </th>
               <th className="bg-bluegrey-25 w-10"></th>
             </tr>
           </thead>
           <tbody>
-            {[...users].sort((a, b) => a.username.localeCompare(b.username)).map((user, index) => (
+            {getSortedUsers().map((user, index) => (
               <tr
                 key={index}
                 className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors"
