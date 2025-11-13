@@ -237,6 +237,7 @@ export default function UserDetail() {
                 <Button
                   type="button"
                   variant="ghost"
+                  onClick={() => navigate("/")}
                   className="rounded-[2px] text-bluegrey-700"
                 >
                   Cancel
