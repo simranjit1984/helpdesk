@@ -634,9 +634,7 @@ export default function UsersTable() {
                 </td>
                 <td className="py-1">
                   <div className="h-10 flex items-center justify-center">
-                    <button className="w-10 h-10 flex items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
-                      <MoreVertical className="w-6 h-6 text-blue-500" />
-                    </button>
+                    <UserActionsMenu user={user} />
                   </div>
                 </td>
               </tr>
