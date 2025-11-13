@@ -89,9 +89,9 @@ export default function UserDetailHeader({
 
         {/* Description - hidden when collapsed */}
         {!isCollapsed && (
-          <div className="text-base text-bluegrey-900">
+          <div className="text-base text-bluegrey-900 max-w-4xl">
             <span className="font-bold">{organization}</span>
-            <span> | {phone} {email}</span>
+            <span>  |  {phone}  {email}</span>
           </div>
         )}
       </div>
