@@ -241,35 +241,35 @@ export default function UsersTable() {
                   </div>
                 </td>
                 <td className="px-4 py-1">
-                  <div className="h-10 flex items-center">
-                    <span className="text-sm text-bluegrey-900">
+                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-sm text-bluegrey-900 truncate">
                       {user.firstName}
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-1">
-                  <div className="h-10 flex items-center">
-                    <span className="text-sm text-bluegrey-900">
+                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-sm text-bluegrey-900 truncate">
                       {user.lastName}
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-1">
-                  <div className="h-10 flex items-center">
-                    <span className="text-sm text-bluegrey-900">
+                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-sm text-bluegrey-900 truncate">
                       {user.phoneNumber}
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-1">
-                  <div className="h-10 flex items-center">
-                    <span className="text-sm text-bluegrey-900">
+                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-sm text-bluegrey-900 truncate">
                       {user.dateCreated}
                     </span>
                   </div>
                 </td>
                 <td className="px-4 py-1">
-                  <div className="h-10 flex items-center">
+                  <div className="h-10 flex items-center whitespace-nowrap">
                     <StatusBadge status={user.status} />
                   </div>
                 </td>
