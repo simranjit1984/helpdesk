@@ -22,7 +22,7 @@ export default function UserDetailHeader({
 }: UserDetailHeaderProps) {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const scrollStateRef = useRef({ lastY: 0, isCollapsed: false, timeoutId: null as NodeJS.Timeout | null });
+  const scrollStateRef = useRef({ lastY: 0, isCollapsed: false });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,17 +30,15 @@ export default function UserDetailHeader({
       const direction = scrollY > scrollStateRef.current.lastY ? 'down' : 'up';
       scrollStateRef.current.lastY = scrollY;
 
-      // Clear existing timeout
-      if (scrollStateRef.current.timeoutId) {
-        clearTimeout(scrollStateRef.current.timeoutId);
-      }
-
-      // Determine new state based on direction and position
       let newIsCollapsed = scrollStateRef.current.isCollapsed;
 
-      if (direction === 'down' && scrollY > 100 && !scrollStateRef.current.isCollapsed) {
+      // Large hysteresis: only change state at clear thresholds
+      // Collapse: only when scrolling DOWN past 120px
+      if (direction === 'down' && scrollY > 120 && !scrollStateRef.current.isCollapsed) {
         newIsCollapsed = true;
-      } else if (direction === 'up' && scrollY < 60 && scrollStateRef.current.isCollapsed) {
+      }
+      // Expand: only when scrolling UP below 30px
+      else if (direction === 'up' && scrollY < 30 && scrollStateRef.current.isCollapsed) {
         newIsCollapsed = false;
       }
 
@@ -49,36 +47,10 @@ export default function UserDetailHeader({
         scrollStateRef.current.isCollapsed = newIsCollapsed;
         setIsCollapsed(newIsCollapsed);
       }
-
-      // When scrolling stops, settle the state based on position
-      scrollStateRef.current.timeoutId = setTimeout(() => {
-        const currentY = window.scrollY;
-        let settledState = scrollStateRef.current.isCollapsed;
-
-        // Snap to nearest state: if between 60-100, snap based on proximity
-        if (currentY >= 60 && currentY <= 100) {
-          // Closer to 100 = collapse, closer to 60 = expand
-          settledState = currentY > 80;
-        } else if (currentY < 60) {
-          settledState = false;
-        } else if (currentY > 100) {
-          settledState = true;
-        }
-
-        if (settledState !== scrollStateRef.current.isCollapsed) {
-          scrollStateRef.current.isCollapsed = settledState;
-          setIsCollapsed(settledState);
-        }
-      }, 150);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (scrollStateRef.current.timeoutId) {
-        clearTimeout(scrollStateRef.current.timeoutId);
-      }
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
