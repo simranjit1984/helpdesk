@@ -45,7 +45,7 @@ export default function ConfirmationModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-full max-w-[480px] rounded-[2px] border-0 bg-white p-0 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-        <div className="flex items-start justify-between border-b border-[#DEDEE6] px-6 py-4">
+        <div className="flex items-start justify-between px-6 py-4">
           <DialogHeader className="text-left">
             <DialogTitle className="text-xl font-medium leading-8 text-bluegrey-900">
               {title}
@@ -65,7 +65,7 @@ export default function ConfirmationModal({
           </DialogDescription>
         </div>
 
-        <div className="px-6 py-4">
+        <div className="border-t border-[#DEDEE6] px-6 py-4">
           <div className="flex items-center justify-between gap-2">
             {tertiaryAction && (
               <Button
