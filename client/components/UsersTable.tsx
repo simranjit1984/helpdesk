@@ -178,8 +178,8 @@ const users: User[] = [
 export default function UsersTable() {
   return (
     <div className="bg-white rounded border-2 border-bluegrey-100 lg:border-0">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px]">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-bluegrey-300 scrollbar-track-bluegrey-50">
+        <table className="w-full border-collapse">
           <thead>
             <tr className="border-b-2 border-bluegrey-100">
               <th className="sticky left-0 z-10 bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap w-64">
@@ -233,7 +233,7 @@ export default function UsersTable() {
                 key={index}
                 className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors"
               >
-                <td className="sticky left-0 z-10 bg-white px-4 py-1 border-r border-bluegrey-100">
+                <td className="sticky left-0 z-10 bg-white px-4 py-1 border-r border-bluegrey-100 shadow-[1px_0_3px_rgba(0,0,0,0.05)]">
                   <div className="h-10 flex items-center w-56">
                     <span className="text-sm text-bluegrey-900 truncate">
                       {user.username}
