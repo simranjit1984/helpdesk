@@ -182,7 +182,7 @@ export default function UsersTable() {
         <table className="w-full min-w-[900px]">
           <thead>
             <tr className="border-b-2 border-bluegrey-100">
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+              <th className="sticky left-0 z-10 bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap w-64">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Username
@@ -233,8 +233,8 @@ export default function UsersTable() {
                 key={index}
                 className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors"
               >
-                <td className="px-4 py-1">
-                  <div className="h-10 flex items-center">
+                <td className="sticky left-0 z-10 bg-white px-4 py-1 border-r border-bluegrey-100">
+                  <div className="h-10 flex items-center w-56">
                     <span className="text-sm text-bluegrey-900 truncate">
                       {user.username}
                     </span>
