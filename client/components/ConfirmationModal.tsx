@@ -86,7 +86,7 @@ export default function ConfirmationModal({
                     secondaryAction.onClick();
                     onOpenChange(false);
                   }}
-                  className="rounded-[2px] border-2 border-blue-700 text-blue-700 hover:bg-blue-50"
+                  className="rounded-[2px] border-2 border-blue-500 text-blue-500 hover:bg-blue-50"
                 >
                   {secondaryAction.label}
                 </Button>
@@ -94,7 +94,7 @@ export default function ConfirmationModal({
               {primaryAction && (
                 <Button
                   onClick={handlePrimaryClick}
-                  className="rounded-[2px] bg-blue-700 text-white hover:bg-blue-800"
+                  className="rounded-[2px] bg-blue-500 text-white hover:bg-blue-600"
                 >
                   {primaryAction.label}
                 </Button>
