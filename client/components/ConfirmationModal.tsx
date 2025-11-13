@@ -94,7 +94,7 @@ export default function ConfirmationModal({
               {primaryAction && (
                 <Button
                   onClick={handlePrimaryClick}
-                  className="rounded-[2px] bg-blue-500 text-white hover:bg-blue-600"
+                  className="rounded-[2px] bg-blue-500 text-white hover:bg-opacity-90"
                 >
                   {primaryAction.label}
                 </Button>
