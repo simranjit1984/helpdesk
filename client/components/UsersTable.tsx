@@ -512,7 +512,7 @@ function UserActionsMenu({ user }: { user: User }) {
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         title="User status is Authentication Blocked"
-        description="you must unblock the user's authentication before you can reset their password."
+        description="You must unblock the user's authentication before you can reset their password."
         primaryAction={{
           label: "Close",
           onClick: () => {},
