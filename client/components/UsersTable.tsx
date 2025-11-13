@@ -489,23 +489,36 @@ function UserActionsMenu({ user }: { user: User }) {
   }
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <button className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${isOpen ? "bg-bluegrey-100" : "hover:bg-bluegrey-100"}`}>
-          <MoreVertical className="w-6 h-6 text-blue-500" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {items.map((item) => (
-          <DropdownMenuItem
-            key={item.action}
-            onClick={() => handleAction(item.label)}
-          >
-            {item.label}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <button className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${isOpen ? "bg-bluegrey-100" : "hover:bg-bluegrey-100"}`}>
+            <MoreVertical className="w-6 h-6 text-blue-500" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {items.map((item) => (
+            <DropdownMenuItem
+              key={item.action}
+              onClick={() => handleAction(item.label)}
+            >
+              {item.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ConfirmationModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        title="User status is Authentication Blocked"
+        description="you must unblock the user's authentication before you can reset their password."
+        primaryAction={{
+          label: "Close",
+          onClick: () => {},
+        }}
+      />
+    </>
   );
 }
 
