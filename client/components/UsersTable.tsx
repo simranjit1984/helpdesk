@@ -417,6 +417,7 @@ type SortDirection = "asc" | "desc";
 
 function UserActionsMenu({ user }: { user: User }) {
   const { toast } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleAction = (action: string) => {
     toast({
