@@ -40,7 +40,14 @@ export default function UserDetail() {
 
   return (
     <Layout>
-      <PageHeader title={`${user.firstName} ${user.lastName}`} />
+      <UserDetailHeader
+        firstName={user.firstName}
+        lastName={user.lastName}
+        organization={user.organization}
+        phone={user.phone}
+        email={user.email}
+        status={user.status}
+      />
 
       <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="bg-white">
