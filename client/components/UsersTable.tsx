@@ -452,7 +452,7 @@ export default function UsersTable() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {[...users].sort((a, b) => a.username.localeCompare(b.username)).map((user, index) => (
               <tr
                 key={index}
                 className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors"
