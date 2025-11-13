@@ -45,15 +45,21 @@ export default function ConfirmationModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-full max-w-[480px] rounded-[2px] border-0 bg-white p-0 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-        <div className="border-b border-[#DEDEE6] px-6 py-4">
+        <div className="flex items-start justify-between border-b border-[#DEDEE6] px-6 py-4">
           <DialogHeader className="text-left">
             <DialogTitle className="text-xl font-medium leading-8 text-bluegrey-900">
               {title}
             </DialogTitle>
           </DialogHeader>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="rounded-[2px] p-2 text-bluegrey-700 transition-colors hover:bg-bluegrey-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
 
-        <div className="border-b border-[#DEDEE6] px-6 py-4">
+        <div className="px-6 py-4">
           <DialogDescription className="text-base leading-5 text-bluegrey-500">
             {description}
           </DialogDescription>
