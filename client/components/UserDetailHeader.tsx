@@ -22,11 +22,24 @@ export default function UserDetailHeader({
 }: UserDetailHeaderProps) {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const lastScrollY = useState(0)[1];
+  const scrollRef = useState({ lastY: 0, direction: null as 'up' | 'down' | null })[0];
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      setIsCollapsed(scrollY > 80);
+      const direction = scrollY > scrollRef.lastY ? 'down' : 'up';
+      scrollRef.lastY = scrollY;
+      scrollRef.direction = direction;
+
+      // Collapse when scrolling down past 100px
+      if (direction === 'down' && scrollY > 100) {
+        setIsCollapsed(true);
+      }
+      // Expand when scrolling up below 60px
+      else if (direction === 'up' && scrollY < 60) {
+        setIsCollapsed(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
