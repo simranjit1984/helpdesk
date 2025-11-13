@@ -182,7 +182,7 @@ export default function UsersTable() {
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b-2 border-bluegrey-100">
-              <th className="sticky left-0 z-10 bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap w-64">
+              <th className="sticky left-0 z-10 bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap w-64 shadow-[1px_0_3px_rgba(0,0,0,0.05)]">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-bluegrey-900">
                     Username
