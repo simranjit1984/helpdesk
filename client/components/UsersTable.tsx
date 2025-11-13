@@ -415,6 +415,91 @@ type SortColumn =
   | "status";
 type SortDirection = "asc" | "desc";
 
+function UserActionsMenu({ user }: { user: User }) {
+  const { toast } = useToast();
+
+  const handleAction = (action: string) => {
+    toast({
+      title: action,
+      description: `Action performed for ${user.username}`,
+    });
+  };
+
+  const getMenuItems = () => {
+    switch (user.status) {
+      case "active":
+        return [
+          { label: "View details", action: "View details" },
+          { label: "Reset password", action: "Reset password" },
+          { label: "Block authentication", action: "Block authentication" },
+          { label: "Delete user", action: "Delete user" },
+        ];
+      case "invited":
+        return [
+          { label: "View invitation", action: "View invitation" },
+          { label: "Resent invitation", action: "Resent invitation" },
+          { label: "Withdraw invitation", action: "Withdraw invitation" },
+        ];
+      case "invitation-withdrawn":
+        return [{ label: "View invitation", action: "View invitation" }];
+      case "grace":
+        return [
+          { label: "View details", action: "View details" },
+          { label: "Change to active", action: "Change to active" },
+        ];
+      case "blocked":
+        return [
+          { label: "View details", action: "View details" },
+          { label: "Reset password", action: "Reset password" },
+          { label: "Unblock authentication", action: "Unblock authentication" },
+          { label: "Delete user", action: "Delete user" },
+        ];
+      case "invitation-expired":
+        return [
+          { label: "View invitation", action: "View invitation" },
+          { label: "Resent invitation", action: "Resent invitation" },
+        ];
+      case "inactive":
+        return [
+          { label: "View details", action: "View details" },
+          { label: "Delete user", action: "Delete user" },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const items = getMenuItems();
+
+  if (items.length === 0) {
+    return (
+      <button className="w-10 h-10 flex items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
+        <MoreVertical className="w-6 h-6 text-blue-500" />
+      </button>
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="w-10 h-10 flex items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
+          <MoreVertical className="w-6 h-6 text-blue-500" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {items.map((item) => (
+          <DropdownMenuItem
+            key={item.action}
+            onClick={() => handleAction(item.label)}
+          >
+            {item.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export default function UsersTable() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("username");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
