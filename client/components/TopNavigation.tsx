@@ -19,7 +19,7 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
           <div className="flex items-center gap-4 h-full py-3">
             <div className="flex items-center gap-2 h-10">
               <div className="w-20 sm:w-32 h-16 flex items-center justify-center text-primary font-bold text-lg sm:text-xl">
-                INSIDR
+                InsurCar
               </div>
             </div>
           </div>
