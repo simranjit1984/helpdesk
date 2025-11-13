@@ -1,13 +1,23 @@
 import { MoreVertical } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 
+type StatusType =
+  | "active"
+  | "invited"
+  | "invitation-withdrawn"
+  | "invitation-expired"
+  | "blocked"
+  | "grace"
+  | "inactive"
+  | "invitation-accepted";
+
 interface User {
   username: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
   dateCreated: string;
-  status: "active" | "inactive";
+  status: StatusType;
 }
 
 const users: User[] = [
@@ -25,7 +35,7 @@ const users: User[] = [
     lastName: "Brown",
     phoneNumber: "+33 987654321",
     dateCreated: "2024-07-13 09:23:21",
-    status: "active",
+    status: "invited",
   },
   {
     username: "carla.clarke@example.com",
@@ -33,7 +43,7 @@ const users: User[] = [
     lastName: "Clarke",
     phoneNumber: "+39 555123456",
     dateCreated: "2024-07-12 13:15:24",
-    status: "active",
+    status: "invitation-withdrawn",
   },
   {
     username: "daniel.davies@example.com",
@@ -41,7 +51,7 @@ const users: User[] = [
     lastName: "Davies",
     phoneNumber: "+49 111222333",
     dateCreated: "2024-07-12 11:42:02",
-    status: "active",
+    status: "invitation-expired",
   },
   {
     username: "emma.evans@example.com",
@@ -73,7 +83,7 @@ const users: User[] = [
     lastName: "Hughes",
     phoneNumber: "+31 999888777",
     dateCreated: "2024-07-13 08:52:38",
-    status: "active",
+    status: "blocked",
   },
   {
     username: "isabel.ivanova@example.com",
@@ -81,7 +91,7 @@ const users: User[] = [
     lastName: "Ivanova",
     phoneNumber: "+32 888999000",
     dateCreated: "2024-07-13 09:33:13",
-    status: "active",
+    status: "grace",
   },
   {
     username: "jack.jensen@example.com",
@@ -89,7 +99,79 @@ const users: User[] = [
     lastName: "Jensen",
     phoneNumber: "+30 444555666",
     dateCreated: "2024-07-13 10:09:26",
+    status: "blocked",
+  },
+  {
+    username: "kate.kennedy@example.com",
+    firstName: "Kate",
+    lastName: "Kennedy",
+    phoneNumber: "+45 222333444",
+    dateCreated: "2024-07-14 14:22:11",
     status: "active",
+  },
+  {
+    username: "lucas.lopez@example.com",
+    firstName: "Lucas",
+    lastName: "Lopez",
+    phoneNumber: "+34 111222333",
+    dateCreated: "2024-07-10 16:45:30",
+    status: "active",
+  },
+  {
+    username: "maria.martinez@example.com",
+    firstName: "Maria",
+    lastName: "Martinez",
+    phoneNumber: "+52 555666777",
+    dateCreated: "2024-07-09 10:30:45",
+    status: "active",
+  },
+  {
+    username: "nathan.nelson@example.com",
+    firstName: "Nathan",
+    lastName: "Nelson",
+    phoneNumber: "+1 888999000",
+    dateCreated: "2024-07-11 09:15:22",
+    status: "grace",
+  },
+  {
+    username: "olivia.oliver@example.com",
+    firstName: "Olivia",
+    lastName: "Oliver",
+    phoneNumber: "+61 777888999",
+    dateCreated: "2024-07-08 13:40:18",
+    status: "inactive",
+  },
+  {
+    username: "peter.parker@example.com",
+    firstName: "Peter",
+    lastName: "Parker",
+    phoneNumber: "+1 555444333",
+    dateCreated: "2024-07-14 11:25:50",
+    status: "active",
+  },
+  {
+    username: "quinn.quinn@example.com",
+    firstName: "Quinn",
+    lastName: "Quinn",
+    phoneNumber: "+353 666555444",
+    dateCreated: "2024-07-07 15:10:35",
+    status: "invitation-accepted",
+  },
+  {
+    username: "rachel.rogers@example.com",
+    firstName: "Rachel",
+    lastName: "Rogers",
+    phoneNumber: "+44 333222111",
+    dateCreated: "2024-07-12 08:55:42",
+    status: "blocked",
+  },
+  {
+    username: "steve.smith@example.com",
+    firstName: "Steve",
+    lastName: "Smith",
+    phoneNumber: "+1 444333222",
+    dateCreated: "2024-07-06 12:30:20",
+    status: "grace",
   },
 ];
 

@@ -73,6 +73,10 @@ export default {
           100: "#D1E6DA",
           900: "#051A0E",
         },
+        orange: {
+          100: "#F9E4CC",
+          900: "#2D1800",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
