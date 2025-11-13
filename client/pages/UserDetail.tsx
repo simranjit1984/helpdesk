@@ -45,7 +45,7 @@ export default function UserDetail() {
         firstName={user.firstName}
         lastName={user.lastName}
         organization={user.organization}
-        phone={user.phone}
+        phone={user.displayPhone}
         email={user.email}
         status={user.status}
       />
