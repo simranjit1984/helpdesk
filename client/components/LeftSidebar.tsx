@@ -31,7 +31,7 @@ function MenuItem({ icon, label, href, active, hasSubmenu }: MenuItemProps) {
         {hasSubmenu && <ChevronDown className="w-6 h-6 text-bluegrey-900" />}
       </Link>
       {active && (
-        <div className="absolute right-0 top-0 w-1 h-full bg-blue-500 rounded-l" />
+        <div className="absolute left-0 top-0 w-1 h-full bg-blue-500 rounded-r" />
       )}
     </div>
   );
