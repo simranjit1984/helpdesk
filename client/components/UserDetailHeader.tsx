@@ -22,27 +22,31 @@ export default function UserDetailHeader({
 }: UserDetailHeaderProps) {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const lastScrollY = useState(0)[1];
-  const scrollRef = useState({ lastY: 0, direction: null as 'up' | 'down' | null })[0];
+  const scrollStateRef = useRef({ lastY: 0, isCollapsed: false });
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const direction = scrollY > scrollRef.lastY ? 'down' : 'up';
-      scrollRef.lastY = scrollY;
-      scrollRef.direction = direction;
+      const direction = scrollY > scrollStateRef.current.lastY ? 'down' : 'up';
+      scrollStateRef.current.lastY = scrollY;
 
-      // Collapse when scrolling down past 100px
-      if (direction === 'down' && scrollY > 100) {
-        setIsCollapsed(true);
+      // Determine new state based on direction and position
+      let newIsCollapsed = scrollStateRef.current.isCollapsed;
+
+      if (direction === 'down' && scrollY > 100 && !scrollStateRef.current.isCollapsed) {
+        newIsCollapsed = true;
+      } else if (direction === 'up' && scrollY < 60 && scrollStateRef.current.isCollapsed) {
+        newIsCollapsed = false;
       }
-      // Expand when scrolling up below 60px
-      else if (direction === 'up' && scrollY < 60) {
-        setIsCollapsed(false);
+
+      // Only update state if it actually changed
+      if (newIsCollapsed !== scrollStateRef.current.isCollapsed) {
+        scrollStateRef.current.isCollapsed = newIsCollapsed;
+        setIsCollapsed(newIsCollapsed);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
