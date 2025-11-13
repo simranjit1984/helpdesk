@@ -26,12 +26,9 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
 
           <div className="hidden lg:block h-10 w-px bg-bluegrey-100" />
 
-          <button className="hidden lg:flex items-center gap-2 h-10 px-3 rounded-sm hover:bg-bluegrey-25 transition-colors">
-            <span className="text-sm font-medium text-bluegrey-700 truncate max-w-[200px]">
-              Road Ready Garage
-            </span>
-            <ChevronDown className="w-5 h-5 text-bluegrey-700 flex-shrink-0" />
-          </button>
+          <span className="text-sm font-medium text-bluegrey-700 truncate max-w-[200px]">
+            InsurCar
+          </span>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4 h-10 pl-2 sm:pl-4">
