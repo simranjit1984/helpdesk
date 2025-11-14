@@ -340,6 +340,7 @@ export default function UserDetail() {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b-2 border-bluegrey-100">
+                        <th className="bg-bluegrey-25 w-10"></th>
                         <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
                           <span className="text-sm font-bold text-bluegrey-900">Access role</span>
                         </th>
