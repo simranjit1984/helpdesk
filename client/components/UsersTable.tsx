@@ -265,6 +265,29 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 888999000",
     dateCreated: "2024-07-15 08:25:45",
     status: "active",
+    accessRoles: [
+      {
+        id: "1",
+        name: "Claim processor",
+        applications: 5,
+        startDate: "19/09/2024",
+        endDate: "18/09/2024",
+      },
+      {
+        id: "2",
+        name: "Front desk person",
+        applications: 3,
+        startDate: "19/09/2024",
+        endDate: null,
+      },
+      {
+        id: "3",
+        name: "Underwriting Analyst",
+        applications: 5,
+        startDate: "19/09/2024",
+        endDate: "18/09/2024",
+      },
+    ],
   },
   {
     username: "brandon.brennan@example.com",
