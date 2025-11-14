@@ -54,7 +54,7 @@ export default function UserDetail() {
         <div className="bg-white">
         <Tabs defaultValue="basic" className="w-full">
           <div className="border-b border-bluegrey-100">
-            <TabsList className="h-auto bg-transparent p-0 pt-6">
+            <TabsList className="h-auto bg-transparent p-0">
               <TabsTrigger
                 value="basic"
                 className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
