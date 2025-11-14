@@ -598,7 +598,7 @@ export default function UsersTable() {
   };
 
   const getSortedUsers = () => {
-    const sorted = [...users].sort((a, b) => {
+    const sorted = [...baseUsers].sort((a, b) => {
       let aVal: any = a[sortColumn];
       let bVal: any = b[sortColumn];
 
