@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Save, Search, MoreVertical } from "lucide-react";
+import { Save, Search, MoreVertical, Pencil, Calendar } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,12 +21,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { getUserById } from "@/components/UsersTable";
 
 export default function UserDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [endDateOption, setEndDateOption] = useState<"no-end" | "custom">("custom");
+  const [isValidityModalOpen, setIsValidityModalOpen] = useState(false);
+  const [modalStartDate, setModalStartDate] = useState("2025/04/18");
+  const [modalEndDateOption, setModalEndDateOption] = useState<"no-end" | "custom">("custom");
+  const [modalEndDate, setModalEndDate] = useState("2025/04/18");
 
   // Fetch user data based on ID
   const foundUser = id ? getUserById(id) : null;
