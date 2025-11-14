@@ -216,7 +216,7 @@ export default function UserDetail() {
                         {endDateOption === "custom" && (
                           <div className="ml-7 mt-2">
                             <Input
-                              type="text"
+                              type="date"
                               defaultValue={user.endDate}
                               className="rounded-[2px] border-bluegrey-500"
                             />
