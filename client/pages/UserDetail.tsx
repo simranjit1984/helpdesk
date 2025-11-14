@@ -203,7 +203,16 @@ export default function UserDetail() {
 
                 <div className="flex flex-col gap-4 pt-6">
                   <div className="flex flex-col gap-1">
-                    <h3 className="text-xl font-bold text-blue-500">Validity period</h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-bold text-blue-500">Validity period</h3>
+                      <button
+                        type="button"
+                        onClick={() => setIsValidityModalOpen(true)}
+                        className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                      >
+                        <Pencil className="h-5 w-5 text-bluegrey-700" />
+                      </button>
+                    </div>
                     <p className="text-xs text-bluegrey-700">
                       Period during which user is authorize to access content in context of this organization.
                     </p>
