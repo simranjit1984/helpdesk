@@ -410,8 +410,8 @@ export default function UserDetail() {
                               </td>
                             </tr>
                             {expandedRoles.has(role.id) && (
-                              <tr className="bg-bluegrey-25/30">
-                                <td colSpan={4} className="px-3 py-4 pl-0">
+                              <tr className="bg-bluegrey-25/30 border-b-2 border-bluegrey-100">
+                                <td colSpan={4} className="px-3 py-0 pl-0">
                                   <div className="ml-10 bg-white rounded border border-bluegrey-100">
                                     <table className="w-full border-collapse">
                                       <thead>
