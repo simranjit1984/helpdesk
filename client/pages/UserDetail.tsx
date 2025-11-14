@@ -412,15 +412,15 @@ export default function UserDetail() {
                             {expandedRoles.has(role.id) && (
                               <tr className="bg-bluegrey-25/30 border-b-2 border-bluegrey-100">
                                 <td className="px-3 py-0 w-10"></td>
-                                <td colSpan={3} className="px-3 py-0">
+                                <td colSpan={3} className="px-3 py-0 pr-0">
                                   <table className="w-full border-collapse">
                                     <thead>
-                                      <tr className="border-b border-bluegrey-100">
-                                        <th className="text-left px-3 py-2 bg-bluegrey-25">
-                                          <span className="text-xs font-semibold text-bluegrey-900">Application</span>
+                                      <tr className="border-b-2 border-bluegrey-200 bg-bluegrey-50">
+                                        <th className="text-left px-3 py-2">
+                                          <span className="text-xs font-semibold text-bluegrey-700 uppercase tracking-wider">Application</span>
                                         </th>
-                                        <th className="text-left px-3 py-2 bg-bluegrey-25">
-                                          <span className="text-xs font-semibold text-bluegrey-900">Permissions</span>
+                                        <th className="text-left px-3 py-2">
+                                          <span className="text-xs font-semibold text-bluegrey-700 uppercase tracking-wider">Permissions</span>
                                         </th>
                                       </tr>
                                     </thead>
