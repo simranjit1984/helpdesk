@@ -21,6 +21,7 @@ type StatusType =
   | "inactive";
 
 interface User {
+  id: string;
   username: string;
   firstName: string;
   lastName: string;
@@ -31,6 +32,7 @@ interface User {
 
 const users: User[] = [
   {
+    id: "1",
     username: "alison.adams@example.com",
     firstName: "Alison",
     lastName: "Adams",
