@@ -20,6 +20,14 @@ type StatusType =
   | "grace"
   | "inactive";
 
+export interface AccessRole {
+  id: string;
+  name: string;
+  applications: number;
+  startDate: string;
+  endDate: string | null;
+}
+
 interface User {
   id: string;
   username: string;
@@ -28,6 +36,7 @@ interface User {
   phoneNumber: string;
   dateCreated: string;
   status: StatusType;
+  accessRoles?: AccessRole[];
 }
 
 export const baseUsers: Partial<User>[] = [
