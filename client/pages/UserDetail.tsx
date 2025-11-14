@@ -352,7 +352,9 @@ export default function UserDetail() {
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>Edit validity period</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setIsValidityModalOpen(true)}>
+                                      Edit validity period
+                                    </DropdownMenuItem>
                                     <DropdownMenuItem>Remove access role</DropdownMenuItem>
                                   </DropdownMenuContent>
                                 </DropdownMenu>
