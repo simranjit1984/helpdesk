@@ -249,7 +249,56 @@ export default function UserDetail() {
           </TabsContent>
 
           <TabsContent value="access" className="pt-6">
-            <p className="text-bluegrey-500">Access roles content coming soon...</p>
+            <div className="flex flex-col gap-1">
+              {/* Toolbar */}
+              <div className="flex items-center justify-between gap-3 bg-white py-3">
+                <div className="w-full max-w-md">
+                  <div className="relative">
+                    <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white">
+                      <Search className="w-5 h-5 text-bluegrey-500 flex-shrink-0" />
+                      <input
+                        type="text"
+                        placeholder="Search access roles"
+                        className="flex-1 text-sm text-bluegrey-500 placeholder:text-bluegrey-500 outline-none bg-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Button className="rounded-[2px] bg-blue-500 hover:bg-opacity-90">
+                  Assign access role
+                </Button>
+              </div>
+
+              {/* Table */}
+              <div className="rounded border border-bluegrey-100 bg-white">
+                {/* Table Header */}
+                <div className="flex items-stretch border-b-2 border-bluegrey-100">
+                  <div className="w-[274px] flex items-center bg-black/5 border-b-2 border-bluegrey-100">
+                    <div className="px-3 py-[10px]">
+                      <span className="text-sm font-bold text-bluegrey-900">Display name</span>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex items-center bg-black/5 border-b-2 border-bluegrey-100">
+                    <div className="px-3 py-[10px]">
+                      <span className="text-sm font-bold text-bluegrey-900">Description</span>
+                    </div>
+                  </div>
+                  <div className="w-[274px] flex items-center bg-black/5 border-b-2 border-bluegrey-100">
+                    <div className="px-3 py-[10px]">
+                      <span className="text-sm font-bold text-bluegrey-900">Value</span>
+                    </div>
+                  </div>
+                  <div className="w-10 bg-black/5 border-b-2 border-bluegrey-100"></div>
+                </div>
+
+                {/* Empty State */}
+                <div className="flex items-center justify-center py-8 px-8">
+                  <p className="text-sm text-bluegrey-600 text-center">
+                    Ready to assign access roles
+                  </p>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="events" className="pt-6">
