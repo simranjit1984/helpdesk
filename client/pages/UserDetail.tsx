@@ -320,14 +320,14 @@ export default function UserDetail() {
                       {user.accessRoles && user.accessRoles.length > 0 ? (
                         user.accessRoles.map((role) => (
                           <tr key={role.id} className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors">
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-1">
                               <div className="h-10 flex items-center">
                                 <span className="text-sm text-bluegrey-900">
                                   {role.name} ({role.applications} application{role.applications !== 1 ? 's' : ''})
                                 </span>
                               </div>
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-1">
                               <div className="h-10 flex items-center gap-2">
                                 <span className="text-sm text-bluegrey-900">
                                   {role.startDate} {role.endDate ? `- ${role.endDate}` : '- No end date'}
@@ -335,19 +335,19 @@ export default function UserDetail() {
                                 <button
                                   type="button"
                                   onClick={() => setIsValidityModalOpen(true)}
-                                  className="flex items-center justify-center hover:bg-bluegrey-100 transition-colors flex-shrink-0 rounded p-1"
+                                  className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
                                   aria-label="Edit validity period"
                                 >
-                                  <Pencil className="h-5 w-5 text-bluegrey-700" />
+                                  <Pencil className="h-6 w-6 text-bluegrey-700" />
                                 </button>
                               </div>
                             </td>
-                            <td className="px-3 py-2 w-10">
+                            <td className="px-3 py-1 w-10">
                               <div className="h-10 flex items-center justify-center">
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <button className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
-                                      <MoreVertical className="h-5 w-5 text-bluegrey-700" />
+                                      <MoreVertical className="h-6 w-6 text-bluegrey-700" />
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
