@@ -382,6 +382,102 @@ export default function UserDetail() {
         </Tabs>
       </div>
       </div>
+
+      <Dialog open={isValidityModalOpen} onOpenChange={setIsValidityModalOpen}>
+        <DialogContent className="w-full max-w-[480px] gap-6 rounded-[2px] bg-white p-0 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <DialogHeader className="flex flex-row items-start justify-between gap-2 p-4 px-6 pb-0">
+            <DialogTitle className="text-xl font-medium text-bluegrey-900 leading-8">
+              Edit validity period
+            </DialogTitle>
+            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="#383A4B"/>
+              </svg>
+            </DialogClose>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-2 px-6">
+            <div className="flex flex-col gap-4 rounded bg-white p-6">
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-1">
+                  <Label htmlFor="modal-start-date" className="text-sm font-normal text-bluegrey-900">
+                    Start date
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="modal-start-date"
+                      type="text"
+                      value={modalStartDate}
+                      onChange={(e) => setModalStartDate(e.target.value)}
+                      className="rounded-[2px] border-bluegrey-500 pr-10 text-sm"
+                      placeholder="2025/04/18"
+                    />
+                    <Calendar className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-bluegrey-900 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <Label className="text-sm font-normal text-black">End date</Label>
+                  <RadioGroup
+                    value={modalEndDateOption}
+                    onValueChange={(value) => setModalEndDateOption(value as "no-end" | "custom")}
+                    className="gap-3"
+                  >
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="no-end" id="modal-no-end" className="border-bluegrey-500" />
+                      <Label htmlFor="modal-no-end" className="cursor-pointer text-sm font-normal text-bluegrey-900">
+                        No end date
+                      </Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="custom" id="modal-custom" className="border-bluegrey-500" />
+                      <Label htmlFor="modal-custom" className="cursor-pointer text-sm font-normal text-bluegrey-900">
+                        Custom date
+                      </Label>
+                    </div>
+                  </RadioGroup>
+
+                  {modalEndDateOption === "custom" && (
+                    <div className="ml-7 mt-2">
+                      <div className="relative">
+                        <Input
+                          type="text"
+                          value={modalEndDate}
+                          onChange={(e) => setModalEndDate(e.target.value)}
+                          className="rounded-[2px] border-bluegrey-500 pr-10 text-sm"
+                          placeholder="2025/04/18"
+                        />
+                        <Calendar className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-bluegrey-900 pointer-events-none" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="flex flex-row items-center justify-between gap-2 p-4 px-6">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsValidityModalOpen(false)}
+              className="rounded-[2px] text-bluegrey-700 hover:bg-transparent"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                setIsValidityModalOpen(false);
+              }}
+              className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90"
+            >
+              <Save className="h-5 w-5" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }
