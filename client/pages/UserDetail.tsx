@@ -332,7 +332,7 @@ export default function UserDetail() {
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
                                     <DropdownMenuItem>Edit validity period</DropdownMenuItem>
-                                    <DropdownMenuItem className="text-red-600">Remove access role</DropdownMenuItem>
+                                    <DropdownMenuItem>Remove access role</DropdownMenuItem>
                                   </DropdownMenuContent>
                                 </DropdownMenu>
                               </div>
