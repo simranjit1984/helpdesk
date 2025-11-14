@@ -459,7 +459,7 @@ export const users: User[] = baseUsers.map((user, index) => ({
 
 // Helper function to get a user by ID
 export function getUserById(id: string): User | undefined {
-  return users.find(user => user.id === id);
+  return baseUsers.find(user => user.id === id) as User | undefined;
 }
 
 type SortColumn =
