@@ -329,12 +329,17 @@ export default function UserDetail() {
                             </td>
                             <td className="px-3 py-2 w-10">
                               <div className="h-10 flex items-center justify-center">
-                                <button
-                                  className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
-                                  title="More actions"
-                                >
-                                  <MoreVertical className="h-5 w-5 text-bluegrey-700" />
-                                </button>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
+                                      <MoreVertical className="h-5 w-5 text-bluegrey-700" />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem>Edit validity period</DropdownMenuItem>
+                                    <DropdownMenuItem className="text-red-600">Remove access role</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
                               </div>
                             </td>
                           </tr>
