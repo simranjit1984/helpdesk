@@ -354,7 +354,7 @@ export default function UserDetail() {
                       {user.accessRoles && user.accessRoles.length > 0 ? (
                         user.accessRoles.map((role) => (
                           <React.Fragment key={role.id}>
-                            <tr className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors">
+                            <tr className={`hover:bg-bluegrey-25/50 transition-colors ${expandedRoles.has(role.id) ? '' : 'border-b-2 border-bluegrey-100'}`}>
                               <td className="px-3 py-1 w-10">
                                 <button
                                   type="button"
