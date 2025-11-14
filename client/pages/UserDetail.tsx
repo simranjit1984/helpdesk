@@ -296,13 +296,10 @@ export default function UserDetail() {
                     <thead>
                       <tr className="border-b-2 border-bluegrey-100">
                         <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                          <span className="text-sm font-bold text-bluegrey-900">Display name</span>
+                          <span className="text-sm font-bold text-bluegrey-900">Access role</span>
                         </th>
                         <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                          <span className="text-sm font-bold text-bluegrey-900">Description</span>
-                        </th>
-                        <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                          <span className="text-sm font-bold text-bluegrey-900">Value</span>
+                          <span className="text-sm font-bold text-bluegrey-900">Validity period</span>
                         </th>
                         <th className="bg-bluegrey-25 w-10"></th>
                       </tr>
