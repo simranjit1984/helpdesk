@@ -118,7 +118,10 @@ export default function UserDetailHeader({
         {!isCollapsed && (
           <div className="text-base text-bluegrey-900 max-w-4xl">
             <span className="font-bold">{organization}</span>
-            <span>  |  {phone}  {email}</span>
+            <span>  |  {phone}</span>
+            <div style={{ marginLeft: "15px" }}>
+              {email}
+            </div>
           </div>
         )}
       </div>
