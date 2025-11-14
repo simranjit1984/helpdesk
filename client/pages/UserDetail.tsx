@@ -301,13 +301,47 @@ export default function UserDetail() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b-2 border-bluegrey-100">
-                        <td colSpan={4} className="px-8 py-16">
-                          <p className="text-sm text-bluegrey-600 text-center">
-                            Ready to assign access roles
-                          </p>
-                        </td>
-                      </tr>
+                      {user.accessRoles && user.accessRoles.length > 0 ? (
+                        user.accessRoles.map((role) => (
+                          <tr key={role.id} className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors">
+                            <td className="px-3 py-2">
+                              <div className="h-10 flex items-center">
+                                <span className="text-sm text-bluegrey-900">{role.name}</span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-2">
+                              <div className="h-10 flex items-center">
+                                <span className="text-sm text-bluegrey-900">{role.applications} application{role.applications !== 1 ? 's' : ''}</span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-2">
+                              <div className="h-10 flex items-center">
+                                <span className="text-sm text-bluegrey-900">
+                                  {role.startDate} {role.endDate ? `- ${role.endDate}` : '- No end date'}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-2 w-10">
+                              <div className="h-10 flex items-center justify-center">
+                                <button
+                                  className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                                  title="More actions"
+                                >
+                                  <MoreVertical className="h-5 w-5 text-bluegrey-700" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr className="border-b-2 border-bluegrey-100">
+                          <td colSpan={4} className="px-8 py-16">
+                            <p className="text-sm text-bluegrey-600 text-center">
+                              Ready to assign access roles
+                            </p>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
