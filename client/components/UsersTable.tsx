@@ -30,7 +30,8 @@ interface User {
   status: StatusType;
 }
 
-export const users: User[] = [
+// Assign IDs based on array index if not already present
+const baseUsers: Partial<User>[] = [
   {
     id: "1",
     username: "alison.adams@example.com",
