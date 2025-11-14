@@ -411,41 +411,28 @@ export default function UserDetail() {
                             </tr>
                             {expandedRoles.has(role.id) && (
                               <tr className="bg-bluegrey-25/30 border-b-2 border-bluegrey-100">
-                                <td colSpan={4} className="px-3 py-0 pl-0">
-                                  <div className="ml-10 bg-white rounded border border-bluegrey-100">
-                                    <table className="w-full border-collapse">
-                                      <thead>
-                                        <tr className="border-b border-bluegrey-100">
-                                          <th className="text-left px-4 py-3 bg-bluegrey-25">
-                                            <span className="text-sm font-semibold text-bluegrey-900">Application</span>
-                                          </th>
-                                          <th className="text-left px-4 py-3 bg-bluegrey-25">
-                                            <span className="text-sm font-semibold text-bluegrey-900">Permissions</span>
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        {(applicationsList[role.id] || []).map((app, appIndex) => (
-                                          <tr key={appIndex} className="border-b border-bluegrey-100 last:border-b-0 hover:bg-bluegrey-25/50 transition-colors">
-                                            <td className="px-4 py-3">
-                                              <span className="text-sm text-bluegrey-900">{app.name}</span>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                              <div className="flex flex-wrap gap-2">
-                                                {app.permissions.map((permission, permIndex) => (
-                                                  <span
-                                                    key={permIndex}
-                                                    className="inline-block bg-bluegrey-100 text-bluegrey-900 px-2 py-1 rounded text-xs"
-                                                  >
-                                                    {permission}
-                                                  </span>
-                                                ))}
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
+                                <td colSpan={4} className="px-3 py-4 pl-0">
+                                  <div className="ml-10 space-y-3">
+                                    {(applicationsList[role.id] || []).map((app, appIndex) => (
+                                      <div
+                                        key={appIndex}
+                                        className="bg-white rounded border border-bluegrey-100 p-4 hover:shadow-sm transition-shadow"
+                                      >
+                                        <div className="mb-3">
+                                          <h4 className="text-sm font-semibold text-bluegrey-900">{app.name}</h4>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                          {app.permissions.map((permission, permIndex) => (
+                                            <span
+                                              key={permIndex}
+                                              className="inline-block bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded text-xs font-medium"
+                                            >
+                                              {permission}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
                                 </td>
                               </tr>
