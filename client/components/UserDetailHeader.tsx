@@ -59,7 +59,7 @@ export default function UserDetailHeader({
         isCollapsed ? "py-3 lg:py-4" : "py-6 lg:py-8"
       }`}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
         {/* Back button - visible above title when expanded */}
         {!isCollapsed && (
           <button
