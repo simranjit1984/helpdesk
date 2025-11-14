@@ -186,7 +186,7 @@ export default function UserDetail() {
                         </Label>
                         <Input
                           id="startDate"
-                          type="text"
+                          type="date"
                           defaultValue={user.startDate}
                           className="rounded-[2px] border-bluegrey-500"
                         />
