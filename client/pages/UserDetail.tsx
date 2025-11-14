@@ -387,7 +387,7 @@ export default function UserDetail() {
       </div>
 
       <Dialog open={isValidityModalOpen} onOpenChange={setIsValidityModalOpen}>
-        <DialogContent className="w-full max-w-[480px] gap-6 rounded-[2px] bg-white p-0 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+        <DialogContent className="max-w-[480px] gap-6 border-0 bg-white p-0 rounded-sm shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
           <DialogHeader className="flex flex-row items-start justify-between gap-2 p-4 px-6 pb-0">
             <DialogTitle className="text-xl font-medium text-bluegrey-900 leading-8">
               Edit validity period
