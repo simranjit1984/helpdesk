@@ -110,4 +110,15 @@
     overflow-x: auto;
     white-space: pre;
   }
+
+  /* Position date picker icon to the right */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 8px;
+    cursor: pointer;
+  }
+
+  input[type="date"] {
+    position: relative;
+  }
 }
