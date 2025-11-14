@@ -39,6 +39,39 @@ export default function UserDetail() {
   const [modalStartDate, setModalStartDate] = useState("2025/04/18");
   const [modalEndDateOption, setModalEndDateOption] = useState<"no-end" | "custom">("custom");
   const [modalEndDate, setModalEndDate] = useState("2025/04/18");
+  const [expandedRoles, setExpandedRoles] = useState<Set<string>>(new Set());
+
+  const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
+    "1": [
+      { name: "Claims Management System", permissions: ["View claims", "Create claims", "Approve claims"] },
+      { name: "Policy Database", permissions: ["View policies", "Export data"] },
+      { name: "Customer Portal", permissions: ["View customer info", "Update contact"] },
+      { name: "Analytics Dashboard", permissions: ["View reports", "Access metrics"] },
+      { name: "Audit Logger", permissions: ["View logs", "Export audit trail"] },
+    ],
+    "2": [
+      { name: "Customer Helpdesk", permissions: ["View tickets", "Resolve tickets", "Escalate issues"] },
+      { name: "Appointment Scheduler", permissions: ["View appointments", "Book appointments"] },
+      { name: "CRM System", permissions: ["View customers", "Update customer info"] },
+    ],
+    "3": [
+      { name: "Document Management", permissions: ["View documents", "Upload documents", "Archive docs"] },
+      { name: "Policy Database", permissions: ["View policies"] },
+      { name: "Email Service", permissions: ["Send emails", "Track opens"] },
+      { name: "Template Builder", permissions: ["View templates", "Create templates"] },
+      { name: "Compliance Checker", permissions: ["Run compliance checks"] },
+    ],
+  };
+
+  const toggleRoleExpanded = (roleId: string) => {
+    const newExpanded = new Set(expandedRoles);
+    if (newExpanded.has(roleId)) {
+      newExpanded.delete(roleId);
+    } else {
+      newExpanded.add(roleId);
+    }
+    setExpandedRoles(newExpanded);
+  };
 
   // Fetch user data based on ID
   const foundUser = id ? getUserById(id) : null;
