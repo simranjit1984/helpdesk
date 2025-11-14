@@ -310,12 +310,9 @@ export default function UserDetail() {
                           <tr key={role.id} className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors">
                             <td className="px-3 py-2">
                               <div className="h-10 flex items-center">
-                                <span className="text-sm text-bluegrey-900">{role.name}</span>
-                              </div>
-                            </td>
-                            <td className="px-3 py-2">
-                              <div className="h-10 flex items-center">
-                                <span className="text-sm text-bluegrey-900">{role.applications} application{role.applications !== 1 ? 's' : ''}</span>
+                                <span className="text-sm text-bluegrey-900">
+                                  {role.name} ({role.applications} application{role.applications !== 1 ? 's' : ''})
+                                </span>
                               </div>
                             </td>
                             <td className="px-3 py-2">
@@ -344,7 +341,7 @@ export default function UserDetail() {
                         ))
                       ) : (
                         <tr className="border-b-2 border-bluegrey-100">
-                          <td colSpan={4} className="px-8 py-16">
+                          <td colSpan={3} className="px-8 py-16">
                             <p className="text-sm text-bluegrey-600 text-center">
                               Ready to assign access roles
                             </p>
