@@ -249,9 +249,9 @@ export default function UserDetail() {
           </TabsContent>
 
           <TabsContent value="access" className="pt-6">
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-6">
               {/* Toolbar */}
-              <div className="flex items-center justify-between gap-3 bg-white py-3">
+              <div className="flex items-center justify-between gap-3">
                 <div className="w-full max-w-md">
                   <div className="relative">
                     <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white">
@@ -270,32 +270,33 @@ export default function UserDetail() {
               </div>
 
               {/* Table */}
-              <div className="rounded border border-bluegrey-100 bg-white">
-                {/* Table Header */}
-                <div className="flex items-stretch border-b-2 border-bluegrey-100">
-                  <div className="w-[274px] flex items-center bg-black/5 border-b-2 border-bluegrey-100">
-                    <div className="px-3 py-[10px]">
-                      <span className="text-sm font-bold text-bluegrey-900">Display name</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 flex items-center bg-black/5 border-b-2 border-bluegrey-100">
-                    <div className="px-3 py-[10px]">
-                      <span className="text-sm font-bold text-bluegrey-900">Description</span>
-                    </div>
-                  </div>
-                  <div className="w-[274px] flex items-center bg-black/5 border-b-2 border-bluegrey-100">
-                    <div className="px-3 py-[10px]">
-                      <span className="text-sm font-bold text-bluegrey-900">Value</span>
-                    </div>
-                  </div>
-                  <div className="w-10 bg-black/5 border-b-2 border-bluegrey-100"></div>
-                </div>
-
-                {/* Empty State */}
-                <div className="flex items-center justify-center py-8 px-8">
-                  <p className="text-sm text-bluegrey-600 text-center">
-                    Ready to assign access roles
-                  </p>
+              <div className="bg-white rounded border-2 border-bluegrey-100">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b-2 border-bluegrey-100">
+                        <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+                          <span className="text-sm font-bold text-bluegrey-900">Display name</span>
+                        </th>
+                        <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+                          <span className="text-sm font-bold text-bluegrey-900">Description</span>
+                        </th>
+                        <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+                          <span className="text-sm font-bold text-bluegrey-900">Value</span>
+                        </th>
+                        <th className="bg-bluegrey-25 w-10"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b-2 border-bluegrey-100">
+                        <td colSpan={4} className="px-8 py-16">
+                          <p className="text-sm text-bluegrey-600 text-center">
+                            Ready to assign access roles
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
