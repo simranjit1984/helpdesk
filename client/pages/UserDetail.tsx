@@ -203,15 +203,15 @@ export default function UserDetail() {
 
                 <div className="flex flex-col gap-4 pt-6">
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-4">
                       <h3 className="text-xl font-bold text-blue-500">Validity period</h3>
                       <button
                         type="button"
                         onClick={() => setIsValidityModalOpen(true)}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-sm hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                        className="flex items-center justify-center gap-2 px-3 py-2 rounded-sm bg-white border border-bluegrey-300 hover:bg-bluegrey-50 transition-colors"
                         aria-label="Edit validity period"
                       >
-                        <Pencil className="h-5 w-5 text-bluegrey-700" />
+                        <Pencil className="h-4 w-4 text-bluegrey-700" />
                       </button>
                     </div>
                     <p className="text-xs text-bluegrey-700">
