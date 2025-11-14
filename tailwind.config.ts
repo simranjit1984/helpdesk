@@ -59,6 +59,7 @@ export default {
         },
         bluegrey: {
           25: "#F7F7F9",
+          50: "#EEEFF3",
           100: "#DEDEE6",
           500: "#5D607E",
           700: "#383A4B",
