@@ -41,6 +41,7 @@ const users: User[] = [
     status: "active",
   },
   {
+    id: "2",
     username: "benjamin.brown@example.com",
     firstName: "Benjamin",
     lastName: "Brown",
@@ -49,6 +50,7 @@ const users: User[] = [
     status: "invited",
   },
   {
+    id: "3",
     username: "carla.clarke@example.com",
     firstName: "Carla",
     lastName: "Clarke",
@@ -57,6 +59,7 @@ const users: User[] = [
     status: "invitation-withdrawn",
   },
   {
+    id: "4",
     username: "daniel.davies@example.com",
     firstName: "Daniel",
     lastName: "Davies",
@@ -65,6 +68,7 @@ const users: User[] = [
     status: "invitation-expired",
   },
   {
+    id: "5",
     username: "emma.evans@example.com",
     firstName: "Emma",
     lastName: "Evans",
@@ -73,6 +77,7 @@ const users: User[] = [
     status: "active",
   },
   {
+    id: "6",
     username: "felix.fischer@example.com",
     firstName: "Felix",
     lastName: "Fischer",
@@ -81,6 +86,7 @@ const users: User[] = [
     status: "active",
   },
   {
+    id: "7",
     username: "george.garcia@example.com",
     firstName: "George",
     lastName: "Garcia",
@@ -89,6 +95,7 @@ const users: User[] = [
     status: "active",
   },
   {
+    id: "8",
     username: "hannah.hughes@example.com",
     firstName: "Hannah",
     lastName: "Hughes",
@@ -97,6 +104,7 @@ const users: User[] = [
     status: "blocked",
   },
   {
+    id: "9",
     username: "isabel.ivanova@example.com",
     firstName: "Isabel",
     lastName: "Ivanova",
