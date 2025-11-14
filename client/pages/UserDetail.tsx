@@ -178,7 +178,7 @@ export default function UserDetail() {
                   </div>
 
                   <div className="rounded bg-bluegrey-50 p-6">
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-4">
                       <div className="flex flex-col gap-1">
                         <Label htmlFor="startDate" className="flex gap-1">
                           Start date
