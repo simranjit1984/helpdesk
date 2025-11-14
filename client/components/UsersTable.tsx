@@ -419,6 +419,17 @@ export const baseUsers: Partial<User>[] = [
   },
 ];
 
+// Assign IDs based on array index
+export const users: User[] = baseUsers.map((user, index) => ({
+  ...user,
+  id: user.id || (index + 1).toString(),
+} as User));
+
+// Helper function to get a user by ID
+export function getUserById(id: string): User | undefined {
+  return users.find(user => user.id === id);
+}
+
 type SortColumn =
   | "username"
   | "firstName"
