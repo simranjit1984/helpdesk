@@ -113,6 +113,7 @@ const users: User[] = [
     status: "grace",
   },
   {
+    id: "10",
     username: "jack.jensen@example.com",
     firstName: "Jack",
     lastName: "Jensen",
