@@ -116,12 +116,13 @@ export default function UserDetailHeader({
 
         {/* Description - hidden when collapsed */}
         {!isCollapsed && (
-          <div className="text-base text-bluegrey-900 max-w-4xl">
+          <div className="text-base text-bluegrey-900 max-w-4xl h-auto flex-grow-0">
             <span className="font-bold">{organization}</span>
-            <span>  |  {phone}</span>
-            <div style={{ marginLeft: "15px" }}>
-              {email}
-            </div>
+            <span>  |  {phone}
+              <div style={{ marginLeft: "20px" }}>
+                {email}
+              </div>
+            </span>
           </div>
         )}
       </div>
