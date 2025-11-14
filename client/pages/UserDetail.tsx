@@ -338,10 +338,18 @@ export default function UserDetail() {
                               </div>
                             </td>
                             <td className="px-3 py-2">
-                              <div className="h-10 flex items-center">
+                              <div className="h-10 flex items-center justify-between gap-2">
                                 <span className="text-sm text-bluegrey-900">
                                   {role.startDate} {role.endDate ? `- ${role.endDate}` : '- No end date'}
                                 </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setIsValidityModalOpen(true)}
+                                  className="flex items-center justify-center p-1 rounded hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                  aria-label="Edit validity period"
+                                >
+                                  <Pencil className="h-4 w-4 text-bluegrey-700" />
+                                </button>
                               </div>
                             </td>
                             <td className="px-3 py-2 w-10">
