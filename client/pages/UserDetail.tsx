@@ -270,7 +270,7 @@ export default function UserDetail() {
               </div>
 
               {/* Table */}
-              <div className="bg-white rounded border-2 border-bluegrey-100">
+              <div className="bg-white rounded border-2 border-bluegrey-100 lg:border-0">
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse">
                     <thead>
