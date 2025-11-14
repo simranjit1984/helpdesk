@@ -259,6 +259,7 @@ export const baseUsers: Partial<User>[] = [
     status: "active",
   },
   {
+    id: "0",
     username: "alice.anderson@example.com",
     firstName: "Alice",
     lastName: "Anderson",
