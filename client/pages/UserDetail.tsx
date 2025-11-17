@@ -150,53 +150,16 @@ export default function UserDetail() {
     return filtered;
   };
 
-  const applyEventFilter = () => {
-    if (pendingFilter.value.trim()) {
-      const newFilter = {
-        id: Math.random().toString(36).substr(2, 9),
-        column: pendingFilter.column,
-        operator: pendingFilter.operator,
-        value: pendingFilter.value,
-      };
-      setEventFilters([...eventFilters, newFilter]);
-      setPendingFilter({
-        column: "date",
-        operator: "contains",
-        value: "",
-      });
-      setIsFilterPopoverOpen(false);
-    }
+  const addEventFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
+    setEventFilters([...eventFilters, filter]);
   };
 
   const removeEventFilter = (id: string) => {
     setEventFilters(eventFilters.filter((f) => f.id !== id));
   };
 
-  const clearAllFilters = () => {
+  const clearAllEventFilters = () => {
     setEventFilters([]);
-  };
-
-  const getColumnLabel = (column: string) => {
-    const labels: Record<string, string> = {
-      date: "Date",
-      eventType: "Event type",
-      application: "Application",
-      userId: "User ID",
-      clientIp: "Client IP",
-      identityApp: "Identity app",
-      description: "Description",
-    };
-    return labels[column] || column;
-  };
-
-  const getOperatorLabel = (operator: string) => {
-    const labels: Record<string, string> = {
-      contains: "contains",
-      equals: "is",
-      startsWith: "starts with",
-      endsWith: "ends with",
-    };
-    return labels[operator] || operator;
   };
 
   const eventLogs = [
