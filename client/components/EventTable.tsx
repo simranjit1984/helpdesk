@@ -399,9 +399,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                         )}
                       </button>
                     </TableExpandCell>
-                    <TableCell sticky className="w-48">
-                      <div className="flex items-center gap-2 group">
-                        <span className="text-sm text-bluegrey-900">{event.date}</span>
+                    <TableCell sticky className="w-48 group">
+                      <div className="flex items-center gap-2 w-full">
+                        <span className="text-sm text-bluegrey-900 flex-1">{event.date}</span>
                         <button
                           type="button"
                           onClick={() =>
@@ -412,11 +412,11 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.date,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                           title="Filter by Date"
                           aria-label={`Filter by date ${event.date}`}
                         >
-                          <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
+                          <Filter className="w-5 h-5 text-blue-500" />
                         </button>
                       </div>
                     </TableCell>
