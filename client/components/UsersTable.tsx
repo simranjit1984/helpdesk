@@ -493,7 +493,7 @@ function UserActionsMenu({ user }: { user: User }) {
   const handleAction = (action: string) => {
     // Navigate to user detail page
     if (action === "View details") {
-      navigate(`/users/${user.id}`);
+      navigate(`/users/${encodeURIComponent(user.username)}`);
       return;
     }
 
