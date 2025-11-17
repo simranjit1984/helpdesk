@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Search } from "lucide-react";
 
 interface SearchBarProps {
@@ -8,11 +9,25 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({
-  value,
+  value: externalValue,
   onChange,
   placeholder = "Search",
   width = "w-full sm:w-[280px]",
 }: SearchBarProps) {
+  const [internalValue, setInternalValue] = useState("");
+
+  // Determine if this is a controlled or uncontrolled component
+  const isControlled = externalValue !== undefined && onChange !== undefined;
+  const currentValue = isControlled ? externalValue : internalValue;
+
+  const handleChange = (newValue: string) => {
+    if (isControlled) {
+      onChange?.(newValue);
+    } else {
+      setInternalValue(newValue);
+    }
+  };
+
   return (
     <div className={width}>
       <div className="relative">
@@ -21,8 +36,8 @@ export default function SearchBar({
           <input
             type="text"
             placeholder={placeholder}
-            value={value || ""}
-            onChange={(e) => onChange?.(e.target.value)}
+            value={currentValue}
+            onChange={(e) => handleChange(e.target.value)}
             className="flex-1 text-sm text-bluegrey-500 placeholder:text-bluegrey-500 outline-none bg-transparent"
           />
         </div>
