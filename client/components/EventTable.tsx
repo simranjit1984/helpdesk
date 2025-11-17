@@ -190,9 +190,16 @@ export default function EventTable({ filters, searchQuery = "" }: EventTableProp
         switch (filter.operator) {
           case "between": {
             const [startStr, endStr] = filter.value.split("|");
-            const startDate = new Date(startStr.replace(" ", "T")).getTime();
-            const endDate = new Date(endStr.replace(" ", "T")).getTime();
-            const fieldDate = new Date(fieldValue.replace(" ", "T")).getTime();
+            const normalizeDate = (dateStr: string) => {
+              const str = dateStr.trim();
+              if (str.includes("T")) {
+                return new Date(str).getTime();
+              }
+              return new Date(str.replace(" ", "T")).getTime();
+            };
+            const startDate = normalizeDate(startStr);
+            const endDate = normalizeDate(endStr);
+            const fieldDate = normalizeDate(fieldValue);
             return fieldDate >= startDate && fieldDate <= endDate;
           }
           case "contains":
