@@ -120,6 +120,16 @@ export default function FilterBar({
     return operators.find((op) => op.value === operatorValue)?.label || operatorValue;
   };
 
+  const formatFilterDisplay = (filter: Filter) => {
+    if (filter.operator === "between") {
+      const [start, end] = filter.value.split("|");
+      const startDate = new Date(start).toLocaleDateString();
+      const endDate = new Date(end).toLocaleDateString();
+      return `${getColumnLabel(filter.column)} between ${startDate} and ${endDate}`;
+    }
+    return `${getColumnLabel(filter.column)} ${getOperatorLabel(filter.operator)} ${filter.value}`;
+  };
+
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {onSearchChange && (
