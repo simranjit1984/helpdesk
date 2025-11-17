@@ -28,8 +28,43 @@ export default function UserDetailHeader({
   status,
 }: UserDetailHeaderProps) {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const scrollStateRef = useRef({ lastY: 0, isCollapsed: false });
+
+  const getMenuItems = () => {
+    switch (status) {
+      case "active":
+        return [
+          { label: "Assign administrator role", action: "Assign administrator role" },
+          { label: "Block authorization", action: "Block authorization" },
+          { label: "Block authentication", action: "Block authentication" },
+          { label: "Remove user from organization", action: "Remove user from organization" },
+          { label: "Delete user", action: "Delete user" },
+        ];
+      case "blocked":
+        return [
+          { label: "Assign administrator role", action: "Assign administrator role" },
+          { label: "Block authorization", action: "Block authorization" },
+          { label: "Unblock authentication", action: "Unblock authentication" },
+          { label: "Remove user from organization", action: "Remove user from organization" },
+          { label: "Delete user", action: "Delete user" },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const handleAction = (action: string) => {
+    toast({
+      title: action,
+      description: `Action performed for ${firstName} ${lastName}`,
+    });
+    setIsOpen(false);
+  };
+
+  const menuItems = getMenuItems();
 
   useEffect(() => {
     const handleScroll = () => {
