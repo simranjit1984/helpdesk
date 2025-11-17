@@ -138,17 +138,24 @@ export default function UserDetail() {
         const fieldValue = (event[filter.column as keyof typeof event] || "")
           .toString()
           .toLowerCase();
-        const filterValue = filter.value.toLowerCase();
 
         switch (filter.operator) {
+          case "between": {
+            // Handle date range filter
+            const [startStr, endStr] = filter.value.split("|");
+            const startDate = new Date(startStr).getTime();
+            const endDate = new Date(endStr).getTime();
+            const fieldDate = new Date(fieldValue).getTime();
+            return fieldDate >= startDate && fieldDate <= endDate;
+          }
           case "contains":
-            return fieldValue.includes(filterValue);
+            return fieldValue.includes(filter.value.toLowerCase());
           case "equals":
-            return fieldValue === filterValue;
+            return fieldValue === filter.value.toLowerCase();
           case "startsWith":
-            return fieldValue.startsWith(filterValue);
+            return fieldValue.startsWith(filter.value.toLowerCase());
           case "endsWith":
-            return fieldValue.endsWith(filterValue);
+            return fieldValue.endsWith(filter.value.toLowerCase());
           default:
             return true;
         }
