@@ -501,10 +501,11 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.requestId,
                                     })
                                   }
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                                   title="Filter by Request ID"
+                                  aria-label={`Filter by Request ID ${event.requestId}`}
                                 >
-                                  <Filter className="w-4 h-4 text-blue-500" />
+                                  <Filter className="w-5 h-5 text-blue-500" />
                                 </button>
                               </span>
                             </div>
@@ -522,10 +523,11 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.agent,
                                     })
                                   }
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                                   title="Filter by Agent"
+                                  aria-label={`Filter by Agent ${event.agent}`}
                                 >
-                                  <Filter className="w-4 h-4 text-blue-500" />
+                                  <Filter className="w-5 h-5 text-blue-500" />
                                 </button>
                               </span>
                             </div>
