@@ -430,19 +430,53 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
-                              <span className="text-sm text-bluegrey-900 leading-relaxed">{event.userAgent}</span>
+                              <FilterValue value={event.userAgent} column="userAgent" onFilterAdd={onFilterAdd} />
                             </div>
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
-                              <span className="text-sm text-bluegrey-900 font-mono break-all">{event.requestId}</span>
+                              <span className="text-sm text-bluegrey-900 font-mono break-all flex items-center gap-2 group">
+                                {event.requestId}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onFilterAdd?.({
+                                      id: generateUUID(),
+                                      column: "requestId",
+                                      operator: "equals",
+                                      value: event.requestId,
+                                    })
+                                  }
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                                  title="Filter by Request ID"
+                                >
+                                  <Filter className="w-4 h-4 text-blue-500" />
+                                </button>
+                              </span>
                             </div>
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
-                              <span className="text-sm text-bluegrey-900 font-mono break-all">{event.agent}</span>
+                              <span className="text-sm text-bluegrey-900 font-mono break-all flex items-center gap-2 group">
+                                {event.agent}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onFilterAdd?.({
+                                      id: generateUUID(),
+                                      column: "agent",
+                                      operator: "equals",
+                                      value: event.agent,
+                                    })
+                                  }
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                                  title="Filter by Agent"
+                                >
+                                  <Filter className="w-4 h-4 text-blue-500" />
+                                </button>
+                              </span>
                             </div>
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">Identity App</span>
-                              <span className="text-sm text-bluegrey-900">{event.identityApp}</span>
+                              <FilterValue value={event.identityApp} column="identityApp" onFilterAdd={onFilterAdd} />
                             </div>
                             <div className="flex flex-col gap-1.5 lg:col-span-2">
                               <span className="text-xs font-semibold text-bluegrey-700">Description</span>
