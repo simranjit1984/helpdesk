@@ -223,17 +223,16 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
 
-    if (filterByUsername) {
-      filtered = filtered.filter((event) => event.username === filterByUsername);
-    }
-
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (event) =>
-          event.username.toLowerCase().includes(query) ||
-          event.description.toLowerCase().includes(query) ||
-          event.action.includes(query)
+          event.date.toLowerCase().includes(query) ||
+          event.eventType.toLowerCase().includes(query) ||
+          event.application.toLowerCase().includes(query) ||
+          event.userId.toLowerCase().includes(query) ||
+          event.clientIp.toLowerCase().includes(query) ||
+          event.description.toLowerCase().includes(query)
       );
     }
 
