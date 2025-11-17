@@ -501,9 +501,10 @@ function UserActionsMenu({ user }: { user: User }) {
     switch (user.status) {
       case "active":
         return [
-          { label: "View details", action: "View details" },
-          { label: "Reset password", action: "Reset password" },
+          { label: "Assign administrator role", action: "Assign administrator role" },
+          { label: "Block authorization", action: "Block authorization" },
           { label: "Block authentication", action: "Block authentication" },
+          { label: "Remove user from organization", action: "Remove user from organization" },
           { label: "Delete user", action: "Delete user" },
         ];
       case "invited":
@@ -521,9 +522,10 @@ function UserActionsMenu({ user }: { user: User }) {
         ];
       case "blocked":
         return [
-          { label: "View details", action: "View details" },
-          { label: "Reset password", action: "Reset password" },
+          { label: "Assign administrator role", action: "Assign administrator role" },
+          { label: "Block authorization", action: "Block authorization" },
           { label: "Unblock authentication", action: "Unblock authentication" },
+          { label: "Remove user from organization", action: "Remove user from organization" },
           { label: "Delete user", action: "Delete user" },
         ];
       case "invitation-expired":
