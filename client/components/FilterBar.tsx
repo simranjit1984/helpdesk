@@ -148,8 +148,14 @@ export default function FilterBar({
           className="inline-flex items-center gap-1.5 px-3 py-1 bg-bluegrey-100 rounded-full"
         >
           <span className="text-base text-bluegrey-900">
-            {getColumnLabel(filter.column)} {getOperatorLabel(filter.operator)}{" "}
-            <strong className="font-bold">{filter.value}</strong>
+            {filter.operator === "between" ? (
+              formatFilterDisplay(filter)
+            ) : (
+              <>
+                {getColumnLabel(filter.column)} {getOperatorLabel(filter.operator)}{" "}
+                <strong className="font-bold">{filter.value}</strong>
+              </>
+            )}
           </span>
           <button
             onClick={() => onFilterRemove(filter.id)}
