@@ -51,45 +51,40 @@ interface EventTableProps {
   filterByUsername?: string;
 }
 
-const EVENT_ACTIONS: Record<EventAction, string> = {
-  user_created: "User Created",
-  user_deleted: "User Deleted",
-  user_updated: "User Updated",
-  user_login: "User Login",
-  user_logout: "User Logout",
-  password_changed: "Password Changed",
-  role_assigned: "Role Assigned",
-  role_revoked: "Role Revoked",
-  permission_granted: "Permission Granted",
-  permission_revoked: "Permission Revoked",
-};
-
-const MOCK_USERNAMES = [
-  "alison.adams@example.com",
-  "benjamin.brown@example.com",
-  "carla.clarke@example.com",
-  "daniel.davies@example.com",
-  "emma.evans@example.com",
-  "felix.fischer@example.com",
-  "george.garcia@example.com",
-  "hannah.hughes@example.com",
-  "isabel.ivanova@example.com",
-  "jack.jensen@example.com",
-  "kate.kennedy@example.com",
-  "lucas.lopez@example.com",
+const MOCK_EVENT_TYPES = [
+  "User Login",
+  "User Logout",
+  "Password Changed",
+  "User Created",
+  "User Updated",
+  "User Deleted",
+  "Role Assigned",
+  "Role Revoked",
+  "Permission Granted",
+  "Permission Revoked",
+  "MFA Enabled",
+  "Account Locked",
+  "Session Expired",
+  "Access Granted",
+  "Access Revoked",
 ];
 
-const MOCK_ACTIONS: EventAction[] = [
-  "user_created",
-  "user_deleted",
-  "user_updated",
-  "user_login",
-  "user_logout",
-  "password_changed",
-  "role_assigned",
-  "role_revoked",
-  "permission_granted",
-  "permission_revoked",
+const MOCK_APPLICATIONS = [
+  "Facebook",
+  "Instagram",
+  "Salesforce",
+  "Helpdesk",
+  "Internal",
+  "Gmail",
+  "Slack",
+  "Jira",
+];
+
+const MOCK_IDENTITY_APPS = [
+  "Self-service",
+  "Core",
+  "Helpdesk",
+  "Delegated user management",
 ];
 
 const MOCK_IPS = [
@@ -102,11 +97,38 @@ const MOCK_IPS = [
 ];
 
 const MOCK_USER_AGENTS = [
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
-  "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 Version/16.0 Mobile/15E148 Safari/604.1",
+  "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 Version/16.0 Mobile/15E148 Safari/604.1",
 ];
+
+const generateUUID = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+const EVENT_DESCRIPTIONS: Record<string, string> = {
+  "User Login": "User successfully authenticated and logged in",
+  "User Logout": "User logged out from the system",
+  "Password Changed": "User password was changed",
+  "User Created": "New user account was created",
+  "User Updated": "User profile information was updated",
+  "User Deleted": "User account was deleted",
+  "Role Assigned": "Role was assigned to user",
+  "Role Revoked": "Role was revoked from user",
+  "Permission Granted": "Permission was granted to user",
+  "Permission Revoked": "Permission was revoked from user",
+  "MFA Enabled": "Multi-factor authentication was enabled",
+  "Account Locked": "User account was locked due to security policy",
+  "Session Expired": "User session expired",
+  "Access Granted": "User was granted access to application",
+  "Access Revoked": "User access was revoked from application",
+};
 
 const generateMockEvents = (): Event[] => {
   const events: Event[] = [];
