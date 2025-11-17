@@ -187,11 +187,19 @@ export default function FilterBar({
               <>
                 {getColumnLabel(filter.column)} between{" "}
                 <strong className="font-bold">
-                  {new Date(filter.value.split("|")[0]).toLocaleDateString()}
+                  {(() => {
+                    const startStr = filter.value.split("|")[0].trim();
+                    const dateStr = startStr.includes("T") ? startStr : startStr.replace(" ", "T");
+                    return new Date(dateStr).toLocaleDateString();
+                  })()}
                 </strong>{" "}
                 and{" "}
                 <strong className="font-bold">
-                  {new Date(filter.value.split("|")[1]).toLocaleDateString()}
+                  {(() => {
+                    const endStr = filter.value.split("|")[1].trim();
+                    const dateStr = endStr.includes("T") ? endStr : endStr.replace(" ", "T");
+                    return new Date(dateStr).toLocaleDateString();
+                  })()}
                 </strong>
               </>
             ) : (
