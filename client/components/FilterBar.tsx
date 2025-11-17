@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, PlusCircle } from "lucide-react";
 import SearchBar from "./SearchBar";
+import DateRangePicker from "./DateRangePicker";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
