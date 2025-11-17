@@ -195,7 +195,7 @@ const generateMockEvents = (): Event[] => {
 
 const baseEvents = generateMockEvents();
 
-export default function EventTable({ filters, searchQuery = "", filterByUsername }: EventTableProps) {
+export default function EventTable({ filters, searchQuery = "" }: EventTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
