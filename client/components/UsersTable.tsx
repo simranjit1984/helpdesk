@@ -748,9 +748,12 @@ export default function UsersTable({ searchQuery = "", filters = [] }: UsersTabl
             {getSortedUsers().map((user, index) => (
               <TableRow key={index}>
                 <TableCell sticky className="w-56">
-                  <span className="text-sm text-bluegrey-900 truncate">
+                  <button
+                    onClick={() => navigate(`/users/${encodeURIComponent(user.username)}`)}
+                    className="text-sm text-blue-500 hover:text-blue-600 truncate font-medium transition-colors text-left w-full"
+                  >
                     {user.username}
-                  </span>
+                  </button>
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-bluegrey-900 truncate">
