@@ -69,6 +69,7 @@ export default function UserDetail() {
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [eventSearchQuery, setEventSearchQuery] = useState("");
+  const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
 
   const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
     "1": [
