@@ -608,6 +608,7 @@ interface UsersTableProps {
 }
 
 export default function UsersTable({ searchQuery = "", filters = [] }: UsersTableProps) {
+  const navigate = useNavigate();
   const [sortColumn, setSortColumn] = useState<SortColumn>("username");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
