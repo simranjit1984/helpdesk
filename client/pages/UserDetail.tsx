@@ -517,8 +517,10 @@ export default function UserDetail() {
               <FilterBar
                 columns={[
                   { value: "timestamp", label: "Timestamp" },
+                  { value: "username", label: "Username" },
                   { value: "action", label: "Action" },
                   { value: "description", label: "Description" },
+                  { value: "ip_address", label: "IP Address" },
                 ]}
                 filters={eventFilters}
                 onFilterAdd={addEventFilter}
