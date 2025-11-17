@@ -36,40 +36,7 @@ export default function SuccessAlert({
   };
 
   return (
-    <style>
-      {`
-        @keyframes slideUpIn {
-          from {
-            opacity: 0;
-            transform: translateY(100px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes slideDownOut {
-          from {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          to {
-            opacity: 0;
-            transform: translateY(100px);
-          }
-        }
-        .alert-enter {
-          animation: slideUpIn 0.3s ease-out forwards;
-        }
-        .alert-exit {
-          animation: slideDownOut 0.3s ease-in forwards;
-        }
-      `}
-    </style>
-  );
-
-  return (
-    <div className={`fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-[600px] px-4 ${isClosing ? 'alert-exit' : 'alert-enter'}`}>
+    <div className={`fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-[600px] px-4 ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'}`}>
       <div className="flex items-start rounded-[2px] bg-green-50 relative">
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
         <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
