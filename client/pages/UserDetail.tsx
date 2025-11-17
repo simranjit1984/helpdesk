@@ -1065,19 +1065,7 @@ export default function UserDetail() {
                   onClick={addEventFilter}
                   className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer"
                 >
-                  <svg
-                    className="w-5 h-5 text-bluegrey-900"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
+                  <PlusCircle className="w-5 h-5 text-bluegrey-900" />
                   <span className="text-base text-bluegrey-900">Add filter</span>
                 </button>
               </div>
