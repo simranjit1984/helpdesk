@@ -30,6 +30,29 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import {
+  Table,
+  TableScroll,
+  TableContent,
+  TableHeader,
+  TableHeadRow,
+  TableHeadCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableActionCell,
+  TableExpandCell,
+  TableNestedRow,
+  TableNestedCell,
+  NestedTable,
+  NestedTableHeader,
+  NestedTableHeadRow,
+  NestedTableHeadCell,
+  NestedTableBody,
+  NestedTableRow,
+  NestedTableCell,
+  TableEmptyState,
+} from "@/components/ui/table";
 import { getUserById } from "@/components/UsersTable";
 
 export default function UserDetail() {
