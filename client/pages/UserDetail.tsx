@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Save, MoreVertical, Pencil, Calendar, ChevronDown, ChevronRight, PlusCircle, Search } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -7,6 +7,7 @@ import SuccessAlert from "@/components/SuccessAlert";
 import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import FilterTag from "@/components/FilterTag";
+import EventTable from "@/components/EventTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
