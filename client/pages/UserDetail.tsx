@@ -68,7 +68,6 @@ export default function UserDetail() {
   const [modalEndDateOption, setModalEndDateOption] = useState<"no-end" | "custom">("custom");
   const [modalEndDate, setModalEndDate] = useState("2025/04/18");
   const [expandedRoles, setExpandedRoles] = useState<Set<string>>(new Set());
-  const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [accessRoleSearchQuery, setAccessRoleSearchQuery] = useState("");
   const [eventSearchQuery, setEventSearchQuery] = useState("");
@@ -128,65 +127,6 @@ export default function UserDetail() {
     setExpandedRoles(newExpanded);
   };
 
-  const toggleEventExpanded = (eventId: string) => {
-    const newExpanded = new Set(expandedEvents);
-    if (newExpanded.has(eventId)) {
-      newExpanded.delete(eventId);
-    } else {
-      newExpanded.add(eventId);
-    }
-    setExpandedEvents(newExpanded);
-  };
-
-  const getFilteredEventLogs = () => {
-    let filtered = eventLogs;
-
-    // Apply search query
-    if (eventSearchQuery.trim()) {
-      const query = eventSearchQuery.toLowerCase();
-      filtered = filtered.filter((event) =>
-        event.date.toLowerCase().includes(query) ||
-        event.eventType.toLowerCase().includes(query) ||
-        event.application.toLowerCase().includes(query) ||
-        event.userId.toLowerCase().includes(query) ||
-        event.clientIp.toLowerCase().includes(query) ||
-        event.identityApp.toLowerCase().includes(query) ||
-        event.description.toLowerCase().includes(query)
-      );
-    }
-
-    // Apply filters
-    eventFilters.forEach((filter) => {
-      filtered = filtered.filter((event) => {
-        const fieldValue = (event[filter.column as keyof typeof event] || "")
-          .toString()
-          .toLowerCase();
-
-        switch (filter.operator) {
-          case "between": {
-            // Handle date range filter
-            const [startStr, endStr] = filter.value.split("|");
-            const startDate = new Date(startStr).getTime();
-            const endDate = new Date(endStr).getTime();
-            const fieldDate = new Date(fieldValue).getTime();
-            return fieldDate >= startDate && fieldDate <= endDate;
-          }
-          case "contains":
-            return fieldValue.includes(filter.value.toLowerCase());
-          case "equals":
-            return fieldValue === filter.value.toLowerCase();
-          case "startsWith":
-            return fieldValue.startsWith(filter.value.toLowerCase());
-          case "endsWith":
-            return fieldValue.endsWith(filter.value.toLowerCase());
-          default:
-            return true;
-        }
-      });
-    });
-
-    return filtered;
-  };
 
   const addEventFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
     setEventFilters([...eventFilters, filter]);
