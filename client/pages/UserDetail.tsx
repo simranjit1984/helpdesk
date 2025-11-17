@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Save, MoreVertical, Pencil, Calendar, ChevronDown, ChevronRight } from "lucide-react";
+import { Save, MoreVertical, Pencil, Calendar, ChevronDown, ChevronRight, PlusCircle } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
 import SuccessAlert from "@/components/SuccessAlert";
