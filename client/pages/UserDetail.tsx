@@ -74,6 +74,28 @@ export default function UserDetail() {
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
 
+  useEffect(() => {
+    const now = new Date();
+    const fourteenDaysAgo = new Date(now);
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
+    const formatDate = (date: Date) => {
+      return date.toISOString().slice(0, 16).replace("T", " ");
+    };
+
+    const startDate = formatDate(fourteenDaysAgo);
+    const endDate = formatDate(now);
+
+    setEventFilters([
+      {
+        id: "default-date-filter",
+        column: "timestamp",
+        operator: "between",
+        value: `${startDate}|${endDate}`,
+      },
+    ]);
+  }, []);
+
   const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
     "1": [
       { name: "Claims Management System", permissions: ["View claims", "Create claims", "Approve claims"] },
