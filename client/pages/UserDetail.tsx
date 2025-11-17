@@ -516,11 +516,11 @@ export default function UserDetail() {
             <div className="flex flex-col gap-4">
               <FilterBar
                 columns={[
-                  { value: "timestamp", label: "Timestamp" },
-                  { value: "username", label: "Username" },
-                  { value: "action", label: "Action" },
-                  { value: "description", label: "Description" },
-                  { value: "ip_address", label: "IP Address" },
+                  { value: "date", label: "Date" },
+                  { value: "eventType", label: "Event type" },
+                  { value: "application", label: "Application" },
+                  { value: "userId", label: "User ID" },
+                  { value: "clientIp", label: "Client IP" },
                 ]}
                 filters={eventFilters}
                 onFilterAdd={addEventFilter}
@@ -534,7 +534,6 @@ export default function UserDetail() {
               <EventTable
                 filters={eventFilters}
                 searchQuery={eventSearchQuery}
-                filterByUsername={user?.email}
               />
             </div>
           </TabsContent>
