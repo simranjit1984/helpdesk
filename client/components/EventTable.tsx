@@ -48,7 +48,6 @@ type SortColumn = "date" | "eventType" | "application";
 interface EventTableProps {
   filters: Array<{ id: string; column: string; operator: string; value: string }>;
   searchQuery?: string;
-  filterByUsername?: string;
 }
 
 const MOCK_EVENT_TYPES = [
