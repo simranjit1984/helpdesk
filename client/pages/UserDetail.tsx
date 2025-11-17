@@ -1083,7 +1083,14 @@ export default function UserDetail() {
                           </React.Fragment>
                         ))
                       ) : (
-                        <TableEmptyState colSpan={6} message="No event logs available" />
+                        <TableEmptyState
+                          colSpan={6}
+                          message={
+                            eventSearchQuery.trim()
+                              ? "No events found matching your search"
+                              : "No event logs available"
+                          }
+                        />
                       )}
                     </TableBody>
                   </TableContent>
