@@ -177,7 +177,16 @@ export default function FilterBar({
         >
           <span className="text-base text-bluegrey-900">
             {filter.operator === "between" ? (
-              formatFilterDisplay(filter)
+              <>
+                {getColumnLabel(filter.column)} between{" "}
+                <strong className="font-bold">
+                  {new Date(filter.value.split("|")[0]).toLocaleDateString()}
+                </strong>{" "}
+                and{" "}
+                <strong className="font-bold">
+                  {new Date(filter.value.split("|")[1]).toLocaleDateString()}
+                </strong>
+              </>
             ) : (
               <>
                 {getColumnLabel(filter.column)} {getOperatorLabel(filter.operator)}{" "}
