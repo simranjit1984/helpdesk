@@ -475,6 +475,11 @@ export function getUserById(id: string): User | undefined {
   return baseUsers.find(user => user.id === id) as User | undefined;
 }
 
+// Helper function to get a user by username (email)
+export function getUserByUsername(username: string): User | undefined {
+  return baseUsers.find(user => user.username === username) as User | undefined;
+}
+
 type SortColumn =
   | "username"
   | "firstName"
