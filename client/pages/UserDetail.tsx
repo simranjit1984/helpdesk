@@ -668,8 +668,9 @@ export default function UserDetail() {
     }
   ];
 
-  // Fetch user data based on ID
-  const foundUser = id ? getUserById(id) : null;
+  // Fetch user data based on username (email)
+  const decodedId = id ? decodeURIComponent(id) : null;
+  const foundUser = decodedId ? getUserByUsername(decodedId) : null;
 
   const user = foundUser ? {
     firstName: foundUser.firstName,
