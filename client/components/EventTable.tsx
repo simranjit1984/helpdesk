@@ -384,32 +384,34 @@ export default function EventTable({ filters, searchQuery = "" }: EventTableProp
                     <TableNestedRow colSpan={6}>
                       <TableExpandCell></TableExpandCell>
                       <TableNestedCell colSpan={5}>
-                        <div className="py-4 px-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="flex flex-col gap-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">User Agent</span>
-                            <span className="text-sm text-bluegrey-900">{event.userAgent}</span>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Request ID</span>
-                            <span className="text-sm text-bluegrey-900 font-mono">{event.requestId}</span>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Agent</span>
-                            <span className="text-sm text-bluegrey-900 font-mono">{event.agent}</span>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Identity App</span>
-                            <span className="text-sm text-bluegrey-900">{event.identityApp}</span>
-                          </div>
-                          <div className="flex flex-col gap-2 lg:col-span-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Description</span>
-                            <span className="text-sm text-bluegrey-900">{event.description}</span>
-                          </div>
-                          <div className="flex flex-col gap-2 lg:col-span-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Details</span>
-                            <pre className="text-xs text-bluegrey-900 bg-bluegrey-50 p-3 rounded border border-bluegrey-100 overflow-x-auto">
+                        <div className="py-6 px-4 bg-bluegrey-50/50">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
+                              <span className="text-sm text-bluegrey-900 leading-relaxed">{event.userAgent}</span>
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
+                              <span className="text-sm text-bluegrey-900 font-mono break-all">{event.requestId}</span>
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
+                              <span className="text-sm text-bluegrey-900 font-mono break-all">{event.agent}</span>
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-xs font-semibold text-bluegrey-700">Identity App</span>
+                              <span className="text-sm text-bluegrey-900">{event.identityApp}</span>
+                            </div>
+                            <div className="flex flex-col gap-1.5 lg:col-span-2">
+                              <span className="text-xs font-semibold text-bluegrey-700">Description</span>
+                              <span className="text-sm text-bluegrey-900 leading-relaxed">{event.description}</span>
+                            </div>
+                            <div className="flex flex-col gap-1.5 lg:col-span-2">
+                              <span className="text-xs font-semibold text-bluegrey-700">Details</span>
+                              <pre className="text-xs text-bluegrey-900 bg-white p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
 {JSON.stringify(event.details, null, 2)}
-                            </pre>
+                              </pre>
+                            </div>
                           </div>
                         </div>
                       </TableNestedCell>
