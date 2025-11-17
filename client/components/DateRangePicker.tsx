@@ -57,25 +57,23 @@ export default function DateRangePicker({
   return (
     <div className="flex flex-col gap-4 min-w-max">
       {/* Preset Options */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-3 items-center">
         <div className="text-xs font-medium text-bluegrey-900 uppercase tracking-wide">
-          Quick Select
+          Quick:
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {PRESET_OPTIONS.map((preset) => (
-            <button
-              key={preset.value}
-              onClick={() => applyPreset(preset)}
-              className={`px-3 py-2 text-sm font-medium rounded-sm transition-colors border ${
-                selectedPreset === preset.value
-                  ? "bg-blue-500 text-bluegrey-25 border-blue-500"
-                  : "bg-white text-bluegrey-900 border-bluegrey-300 hover:bg-bluegrey-50"
-              }`}
-            >
-              {preset.label}
-            </button>
-          ))}
-        </div>
+        {PRESET_OPTIONS.map((preset) => (
+          <button
+            key={preset.value}
+            onClick={() => applyPreset(preset)}
+            className={`text-sm transition-colors ${
+              selectedPreset === preset.value
+                ? "text-blue-600 font-medium underline"
+                : "text-blue-500 hover:text-blue-600 hover:underline"
+            }`}
+          >
+            {preset.label}
+          </button>
+        ))}
       </div>
 
       {/* Divider */}
