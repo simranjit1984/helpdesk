@@ -1014,128 +1014,24 @@ export default function UserDetail() {
           <TabsContent value="events" className="pt-6">
             <div className="flex flex-col gap-4">
               {/* Search and Filter Bar */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <SearchBar
-                  value={eventSearchQuery}
-                  onChange={setEventSearchQuery}
-                  placeholder="Search events"
-                  width="w-60"
-                />
-
-                {/* Applied Filter Chips */}
-                {eventFilters.map((filter) => (
-                  <div
-                    key={filter.id}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-bluegrey-100 rounded-full"
-                  >
-                    <span className="text-base text-bluegrey-900">
-                      {getColumnLabel(filter.column)} {getOperatorLabel(filter.operator)}{" "}
-                      <strong className="font-bold">{filter.value}</strong>
-                    </span>
-                    <button
-                      onClick={() => removeEventFilter(filter.id)}
-                      className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-bluegrey-500/10 transition-colors"
-                    >
-                      <X className="w-4 h-4 text-bluegrey-900" />
-                    </button>
-                  </div>
-                ))}
-
-                {/* Add Filter Popover */}
-                <Popover open={isFilterPopoverOpen} onOpenChange={setIsFilterPopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <button className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer">
-                      <PlusCircle className="w-5 h-5 text-bluegrey-900" />
-                      <span className="text-base text-bluegrey-900">Add filter</span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="start" className="w-80 p-4">
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
-                          Column
-                        </label>
-                        <Select
-                          value={pendingFilter.column}
-                          onValueChange={(value) =>
-                            setPendingFilter({ ...pendingFilter, column: value })
-                          }
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="date">Date</SelectItem>
-                            <SelectItem value="eventType">Event type</SelectItem>
-                            <SelectItem value="application">Application</SelectItem>
-                            <SelectItem value="userId">User ID</SelectItem>
-                            <SelectItem value="clientIp">Client IP</SelectItem>
-                            <SelectItem value="identityApp">Identity app</SelectItem>
-                            <SelectItem value="description">Description</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
-                          Operator
-                        </label>
-                        <Select
-                          value={pendingFilter.operator}
-                          onValueChange={(value) =>
-                            setPendingFilter({ ...pendingFilter, operator: value })
-                          }
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="contains">Contains</SelectItem>
-                            <SelectItem value="equals">Equals</SelectItem>
-                            <SelectItem value="startsWith">Starts with</SelectItem>
-                            <SelectItem value="endsWith">Ends with</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
-                          Value
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter value"
-                          value={pendingFilter.value}
-                          onChange={(e) =>
-                            setPendingFilter({ ...pendingFilter, value: e.target.value })
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              applyEventFilter();
-                            }
-                          }}
-                          className="w-full h-10 px-3 py-2 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                        />
-                      </div>
-                      <button
-                        onClick={applyEventFilter}
-                        disabled={!pendingFilter.value.trim()}
-                        className="w-full h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                      >
-                        Apply
-                      </button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-
-                {/* Clear All Filters */}
-                {eventFilters.length > 0 && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="text-base text-blue-500 hover:text-blue-600 underline transition-colors"
-                  >
-                    Clear all filters
-                  </button>
-                )}
-              </div>
+              <FilterBar
+                columns={[
+                  { value: "date", label: "Date" },
+                  { value: "eventType", label: "Event type" },
+                  { value: "application", label: "Application" },
+                  { value: "userId", label: "User ID" },
+                  { value: "clientIp", label: "Client IP" },
+                  { value: "identityApp", label: "Identity app" },
+                  { value: "description", label: "Description" },
+                ]}
+                filters={eventFilters}
+                onFilterAdd={addEventFilter}
+                onFilterRemove={removeEventFilter}
+                onClearFilters={clearAllEventFilters}
+                searchValue={eventSearchQuery}
+                onSearchChange={setEventSearchQuery}
+                searchPlaceholder="Search events"
+              />
 
               {/* Event Log Table */}
               <Table variant="expandable">
