@@ -111,6 +111,23 @@ export default function UserDetail() {
     setExpandedEvents(newExpanded);
   };
 
+  const getFilteredEventLogs = () => {
+    if (!eventSearchQuery.trim()) {
+      return eventLogs;
+    }
+
+    const query = eventSearchQuery.toLowerCase();
+    return eventLogs.filter((event) =>
+      event.date.toLowerCase().includes(query) ||
+      event.eventType.toLowerCase().includes(query) ||
+      event.application.toLowerCase().includes(query) ||
+      event.userId.toLowerCase().includes(query) ||
+      event.clientIp.toLowerCase().includes(query) ||
+      event.identityApp.toLowerCase().includes(query) ||
+      event.description.toLowerCase().includes(query)
+    );
+  };
+
   const eventLogs = [
     // January 15
     {
