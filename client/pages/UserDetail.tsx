@@ -53,7 +53,6 @@ import {
   NestedTableCell,
   TableEmptyState,
 } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { getUserById } from "@/components/UsersTable";
 
 export default function UserDetail() {
