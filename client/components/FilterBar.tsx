@@ -128,78 +128,96 @@ export default function FilterBar({
             <span className="text-base text-bluegrey-900">Add filter</span>
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-80 p-4">
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
-                Column
-              </label>
-              <Select
-                value={pendingFilter.column}
-                onValueChange={(value) =>
-                  setPendingFilter({ ...pendingFilter, column: value })
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {columns.map((col) => (
-                    <SelectItem key={col.value} value={col.value}>
-                      {col.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
-                Operator
-              </label>
-              <Select
-                value={pendingFilter.operator}
-                onValueChange={(value) =>
-                  setPendingFilter({ ...pendingFilter, operator: value })
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {operators.map((op) => (
-                    <SelectItem key={op.value} value={op.value}>
-                      {op.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
-                Value
-              </label>
-              <input
-                type="text"
-                placeholder="Enter value"
-                value={pendingFilter.value}
-                onChange={(e) =>
-                  setPendingFilter({ ...pendingFilter, value: e.target.value })
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    applyFilter();
+        <PopoverContent align="start" className="w-auto p-4 shadow-lg">
+          <div className="flex flex-col gap-4">
+            {/* Inputs Row */}
+            <div className="flex items-start gap-4">
+              {/* Filter by */}
+              <div className="flex flex-col gap-1 w-60">
+                <label className="text-sm text-bluegrey-900 leading-5">
+                  Filter by
+                </label>
+                <Select
+                  value={pendingFilter.column}
+                  onValueChange={(value) =>
+                    setPendingFilter({ ...pendingFilter, column: value })
                   }
-                }}
-                className="w-full h-10 px-3 py-2 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              />
+                >
+                  <SelectTrigger className="w-full h-11 px-2 border-bluegrey-500 rounded-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {columns.map((col) => (
+                      <SelectItem key={col.value} value={col.value}>
+                        {col.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Operator */}
+              <div className="flex flex-col gap-1 w-32">
+                <label className="text-sm text-bluegrey-900 leading-5">
+                  Operator
+                </label>
+                <Select
+                  value={pendingFilter.operator}
+                  onValueChange={(value) =>
+                    setPendingFilter({ ...pendingFilter, operator: value })
+                  }
+                >
+                  <SelectTrigger className="w-full h-11 px-2 border-bluegrey-500 rounded-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {operators.map((op) => (
+                      <SelectItem key={op.value} value={op.value}>
+                        {op.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Value */}
+              <div className="flex flex-col gap-1 w-60">
+                <label className="text-sm text-bluegrey-900 leading-5">
+                  Value
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter filter value"
+                  value={pendingFilter.value}
+                  onChange={(e) =>
+                    setPendingFilter({ ...pendingFilter, value: e.target.value })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      applyFilter();
+                    }
+                  }}
+                  className="w-full h-11 px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                />
+              </div>
             </div>
-            <button
-              onClick={applyFilter}
-              disabled={!pendingFilter.value.trim()}
-              className="w-full h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-            >
-              Apply
-            </button>
+
+            {/* Buttons Row */}
+            <div className="flex justify-end items-start gap-4">
+              <button
+                onClick={() => setIsFilterPopoverOpen(false)}
+                className="h-10 px-3 text-sm font-medium text-bluegrey-700 hover:bg-bluegrey-50 rounded-sm transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={applyFilter}
+                disabled={!pendingFilter.value.trim()}
+                className="h-10 px-3 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+              >
+                Apply
+              </button>
+            </div>
           </div>
         </PopoverContent>
       </Popover>
