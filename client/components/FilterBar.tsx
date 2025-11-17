@@ -74,20 +74,41 @@ export default function FilterBar({
   };
 
   const applyFilter = () => {
-    if (pendingFilter.value.trim()) {
-      const newFilter: Filter = {
-        id: Math.random().toString(36).substr(2, 9),
-        column: pendingFilter.column,
-        operator: pendingFilter.operator,
-        value: pendingFilter.value,
-      };
-      onFilterAdd(newFilter);
-      setPendingFilter({
-        column: columns[0]?.value || "",
-        operator: operators[0]?.value || "contains",
-        value: "",
-      });
-      setIsFilterPopoverOpen(false);
+    const isDate = isDateField(pendingFilter.column);
+
+    if (isDate) {
+      if (dateRange.start && dateRange.end) {
+        const newFilter: Filter = {
+          id: Math.random().toString(36).substr(2, 9),
+          column: pendingFilter.column,
+          operator: "between",
+          value: `${dateRange.start}|${dateRange.end}`,
+        };
+        onFilterAdd(newFilter);
+        setPendingFilter({
+          column: columns[0]?.value || "",
+          operator: operators[0]?.value || "contains",
+          value: "",
+        });
+        setDateRange({ start: "", end: "" });
+        setIsFilterPopoverOpen(false);
+      }
+    } else {
+      if (pendingFilter.value.trim()) {
+        const newFilter: Filter = {
+          id: Math.random().toString(36).substr(2, 9),
+          column: pendingFilter.column,
+          operator: pendingFilter.operator,
+          value: pendingFilter.value,
+        };
+        onFilterAdd(newFilter);
+        setPendingFilter({
+          column: columns[0]?.value || "",
+          operator: operators[0]?.value || "contains",
+          value: "",
+        });
+        setIsFilterPopoverOpen(false);
+      }
     }
   };
 
