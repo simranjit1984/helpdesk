@@ -278,7 +278,10 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
       let aVal: any = a[sortColumn];
       let bVal: any = b[sortColumn];
 
-      if (typeof aVal === "string") {
+      if (sortColumn === "date") {
+        aVal = new Date(aVal.replace(" ", "T")).getTime();
+        bVal = new Date(bVal.replace(" ", "T")).getTime();
+      } else if (typeof aVal === "string") {
         aVal = aVal.toLowerCase();
         bVal = (bVal as string).toLowerCase();
       }
