@@ -169,6 +169,17 @@ const baseEvents = generateMockEvents();
 export default function EventTable({ filters, searchQuery = "", filterByUsername }: EventTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
+
+  const toggleEventExpanded = (eventId: string) => {
+    const newExpanded = new Set(expandedEvents);
+    if (newExpanded.has(eventId)) {
+      newExpanded.delete(eventId);
+    } else {
+      newExpanded.add(eventId);
+    }
+    setExpandedEvents(newExpanded);
+  };
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
