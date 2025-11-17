@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronUp, ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronRight, Filter } from "lucide-react";
 import {
   Table,
   TableScroll,
@@ -48,6 +48,7 @@ type SortColumn = "date" | "eventType" | "application";
 interface EventTableProps {
   filters: Array<{ id: string; column: string; operator: string; value: string }>;
   searchQuery?: string;
+  onFilterAdd?: (filter: { id: string; column: string; operator: string; value: string }) => void;
 }
 
 const MOCK_EVENT_TYPES = [
@@ -195,7 +196,7 @@ const generateMockEvents = (): Event[] => {
 
 const baseEvents = generateMockEvents();
 
-export default function EventTable({ filters, searchQuery = "" }: EventTableProps) {
+export default function EventTable({ filters, searchQuery = "", onFilterAdd }: EventTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
