@@ -288,7 +288,7 @@ export default function FilterBar({
 
                 {/* Value */}
                 <div className="flex flex-col gap-1 w-60">
-                  <label className="text-sm text-bluegrey-900 leading-5">
+                  <label htmlFor="filter-value" className="text-sm text-bluegrey-900 leading-5">
                     Value
                   </label>
                   <input
