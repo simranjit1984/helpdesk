@@ -9,6 +9,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import {
+  Table,
+  TableScroll,
+  TableContent,
+  TableHeader,
+  TableHeadRow,
+  TableHeadCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableActionCell,
+} from "./ui/table";
 import { useToast } from "@/hooks/use-toast";
 
 type StatusType =
