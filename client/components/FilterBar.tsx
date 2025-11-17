@@ -191,7 +191,21 @@ export default function FilterBar({
         onOpenChange={(open) => {
           setIsFilterPopoverOpen(open);
           if (open) {
+            // Reset to initial state when opening
+            setPendingFilter({
+              column: columns[0]?.value || "",
+              operator: operators[0]?.value || "contains",
+              value: "",
+            });
             initializeDateRange();
+          } else {
+            // Clear state when closing
+            setPendingFilter({
+              column: columns[0]?.value || "",
+              operator: operators[0]?.value || "contains",
+              value: "",
+            });
+            setDateRange({ start: "", end: "" });
           }
         }}
       >
