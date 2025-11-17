@@ -291,11 +291,12 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
   };
 
   return (
-    <Table variant="flat">
+    <Table variant="expandable">
       <TableScroll>
         <TableContent>
           <TableHeader>
             <TableHeadRow>
+              <TableHeadCell className="w-10"></TableHeadCell>
               <TableHeadCell sticky className="w-48">
                 <SortHeader column="timestamp" label="Timestamp" />
               </TableHeadCell>
@@ -314,25 +315,77 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
             </TableHeadRow>
           </TableHeader>
           <TableBody>
-            {getSortedEvents().map((event, index) => (
-              <TableRow key={index}>
-                <TableCell sticky className="w-48">
-                  <span className="text-sm text-bluegrey-900">{event.timestamp}</span>
-                </TableCell>
-                <TableCell className="w-64">
-                  <span className="text-sm text-blue-500 font-medium">{event.username}</span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-bluegrey-900">{EVENT_ACTIONS[event.action]}</span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-bluegrey-700">{event.description}</span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-bluegrey-700">{event.ip_address}</span>
-                </TableCell>
-              </TableRow>
-            ))}
+            {getSortedEvents().length > 0 ? (
+              getSortedEvents().map((event) => (
+                <React.Fragment key={event.id}>
+                  <TableRow expandable isExpanded={expandedEvents.has(event.id)}>
+                    <TableExpandCell>
+                      <button
+                        type="button"
+                        onClick={() => toggleEventExpanded(event.id)}
+                        className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                        aria-label="Toggle event details"
+                      >
+                        {expandedEvents.has(event.id) ? (
+                          <ChevronDown className="h-5 w-5 text-bluegrey-700" />
+                        ) : (
+                          <ChevronRight className="h-5 w-5 text-bluegrey-700" />
+                        )}
+                      </button>
+                    </TableExpandCell>
+                    <TableCell sticky className="w-48">
+                      <span className="text-sm text-bluegrey-900">{event.timestamp}</span>
+                    </TableCell>
+                    <TableCell className="w-64">
+                      <span className="text-sm text-blue-500 font-medium">{event.username}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-900">{EVENT_ACTIONS[event.action]}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-700">{event.description}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-700">{event.ip_address}</span>
+                    </TableCell>
+                  </TableRow>
+                  {expandedEvents.has(event.id) && (
+                    <TableNestedRow colSpan={6}>
+                      <TableExpandCell></TableExpandCell>
+                      <TableNestedCell colSpan={5}>
+                        <div className="py-4 px-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div className="flex flex-col gap-2">
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">User Agent</span>
+                            <span className="text-sm text-bluegrey-900">{event.user_agent}</span>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Action</span>
+                            <span className="text-sm text-bluegrey-900">{EVENT_ACTIONS[event.action]}</span>
+                          </div>
+                          <div className="flex flex-col gap-2 lg:col-span-2">
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Description</span>
+                            <span className="text-sm text-bluegrey-900">{event.description}</span>
+                          </div>
+                          <div className="flex flex-col gap-2 lg:col-span-2">
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">IP Address</span>
+                            <span className="text-sm text-bluegrey-900 font-mono">{event.ip_address}</span>
+                          </div>
+                        </div>
+                      </TableNestedCell>
+                    </TableNestedRow>
+                  )}
+                </React.Fragment>
+              ))
+            ) : (
+              <TableEmptyState
+                colSpan={6}
+                message={
+                  searchQuery || filters.length > 0
+                    ? "No events found matching your search or filters"
+                    : "No events available"
+                }
+              />
+            )}
           </TableBody>
         </TableContent>
       </TableScroll>
