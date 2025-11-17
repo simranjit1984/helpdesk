@@ -76,9 +76,6 @@ export default function DateRangePicker({
         ))}
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-bluegrey-200"></div>
-
       {/* Custom Date Range */}
       <div className="flex flex-col gap-2">
         <div className="text-xs font-medium text-bluegrey-900 uppercase tracking-wide">
