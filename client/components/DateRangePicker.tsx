@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface DateRangePickerProps {
   startDate: string;
@@ -35,15 +35,23 @@ export default function DateRangePicker({
 }: DateRangePickerProps) {
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
 
+  // Initialize end date to current date/time if not set
+  useEffect(() => {
+    if (!endDate) {
+      const now = new Date();
+      const endIso = now.toISOString().slice(0, 16);
+      onEndDateChange(endIso);
+    }
+  }, []);
+
   const applyPreset = (preset: PresetOption) => {
     const now = new Date();
-    const end = new Date();
     const start = new Date();
-    start.setDate(end.getDate() - preset.days);
+    start.setDate(now.getDate() - preset.days);
 
     // Format dates to ISO datetime-local format (YYYY-MM-DDTHH:mm)
     const startIso = start.toISOString().slice(0, 16);
-    const endIso = end.toISOString().slice(0, 16);
+    const endIso = now.toISOString().slice(0, 16);
 
     onStartDateChange(startIso);
     onEndDateChange(endIso);
