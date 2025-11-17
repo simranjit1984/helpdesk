@@ -112,6 +112,47 @@ const generateUUID = () => {
   });
 };
 
+interface FilterValueProps {
+  value: string;
+  column: string;
+  onFilterAdd?: (filter: { id: string; column: string; operator: string; value: string }) => void;
+}
+
+const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
+  const [showIcon, setShowIcon] = useState(false);
+
+  const handleAddFilter = () => {
+    if (onFilterAdd) {
+      onFilterAdd({
+        id: generateUUID(),
+        column,
+        operator: "equals",
+        value,
+      });
+    }
+  };
+
+  return (
+    <div
+      className="flex items-center gap-2 group"
+      onMouseEnter={() => setShowIcon(true)}
+      onMouseLeave={() => setShowIcon(false)}
+    >
+      <span className="text-sm text-bluegrey-900">{value}</span>
+      {showIcon && (
+        <button
+          type="button"
+          onClick={handleAddFilter}
+          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+          title={`Filter by ${column}`}
+        >
+          <Filter className="w-4 h-4 text-blue-500" />
+        </button>
+      )}
+    </div>
+  );
+};
+
 const EVENT_DESCRIPTIONS: Record<string, string> = {
   "User Login": "User successfully authenticated and logged in",
   "User Logout": "User logged out from the system",
