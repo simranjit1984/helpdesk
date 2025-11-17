@@ -602,7 +602,12 @@ function UserActionsMenu({ user }: { user: User }) {
   );
 }
 
-export default function UsersTable() {
+interface UsersTableProps {
+  searchQuery?: string;
+  filters?: Array<{ id: string; column: string; operator: string; value: string }>;
+}
+
+export default function UsersTable({ searchQuery = "", filters = [] }: UsersTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("username");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
@@ -615,8 +620,52 @@ export default function UsersTable() {
     }
   };
 
+  const getFilteredUsers = () => {
+    let filtered = baseUsers;
+
+    // Apply search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (user) =>
+          user.username?.toLowerCase().includes(query) ||
+          user.firstName?.toLowerCase().includes(query) ||
+          user.lastName?.toLowerCase().includes(query) ||
+          user.phoneNumber?.toLowerCase().includes(query) ||
+          user.dateCreated?.toLowerCase().includes(query) ||
+          user.status?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply filters
+    filters.forEach((filter) => {
+      filtered = filtered.filter((user) => {
+        const fieldValue = (user[filter.column as keyof typeof user] || "")
+          .toString()
+          .toLowerCase();
+        const filterValue = filter.value.toLowerCase();
+
+        switch (filter.operator) {
+          case "contains":
+            return fieldValue.includes(filterValue);
+          case "equals":
+            return fieldValue === filterValue;
+          case "startsWith":
+            return fieldValue.startsWith(filterValue);
+          case "endsWith":
+            return fieldValue.endsWith(filterValue);
+          default:
+            return true;
+        }
+      });
+    });
+
+    return filtered;
+  };
+
   const getSortedUsers = () => {
-    const sorted = [...baseUsers].sort((a, b) => {
+    const filteredUsers = getFilteredUsers();
+    const sorted = [...filteredUsers].sort((a, b) => {
       let aVal: any = a[sortColumn];
       let bVal: any = b[sortColumn];
 
