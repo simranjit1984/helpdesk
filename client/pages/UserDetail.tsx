@@ -72,6 +72,12 @@ export default function UserDetail() {
   const [accessRoleSearchQuery, setAccessRoleSearchQuery] = useState("");
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
+  const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
+  const [pendingFilter, setPendingFilter] = useState({
+    column: "date",
+    operator: "contains",
+    value: "",
+  });
 
   const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
     "1": [
