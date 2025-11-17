@@ -151,8 +151,15 @@ export default function FilterBar({
   const formatFilterDisplay = (filter: Filter) => {
     if (filter.operator === "between") {
       const [start, end] = filter.value.split("|");
-      const startDate = new Date(start).toLocaleDateString();
-      const endDate = new Date(end).toLocaleDateString();
+      const parseDate = (dateStr: string) => {
+        const str = dateStr.trim();
+        if (str.includes("T")) {
+          return new Date(str).toLocaleDateString();
+        }
+        return new Date(str.replace(" ", "T")).toLocaleDateString();
+      };
+      const startDate = parseDate(start);
+      const endDate = parseDate(end);
       return `${getColumnLabel(filter.column)} between ${startDate} and ${endDate}`;
     }
     return `${getColumnLabel(filter.column)} ${getOperatorLabel(filter.operator)} ${filter.value}`;
