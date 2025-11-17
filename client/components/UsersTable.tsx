@@ -657,88 +657,71 @@ export default function UsersTable() {
   };
 
   return (
-    <div className="bg-white rounded border-2 border-bluegrey-100 lg:border-0">
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-bluegrey-300 scrollbar-track-bluegrey-50">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b-2 border-bluegrey-100">
-              <th className="sticky left-0 z-10 bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap w-64 shadow-[1px_0_3px_rgba(0,0,0,0.05)]">
+    <Table variant="flat">
+      <TableScroll>
+        <TableContent>
+          <TableHeader>
+            <TableHeadRow>
+              <TableHeadCell sticky className="w-64">
                 <SortHeader column="username" label="Username" />
-              </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+              </TableHeadCell>
+              <TableHeadCell>
                 <SortHeader column="firstName" label="First name" />
-              </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+              </TableHeadCell>
+              <TableHeadCell>
                 <SortHeader column="lastName" label="Last name" />
-              </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+              </TableHeadCell>
+              <TableHeadCell>
                 <SortHeader column="phoneNumber" label="Phone number" />
-              </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+              </TableHeadCell>
+              <TableHeadCell>
                 <SortHeader column="dateCreated" label="Date created" />
-              </th>
-              <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
+              </TableHeadCell>
+              <TableHeadCell>
                 <SortHeader column="status" label="Status" />
-              </th>
-              <th className="bg-bluegrey-25 w-10"></th>
-            </tr>
-          </thead>
-          <tbody>
+              </TableHeadCell>
+              <TableHeadCell></TableHeadCell>
+            </TableHeadRow>
+          </TableHeader>
+          <TableBody>
             {getSortedUsers().map((user, index) => (
-              <tr
-                key={index}
-                className="border-b-2 border-bluegrey-100 hover:bg-bluegrey-25/50 transition-colors"
-              >
-                <td className="sticky left-0 z-10 bg-white px-4 py-1 border-r border-bluegrey-100 shadow-[1px_0_3px_rgba(0,0,0,0.05)]">
-                  <div className="h-10 flex items-center w-56">
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.username}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-1">
-                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.firstName}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-1">
-                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.lastName}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-1">
-                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.phoneNumber}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-1">
-                  <div className="h-10 flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.dateCreated}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-1">
-                  <div className="h-10 flex items-center whitespace-nowrap">
-                    <StatusBadge status={user.status} />
-                  </div>
-                </td>
-                <td className="py-1">
-                  <div className="h-10 flex items-center justify-center">
-                    <UserActionsMenu user={user} />
-                  </div>
-                </td>
-              </tr>
+              <TableRow key={index}>
+                <TableCell sticky className="w-56">
+                  <span className="text-sm text-bluegrey-900 truncate">
+                    {user.username}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-bluegrey-900 truncate">
+                    {user.firstName}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-bluegrey-900 truncate">
+                    {user.lastName}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-bluegrey-900 truncate">
+                    {user.phoneNumber}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-bluegrey-900 truncate">
+                    {user.dateCreated}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge status={user.status} />
+                </TableCell>
+                <TableActionCell>
+                  <UserActionsMenu user={user} />
+                </TableActionCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </TableContent>
+      </TableScroll>
+    </Table>
   );
 }
