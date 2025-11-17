@@ -150,9 +150,25 @@ export default function UserDetailHeader({
             >
               Reset password
             </Button>
-            <button className="flex h-10 w-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors">
-              <MoreVertical className="h-6 w-6 text-bluegrey-700" />
-            </button>
+            {menuItems.length > 0 && (
+              <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button className={`flex h-10 w-10 items-center justify-center rounded-[2px] transition-colors ${isOpen ? "bg-bluegrey-50" : "hover:bg-bluegrey-50"}`}>
+                    <MoreVertical className="h-6 w-6 text-bluegrey-700" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {menuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.action}
+                      onClick={() => handleAction(item.label)}
+                    >
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
 
