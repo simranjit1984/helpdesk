@@ -55,7 +55,7 @@ import {
   NestedTableCell,
   TableEmptyState,
 } from "@/components/ui/table";
-import { getUserById } from "@/components/UsersTable";
+import { getUserByUsername } from "@/components/UsersTable";
 
 export default function UserDetail() {
   const { id } = useParams();
