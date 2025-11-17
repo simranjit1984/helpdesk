@@ -225,9 +225,13 @@ export default function FilterBar({
                 <Select
                   value={pendingFilter.column}
                   onValueChange={(value) => {
-                    setPendingFilter({ ...pendingFilter, column: value });
+                    setPendingFilter((prev) => ({ ...prev, column: value }));
                     // Reset date range when column changes
                     setDateRange({ start: "", end: "" });
+                    // Reinitialize date range if selecting a date field
+                    if (value === "date" || value === "dateCreated") {
+                      initializeDateRange();
+                    }
                   }}
                 >
                   <SelectTrigger className="w-full h-11 px-2 border-bluegrey-500 rounded-sm">
