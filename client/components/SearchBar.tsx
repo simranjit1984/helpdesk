@@ -35,10 +35,13 @@ export default function SearchBar({
           <Search className="w-5 h-5 text-bluegrey-500 flex-shrink-0" />
           <input
             type="text"
+            name="search"
+            id="search-input"
             placeholder={placeholder}
             value={currentValue}
             onChange={(e) => handleChange(e.target.value)}
             className="flex-1 text-sm text-bluegrey-500 placeholder:text-bluegrey-500 outline-none bg-transparent"
+            autoComplete="off"
           />
         </div>
       </div>
