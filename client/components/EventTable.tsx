@@ -30,12 +30,17 @@ export type EventAction =
 
 interface Event {
   id: string;
-  timestamp: string;
-  username: string;
-  action: EventAction;
+  date: string;
+  eventType: string;
+  application: string;
+  userId: string;
+  clientIp: string;
+  userAgent: string;
+  requestId: string;
+  agent: string;
+  identityApp: string;
   description: string;
-  ip_address: string;
-  user_agent: string;
+  details: Record<string, any>;
 }
 
 type SortColumn = "timestamp" | "username" | "action";
