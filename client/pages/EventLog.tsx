@@ -65,7 +65,7 @@ export default function EventLog() {
             />
           </div>
 
-          <EventTable searchQuery={searchQuery} filters={filters} />
+          <EventTable searchQuery={searchQuery} filters={filters} onFilterAdd={handleAddFilter} />
         </div>
       </div>
     </Layout>
