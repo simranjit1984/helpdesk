@@ -82,6 +82,16 @@ export default function FilterBar({
     });
   };
 
+  const handleStartDateChange = useCallback(
+    (date: string) => setDateRange((prev) => ({ ...prev, start: date })),
+    []
+  );
+
+  const handleEndDateChange = useCallback(
+    (date: string) => setDateRange((prev) => ({ ...prev, end: date })),
+    []
+  );
+
   const applyFilter = () => {
     const isDate = isDateField(pendingFilter.column);
 
