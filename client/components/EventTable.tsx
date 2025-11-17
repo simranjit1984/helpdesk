@@ -97,10 +97,12 @@ const MOCK_USER_AGENTS = [
 const generateMockEvents = (): Event[] => {
   const events: Event[] = [];
   const now = new Date();
+  now.setHours(23, 59, 59, 999);
 
-  for (let dayOffset = 13; dayOffset >= 0; dayOffset--) {
+  for (let dayOffset = 0; dayOffset <= 13; dayOffset++) {
     const date = new Date(now);
     date.setDate(date.getDate() - dayOffset);
+    date.setHours(0, 0, 0, 0);
 
     const eventsPerDay = Math.floor(Math.random() * 10) + 6;
 
@@ -130,9 +132,17 @@ const generateMockEvents = (): Event[] => {
         permission_revoked: `Permission revoked from: ${username}`,
       };
 
+      const year = eventDate.getFullYear();
+      const month = String(eventDate.getMonth() + 1).padStart(2, "0");
+      const day = String(eventDate.getDate()).padStart(2, "0");
+      const hours = String(eventDate.getHours()).padStart(2, "0");
+      const minutes = String(eventDate.getMinutes()).padStart(2, "0");
+      const seconds = String(eventDate.getSeconds()).padStart(2, "0");
+      const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
       events.push({
         id: `event-${dayOffset}-${i}`,
-        timestamp: eventDate.toISOString().replace("T", " ").substring(0, 19),
+        timestamp,
         username,
         action,
         description: descriptions[action],
@@ -142,7 +152,7 @@ const generateMockEvents = (): Event[] => {
     }
   }
 
-  return events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  return events.sort((a, b) => new Date(b.timestamp.replace(" ", "T")).getTime() - new Date(a.timestamp.replace(" ", "T")).getTime());
 };
 
 const baseEvents = generateMockEvents();
