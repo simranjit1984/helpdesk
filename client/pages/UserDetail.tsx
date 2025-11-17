@@ -64,6 +64,7 @@ export default function UserDetail() {
   const [modalEndDateOption, setModalEndDateOption] = useState<"no-end" | "custom">("custom");
   const [modalEndDate, setModalEndDate] = useState("2025/04/18");
   const [expandedRoles, setExpandedRoles] = useState<Set<string>>(new Set());
+  const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
