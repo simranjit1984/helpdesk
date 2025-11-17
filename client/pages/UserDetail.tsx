@@ -534,6 +534,7 @@ export default function UserDetail() {
               <EventTable
                 filters={eventFilters}
                 searchQuery={eventSearchQuery}
+                onFilterAdd={addEventFilter}
               />
             </div>
           </TabsContent>
