@@ -407,19 +407,70 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </button>
                     </TableExpandCell>
                     <TableCell sticky className="w-48">
-                      <span className="text-sm text-bluegrey-900">{event.date}</span>
+                      <div className="flex items-center gap-2 group">
+                        <span className="text-sm text-bluegrey-900">{event.date}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onFilterAdd?.({
+                              id: generateUUID(),
+                              column: "date",
+                              operator: "equals",
+                              value: event.date,
+                            })
+                          }
+                          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                          title="Filter by Date"
+                        >
+                          <Filter className="w-4 h-4 text-blue-500" />
+                        </button>
+                      </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-900">{event.eventType}</span>
+                      <FilterValue value={event.eventType} column="eventType" onFilterAdd={onFilterAdd} />
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-900">{event.application}</span>
+                      <FilterValue value={event.application} column="application" onFilterAdd={onFilterAdd} />
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-900 font-mono">{event.userId}</span>
+                      <div className="flex items-center gap-2 group">
+                        <span className="text-sm text-bluegrey-900 font-mono">{event.userId}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onFilterAdd?.({
+                              id: generateUUID(),
+                              column: "userId",
+                              operator: "equals",
+                              value: event.userId,
+                            })
+                          }
+                          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                          title="Filter by User ID"
+                        >
+                          <Filter className="w-4 h-4 text-blue-500" />
+                        </button>
+                      </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-900 font-mono">{event.clientIp}</span>
+                      <div className="flex items-center gap-2 group">
+                        <span className="text-sm text-bluegrey-900 font-mono">{event.clientIp}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onFilterAdd?.({
+                              id: generateUUID(),
+                              column: "clientIp",
+                              operator: "equals",
+                              value: event.clientIp,
+                            })
+                          }
+                          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-5 h-5 rounded hover:bg-blue-100"
+                          title="Filter by Client IP"
+                        >
+                          <Filter className="w-4 h-4 text-blue-500" />
+                        </button>
+                      </div>
                     </TableCell>
                   </TableRow>
                   {expandedEvents.has(event.id) && (
