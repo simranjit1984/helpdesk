@@ -360,27 +360,23 @@ export default function UserDetail() {
               </div>
 
               {/* Table */}
-              <div className="bg-white rounded border-2 border-bluegrey-100 lg:border-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-bluegrey-100">
-                        <th className="bg-bluegrey-25 w-10"></th>
-                        <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                          <span className="text-sm font-bold text-bluegrey-900">Access role</span>
-                        </th>
-                        <th className="bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap">
-                          <span className="text-sm font-bold text-bluegrey-900">Validity period</span>
-                        </th>
-                        <th className="bg-bluegrey-25 w-10"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
+              <Table variant="expandable">
+                <TableScroll>
+                  <TableContent>
+                    <TableHeader>
+                      <TableHeadRow>
+                        <TableHeadCell className="w-10"></TableHeadCell>
+                        <TableHeadCell>Access role</TableHeadCell>
+                        <TableHeadCell>Validity period</TableHeadCell>
+                        <TableHeadCell className="w-10"></TableHeadCell>
+                      </TableHeadRow>
+                    </TableHeader>
+                    <TableBody>
                       {user.accessRoles && user.accessRoles.length > 0 ? (
                         user.accessRoles.map((role) => (
                           <React.Fragment key={role.id}>
-                            <tr className={`hover:bg-bluegrey-25/50 transition-colors ${expandedRoles.has(role.id) ? '' : 'border-b-2 border-bluegrey-100'}`}>
-                              <td className="px-3 py-1 w-10">
+                            <TableRow expandable isExpanded={expandedRoles.has(role.id)}>
+                              <TableExpandCell>
                                 <button
                                   type="button"
                                   onClick={() => toggleRoleExpanded(role.id)}
@@ -393,69 +389,61 @@ export default function UserDetail() {
                                     <ChevronRight className="h-5 w-5 text-bluegrey-700" />
                                   )}
                                 </button>
-                              </td>
-                              <td className="px-3 py-1">
-                                <div className="h-10 flex items-center">
-                                  <span className="text-sm text-bluegrey-900">
-                                    {role.name} ({role.applications} application{role.applications !== 1 ? 's' : ''})
-                                  </span>
-                                </div>
-                              </td>
-                              <td className="px-3 py-1">
-                                <div className="h-10 flex items-center gap-2">
+                              </TableExpandCell>
+                              <TableCell>
+                                <span className="text-sm text-bluegrey-900">
+                                  {role.name} ({role.applications} application{role.applications !== 1 ? 's' : ''})
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
                                   <span className="text-sm text-bluegrey-900">
                                     {role.startDate} {role.endDate ? `- ${role.endDate}` : '- No end date'}
                                   </span>
                                   <button
                                     type="button"
                                     onClick={() => setIsValidityModalOpen(true)}
-                                    className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                                    className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors flex-shrink-0"
                                     aria-label="Edit validity period"
                                   >
                                     <Pencil className="h-6 w-6 text-bluegrey-700" />
                                   </button>
                                 </div>
-                              </td>
-                              <td className="px-3 py-1 w-10">
-                                <div className="h-10 flex items-center justify-center">
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <button className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
-                                        <MoreVertical className="h-6 w-6 text-bluegrey-700" />
-                                      </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                      <DropdownMenuItem onClick={() => setIsValidityModalOpen(true)}>
-                                        Edit validity period
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem>Remove access role</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                </div>
-                              </td>
-                            </tr>
+                              </TableCell>
+                              <TableActionCell>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors">
+                                      <MoreVertical className="h-6 w-6 text-bluegrey-700" />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={() => setIsValidityModalOpen(true)}>
+                                      Edit validity period
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>Remove access role</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </TableActionCell>
+                            </TableRow>
                             {expandedRoles.has(role.id) && (
-                              <tr className="bg-bluegrey-25/30 border-b-2 border-bluegrey-100">
-                                <td className="px-3 py-0 w-10"></td>
-                                <td colSpan={3} className="px-3 py-0 pr-0">
-                                  <table className="w-full border-collapse">
-                                    <thead>
-                                      <tr className="border-b-2 border-bluegrey-200 bg-bluegrey-50">
-                                        <th className="text-left px-3 py-2">
-                                          <span className="text-xs font-semibold text-bluegrey-700 uppercase tracking-wider">Application</span>
-                                        </th>
-                                        <th className="text-left px-3 py-2">
-                                          <span className="text-xs font-semibold text-bluegrey-700 uppercase tracking-wider">Permissions</span>
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
+                              <TableNestedRow colSpan={4}>
+                                <TableExpandCell></TableExpandCell>
+                                <TableNestedCell colSpan={3}>
+                                  <NestedTable>
+                                    <NestedTableHeader>
+                                      <NestedTableHeadRow>
+                                        <NestedTableHeadCell>Application</NestedTableHeadCell>
+                                        <NestedTableHeadCell>Permissions</NestedTableHeadCell>
+                                      </NestedTableHeadRow>
+                                    </NestedTableHeader>
+                                    <NestedTableBody>
                                       {(applicationsList[role.id] || []).map((app, appIndex) => (
-                                        <tr key={appIndex} className="border-b border-bluegrey-100 last:border-b-0 hover:bg-bluegrey-50/50 transition-colors">
-                                          <td className="px-3 py-2">
+                                        <NestedTableRow key={appIndex}>
+                                          <NestedTableCell>
                                             <span className="text-xs text-bluegrey-900">{app.name}</span>
-                                          </td>
-                                          <td className="px-3 py-2">
+                                          </NestedTableCell>
+                                          <NestedTableCell>
                                             <div className="flex flex-wrap gap-1">
                                               {app.permissions.map((permission, permIndex) => (
                                                 <span
@@ -466,29 +454,23 @@ export default function UserDetail() {
                                                 </span>
                                               ))}
                                             </div>
-                                          </td>
-                                        </tr>
+                                          </NestedTableCell>
+                                        </NestedTableRow>
                                       ))}
-                                    </tbody>
-                                  </table>
-                                </td>
-                              </tr>
+                                    </NestedTableBody>
+                                  </NestedTable>
+                                </TableNestedCell>
+                              </TableNestedRow>
                             )}
                           </React.Fragment>
                         ))
                       ) : (
-                        <tr className="border-b-2 border-bluegrey-100">
-                          <td colSpan={4} className="px-8 py-16">
-                            <p className="text-sm text-bluegrey-600 text-center">
-                              Ready to assign access roles
-                            </p>
-                          </td>
-                        </tr>
+                        <TableEmptyState colSpan={4} message="Ready to assign access roles" />
                       )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                    </TableBody>
+                  </TableContent>
+                </TableScroll>
+              </Table>
             </div>
           </TabsContent>
 
