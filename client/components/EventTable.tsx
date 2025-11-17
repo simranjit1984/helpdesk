@@ -131,16 +131,16 @@ const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
   };
 
   return (
-    <div className="flex items-center gap-2 group">
-      <span className="text-sm text-bluegrey-900">{value}</span>
+    <div className="flex items-center gap-2 group w-full">
+      <span className="text-sm text-bluegrey-900 flex-1">{value}</span>
       <button
         type="button"
         onClick={handleAddFilter}
-        className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
         title={`Filter by ${column}`}
         aria-label={`Filter ${column} by ${value}`}
       >
-        <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
+        <Filter className="w-5 h-5 text-blue-500" />
       </button>
     </div>
   );
