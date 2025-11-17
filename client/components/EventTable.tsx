@@ -330,19 +330,19 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
             <TableHeadRow>
               <TableHeadCell className="w-10"></TableHeadCell>
               <TableHeadCell sticky className="w-48">
-                <SortHeader column="timestamp" label="Timestamp" />
-              </TableHeadCell>
-              <TableHeadCell className="w-64">
-                <SortHeader column="username" label="Username" />
+                <SortHeader column="date" label="Date" />
               </TableHeadCell>
               <TableHeadCell>
-                <SortHeader column="action" label="Action" />
+                <SortHeader column="eventType" label="Event type" />
               </TableHeadCell>
               <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">Description</span>
+                <SortHeader column="application" label="Application" />
               </TableHeadCell>
               <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">IP Address</span>
+                <span className="text-sm font-bold text-bluegrey-900">User ID</span>
+              </TableHeadCell>
+              <TableHeadCell>
+                <span className="text-sm font-bold text-bluegrey-900">Client IP</span>
               </TableHeadCell>
             </TableHeadRow>
           </TableHeader>
@@ -366,19 +366,19 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
                       </button>
                     </TableExpandCell>
                     <TableCell sticky className="w-48">
-                      <span className="text-sm text-bluegrey-900">{event.timestamp}</span>
-                    </TableCell>
-                    <TableCell className="w-64">
-                      <span className="text-sm text-blue-500 font-medium">{event.username}</span>
+                      <span className="text-sm text-bluegrey-900">{event.date}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-900">{EVENT_ACTIONS[event.action]}</span>
+                      <span className="text-sm text-bluegrey-900">{event.eventType}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-700">{event.description}</span>
+                      <span className="text-sm text-bluegrey-900">{event.application}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-bluegrey-700">{event.ip_address}</span>
+                      <span className="text-sm text-bluegrey-900 font-mono">{event.userId}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-900 font-mono">{event.clientIp}</span>
                     </TableCell>
                   </TableRow>
                   {expandedEvents.has(event.id) && (
@@ -388,19 +388,29 @@ export default function EventTable({ filters, searchQuery = "", filterByUsername
                         <div className="py-4 px-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
                           <div className="flex flex-col gap-2">
                             <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">User Agent</span>
-                            <span className="text-sm text-bluegrey-900">{event.user_agent}</span>
+                            <span className="text-sm text-bluegrey-900">{event.userAgent}</span>
                           </div>
                           <div className="flex flex-col gap-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Action</span>
-                            <span className="text-sm text-bluegrey-900">{EVENT_ACTIONS[event.action]}</span>
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Request ID</span>
+                            <span className="text-sm text-bluegrey-900 font-mono">{event.requestId}</span>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Agent</span>
+                            <span className="text-sm text-bluegrey-900 font-mono">{event.agent}</span>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Identity App</span>
+                            <span className="text-sm text-bluegrey-900">{event.identityApp}</span>
                           </div>
                           <div className="flex flex-col gap-2 lg:col-span-2">
                             <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Description</span>
                             <span className="text-sm text-bluegrey-900">{event.description}</span>
                           </div>
                           <div className="flex flex-col gap-2 lg:col-span-2">
-                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">IP Address</span>
-                            <span className="text-sm text-bluegrey-900 font-mono">{event.ip_address}</span>
+                            <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Details</span>
+                            <pre className="text-xs text-bluegrey-900 bg-bluegrey-50 p-3 rounded border border-bluegrey-100 overflow-x-auto">
+{JSON.stringify(event.details, null, 2)}
+                            </pre>
                           </div>
                         </div>
                       </TableNestedCell>
