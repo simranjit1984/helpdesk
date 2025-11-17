@@ -47,8 +47,8 @@ export default function DateRangePicker({
 
   const applyPreset = (preset: PresetOption) => {
     const now = new Date();
-    const start = new Date();
-    start.setDate(now.getDate() - preset.days);
+    const start = new Date(now);
+    start.setDate(start.getDate() - preset.days);
 
     // Format dates to ISO datetime-local format (YYYY-MM-DDTHH:mm)
     const startIso = start.toISOString().slice(0, 16);
