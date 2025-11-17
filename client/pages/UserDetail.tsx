@@ -1070,85 +1070,123 @@ export default function UserDetail() {
                   value={eventSearchQuery}
                   onChange={setEventSearchQuery}
                   placeholder="Search events"
+                  width="w-60"
                 />
-                <button
-                  onClick={addEventFilter}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer"
-                >
-                  <PlusCircle className="w-5 h-5 text-bluegrey-900" />
-                  <span className="text-base text-bluegrey-900">Add filter</span>
-                </button>
-              </div>
 
-              {/* Active Filters */}
-              {eventFilters.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
-                  {eventFilters.map((filter) => (
-                    <div
-                      key={filter.id}
-                      className="flex items-center gap-2 p-2 bg-bluegrey-50 border border-bluegrey-200 rounded-sm"
+                {/* Applied Filter Chips */}
+                {eventFilters.map((filter) => (
+                  <div
+                    key={filter.id}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-bluegrey-100 rounded-full"
+                  >
+                    <span className="text-base text-bluegrey-900">
+                      {getColumnLabel(filter.column)} {getOperatorLabel(filter.operator)}{" "}
+                      <strong className="font-bold">{filter.value}</strong>
+                    </span>
+                    <button
+                      onClick={() => removeEventFilter(filter.id)}
+                      className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-bluegrey-500/10 transition-colors"
                     >
-                      <select
-                        value={filter.column}
-                        onChange={(e) =>
-                          updateEventFilter(
-                            filter.id,
-                            e.target.value,
-                            undefined,
-                            undefined
-                          )
-                        }
-                        className="text-xs bg-transparent text-bluegrey-900 outline-none border-r border-bluegrey-300 pr-2"
-                      >
-                        <option value="date">Date</option>
-                        <option value="eventType">Event Type</option>
-                        <option value="application">Application</option>
-                        <option value="userId">User ID</option>
-                        <option value="clientIp">Client IP</option>
-                        <option value="identityApp">Identity App</option>
-                        <option value="description">Description</option>
-                      </select>
-                      <select
-                        value={filter.operator}
-                        onChange={(e) =>
-                          updateEventFilter(
-                            filter.id,
-                            undefined,
-                            e.target.value,
-                            undefined
-                          )
-                        }
-                        className="text-xs bg-transparent text-bluegrey-900 outline-none border-r border-bluegrey-300 pr-2"
-                      >
-                        <option value="contains">Contains</option>
-                        <option value="equals">Equals</option>
-                        <option value="startsWith">Starts with</option>
-                        <option value="endsWith">Ends with</option>
-                      </select>
-                      <input
-                        type="text"
-                        placeholder="Value"
-                        value={filter.value}
-                        onChange={(e) =>
-                          updateEventFilter(
-                            filter.id,
-                            undefined,
-                            undefined,
-                            e.target.value
-                          )
-                        }
-                        className="text-xs bg-transparent text-bluegrey-900 outline-none flex-1 px-2"
-                      />
+                      <X className="w-4 h-4 text-bluegrey-900" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Add Filter Popover */}
+                <Popover open={isFilterPopoverOpen} onOpenChange={setIsFilterPopoverOpen}>
+                  <PopoverTrigger asChild>
+                    <button className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer">
+                      <PlusCircle className="w-5 h-5 text-bluegrey-900" />
+                      <span className="text-base text-bluegrey-900">Add filter</span>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" className="w-80 p-4">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
+                          Column
+                        </label>
+                        <Select
+                          value={pendingFilter.column}
+                          onValueChange={(value) =>
+                            setPendingFilter({ ...pendingFilter, column: value })
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="date">Date</SelectItem>
+                            <SelectItem value="eventType">Event type</SelectItem>
+                            <SelectItem value="application">Application</SelectItem>
+                            <SelectItem value="userId">User ID</SelectItem>
+                            <SelectItem value="clientIp">Client IP</SelectItem>
+                            <SelectItem value="identityApp">Identity app</SelectItem>
+                            <SelectItem value="description">Description</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
+                          Operator
+                        </label>
+                        <Select
+                          value={pendingFilter.operator}
+                          onValueChange={(value) =>
+                            setPendingFilter({ ...pendingFilter, operator: value })
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="contains">Contains</SelectItem>
+                            <SelectItem value="equals">Equals</SelectItem>
+                            <SelectItem value="startsWith">Starts with</SelectItem>
+                            <SelectItem value="endsWith">Ends with</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-bluegrey-900 mb-1.5 block">
+                          Value
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter value"
+                          value={pendingFilter.value}
+                          onChange={(e) =>
+                            setPendingFilter({ ...pendingFilter, value: e.target.value })
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              applyEventFilter();
+                            }
+                          }}
+                          className="w-full h-10 px-3 py-2 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        />
+                      </div>
                       <button
-                        onClick={() => removeEventFilter(filter.id)}
-                        className="text-bluegrey-500 hover:text-bluegrey-900 transition-colors"
+                        onClick={applyEventFilter}
+                        disabled={!pendingFilter.value.trim()}
+                        className="w-full h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                       >
-                        ×
+                        Apply
                       </button>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </PopoverContent>
+                </Popover>
+
+                {/* Clear All Filters */}
+                {eventFilters.length > 0 && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="text-base text-blue-500 hover:text-blue-600 underline transition-colors"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
 
               {/* Event Log Table */}
               <Table variant="expandable">
