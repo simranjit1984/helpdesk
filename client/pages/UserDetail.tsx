@@ -563,6 +563,7 @@ export default function UserDetail() {
                 type="button"
                 onClick={() => {
                   setIsValidityModalOpen(false);
+                  setShowSuccessAlert(true);
                 }}
                 className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90"
               >
