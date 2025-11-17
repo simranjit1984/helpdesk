@@ -296,7 +296,7 @@ export default function FilterBar({
                     placeholder="Enter filter value"
                     value={pendingFilter.value}
                     onChange={(e) =>
-                      setPendingFilter({ ...pendingFilter, value: e.target.value })
+                      setPendingFilter((prev) => ({ ...prev, value: e.target.value }))
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
