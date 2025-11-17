@@ -1020,27 +1020,27 @@ export default function UserDetail() {
                                 <TableNestedCell colSpan={5}>
                                   <div className="py-4 px-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     <div className="flex flex-col gap-2">
-                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest pb-1 border-b-2 border-bluegrey-300">User Agent</span>
+                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">User Agent</span>
                                       <span className="text-sm text-bluegrey-900">{event.userAgent}</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest pb-1 border-b-2 border-bluegrey-300">Request ID</span>
+                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Request ID</span>
                                       <span className="text-sm text-bluegrey-900 font-mono">{event.requestId}</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest pb-1 border-b-2 border-bluegrey-300">Agent</span>
+                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Agent</span>
                                       <span className="text-sm text-bluegrey-900 font-mono">{event.agent}</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest pb-1 border-b-2 border-bluegrey-300">Identity App</span>
+                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Identity App</span>
                                       <span className="text-sm text-bluegrey-900">{event.identityApp}</span>
                                     </div>
                                     <div className="flex flex-col gap-2 lg:col-span-2">
-                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest pb-1 border-b-2 border-bluegrey-300">Description</span>
+                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Description</span>
                                       <span className="text-sm text-bluegrey-900">{event.description}</span>
                                     </div>
                                     <div className="flex flex-col gap-2 lg:col-span-2">
-                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest pb-1 border-b-2 border-bluegrey-300">Details</span>
+                                      <span className="text-sm font-bold text-bluegrey-900 uppercase tracking-widest">Details</span>
                                       <pre className="text-xs text-bluegrey-900 bg-bluegrey-50 p-3 rounded border border-bluegrey-100 overflow-x-auto">
 {JSON.stringify(event.details, null, 2)}
                                       </pre>
