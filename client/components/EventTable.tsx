@@ -479,10 +479,10 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
                               <FilterValue value={event.userAgent} column="userAgent" onFilterAdd={onFilterAdd} />
                             </div>
-                            <div className="flex flex-col gap-1.5">
+                            <div className="flex flex-col gap-1.5 group">
                               <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
-                              <div className="flex items-center gap-2 group">
-                                <span className="text-sm text-bluegrey-900 font-mono break-all">{event.requestId}</span>
+                              <div className="flex items-center gap-2 w-full">
+                                <span className="text-sm text-bluegrey-900 font-mono break-all flex-1">{event.requestId}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -493,18 +493,18 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.requestId,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                                   title="Filter by Request ID"
                                   aria-label={`Filter by Request ID ${event.requestId}`}
                                 >
-                                  <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
+                                  <Filter className="w-5 h-5 text-blue-500" />
                                 </button>
                               </div>
                             </div>
-                            <div className="flex flex-col gap-1.5">
+                            <div className="flex flex-col gap-1.5 group">
                               <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
-                              <div className="flex items-center gap-2 group">
-                                <span className="text-sm text-bluegrey-900 font-mono break-all">{event.agent}</span>
+                              <div className="flex items-center gap-2 w-full">
+                                <span className="text-sm text-bluegrey-900 font-mono break-all flex-1">{event.agent}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -515,11 +515,11 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.agent,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                                   title="Filter by Agent"
                                   aria-label={`Filter by Agent ${event.agent}`}
                                 >
-                                  <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
+                                  <Filter className="w-5 h-5 text-blue-500" />
                                 </button>
                               </div>
                             </div>
