@@ -4,6 +4,7 @@ import { Save, MoreVertical, Pencil, Calendar, ChevronDown, ChevronRight, PlusCi
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
 import SuccessAlert from "@/components/SuccessAlert";
+import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import FilterTag from "@/components/FilterTag";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
