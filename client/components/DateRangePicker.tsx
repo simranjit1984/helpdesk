@@ -35,14 +35,15 @@ export default function DateRangePicker({
 }: DateRangePickerProps) {
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
 
-  // Initialize end date to current date/time if not set
+  // Initialize end date to current date/time on component mount
   useEffect(() => {
     if (!endDate) {
       const now = new Date();
       const endIso = now.toISOString().slice(0, 16);
       onEndDateChange(endIso);
     }
-  }, [endDate, onEndDateChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const applyPreset = (preset: PresetOption) => {
     const now = new Date();
