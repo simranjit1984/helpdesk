@@ -175,24 +175,24 @@ export default function EventTable({ filters, searchQuery = "" }: EventTableProp
 
     filtered = filters.reduce((acc, filter) => {
       return acc.filter((event) => {
-        const fieldValue = String((event as any)[filter.column] || "").toLowerCase();
+        const fieldValue = String((event as any)[filter.column] || "");
 
         switch (filter.operator) {
           case "between": {
             const [startStr, endStr] = filter.value.split("|");
-            const startDate = new Date(startStr).getTime();
-            const endDate = new Date(endStr).getTime();
-            const fieldDate = new Date(fieldValue).getTime();
+            const startDate = new Date(startStr.replace(" ", "T")).getTime();
+            const endDate = new Date(endStr.replace(" ", "T")).getTime();
+            const fieldDate = new Date(fieldValue.replace(" ", "T")).getTime();
             return fieldDate >= startDate && fieldDate <= endDate;
           }
           case "contains":
-            return fieldValue.includes(filter.value.toLowerCase());
+            return fieldValue.toLowerCase().includes(filter.value.toLowerCase());
           case "equals":
-            return fieldValue === filter.value.toLowerCase();
+            return fieldValue.toLowerCase() === filter.value.toLowerCase();
           case "startsWith":
-            return fieldValue.startsWith(filter.value.toLowerCase());
+            return fieldValue.toLowerCase().startsWith(filter.value.toLowerCase());
           case "endsWith":
-            return fieldValue.endsWith(filter.value.toLowerCase());
+            return fieldValue.toLowerCase().endsWith(filter.value.toLowerCase());
           default:
             return true;
         }
