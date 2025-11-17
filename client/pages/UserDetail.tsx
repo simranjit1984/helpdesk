@@ -1046,17 +1046,93 @@ export default function UserDetail() {
 
           <TabsContent value="events" className="pt-6">
             <div className="flex flex-col gap-4">
-              {/* Search Bar */}
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-bluegrey-500 pointer-events-none" />
-                <Input
-                  type="text"
-                  placeholder="Search events by date, type, application, user ID..."
-                  value={eventSearchQuery}
-                  onChange={(e) => setEventSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border-2 border-bluegrey-100 rounded-[2px] focus:outline-none focus:border-blue-500 transition-colors"
-                />
+              {/* Search and Filter Bar */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="w-full sm:w-[280px]">
+                  <div className="relative">
+                    <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white">
+                      <input
+                        type="text"
+                        placeholder="Search"
+                        value={eventSearchQuery}
+                        onChange={(e) => setEventSearchQuery(e.target.value)}
+                        className="flex-1 text-sm text-bluegrey-500 placeholder:text-bluegrey-500 outline-none bg-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <FilterTag label="Add filter" isAddButton onClick={addEventFilter} />
               </div>
+
+              {/* Active Filters */}
+              {eventFilters.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  {eventFilters.map((filter) => (
+                    <div
+                      key={filter.id}
+                      className="flex items-center gap-2 p-2 bg-bluegrey-50 border border-bluegrey-200 rounded-sm"
+                    >
+                      <select
+                        value={filter.column}
+                        onChange={(e) =>
+                          updateEventFilter(
+                            filter.id,
+                            e.target.value,
+                            undefined,
+                            undefined
+                          )
+                        }
+                        className="text-xs bg-transparent text-bluegrey-900 outline-none border-r border-bluegrey-300 pr-2"
+                      >
+                        <option value="date">Date</option>
+                        <option value="eventType">Event Type</option>
+                        <option value="application">Application</option>
+                        <option value="userId">User ID</option>
+                        <option value="clientIp">Client IP</option>
+                        <option value="identityApp">Identity App</option>
+                        <option value="description">Description</option>
+                      </select>
+                      <select
+                        value={filter.operator}
+                        onChange={(e) =>
+                          updateEventFilter(
+                            filter.id,
+                            undefined,
+                            e.target.value,
+                            undefined
+                          )
+                        }
+                        className="text-xs bg-transparent text-bluegrey-900 outline-none border-r border-bluegrey-300 pr-2"
+                      >
+                        <option value="contains">Contains</option>
+                        <option value="equals">Equals</option>
+                        <option value="startsWith">Starts with</option>
+                        <option value="endsWith">Ends with</option>
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Value"
+                        value={filter.value}
+                        onChange={(e) =>
+                          updateEventFilter(
+                            filter.id,
+                            undefined,
+                            undefined,
+                            e.target.value
+                          )
+                        }
+                        className="text-xs bg-transparent text-bluegrey-900 outline-none flex-1 px-2"
+                      />
+                      <button
+                        onClick={() => removeEventFilter(filter.id)}
+                        className="text-bluegrey-500 hover:text-bluegrey-900 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Event Log Table */}
               <Table variant="expandable">
