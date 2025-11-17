@@ -42,7 +42,7 @@ export default function DateRangePicker({
       const endIso = now.toISOString().slice(0, 16);
       onEndDateChange(endIso);
     }
-  }, []);
+  }, [endDate, onEndDateChange]);
 
   const applyPreset = (preset: PresetOption) => {
     const now = new Date();
