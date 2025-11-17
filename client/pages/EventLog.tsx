@@ -13,8 +13,12 @@ export default function EventLog() {
     const fourteenDaysAgo = new Date(now);
     fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
-    const startDate = fourteenDaysAgo.toISOString().slice(0, 16);
-    const endDate = now.toISOString().slice(0, 16);
+    const formatDate = (date: Date) => {
+      return date.toISOString().slice(0, 16).replace("T", " ");
+    };
+
+    const startDate = formatDate(fourteenDaysAgo);
+    const endDate = formatDate(now);
 
     setFilters([
       {
