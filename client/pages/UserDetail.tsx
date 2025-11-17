@@ -68,6 +68,7 @@ export default function UserDetail() {
   const [expandedRoles, setExpandedRoles] = useState<Set<string>>(new Set());
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [accessRoleSearchQuery, setAccessRoleSearchQuery] = useState("");
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
 
