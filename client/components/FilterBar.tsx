@@ -292,6 +292,8 @@ export default function FilterBar({
                     Value
                   </label>
                   <input
+                    id="filter-value"
+                    name="filter-value"
                     type="text"
                     placeholder="Enter filter value"
                     value={pendingFilter.value}
@@ -304,6 +306,7 @@ export default function FilterBar({
                       }
                     }}
                     className="w-full h-11 px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+                    autoComplete="off"
                   />
                 </div>
               </div>
