@@ -150,23 +150,14 @@ const generateMockEvents = (): Event[] => {
       const eventDate = new Date(date);
       eventDate.setHours(randomHour, randomMinute, randomSecond);
 
-      const username = MOCK_USERNAMES[Math.floor(Math.random() * MOCK_USERNAMES.length)];
-      const action = MOCK_ACTIONS[Math.floor(Math.random() * MOCK_ACTIONS.length)];
+      const eventType = MOCK_EVENT_TYPES[Math.floor(Math.random() * MOCK_EVENT_TYPES.length)];
+      const application = MOCK_APPLICATIONS[Math.floor(Math.random() * MOCK_APPLICATIONS.length)];
+      const identityApp = MOCK_IDENTITY_APPS[Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)];
       const ip = MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)];
       const userAgent = MOCK_USER_AGENTS[Math.floor(Math.random() * MOCK_USER_AGENTS.length)];
-
-      const descriptions: Record<EventAction, string> = {
-        user_created: `New user created: ${username}`,
-        user_deleted: `User deleted: ${username}`,
-        user_updated: `User profile updated: ${username}`,
-        user_login: `User logged in: ${username}`,
-        user_logout: `User logged out: ${username}`,
-        password_changed: `Password changed for: ${username}`,
-        role_assigned: `Role assigned to: ${username}`,
-        role_revoked: `Role revoked from: ${username}`,
-        permission_granted: `Permission granted to: ${username}`,
-        permission_revoked: `Permission revoked from: ${username}`,
-      };
+      const userId = generateUUID();
+      const requestId = generateUUID();
+      const agent = generateUUID();
 
       const year = eventDate.getFullYear();
       const month = String(eventDate.getMonth() + 1).padStart(2, "0");
@@ -174,21 +165,33 @@ const generateMockEvents = (): Event[] => {
       const hours = String(eventDate.getHours()).padStart(2, "0");
       const minutes = String(eventDate.getMinutes()).padStart(2, "0");
       const seconds = String(eventDate.getSeconds()).padStart(2, "0");
-      const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      const dateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+      const details: Record<string, any> = {
+        authMethod: ["OAuth2", "SAML", "Username/Password", "MFA"][Math.floor(Math.random() * 4)],
+        sessionDuration: `${Math.floor(Math.random() * 7200) + 1800}s`,
+        mfaEnabled: Math.random() > 0.5,
+        timestamp: eventDate.toISOString(),
+      };
 
       events.push({
         id: `event-${dayOffset}-${i}`,
-        timestamp,
-        username,
-        action,
-        description: descriptions[action],
-        ip_address: ip,
-        user_agent: userAgent,
+        date: dateTime,
+        eventType,
+        application,
+        userId,
+        clientIp: ip,
+        userAgent,
+        requestId,
+        agent,
+        identityApp,
+        description: EVENT_DESCRIPTIONS[eventType] || eventType,
+        details,
       });
     }
   }
 
-  return events.sort((a, b) => new Date(b.timestamp.replace(" ", "T")).getTime() - new Date(a.timestamp.replace(" ", "T")).getTime());
+  return events.sort((a, b) => new Date(b.date.replace(" ", "T")).getTime() - new Date(a.date.replace(" ", "T")).getTime());
 };
 
 const baseEvents = generateMockEvents();
