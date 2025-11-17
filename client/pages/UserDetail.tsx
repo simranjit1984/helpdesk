@@ -114,20 +114,80 @@ export default function UserDetail() {
   };
 
   const getFilteredEventLogs = () => {
-    if (!eventSearchQuery.trim()) {
-      return eventLogs;
+    let filtered = eventLogs;
+
+    // Apply search query
+    if (eventSearchQuery.trim()) {
+      const query = eventSearchQuery.toLowerCase();
+      filtered = filtered.filter((event) =>
+        event.date.toLowerCase().includes(query) ||
+        event.eventType.toLowerCase().includes(query) ||
+        event.application.toLowerCase().includes(query) ||
+        event.userId.toLowerCase().includes(query) ||
+        event.clientIp.toLowerCase().includes(query) ||
+        event.identityApp.toLowerCase().includes(query) ||
+        event.description.toLowerCase().includes(query)
+      );
     }
 
-    const query = eventSearchQuery.toLowerCase();
-    return eventLogs.filter((event) =>
-      event.date.toLowerCase().includes(query) ||
-      event.eventType.toLowerCase().includes(query) ||
-      event.application.toLowerCase().includes(query) ||
-      event.userId.toLowerCase().includes(query) ||
-      event.clientIp.toLowerCase().includes(query) ||
-      event.identityApp.toLowerCase().includes(query) ||
-      event.description.toLowerCase().includes(query)
+    // Apply filters
+    eventFilters.forEach((filter) => {
+      filtered = filtered.filter((event) => {
+        const fieldValue = (event[filter.column as keyof typeof event] || "")
+          .toString()
+          .toLowerCase();
+        const filterValue = filter.value.toLowerCase();
+
+        switch (filter.operator) {
+          case "contains":
+            return fieldValue.includes(filterValue);
+          case "equals":
+            return fieldValue === filterValue;
+          case "startsWith":
+            return fieldValue.startsWith(filterValue);
+          case "endsWith":
+            return fieldValue.endsWith(filterValue);
+          default:
+            return true;
+        }
+      });
+    });
+
+    return filtered;
+  };
+
+  const addEventFilter = () => {
+    const newFilter = {
+      id: Math.random().toString(36).substr(2, 9),
+      column: "date",
+      operator: "contains",
+      value: "",
+    };
+    setEventFilters([...eventFilters, newFilter]);
+  };
+
+  const updateEventFilter = (
+    id: string,
+    column?: string,
+    operator?: string,
+    value?: string
+  ) => {
+    setEventFilters(
+      eventFilters.map((f) =>
+        f.id === id
+          ? {
+              ...f,
+              column: column ?? f.column,
+              operator: operator ?? f.operator,
+              value: value ?? f.value,
+            }
+          : f
+      )
     );
+  };
+
+  const removeEventFilter = (id: string) => {
+    setEventFilters(eventFilters.filter((f) => f.id !== id));
   };
 
   const eventLogs = [
