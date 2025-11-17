@@ -39,6 +39,7 @@ type SortColumn = "timestamp" | "username" | "action";
 interface EventTableProps {
   filters: Array<{ id: string; column: string; operator: string; value: string }>;
   searchQuery?: string;
+  filterByUsername?: string;
 }
 
 const EVENT_ACTIONS: Record<EventAction, string> = {
@@ -157,7 +158,7 @@ const generateMockEvents = (): Event[] => {
 
 const baseEvents = generateMockEvents();
 
-export default function EventTable({ filters, searchQuery = "" }: EventTableProps) {
+export default function EventTable({ filters, searchQuery = "", filterByUsername }: EventTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
@@ -172,6 +173,10 @@ export default function EventTable({ filters, searchQuery = "" }: EventTableProp
 
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
+
+    if (filterByUsername) {
+      filtered = filtered.filter((event) => event.username === filterByUsername);
+    }
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
