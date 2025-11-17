@@ -88,7 +88,7 @@ export default function UserDetail() {
     setEventFilters([
       {
         id: "default-date-filter",
-        column: "timestamp",
+        column: "date",
         operator: "between",
         value: `${startDate}|${endDate}`,
       },
