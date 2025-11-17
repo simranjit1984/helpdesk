@@ -176,7 +176,15 @@ export default function FilterBar({
       ))}
 
       {/* Add Filter Popover */}
-      <Popover open={isFilterPopoverOpen} onOpenChange={setIsFilterPopoverOpen}>
+      <Popover
+        open={isFilterPopoverOpen}
+        onOpenChange={(open) => {
+          setIsFilterPopoverOpen(open);
+          if (open) {
+            initializeDateRange();
+          }
+        }}
+      >
         <PopoverTrigger asChild>
           <button className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer">
             <PlusCircle className="w-5 h-5 text-bluegrey-900" />
