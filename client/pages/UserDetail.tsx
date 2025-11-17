@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Save, Search, MoreVertical, Pencil, Calendar, ChevronDown, ChevronRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
+import SuccessAlert from "@/components/SuccessAlert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
