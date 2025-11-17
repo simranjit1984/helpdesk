@@ -83,10 +83,12 @@ export default function DateRangePicker({
         <div className="flex items-start gap-3">
           {/* Start Date */}
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-bluegrey-700 font-medium">
+            <label htmlFor="filter-start-date" className="text-xs text-bluegrey-700 font-medium">
               Start Date
             </label>
             <input
+              id="filter-start-date"
+              name="filter-start-date"
               type="datetime-local"
               value={startDate}
               onChange={(e) => {
@@ -94,15 +96,18 @@ export default function DateRangePicker({
                 handleCustomDateChange();
               }}
               className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              autoComplete="off"
             />
           </div>
 
           {/* End Date */}
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-bluegrey-700 font-medium">
+            <label htmlFor="filter-end-date" className="text-xs text-bluegrey-700 font-medium">
               End Date
             </label>
             <input
+              id="filter-end-date"
+              name="filter-end-date"
               type="datetime-local"
               value={endDate}
               onChange={(e) => {
@@ -110,6 +115,7 @@ export default function DateRangePicker({
                 handleCustomDateChange();
               }}
               className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              autoComplete="off"
             />
           </div>
         </div>
