@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronRight } from "lucide-react";
 import {
   Table,
   TableScroll,
@@ -10,6 +10,10 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  TableExpandCell,
+  TableNestedRow,
+  TableNestedCell,
+  TableEmptyState,
 } from "./ui/table";
 
 export type EventAction =
