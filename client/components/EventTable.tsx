@@ -43,7 +43,7 @@ interface Event {
   details: Record<string, any>;
 }
 
-type SortColumn = "timestamp" | "username" | "action";
+type SortColumn = "date" | "eventType" | "application";
 
 interface EventTableProps {
   filters: Array<{ id: string; column: string; operator: string; value: string }>;
