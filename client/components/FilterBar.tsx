@@ -73,6 +73,15 @@ export default function FilterBar({
     return column === "date" || column === "dateCreated";
   };
 
+  const resetFilterState = () => {
+    setPendingFilter({
+      column: columns[0]?.value || "",
+      operator: operators[0]?.value || "contains",
+      value: "",
+    });
+    initializeDateRange();
+  };
+
   const initializeDateRange = () => {
     const now = new Date();
     const endIso = now.toISOString().slice(0, 16);
