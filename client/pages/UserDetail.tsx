@@ -985,14 +985,14 @@ export default function UserDetail() {
           <TabsContent value="events" className="pt-6">
             <div className="flex flex-col gap-4">
               {/* Search Bar */}
-              <div className="relative">
+              <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-bluegrey-500 pointer-events-none" />
                 <Input
                   type="text"
                   placeholder="Search events by date, type, application, user ID..."
                   value={eventSearchQuery}
                   onChange={(e) => setEventSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border-2 border-bluegrey-100 rounded-[2px] focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2 border-2 border-bluegrey-100 rounded-[2px] focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
 
