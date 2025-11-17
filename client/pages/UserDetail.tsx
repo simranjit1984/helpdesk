@@ -1044,19 +1044,11 @@ export default function UserDetail() {
             <div className="flex flex-col gap-4">
               {/* Search and Filter Bar */}
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="w-full sm:w-[280px]">
-                  <div className="relative">
-                    <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white">
-                      <input
-                        type="text"
-                        placeholder="Search"
-                        value={eventSearchQuery}
-                        onChange={(e) => setEventSearchQuery(e.target.value)}
-                        className="flex-1 text-sm text-bluegrey-500 placeholder:text-bluegrey-500 outline-none bg-transparent"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <SearchBar
+                  value={eventSearchQuery}
+                  onChange={setEventSearchQuery}
+                  placeholder="Search events"
+                />
                 <button
                   onClick={addEventFilter}
                   className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer"
