@@ -64,6 +64,14 @@ export default function FilterBar({
     operator: operators[0]?.value || "contains",
     value: "",
   });
+  const [dateRange, setDateRange] = useState({
+    start: "",
+    end: "",
+  });
+
+  const isDateField = (column: string) => {
+    return column === "date" || column === "dateCreated";
+  };
 
   const applyFilter = () => {
     if (pendingFilter.value.trim()) {
