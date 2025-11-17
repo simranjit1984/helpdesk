@@ -237,14 +237,8 @@ export default function FilterBar({
               <DateRangePicker
                 startDate={dateRange.start}
                 endDate={dateRange.end}
-                onStartDateChange={useCallback(
-                  (date: string) => setDateRange((prev) => ({ ...prev, start: date })),
-                  []
-                )}
-                onEndDateChange={useCallback(
-                  (date: string) => setDateRange((prev) => ({ ...prev, end: date })),
-                  []
-                )}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={handleEndDateChange}
                 onApply={applyFilter}
                 onCancel={() => setIsFilterPopoverOpen(false)}
               />
