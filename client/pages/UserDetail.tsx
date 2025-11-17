@@ -914,18 +914,12 @@ export default function UserDetail() {
             <div className="flex flex-col gap-6">
               {/* Toolbar */}
               <div className="flex items-center justify-between gap-3">
-                <div className="w-full max-w-md">
-                  <div className="relative">
-                    <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white">
-                      <Search className="w-5 h-5 text-bluegrey-500 flex-shrink-0" />
-                      <input
-                        type="text"
-                        placeholder="Search access roles"
-                        className="flex-1 text-sm text-bluegrey-500 placeholder:text-bluegrey-500 outline-none bg-transparent"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <SearchBar
+                  value={accessRoleSearchQuery}
+                  onChange={setAccessRoleSearchQuery}
+                  placeholder="Search access roles"
+                  width="w-full max-w-md"
+                />
                 <Button className="rounded-[2px] bg-blue-500 hover:bg-opacity-90">
                   Assign access role
                 </Button>
