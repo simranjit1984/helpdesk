@@ -749,6 +749,7 @@ export default function UsersTable({ searchQuery = "", filters = [] }: UsersTabl
               <TableRow key={index}>
                 <TableCell sticky className="w-56">
                   <button
+                    type="button"
                     onClick={() => navigate(`/users/${encodeURIComponent(user.username)}`)}
                     className="text-sm text-blue-500 hover:text-blue-600 truncate font-medium transition-colors text-left w-full"
                   >
