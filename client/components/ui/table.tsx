@@ -1,28 +1,98 @@
-import * as React from "react";
-
+import React from "react";
 import { cn } from "@/lib/utils";
 
-const Table = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
-    <table
-      ref={ref}
-      className={cn("w-full caption-bottom text-sm", className)}
-      {...props}
-    />
-  </div>
-));
+interface TableContextType {
+  variant?: "flat" | "expandable" | "custom";
+}
+
+const TableContext = React.createContext<TableContextType>({});
+
+interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: "flat" | "expandable" | "custom";
+}
+
+const Table = React.forwardRef<HTMLDivElement, TableProps>(
+  ({ className, variant = "flat", ...props }, ref) => (
+    <TableContext.Provider value={{ variant }}>
+      <div
+        ref={ref}
+        className={cn("bg-white rounded border-2 border-bluegrey-100 lg:border-0", className)}
+        {...props}
+      />
+    </TableContext.Provider>
+  )
+);
 Table.displayName = "Table";
+
+const TableScroll = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("overflow-x-auto scrollbar-thin scrollbar-thumb-bluegrey-300 scrollbar-track-bluegrey-50", className)}
+    {...props}
+  />
+));
+TableScroll.displayName = "TableScroll";
+
+const TableContent = React.forwardRef<
+  HTMLTableElement,
+  React.TableHTMLAttributes<HTMLTableElement>
+>(({ className, ...props }, ref) => (
+  <table
+    ref={ref}
+    className={cn("w-full border-collapse", className)}
+    {...props}
+  />
+));
+TableContent.displayName = "TableContent";
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead
+    ref={ref}
+    className={cn("", className)}
+    {...props}
+  />
 ));
 TableHeader.displayName = "TableHeader";
+
+interface TableHeadRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  sticky?: boolean;
+}
+
+const TableHeadRow = React.forwardRef<HTMLTableRowElement, TableHeadRowProps>(
+  ({ className, sticky = true, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn("border-b-2 border-bluegrey-100", className)}
+      {...props}
+    />
+  )
+);
+TableHeadRow.displayName = "TableHeadRow";
+
+interface TableHeadCellProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  sticky?: boolean;
+}
+
+const TableHeadCell = React.forwardRef<HTMLTableCellElement, TableHeadCellProps>(
+  ({ className, sticky = false, ...props }, ref) => (
+    <th
+      ref={ref}
+      className={cn(
+        "bg-bluegrey-25 text-left px-3 py-2.5 whitespace-nowrap",
+        sticky && "sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)]",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+TableHeadCell.displayName = "TableHeadCell";
 
 const TableBody = React.forwardRef<
   HTMLTableSectionElement,
@@ -30,88 +100,280 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn("", className)}
     {...props}
   />
 ));
 TableBody.displayName = "TableBody";
 
-const TableFooter = React.forwardRef<
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  expandable?: boolean;
+  isExpanded?: boolean;
+}
+
+const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
+  ({ className, expandable = false, isExpanded = false, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn(
+        "hover:bg-bluegrey-25/50 transition-colors",
+        !expandable || !isExpanded ? "border-b-2 border-bluegrey-100" : "",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+TableRow.displayName = "TableRow";
+
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  sticky?: boolean;
+  height?: "compact" | "default" | "spacious";
+}
+
+const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
+  ({ className, sticky = false, height = "default", ...props }, ref) => {
+    const heightClass = {
+      compact: "h-8",
+      default: "h-10",
+      spacious: "h-12",
+    }[height];
+
+    return (
+      <td
+        ref={ref}
+        className={cn(
+          "px-4 py-1",
+          sticky && "sticky left-0 z-10 bg-white border-r border-bluegrey-100 shadow-[1px_0_3px_rgba(0,0,0,0.05)]",
+          className
+        )}
+        {...props}
+      >
+        <div className={cn("flex items-center whitespace-nowrap overflow-hidden", heightClass)}>
+          {props.children}
+        </div>
+      </td>
+    );
+  }
+);
+TableCell.displayName = "TableCell";
+
+interface TableActionCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  height?: "compact" | "default" | "spacious";
+}
+
+const TableActionCell = React.forwardRef<HTMLTableCellElement, TableActionCellProps>(
+  ({ className, height = "default", ...props }, ref) => {
+    const heightClass = {
+      compact: "h-8",
+      default: "h-10",
+      spacious: "h-12",
+    }[height];
+
+    return (
+      <td
+        ref={ref}
+        className={cn("py-1 w-10", className)}
+        {...props}
+      >
+        <div className={cn("flex items-center justify-center", heightClass)}>
+          {props.children}
+        </div>
+      </td>
+    );
+  }
+);
+TableActionCell.displayName = "TableActionCell";
+
+interface TableExpandCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  height?: "compact" | "default" | "spacious";
+}
+
+const TableExpandCell = React.forwardRef<HTMLTableCellElement, TableExpandCellProps>(
+  ({ className, height = "default", ...props }, ref) => {
+    const heightClass = {
+      compact: "h-8",
+      default: "h-10",
+      spacious: "h-12",
+    }[height];
+
+    return (
+      <td
+        ref={ref}
+        className={cn("px-3 py-1 w-10", className)}
+        {...props}
+      >
+        <div className={cn("flex items-center justify-center", heightClass)}>
+          {props.children}
+        </div>
+      </td>
+    );
+  }
+);
+TableExpandCell.displayName = "TableExpandCell";
+
+interface TableNestedRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  colSpan: number;
+}
+
+const TableNestedRow = React.forwardRef<HTMLTableRowElement, TableNestedRowProps>(
+  ({ className, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn("bg-bluegrey-25/30 border-b-2 border-bluegrey-100", className)}
+      {...props}
+    />
+  )
+);
+TableNestedRow.displayName = "TableNestedRow";
+
+interface TableNestedCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  nestedTable?: boolean;
+}
+
+const TableNestedCell = React.forwardRef<HTMLTableCellElement, TableNestedCellProps>(
+  ({ className, nestedTable = false, ...props }, ref) => (
+    <td
+      ref={ref}
+      className={cn("px-3 py-0 pr-0", className)}
+      {...props}
+    />
+  )
+);
+TableNestedCell.displayName = "TableNestedCell";
+
+interface NestedTableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+  compact?: boolean;
+}
+
+const NestedTable = React.forwardRef<HTMLTableElement, NestedTableProps>(
+  ({ className, compact = false, ...props }, ref) => (
+    <table
+      ref={ref}
+      className={cn("w-full border-collapse", className)}
+      {...props}
+    />
+  )
+);
+NestedTable.displayName = "NestedTable";
+
+const NestedTableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <tfoot
+  <thead
     ref={ref}
-    className={cn(
-      "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-      className,
-    )}
+    className={cn("", className)}
     {...props}
   />
 ));
-TableFooter.displayName = "TableFooter";
+NestedTableHeader.displayName = "NestedTableHeader";
 
-const TableRow = React.forwardRef<
+const NestedTableHeadRow = React.forwardRef<
   HTMLTableRowElement,
   React.HTMLAttributes<HTMLTableRowElement>
 >(({ className, ...props }, ref) => (
   <tr
     ref={ref}
-    className={cn(
-      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-      className,
-    )}
+    className={cn("border-b-2 border-bluegrey-200 bg-bluegrey-50", className)}
     {...props}
   />
 ));
-TableRow.displayName = "TableRow";
+NestedTableHeadRow.displayName = "NestedTableHeadRow";
 
-const TableHead = React.forwardRef<
+const NestedTableHeadCell = React.forwardRef<
   HTMLTableCellElement,
   React.ThHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (
   <th
     ref={ref}
-    className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-      className,
-    )}
+    className={cn("text-left px-3 py-2", className)}
+    {...props}
+  >
+    <span className="text-xs font-semibold text-bluegrey-700 uppercase tracking-wider">
+      {props.children}
+    </span>
+  </th>
+));
+NestedTableHeadCell.displayName = "NestedTableHeadCell";
+
+const NestedTableBody = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+  <tbody
+    ref={ref}
+    className={cn("", className)}
     {...props}
   />
 ));
-TableHead.displayName = "TableHead";
+NestedTableBody.displayName = "NestedTableBody";
 
-const TableCell = React.forwardRef<
+const NestedTableRow = React.forwardRef<
+  HTMLTableRowElement,
+  React.HTMLAttributes<HTMLTableRowElement>
+>(({ className, ...props }, ref) => (
+  <tr
+    ref={ref}
+    className={cn("border-b border-bluegrey-100 last:border-b-0 hover:bg-bluegrey-50/50 transition-colors", className)}
+    {...props}
+  />
+));
+NestedTableRow.displayName = "NestedTableRow";
+
+const NestedTableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+    className={cn("px-3 py-2", className)}
     {...props}
   />
 ));
-TableCell.displayName = "TableCell";
+NestedTableCell.displayName = "NestedTableCell";
 
-const TableCaption = React.forwardRef<
-  HTMLTableCaptionElement,
-  React.HTMLAttributes<HTMLTableCaptionElement>
->(({ className, ...props }, ref) => (
-  <caption
-    ref={ref}
-    className={cn("mt-4 text-sm text-muted-foreground", className)}
-    {...props}
-  />
-));
-TableCaption.displayName = "TableCaption";
+interface EmptyStateProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  colSpan: number;
+  message: string;
+}
+
+const TableEmptyState = React.forwardRef<HTMLTableRowElement, EmptyStateProps>(
+  ({ colSpan, message, className, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn("border-b-2 border-bluegrey-100", className)}
+      {...props}
+    >
+      <td colSpan={colSpan} className="px-8 py-16">
+        <p className="text-sm text-bluegrey-600 text-center">{message}</p>
+      </td>
+    </tr>
+  )
+);
+TableEmptyState.displayName = "TableEmptyState";
 
 export {
   Table,
+  TableScroll,
+  TableContent,
   TableHeader,
+  TableHeadRow,
+  TableHeadCell,
   TableBody,
-  TableFooter,
-  TableHead,
   TableRow,
   TableCell,
-  TableCaption,
+  TableActionCell,
+  TableExpandCell,
+  TableNestedRow,
+  TableNestedCell,
+  TableEmptyState,
+  NestedTable,
+  NestedTableHeader,
+  NestedTableHeadRow,
+  NestedTableHeadCell,
+  NestedTableBody,
+  NestedTableRow,
+  NestedTableCell,
+  type TableContextType,
 };
