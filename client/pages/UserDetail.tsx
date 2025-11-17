@@ -99,6 +99,120 @@ export default function UserDetail() {
     setExpandedRoles(newExpanded);
   };
 
+  const toggleEventExpanded = (eventId: string) => {
+    const newExpanded = new Set(expandedEvents);
+    if (newExpanded.has(eventId)) {
+      newExpanded.delete(eventId);
+    } else {
+      newExpanded.add(eventId);
+    }
+    setExpandedEvents(newExpanded);
+  };
+
+  const eventLogs = [
+    {
+      id: "evt-1",
+      date: "2025-01-15 14:32:45",
+      eventType: "User Login",
+      application: "Facebook",
+      userId: "f7d82457-aac9-4826-9986-a8392b215300",
+      clientIp: "192.168.1.105",
+      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+      requestId: "90ca1c13-5727-40c4-b881-1b0eb4c173cf",
+      agent: "90ca1c13-5727-40c4-b881-1b0eb4c173cf",
+      identityApp: "Self-service",
+      description: "User successfully logged in via Facebook SSO",
+      details: {
+        authMethod: "OAuth2",
+        sessionDuration: "3600s",
+        mfaEnabled: true,
+        loginAttempts: 1
+      }
+    },
+    {
+      id: "evt-2",
+      date: "2025-01-15 12:18:23",
+      eventType: "Password Reset",
+      application: "Salesforce",
+      userId: "f7d82457-aac9-4826-9986-a8392b215300",
+      clientIp: "10.0.2.45",
+      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/605.1.15",
+      requestId: "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+      agent: "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+      identityApp: "Core",
+      description: "User initiated password reset request from Salesforce",
+      details: {
+        resetMethod: "Email",
+        emailSent: "user@example.com",
+        tokenExpiry: "1800s",
+        verified: true
+      }
+    },
+    {
+      id: "evt-3",
+      date: "2025-01-15 09:45:12",
+      eventType: "Access Granted",
+      application: "Helpdesk",
+      userId: "f7d82457-aac9-4826-9986-a8392b215300",
+      clientIp: "172.16.0.88",
+      userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) Mobile Safari",
+      requestId: "xyz-789-abc-456-def-123",
+      agent: "xyz-789-abc-456-def-123",
+      identityApp: "Helpdesk",
+      description: "User granted access to Helpdesk application with admin privileges",
+      details: {
+        accessLevel: "Admin",
+        grantedBy: "system-admin",
+        validUntil: "2025-12-31T23:59:59Z",
+        resources: ["tickets", "users", "settings"]
+      }
+    },
+    {
+      id: "evt-4",
+      date: "2025-01-14 16:22:01",
+      eventType: "Profile Updated",
+      application: "Internal",
+      userId: "f7d82457-aac9-4826-9986-a8392b215300",
+      clientIp: "192.168.100.50",
+      userAgent: "Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0",
+      requestId: "profile-update-8877665544",
+      agent: "profile-update-8877665544",
+      identityApp: "Delegated user management",
+      description: "User profile information updated by delegated administrator",
+      details: {
+        fieldsChanged: ["phoneNumber", "address", "department"],
+        changedBy: "admin@insurcar.com",
+        previousValues: {
+          phoneNumber: "+1 234567890",
+          department: "Sales"
+        },
+        newValues: {
+          phoneNumber: "+1 888999000",
+          department: "Marketing"
+        }
+      }
+    },
+    {
+      id: "evt-5",
+      date: "2025-01-14 11:05:33",
+      eventType: "Permission Revoked",
+      application: "Salesforce",
+      userId: "f7d82457-aac9-4826-9986-a8392b215300",
+      clientIp: "203.0.113.42",
+      userAgent: "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) Safari/605.1.15",
+      requestId: "revoke-perm-9988776655",
+      agent: "revoke-perm-9988776655",
+      identityApp: "Core",
+      description: "User's export data permission revoked from Salesforce application",
+      details: {
+        permission: "Export Data",
+        revokedBy: "security-team@insurcar.com",
+        reason: "Security policy update",
+        timestamp: "2025-01-14T11:05:33Z"
+      }
+    }
+  ];
+
   // Fetch user data based on ID
   const foundUser = id ? getUserById(id) : null;
 
