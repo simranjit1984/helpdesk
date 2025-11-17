@@ -119,8 +119,6 @@ interface FilterValueProps {
 }
 
 const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
-  const [showIcon, setShowIcon] = useState(false);
-
   const handleAddFilter = () => {
     if (onFilterAdd) {
       onFilterAdd({
@@ -133,23 +131,17 @@ const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
   };
 
   return (
-    <div
-      className="flex items-center gap-2 group"
-      onMouseEnter={() => setShowIcon(true)}
-      onMouseLeave={() => setShowIcon(false)}
-    >
+    <div className="flex items-center gap-2 group">
       <span className="text-sm text-bluegrey-900">{value}</span>
-      {showIcon && (
-        <button
-          type="button"
-          onClick={handleAddFilter}
-          className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-          title={`Filter by ${column}`}
-          aria-label={`Filter ${column} by ${value}`}
-        >
-          <Filter className="w-5 h-5 text-blue-500" />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={handleAddFilter}
+        className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        title={`Filter by ${column}`}
+        aria-label={`Filter ${column} by ${value}`}
+      >
+        <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
+      </button>
     </div>
   );
 };
