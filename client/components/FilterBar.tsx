@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { X, PlusCircle } from "lucide-react";
 import SearchBar from "./SearchBar";
 import DateRangePicker from "./DateRangePicker";
