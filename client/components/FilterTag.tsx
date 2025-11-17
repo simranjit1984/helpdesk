@@ -5,6 +5,7 @@ interface FilterTagProps {
   boldText?: string;
   onRemove?: () => void;
   isAddButton?: boolean;
+  onClick?: () => void;
 }
 
 export default function FilterTag({
@@ -12,9 +13,22 @@ export default function FilterTag({
   boldText,
   onRemove,
   isAddButton,
+  onClick,
 }: FilterTagProps) {
+  const Component = isAddButton ? "button" : "div";
+  const componentProps = isAddButton
+    ? {
+        onClick,
+        className:
+          "inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer",
+        type: "button" as const,
+      }
+    : {
+        className: "inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full",
+      };
+
   return (
-    <div className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full">
+    <Component {...componentProps}>
       <div className="flex items-center gap-1 pr-1.5">
         {isAddButton && <PlusCircle className="w-5 h-5 text-bluegrey-900" />}
         <span className="text-base text-bluegrey-900">
@@ -30,6 +44,6 @@ export default function FilterTag({
           <X className="w-4 h-4 text-bluegrey-900" />
         </button>
       )}
-    </div>
+    </Component>
   );
 }
