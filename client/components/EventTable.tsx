@@ -481,8 +481,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                             </div>
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
-                              <span className="text-sm text-bluegrey-900 font-mono break-all flex items-center gap-2 group">
-                                {event.requestId}
+                              <div className="flex items-center gap-2 group">
+                                <span className="text-sm text-bluegrey-900 font-mono break-all">{event.requestId}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -493,18 +493,18 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.requestId,
                                     })
                                   }
-                                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                                   title="Filter by Request ID"
                                   aria-label={`Filter by Request ID ${event.requestId}`}
                                 >
-                                  <Filter className="w-5 h-5 text-blue-500" />
+                                  <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
                                 </button>
-                              </span>
+                              </div>
                             </div>
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
-                              <span className="text-sm text-bluegrey-900 font-mono break-all flex items-center gap-2 group">
-                                {event.agent}
+                              <div className="flex items-center gap-2 group">
+                                <span className="text-sm text-bluegrey-900 font-mono break-all">{event.agent}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -515,13 +515,13 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.agent,
                                     })
                                   }
-                                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-all invisible group-hover:visible focus:visible focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                                   title="Filter by Agent"
                                   aria-label={`Filter by Agent ${event.agent}`}
                                 >
-                                  <Filter className="w-5 h-5 text-blue-500" />
+                                  <Filter className="w-5 h-5 text-blue-500 hover:bg-blue-100 rounded" />
                                 </button>
-                              </span>
+                              </div>
                             </div>
                             <div className="flex flex-col gap-1.5">
                               <span className="text-xs font-semibold text-bluegrey-700">Identity App</span>
