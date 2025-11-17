@@ -574,6 +574,13 @@ export default function UserDetail() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {showSuccessAlert && (
+        <SuccessAlert
+          message="Validity period updated successfully"
+          onClose={() => setShowSuccessAlert(false)}
+        />
+      )}
     </Layout>
   );
 }
