@@ -61,9 +61,13 @@ const MOCK_USERNAMES = [
   "carla.clarke@example.com",
   "daniel.davies@example.com",
   "emma.evans@example.com",
-  "frank.foster@example.com",
-  "grace.green@example.com",
-  "henry.harris@example.com",
+  "felix.fischer@example.com",
+  "george.garcia@example.com",
+  "hannah.hughes@example.com",
+  "isabel.ivanova@example.com",
+  "jack.jensen@example.com",
+  "kate.kennedy@example.com",
+  "lucas.lopez@example.com",
 ];
 
 const MOCK_ACTIONS: EventAction[] = [
