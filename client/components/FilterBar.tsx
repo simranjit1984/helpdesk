@@ -270,7 +270,7 @@ export default function FilterBar({
                   <Select
                     value={pendingFilter.operator}
                     onValueChange={(value) =>
-                      setPendingFilter({ ...pendingFilter, operator: value })
+                      setPendingFilter((prev) => ({ ...prev, operator: value }))
                     }
                   >
                     <SelectTrigger className="w-full h-11 px-2 border-bluegrey-500 rounded-sm">
