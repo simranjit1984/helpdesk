@@ -591,7 +591,7 @@ function UserActionsMenu({ user }: { user: User }) {
           {items.map((item) => (
             <DropdownMenuItem
               key={item.action}
-              onClick={() => handleAction(item.label)}
+              onClick={() => handleAction(item)}
             >
               {item.label}
             </DropdownMenuItem>
@@ -602,11 +602,15 @@ function UserActionsMenu({ user }: { user: User }) {
       <ConfirmationModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
-        title="User status is Authentication Blocked"
-        description="You must unblock the user's authentication before you can reset their password."
+        title={pendingAction?.label || ""}
+        description={`Are you sure you want to ${pendingAction?.label?.toLowerCase()} for this user?`}
+        tertiaryAction={{
+          label: "Cancel",
+          onClick: handleCancelAction,
+        }}
         primaryAction={{
-          label: "Close",
-          onClick: () => {},
+          label: "Continue",
+          onClick: handleConfirmAction,
         }}
       />
     </>
