@@ -6,7 +6,7 @@ interface SuccessAlertProps {
   onClose: () => void;
   autoClose?: boolean;
   autoCloseDuration?: number;
-  bottomOffset?: string;
+  bottomOffset?: number;
 }
 
 export default function SuccessAlert({
@@ -14,7 +14,7 @@ export default function SuccessAlert({
   onClose,
   autoClose = true,
   autoCloseDuration = 7000,
-  bottomOffset = "bottom-20",
+  bottomOffset = 80,
 }: SuccessAlertProps) {
   const [isClosing, setIsClosing] = useState(false);
 
