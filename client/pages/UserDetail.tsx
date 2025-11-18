@@ -466,7 +466,7 @@ export default function UserDetail() {
                               value={formData.endDate}
                               onChange={handleFormChange}
                               disabled={isSaving}
-                              className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             />
                           </div>
                         )}
