@@ -17,7 +17,14 @@ interface UserDetailHeaderProps {
   organization: string;
   phone: string;
   email: string;
-  status: "active" | "invited" | "blocked" | "inactive" | "grace" | "invitation-withdrawn" | "invitation-expired";
+  status:
+    | "active"
+    | "invited"
+    | "blocked"
+    | "inactive"
+    | "grace"
+    | "invitation-withdrawn"
+    | "invitation-expired";
 }
 
 export default function UserDetailHeader({
@@ -32,7 +39,10 @@ export default function UserDetailHeader({
   const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState<{ label: string; action: string } | null>(null);
+  const [pendingAction, setPendingAction] = useState<{
+    label: string;
+    action: string;
+  } | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isBlockedModal, setIsBlockedModal] = useState(false);
   const scrollStateRef = useRef({ lastY: 0, isCollapsed: false });
@@ -41,18 +51,30 @@ export default function UserDetailHeader({
     switch (status) {
       case "active":
         return [
-          { label: "Assign administrator role", action: "Assign administrator role" },
+          {
+            label: "Assign administrator role",
+            action: "Assign administrator role",
+          },
           { label: "Block authorization", action: "Block authorization" },
           { label: "Block authentication", action: "Block authentication" },
-          { label: "Remove user from organization", action: "Remove user from organization" },
+          {
+            label: "Remove user from organization",
+            action: "Remove user from organization",
+          },
           { label: "Delete user", action: "Delete user" },
         ];
       case "blocked":
         return [
-          { label: "Assign administrator role", action: "Assign administrator role" },
+          {
+            label: "Assign administrator role",
+            action: "Assign administrator role",
+          },
           { label: "Block authorization", action: "Block authorization" },
           { label: "Unblock authentication", action: "Unblock authentication" },
-          { label: "Remove user from organization", action: "Remove user from organization" },
+          {
+            label: "Remove user from organization",
+            action: "Remove user from organization",
+          },
           { label: "Delete user", action: "Delete user" },
         ];
       default:
@@ -100,18 +122,26 @@ export default function UserDetailHeader({
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const direction = scrollY > scrollStateRef.current.lastY ? 'down' : 'up';
+      const direction = scrollY > scrollStateRef.current.lastY ? "down" : "up";
       scrollStateRef.current.lastY = scrollY;
 
       let newIsCollapsed = scrollStateRef.current.isCollapsed;
 
       // Large hysteresis: only change state at clear thresholds
       // Collapse: only when scrolling DOWN past 120px
-      if (direction === 'down' && scrollY > 120 && !scrollStateRef.current.isCollapsed) {
+      if (
+        direction === "down" &&
+        scrollY > 120 &&
+        !scrollStateRef.current.isCollapsed
+      ) {
         newIsCollapsed = true;
       }
       // Expand: only when scrolling UP below 30px
-      else if (direction === 'up' && scrollY < 30 && scrollStateRef.current.isCollapsed) {
+      else if (
+        direction === "up" &&
+        scrollY < 30 &&
+        scrollStateRef.current.isCollapsed
+      ) {
         newIsCollapsed = false;
       }
 
@@ -173,10 +203,20 @@ export default function UserDetailHeader({
             )}
             {status === "blocked" && (
               <div className="flex items-center gap-2 rounded-full bg-bluegrey-100 px-3 py-1">
-                <svg className="h-5 w-5 text-bluegrey-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM15.5 11H8.5C8.22 11 8 11.22 8 11.5V12.5C8 12.78 8.22 13 8.5 13H15.5C15.78 13 16 12.78 16 12.5V11.5C16 11.22 15.78 11 15.5 11Z" fill="currentColor"/>
+                <svg
+                  className="h-5 w-5 text-bluegrey-900"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM15.5 11H8.5C8.22 11 8 11.22 8 11.5V12.5C8 12.78 8.22 13 8.5 13H15.5C15.78 13 16 12.78 16 12.5V11.5C16 11.22 15.78 11 15.5 11Z"
+                    fill="currentColor"
+                  />
                 </svg>
-                <span className="text-base text-bluegrey-900">Authentication blocked</span>
+                <span className="text-base text-bluegrey-900">
+                  Authentication blocked
+                </span>
               </div>
             )}
           </div>
@@ -193,7 +233,9 @@ export default function UserDetailHeader({
             {menuItems.length > 0 && (
               <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                 <DropdownMenuTrigger asChild>
-                  <button className={`flex h-10 w-10 items-center justify-center rounded-[2px] transition-colors ${isOpen ? "bg-bluegrey-50" : "hover:bg-bluegrey-50"}`}>
+                  <button
+                    className={`flex h-10 w-10 items-center justify-center rounded-[2px] transition-colors ${isOpen ? "bg-bluegrey-50" : "hover:bg-bluegrey-50"}`}
+                  >
                     <MoreVertical className="h-6 w-6 text-bluegrey-700" />
                   </button>
                 </DropdownMenuTrigger>

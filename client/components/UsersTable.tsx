@@ -465,19 +465,24 @@ export const baseUsers: Partial<User>[] = [
 ];
 
 // Assign IDs based on array index
-export const users: User[] = baseUsers.map((user, index) => ({
-  ...user,
-  id: user.id || (index + 1).toString(),
-} as User));
+export const users: User[] = baseUsers.map(
+  (user, index) =>
+    ({
+      ...user,
+      id: user.id || (index + 1).toString(),
+    }) as User,
+);
 
 // Helper function to get a user by ID
 export function getUserById(id: string): User | undefined {
-  return baseUsers.find(user => user.id === id) as User | undefined;
+  return baseUsers.find((user) => user.id === id) as User | undefined;
 }
 
 // Helper function to get a user by username (email)
 export function getUserByUsername(username: string): User | undefined {
-  return baseUsers.find(user => user.username === username) as User | undefined;
+  return baseUsers.find((user) => user.username === username) as
+    | User
+    | undefined;
 }
 
 type SortColumn =
@@ -495,7 +500,10 @@ function UserActionsMenu({ user }: { user: User }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBlockedModal, setIsBlockedModal] = useState(false);
-  const [pendingAction, setPendingAction] = useState<{ label: string; action: string } | null>(null);
+  const [pendingAction, setPendingAction] = useState<{
+    label: string;
+    action: string;
+  } | null>(null);
 
   const handleAction = (item: { label: string; action: string }) => {
     // Navigate to user detail page
@@ -595,7 +603,9 @@ function UserActionsMenu({ user }: { user: User }) {
     <>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <button className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${isOpen ? "bg-bluegrey-100" : "hover:bg-bluegrey-100"}`}>
+          <button
+            className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${isOpen ? "bg-bluegrey-100" : "hover:bg-bluegrey-100"}`}
+          >
             <MoreVertical className="w-6 h-6 text-blue-500" />
           </button>
         </DropdownMenuTrigger>
@@ -642,10 +652,18 @@ function UserActionsMenu({ user }: { user: User }) {
 
 interface UsersTableProps {
   searchQuery?: string;
-  filters?: Array<{ id: string; column: string; operator: string; value: string }>;
+  filters?: Array<{
+    id: string;
+    column: string;
+    operator: string;
+    value: string;
+  }>;
 }
 
-export default function UsersTable({ searchQuery = "", filters = [] }: UsersTableProps) {
+export default function UsersTable({
+  searchQuery = "",
+  filters = [],
+}: UsersTableProps) {
   const navigate = useNavigate();
   const [sortColumn, setSortColumn] = useState<SortColumn>("username");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -672,7 +690,7 @@ export default function UsersTable({ searchQuery = "", filters = [] }: UsersTabl
           user.lastName?.toLowerCase().includes(query) ||
           user.phoneNumber?.toLowerCase().includes(query) ||
           user.dateCreated?.toLowerCase().includes(query) ||
-          user.status?.toLowerCase().includes(query)
+          user.status?.toLowerCase().includes(query),
       );
     }
 
@@ -740,17 +758,14 @@ export default function UsersTable({ searchQuery = "", filters = [] }: UsersTabl
         onClick={() => handleSort(column)}
         className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer"
       >
-        <span className="text-sm font-bold text-bluegrey-900">
-          {label}
-        </span>
+        <span className="text-sm font-bold text-bluegrey-900">{label}</span>
         <div className="w-4 h-4">
-          {isActive && (
-            sortDirection === "asc" ? (
+          {isActive &&
+            (sortDirection === "asc" ? (
               <ChevronUp className="w-4 h-4 text-blue-500" />
             ) : (
               <ChevronDown className="w-4 h-4 text-blue-500" />
-            )
-          )}
+            ))}
         </div>
       </button>
     );
@@ -789,7 +804,9 @@ export default function UsersTable({ searchQuery = "", filters = [] }: UsersTabl
                 <TableCell sticky className="w-56">
                   <button
                     type="button"
-                    onClick={() => navigate(`/users/${encodeURIComponent(user.username)}`)}
+                    onClick={() =>
+                      navigate(`/users/${encodeURIComponent(user.username)}`)
+                    }
                     className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate font-medium transition-colors text-left w-full"
                   >
                     {user.username}

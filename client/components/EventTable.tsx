@@ -48,9 +48,19 @@ interface Event {
 type SortColumn = "date" | "eventType" | "application";
 
 interface EventTableProps {
-  filters: Array<{ id: string; column: string; operator: string; value: string }>;
+  filters: Array<{
+    id: string;
+    column: string;
+    operator: string;
+    value: string;
+  }>;
   searchQuery?: string;
-  onFilterAdd?: (filter: { id: string; column: string; operator: string; value: string }) => void;
+  onFilterAdd?: (filter: {
+    id: string;
+    column: string;
+    operator: string;
+    value: string;
+  }) => void;
 }
 
 const MOCK_EVENT_TYPES = [
@@ -157,7 +167,12 @@ const generateUUID = () => {
 interface FilterValueProps {
   value: string;
   column: string;
-  onFilterAdd?: (filter: { id: string; column: string; operator: string; value: string }) => void;
+  onFilterAdd?: (filter: {
+    id: string;
+    column: string;
+    operator: string;
+    value: string;
+  }) => void;
 }
 
 const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
@@ -210,13 +225,19 @@ const generateMockEvents = (): Event[] => {
       const eventDate = new Date(date);
       eventDate.setHours(randomHour, randomMinute, randomSecond);
 
-      const eventType = MOCK_EVENT_TYPES[Math.floor(Math.random() * MOCK_EVENT_TYPES.length)];
+      const eventType =
+        MOCK_EVENT_TYPES[Math.floor(Math.random() * MOCK_EVENT_TYPES.length)];
       const shouldHaveApplication = Math.random() > 0.2;
       const application = shouldHaveApplication
-        ? MOCK_APPLICATIONS[Math.floor(Math.random() * MOCK_APPLICATIONS.length)]
+        ? MOCK_APPLICATIONS[
+            Math.floor(Math.random() * MOCK_APPLICATIONS.length)
+          ]
         : "";
       const actor = MOCK_ACTORS[Math.floor(Math.random() * MOCK_ACTORS.length)];
-      const clientIp = Math.random() > 0.1 ? MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)] : "";
+      const clientIp =
+        Math.random() > 0.1
+          ? MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)]
+          : "";
 
       const shouldHaveUserAgent = Math.random() > 0.15;
       const userAgent = shouldHaveUserAgent
@@ -228,12 +249,15 @@ const generateMockEvents = (): Event[] => {
 
       const shouldHaveIdentityApp = Math.random() > 0.2;
       const identityApp = shouldHaveIdentityApp
-        ? MOCK_IDENTITY_APPS[Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)]
+        ? MOCK_IDENTITY_APPS[
+            Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)
+          ]
         : undefined;
 
       const identityAppInstanceId = identityApp ? generateUUID() : undefined;
 
-      const description = MOCK_DESCRIPTIONS[Math.floor(Math.random() * MOCK_DESCRIPTIONS.length)];
+      const description =
+        MOCK_DESCRIPTIONS[Math.floor(Math.random() * MOCK_DESCRIPTIONS.length)];
 
       const subject = Math.random() > 0.3 ? generateUUID() : undefined;
 
@@ -286,12 +310,20 @@ const generateMockEvents = (): Event[] => {
     }
   }
 
-  return events.sort((a, b) => new Date(b.date.replace(" ", "T")).getTime() - new Date(a.date.replace(" ", "T")).getTime());
+  return events.sort(
+    (a, b) =>
+      new Date(b.date.replace(" ", "T")).getTime() -
+      new Date(a.date.replace(" ", "T")).getTime(),
+  );
 };
 
 const baseEvents = generateMockEvents();
 
-export default function EventTable({ filters, searchQuery = "", onFilterAdd }: EventTableProps) {
+export default function EventTable({
+  filters,
+  searchQuery = "",
+  onFilterAdd,
+}: EventTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
@@ -327,7 +359,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
           event.application.toLowerCase().includes(query) ||
           event.actor.toLowerCase().includes(query) ||
           event.clientIp.toLowerCase().includes(query) ||
-          (event.description?.toLowerCase().includes(query) ?? false)
+          (event.description?.toLowerCase().includes(query) ?? false),
       );
     }
 
@@ -351,13 +383,19 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
             return fieldDate >= startDate && fieldDate <= endDate;
           }
           case "contains":
-            return fieldValue.toLowerCase().includes(filter.value.toLowerCase());
+            return fieldValue
+              .toLowerCase()
+              .includes(filter.value.toLowerCase());
           case "equals":
             return fieldValue.toLowerCase() === filter.value.toLowerCase();
           case "startsWith":
-            return fieldValue.toLowerCase().startsWith(filter.value.toLowerCase());
+            return fieldValue
+              .toLowerCase()
+              .startsWith(filter.value.toLowerCase());
           case "endsWith":
-            return fieldValue.toLowerCase().endsWith(filter.value.toLowerCase());
+            return fieldValue
+              .toLowerCase()
+              .endsWith(filter.value.toLowerCase());
           default:
             return true;
         }
@@ -401,17 +439,14 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
         onClick={() => handleSort(column)}
         className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer"
       >
-        <span className="text-sm font-bold text-bluegrey-900">
-          {label}
-        </span>
+        <span className="text-sm font-bold text-bluegrey-900">{label}</span>
         <div className="w-4 h-4">
-          {isActive && (
-            sortDirection === "asc" ? (
+          {isActive &&
+            (sortDirection === "asc" ? (
               <ChevronUp className="w-4 h-4 text-blue-500" />
             ) : (
               <ChevronDown className="w-4 h-4 text-blue-500" />
-            )
-          )}
+            ))}
         </div>
       </button>
     );
@@ -432,10 +467,17 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
     return "group-hover:opacity-100";
   };
 
-  const renderDetailField = ({ label, value, column, groupClass }: DetailFieldProps) => {
+  const renderDetailField = ({
+    label,
+    value,
+    column,
+    groupClass,
+  }: DetailFieldProps) => {
     if (!value) return null;
     const hasFilter = column && onFilterAdd;
-    const hoverClass = groupClass ? getGroupHoverClass(groupClass) : "hover:opacity-100";
+    const hoverClass = groupClass
+      ? getGroupHoverClass(groupClass)
+      : "hover:opacity-100";
 
     return (
       <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
@@ -482,10 +524,14 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                 <SortHeader column="application" label="Application" />
               </TableHeadCell>
               <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">Actor</span>
+                <span className="text-sm font-bold text-bluegrey-900">
+                  Actor
+                </span>
               </TableHeadCell>
               <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">Client IP</span>
+                <span className="text-sm font-bold text-bluegrey-900">
+                  Client IP
+                </span>
               </TableHeadCell>
             </TableHeadRow>
           </TableHeader>
@@ -493,7 +539,10 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
             {getSortedEvents().length > 0 ? (
               getSortedEvents().map((event) => (
                 <React.Fragment key={event.id}>
-                  <TableRow expandable isExpanded={expandedEvents.has(event.id)}>
+                  <TableRow
+                    expandable
+                    isExpanded={expandedEvents.has(event.id)}
+                  >
                     <TableExpandCell>
                       <button
                         type="button"
@@ -510,7 +559,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 truncate">{event.date}</span>
+                        <span className="text-sm text-bluegrey-900 truncate">
+                          {event.date}
+                        </span>
                         <button
                           type="button"
                           onClick={() =>
@@ -531,7 +582,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     </TableCell>
                     <TableCell className="group/eventType">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 truncate">{event.eventType}</span>
+                        <span className="text-sm text-bluegrey-900 truncate">
+                          {event.eventType}
+                        </span>
                         <button
                           type="button"
                           onClick={() =>
@@ -552,7 +605,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     </TableCell>
                     <TableCell className="group/application">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 truncate">{event.application || "-"}</span>
+                        <span className="text-sm text-bluegrey-900 truncate">
+                          {event.application || "-"}
+                        </span>
                         {event.application && (
                           <button
                             type="button"
@@ -575,7 +630,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     </TableCell>
                     <TableCell className="group/actor">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.actor || "-"}</span>
+                        <span className="text-sm text-bluegrey-900 font-mono truncate">
+                          {event.actor || "-"}
+                        </span>
                         {event.actor && (
                           <button
                             type="button"
@@ -598,7 +655,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     </TableCell>
                     <TableCell className="group/clientIp">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.clientIp || "-"}</span>
+                        <span className="text-sm text-bluegrey-900 font-mono truncate">
+                          {event.clientIp || "-"}
+                        </span>
                         {event.clientIp && (
                           <button
                             type="button"
@@ -626,26 +685,63 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       <TableNestedCell colSpan={5}>
                         <div className="py-6 px-4 bg-bluegrey-50/50">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {renderDetailField({ label: "User Agent", value: event.userAgent, column: "userAgent", groupClass: "group/userAgent" })}
-                            {renderDetailField({ label: "Request ID", value: event.requestId, column: "requestId", groupClass: "group/requestId" })}
-                            {renderDetailField({ label: "Identity App", value: event.identityApp, column: "identityApp", groupClass: "group/identityApp" })}
-                            {renderDetailField({ label: "Identity App Instance ID", value: event.identityAppInstanceId, column: "identityAppInstanceId", groupClass: "group/identityAppInstanceId" })}
-                            {renderDetailField({ label: "Authentication Details", value: event.authenticationDetails, column: "authenticationDetails", groupClass: "group/authenticationDetails" })}
-                            {renderDetailField({ label: "Subject", value: event.subject, column: "subject", groupClass: "group/subject" })}
+                            {renderDetailField({
+                              label: "User Agent",
+                              value: event.userAgent,
+                              column: "userAgent",
+                              groupClass: "group/userAgent",
+                            })}
+                            {renderDetailField({
+                              label: "Request ID",
+                              value: event.requestId,
+                              column: "requestId",
+                              groupClass: "group/requestId",
+                            })}
+                            {renderDetailField({
+                              label: "Identity App",
+                              value: event.identityApp,
+                              column: "identityApp",
+                              groupClass: "group/identityApp",
+                            })}
+                            {renderDetailField({
+                              label: "Identity App Instance ID",
+                              value: event.identityAppInstanceId,
+                              column: "identityAppInstanceId",
+                              groupClass: "group/identityAppInstanceId",
+                            })}
+                            {renderDetailField({
+                              label: "Authentication Details",
+                              value: event.authenticationDetails,
+                              column: "authenticationDetails",
+                              groupClass: "group/authenticationDetails",
+                            })}
+                            {renderDetailField({
+                              label: "Subject",
+                              value: event.subject,
+                              column: "subject",
+                              groupClass: "group/subject",
+                            })}
                             {event.description && (
                               <div className="flex flex-col gap-1.5 lg:col-span-2">
-                                <span className="text-xs font-semibold text-bluegrey-700">Description</span>
-                                <span className="text-sm text-bluegrey-900 leading-relaxed">{event.description}</span>
+                                <span className="text-xs font-semibold text-bluegrey-700">
+                                  Description
+                                </span>
+                                <span className="text-sm text-bluegrey-900 leading-relaxed">
+                                  {event.description}
+                                </span>
                               </div>
                             )}
-                            {event.details && Object.keys(event.details).length > 0 && (
-                              <div className="flex flex-col gap-1.5 lg:col-span-2">
-                                <span className="text-xs font-semibold text-bluegrey-700">Details</span>
-                                <pre className="text-xs text-bluegrey-900 bg-white p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
-{JSON.stringify(event.details, null, 2)}
-                                </pre>
-                              </div>
-                            )}
+                            {event.details &&
+                              Object.keys(event.details).length > 0 && (
+                                <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                  <span className="text-xs font-semibold text-bluegrey-700">
+                                    Details
+                                  </span>
+                                  <pre className="text-xs text-bluegrey-900 bg-white p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
+                                    {JSON.stringify(event.details, null, 2)}
+                                  </pre>
+                                </div>
+                              )}
                           </div>
                         </div>
                       </TableNestedCell>

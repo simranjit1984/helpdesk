@@ -38,7 +38,10 @@ export default function InfoAlert({
   };
 
   return (
-    <div className={`fixed left-0 right-0 z-50 flex justify-center px-4 ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'}`} style={{ bottom: `${bottomOffset}px` }}>
+    <div
+      className={`fixed left-0 right-0 z-50 flex justify-center px-4 ${isClosing ? "animate-slide-down-out" : "animate-slide-up-in"}`}
+      style={{ bottom: `${bottomOffset}px` }}
+    >
       <div className="flex items-start rounded-[2px] bg-[#E6E7F4] relative w-[600px]">
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#041295] rounded-l-[2px]"></div>
         <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
