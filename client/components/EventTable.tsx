@@ -617,12 +617,12 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       <TableNestedCell colSpan={5}>
                         <div className="py-6 px-4 bg-bluegrey-50/50">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {renderDetailField("User Agent", event.userAgent, "userAgent", event, "group/userAgent")}
-                            {renderDetailField("Request ID", event.requestId, "requestId", event, "group/requestId")}
-                            {renderDetailField("Identity App", event.identityApp, "identityApp", event, "group/identityApp")}
-                            {renderDetailField("Identity App Instance ID", event.identityAppInstanceId, "identityAppInstanceId", event, "group/identityAppInstanceId")}
-                            {renderDetailField("Authentication Details", event.authenticationDetails, "authenticationDetails", event, "group/authenticationDetails")}
-                            {renderDetailField("Subject", event.subject, "subject", event, "group/subject")}
+                            {renderDetailField({ label: "User Agent", value: event.userAgent, column: "userAgent", groupClass: "group/userAgent" })}
+                            {renderDetailField({ label: "Request ID", value: event.requestId, column: "requestId", groupClass: "group/requestId" })}
+                            {renderDetailField({ label: "Identity App", value: event.identityApp, column: "identityApp", groupClass: "group/identityApp" })}
+                            {renderDetailField({ label: "Identity App Instance ID", value: event.identityAppInstanceId, column: "identityAppInstanceId", groupClass: "group/identityAppInstanceId" })}
+                            {renderDetailField({ label: "Authentication Details", value: event.authenticationDetails, column: "authenticationDetails", groupClass: "group/authenticationDetails" })}
+                            {renderDetailField({ label: "Subject", value: event.subject, column: "subject", groupClass: "group/subject" })}
                             {event.description && (
                               <div className="flex flex-col gap-1.5 lg:col-span-2">
                                 <span className="text-xs font-semibold text-bluegrey-700">Description</span>
