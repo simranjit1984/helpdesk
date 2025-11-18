@@ -700,7 +700,7 @@ export default function UserDetail() {
                 type="button"
                 variant="ghost"
                 onClick={() => setIsValidityModalOpen(false)}
-                className="rounded-[2px] text-bluegrey-700"
+                className="rounded-[2px] text-[#383A4B] h-10 px-3"
               >
                 Cancel
               </Button>
@@ -710,7 +710,7 @@ export default function UserDetail() {
                   setIsValidityModalOpen(false);
                   setShowSuccessAlert(true);
                 }}
-                className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90"
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3"
               >
                 <Save className="h-5 w-5" />
                 Save
