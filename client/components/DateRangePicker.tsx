@@ -16,6 +16,8 @@ interface PresetOption {
 }
 
 const PRESET_OPTIONS: PresetOption[] = [
+  { label: "Last 24 hours", value: "last_24h", days: 1 },
+  { label: "Last 48 hours", value: "last_48h", days: 2 },
   { label: "Last 7 days", value: "last_7d", days: 7 },
   { label: "Last 14 days", value: "last_14d", days: 14 },
 ];
