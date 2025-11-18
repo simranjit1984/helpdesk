@@ -213,6 +213,20 @@ export default function UserDetail() {
 
 
   const addEventFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
+    // Check if the same filter already exists
+    const isDuplicate = eventFilters.some(
+      (existingFilter) =>
+        existingFilter.column === filter.column &&
+        existingFilter.operator === filter.operator &&
+        existingFilter.value === filter.value
+    );
+
+    if (isDuplicate) {
+      setInfoAlertMessage("This filter already applied.");
+      setShowInfoAlert(true);
+      return;
+    }
+
     setEventFilters([...eventFilters, filter]);
   };
 
