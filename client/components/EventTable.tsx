@@ -427,7 +427,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
   const getGroupHoverClass = (groupClass: string): string => {
     if (groupClass.startsWith("group/")) {
       const groupName = groupClass.substring(6);
-      return `group/${groupName}:opacity-100`;
+      return `group-hover/${groupName}:opacity-100`;
     }
     return "group-hover:opacity-100";
   };
