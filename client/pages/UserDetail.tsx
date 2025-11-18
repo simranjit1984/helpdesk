@@ -750,13 +750,16 @@ export default function UserDetail() {
       </Dialog>
 
       {alerts.map((alert, index) => {
-        const bottomOffset = 80 + index * 72;
+        const positionFromBottom = alerts.length - 1 - index;
+        const bottomOffset = 80 + positionFromBottom * 72;
         return alert.type === "success" ? (
           <SuccessAlert
             key={alert.id}
             message={alert.message}
             onClose={() => removeAlert(alert.id)}
             bottomOffset={bottomOffset}
+            autoClose={true}
+            autoCloseDuration={7000}
           />
         ) : (
           <InfoAlert
