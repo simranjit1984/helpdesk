@@ -94,27 +94,6 @@ export default function UserDetail() {
     endDate: "2025-04-18",
   });
 
-  useEffect(() => {
-    const now = new Date();
-    const fourteenDaysAgo = new Date(now);
-    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-
-    const formatDate = (date: Date) => {
-      return date.toISOString().slice(0, 16).replace("T", " ");
-    };
-
-    const startDate = formatDate(fourteenDaysAgo);
-    const endDate = formatDate(now);
-
-    setEventFilters([
-      {
-        id: "default-date-filter",
-        column: "date",
-        operator: "between",
-        value: `${startDate}|${endDate}`,
-      },
-    ]);
-  }, []);
 
   // Fetch user data based on username (email)
   const decodedId = id ? decodeURIComponent(id) : null;
