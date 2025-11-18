@@ -412,7 +412,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.date,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/date:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/date:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                           title="Filter by Date"
                           aria-label={`Filter by date ${event.date}`}
                         >
