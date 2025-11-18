@@ -1,7 +1,6 @@
 import { MoreVertical, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MoreVertical } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import ConfirmationModal from "./ConfirmationModal";
 import {
