@@ -417,6 +417,16 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
     );
   };
 
+  const renderDetailField = (label: string, value: string | undefined) => {
+    if (!value) return null;
+    return (
+      <div className="flex flex-col gap-1.5" key={label}>
+        <span className="text-xs font-semibold text-bluegrey-700">{label}</span>
+        <span className="text-sm text-bluegrey-900 break-words">{value}</span>
+      </div>
+    );
+  };
+
   return (
     <Table variant="expandable">
       <TableScroll>
@@ -434,7 +444,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                 <SortHeader column="application" label="Application" />
               </TableHeadCell>
               <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">User ID</span>
+                <span className="text-sm font-bold text-bluegrey-900">Actor</span>
               </TableHeadCell>
               <TableHeadCell>
                 <span className="text-sm font-bold text-bluegrey-900">Client IP</span>
@@ -504,65 +514,71 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     </TableCell>
                     <TableCell className="group/application">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 truncate">{event.application}</span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onFilterAdd?.({
-                              id: generateUUID(),
-                              column: "application",
-                              operator: "equals",
-                              value: event.application,
-                            })
-                          }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                          title="Filter by Application"
-                          aria-label={`Filter by Application ${event.application}`}
-                        >
-                          <Filter className="w-5 h-5 text-blue-500" />
-                        </button>
+                        <span className="text-sm text-bluegrey-900 truncate">{event.application || "-"}</span>
+                        {event.application && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              onFilterAdd?.({
+                                id: generateUUID(),
+                                column: "application",
+                                operator: "equals",
+                                value: event.application,
+                              })
+                            }
+                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
+                            title="Filter by Application"
+                            aria-label={`Filter by Application ${event.application}`}
+                          >
+                            <Filter className="w-5 h-5 text-blue-500" />
+                          </button>
+                        )}
                       </div>
                     </TableCell>
-                    <TableCell className="group/userId">
+                    <TableCell className="group/actor">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.userId}</span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onFilterAdd?.({
-                              id: generateUUID(),
-                              column: "userId",
-                              operator: "equals",
-                              value: event.userId,
-                            })
-                          }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                          title="Filter by User ID"
-                          aria-label={`Filter by User ID ${event.userId}`}
-                        >
-                          <Filter className="w-5 h-5 text-blue-500" />
-                        </button>
+                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.actor || "-"}</span>
+                        {event.actor && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              onFilterAdd?.({
+                                id: generateUUID(),
+                                column: "actor",
+                                operator: "equals",
+                                value: event.actor,
+                              })
+                            }
+                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/actor:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
+                            title="Filter by Actor"
+                            aria-label={`Filter by Actor ${event.actor}`}
+                          >
+                            <Filter className="w-5 h-5 text-blue-500" />
+                          </button>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="group/clientIp">
                       <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.clientIp}</span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onFilterAdd?.({
-                              id: generateUUID(),
-                              column: "clientIp",
-                              operator: "equals",
-                              value: event.clientIp,
-                            })
-                          }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                          title="Filter by Client IP"
-                          aria-label={`Filter by Client IP ${event.clientIp}`}
-                        >
-                          <Filter className="w-5 h-5 text-blue-500" />
-                        </button>
+                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.clientIp || "-"}</span>
+                        {event.clientIp && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              onFilterAdd?.({
+                                id: generateUUID(),
+                                column: "clientIp",
+                                operator: "equals",
+                                value: event.clientIp,
+                              })
+                            }
+                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
+                            title="Filter by Client IP"
+                            aria-label={`Filter by Client IP ${event.clientIp}`}
+                          >
+                            <Filter className="w-5 h-5 text-blue-500" />
+                          </button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -572,104 +588,26 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       <TableNestedCell colSpan={5}>
                         <div className="py-6 px-4 bg-bluegrey-50/50">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div className="flex flex-col gap-1.5 group/userAgent">
-                              <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
-                              <div className="flex items-center gap-1 w-full">
-                                <span className="text-sm text-bluegrey-900 truncate">{event.userAgent}</span>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onFilterAdd?.({
-                                      id: generateUUID(),
-                                      column: "userAgent",
-                                      operator: "equals",
-                                      value: event.userAgent,
-                                    })
-                                  }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userAgent:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                                  title="Filter by User Agent"
-                                  aria-label={`Filter by User Agent ${event.userAgent}`}
-                                >
-                                  <Filter className="w-5 h-5 text-blue-500" />
-                                </button>
+                            {renderDetailField("User Agent", event.userAgent)}
+                            {renderDetailField("Request ID", event.requestId)}
+                            {renderDetailField("Identity App", event.identityApp)}
+                            {renderDetailField("Identity App Instance ID", event.identityAppInstanceId)}
+                            {renderDetailField("Authentication Details", event.authenticationDetails)}
+                            {renderDetailField("Subject", event.subject)}
+                            {event.description && (
+                              <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                <span className="text-xs font-semibold text-bluegrey-700">Description</span>
+                                <span className="text-sm text-bluegrey-900 leading-relaxed">{event.description}</span>
                               </div>
-                            </div>
-                            <div className="flex flex-col gap-1.5 group/requestId">
-                              <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
-                              <div className="flex items-center gap-1 w-full">
-                                <span className="text-sm text-bluegrey-900 font-mono truncate">{event.requestId}</span>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onFilterAdd?.({
-                                      id: generateUUID(),
-                                      column: "requestId",
-                                      operator: "equals",
-                                      value: event.requestId,
-                                    })
-                                  }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/requestId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                                  title="Filter by Request ID"
-                                  aria-label={`Filter by Request ID ${event.requestId}`}
-                                >
-                                  <Filter className="w-5 h-5 text-blue-500" />
-                                </button>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1.5 group/agent">
-                              <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
-                              <div className="flex items-center gap-1 w-full">
-                                <span className="text-sm text-bluegrey-900 font-mono truncate">{event.agent}</span>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onFilterAdd?.({
-                                      id: generateUUID(),
-                                      column: "agent",
-                                      operator: "equals",
-                                      value: event.agent,
-                                    })
-                                  }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/agent:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                                  title="Filter by Agent"
-                                  aria-label={`Filter by Agent ${event.agent}`}
-                                >
-                                  <Filter className="w-5 h-5 text-blue-500" />
-                                </button>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1.5 group/identityApp">
-                              <span className="text-xs font-semibold text-bluegrey-700">Identity App</span>
-                              <div className="flex items-center gap-1 w-full">
-                                <span className="text-sm text-bluegrey-900 truncate">{event.identityApp}</span>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onFilterAdd?.({
-                                      id: generateUUID(),
-                                      column: "identityApp",
-                                      operator: "equals",
-                                      value: event.identityApp,
-                                    })
-                                  }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/identityApp:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                                  title="Filter by Identity App"
-                                  aria-label={`Filter by Identity App ${event.identityApp}`}
-                                >
-                                  <Filter className="w-5 h-5 text-blue-500" />
-                                </button>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1.5 lg:col-span-2">
-                              <span className="text-xs font-semibold text-bluegrey-700">Description</span>
-                              <span className="text-sm text-bluegrey-900 leading-relaxed">{event.description}</span>
-                            </div>
-                            <div className="flex flex-col gap-1.5 lg:col-span-2">
-                              <span className="text-xs font-semibold text-bluegrey-700">Details</span>
-                              <pre className="text-xs text-bluegrey-900 bg-white p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
+                            )}
+                            {event.details && Object.keys(event.details).length > 0 && (
+                              <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                <span className="text-xs font-semibold text-bluegrey-700">Details</span>
+                                <pre className="text-xs text-bluegrey-900 bg-white p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
 {JSON.stringify(event.details, null, 2)}
-                              </pre>
-                            </div>
+                                </pre>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </TableNestedCell>
