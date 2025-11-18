@@ -73,6 +73,21 @@ export default function UserDetail() {
   const [accessRoleSearchQuery, setAccessRoleSearchQuery] = useState("");
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveProgress, setSaveProgress] = useState(0);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address1: "",
+    address2: "",
+    city: "",
+    postalCode: "",
+    country: "",
+    startDate: "",
+    endDate: "",
+  });
 
   useEffect(() => {
     const now = new Date();
