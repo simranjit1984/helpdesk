@@ -399,7 +399,7 @@ export default function UserDetail() {
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="country">Country</Label>
                   <Select value={formData.country} onValueChange={handleCountryChange} disabled={isSaving}>
-                    <SelectTrigger>
+                    <SelectTrigger className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
