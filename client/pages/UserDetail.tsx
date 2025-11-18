@@ -215,15 +215,15 @@ export default function UserDetail() {
   };
 
 
-  const showAlert = (message: string, type: "success" | "info") => {
+  const showAlert = useCallback((message: string, type: "success" | "info") => {
     const alertId = `alert-${Date.now()}-${Math.random()}`;
     const newAlert: Alert = { id: alertId, message, type };
     setAlerts((prev) => [...prev, newAlert]);
-  };
+  }, []);
 
-  const removeAlert = (alertId: string) => {
+  const removeAlert = useCallback((alertId: string) => {
     setAlerts((prev) => prev.filter((alert) => alert.id !== alertId));
-  };
+  }, []);
 
   const addEventFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
     // Check if the same filter already exists
