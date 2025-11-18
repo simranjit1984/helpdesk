@@ -38,7 +38,7 @@ export default function SuccessAlert({
   };
 
   return (
-    <div className={`fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'}`}>
+    <div className={`fixed ${bottomOffset} left-0 right-0 z-50 flex justify-center px-4 ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'}`} style={{ bottom: bottomOffset.includes('px') ? bottomOffset : undefined }}>
       <div className="flex items-start rounded-[2px] bg-green-50 relative w-[600px]">
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
         <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
