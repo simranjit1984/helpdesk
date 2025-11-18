@@ -464,16 +464,18 @@ export default function UserDetail() {
               <div className="flex items-center gap-4">
                 <Button
                   type="submit"
-                  className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90"
+                  disabled={isSaving}
+                  className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save className="h-5 w-5" />
-                  Save
+                  {isSaving ? "Saving..." : "Save"}
                 </Button>
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={() => navigate("/")}
-                  className="rounded-[2px] text-bluegrey-700"
+                  disabled={isSaving}
+                  className="rounded-[2px] text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </Button>
