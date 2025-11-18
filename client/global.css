@@ -111,13 +111,16 @@
     white-space: pre;
   }
 
-  /* Default styling for date picker icon */
+  /* Style date input to show calendar icon clearly */
   input[type="date"] {
     color-scheme: light;
+    padding-right: 40px;
   }
 
   input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    filter: invert(0.8);
+    opacity: 1;
+    position: absolute;
+    right: 8px;
   }
 }
