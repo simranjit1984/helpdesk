@@ -66,12 +66,26 @@ export default function UserDetailHeader({
     }
   };
 
-  const handleAction = (action: string) => {
-    toast({
-      title: action,
-      description: `Action performed for ${firstName} ${lastName}`,
-    });
+  const handleActionClick = (item: { label: string; action: string }) => {
+    setPendingAction(item);
+    setIsConfirmModalOpen(true);
     setIsOpen(false);
+  };
+
+  const handleConfirmAction = () => {
+    if (pendingAction) {
+      toast({
+        title: pendingAction.action,
+        description: `Action performed for ${firstName} ${lastName}`,
+      });
+      setIsConfirmModalOpen(false);
+      setPendingAction(null);
+    }
+  };
+
+  const handleCancelAction = () => {
+    setIsConfirmModalOpen(false);
+    setPendingAction(null);
   };
 
   const menuItems = getMenuItems();
