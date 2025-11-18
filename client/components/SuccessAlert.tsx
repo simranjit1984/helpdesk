@@ -32,12 +32,12 @@ export default function SuccessAlert({
     return () => clearTimeout(timer);
   }, [autoCloseDuration, onClose, autoClose]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
     }, 300);
-  };
+  }, [onClose]);
 
   return (
     <div className={`fixed left-0 right-0 z-50 flex justify-center px-4 ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'}`} style={{ bottom: `${bottomOffset}px` }}>
