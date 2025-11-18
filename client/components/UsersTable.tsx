@@ -278,7 +278,7 @@ export const baseUsers: Partial<User>[] = [
     lastName: "Anderson",
     phoneNumber: "+1 888999000",
     dateCreated: "2024-07-15 08:25:45",
-    status: "active",
+    status: "blocked",
     accessRoles: [
       {
         id: "1",
