@@ -168,23 +168,9 @@ export default function UserDetail() {
   const handleSaveBasicInfo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-    setSaveProgress(0);
-
-    // Simulate progress
-    const interval = setInterval(() => {
-      setSaveProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(interval);
-          return prev;
-        }
-        return prev + Math.random() * 30;
-      });
-    }, 100);
 
     // Simulate API call
     setTimeout(() => {
-      clearInterval(interval);
-      setSaveProgress(100);
       setIsSaving(false);
       setShowSuccessAlert(true);
     }, 1500);
