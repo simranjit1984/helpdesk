@@ -790,7 +790,7 @@ export default function UsersTable({ searchQuery = "", filters = [] }: UsersTabl
                   <button
                     type="button"
                     onClick={() => navigate(`/users/${encodeURIComponent(user.username)}`)}
-                    className="text-sm text-bluegrey-900 hover:text-blue-500 truncate font-medium transition-colors text-left w-full"
+                    className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate font-medium transition-colors text-left w-full"
                   >
                     {user.username}
                   </button>
