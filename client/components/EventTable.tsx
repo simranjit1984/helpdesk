@@ -325,9 +325,9 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
           event.date.toLowerCase().includes(query) ||
           event.eventType.toLowerCase().includes(query) ||
           event.application.toLowerCase().includes(query) ||
-          event.userId.toLowerCase().includes(query) ||
+          event.actor.toLowerCase().includes(query) ||
           event.clientIp.toLowerCase().includes(query) ||
-          event.description.toLowerCase().includes(query)
+          (event.description?.toLowerCase().includes(query) ?? false)
       );
     }
 
