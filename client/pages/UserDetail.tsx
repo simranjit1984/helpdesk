@@ -694,7 +694,7 @@ export default function UserDetail() {
             </div>
           </div>
 
-          <div className="border-t border-[#DEDEE6] px-6 py-4">
+          <div className="px-6 py-4">
             <div className="flex items-center justify-between gap-2">
               <Button
                 type="button"
