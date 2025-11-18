@@ -118,14 +118,7 @@ interface FilterValueProps {
   onFilterAdd?: (filter: { id: string; column: string; operator: string; value: string }) => void;
 }
 
-interface FilterValueProps {
-  value: string;
-  column: string;
-  onFilterAdd?: (filter: { id: string; column: string; operator: string; value: string }) => void;
-  groupScope?: string;
-}
-
-const FilterValue = ({ value, column, onFilterAdd, groupScope = "hover" }: FilterValueProps) => {
+const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
   const handleAddFilter = () => {
     if (onFilterAdd) {
       onFilterAdd({
@@ -143,7 +136,7 @@ const FilterValue = ({ value, column, onFilterAdd, groupScope = "hover" }: Filte
       <button
         type="button"
         onClick={handleAddFilter}
-        className={`w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/${groupScope}:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0`}
+        className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
         title={`Filter by ${column}`}
         aria-label={`Filter ${column} by ${value}`}
       >
