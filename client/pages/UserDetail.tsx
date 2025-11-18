@@ -237,29 +237,6 @@ export default function UserDetail() {
     setEventFilters([]);
   };
 
-
-  // Fetch user data based on username (email)
-  const decodedId = id ? decodeURIComponent(id) : null;
-  const foundUser = decodedId ? getUserByUsername(decodedId) : null;
-
-  const user = foundUser ? {
-    firstName: foundUser.firstName,
-    lastName: foundUser.lastName,
-    email: foundUser.username,
-    phone: foundUser.phoneNumber,
-    displayPhone: foundUser.phoneNumber,
-    address1: "1223, Fancy Street",
-    address2: "",
-    city: "Amsterdam",
-    postalCode: "125744",
-    country: "Netherlands",
-    startDate: "2025/04/18",
-    endDate: "2025/04/18",
-    organization: "InsurCar",
-    status: "active" as const,
-    accessRoles: foundUser.accessRoles || [],
-  } : null;
-
   if (!user) {
     return (
       <Layout>
