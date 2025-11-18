@@ -21,16 +21,21 @@ export default function SuccessAlert({
   useEffect(() => {
     if (!autoClose) return;
 
-    const timer = setTimeout(() => {
+    const autoCloseTimer = setTimeout(() => {
       setIsClosing(true);
-      const closeTimer = setTimeout(() => {
-        onClose();
-      }, 300);
-      return () => clearTimeout(closeTimer);
     }, autoCloseDuration);
 
-    return () => clearTimeout(timer);
-  }, [autoCloseDuration, onClose, autoClose]);
+    return () => clearTimeout(autoCloseTimer);
+  }, [autoClose, autoCloseDuration]);
+
+  useEffect(() => {
+    if (isClosing) {
+      const animationTimer = setTimeout(() => {
+        onClose();
+      }, 300);
+      return () => clearTimeout(animationTimer);
+    }
+  }, [isClosing, onClose]);
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
