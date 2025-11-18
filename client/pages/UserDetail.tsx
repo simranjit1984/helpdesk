@@ -178,7 +178,7 @@ export default function UserDetail() {
     // Simulate API call
     setTimeout(() => {
       setIsSaving(false);
-      setShowSuccessAlert(true);
+      showAlert("Changes saved successfully.", "success");
     }, 1500);
   };
 
