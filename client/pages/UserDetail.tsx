@@ -592,7 +592,7 @@ export default function UserDetail() {
           </TabsContent>
 
           <TabsContent value="events" className="pt-6">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-6">
               <FilterBar
                 columns={[
                   { value: "date", label: "Date" },
