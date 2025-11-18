@@ -130,13 +130,16 @@ const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
     }
   };
 
+  const scopedGroup = `group/${column}`;
+  const scopedHover = `group-hover/${column}:opacity-100`;
+
   return (
-    <div className="flex items-center gap-2 group w-full">
+    <div className={`flex items-center gap-2 ${scopedGroup} w-full`}>
       <span className="text-sm text-bluegrey-900 flex-1">{value}</span>
       <button
         type="button"
         onClick={handleAddFilter}
-        className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+        className={`w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 ${scopedHover} focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0`}
         title={`Filter by ${column}`}
         aria-label={`Filter ${column} by ${value}`}
       >
