@@ -152,6 +152,46 @@ export default function UserDetail() {
     }
   }, [user]);
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleCountryChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      country: value,
+    }));
+  };
+
+  const handleSaveBasicInfo = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setSaveProgress(0);
+
+    // Simulate progress
+    const interval = setInterval(() => {
+      setSaveProgress((prev) => {
+        if (prev >= 90) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + Math.random() * 30;
+      });
+    }, 100);
+
+    // Simulate API call
+    setTimeout(() => {
+      clearInterval(interval);
+      setSaveProgress(100);
+      setIsSaving(false);
+      setShowSuccessAlert(true);
+    }, 1500);
+  };
+
   const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
     "1": [
       { name: "Claims Management System", permissions: ["View claims", "Create claims", "Approve claims"] },
