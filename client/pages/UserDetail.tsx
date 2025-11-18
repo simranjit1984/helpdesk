@@ -133,7 +133,7 @@ export default function UserDetail() {
     startDate: "2025/04/18",
     endDate: "2025/04/18",
     organization: "InsurCar",
-    status: "active" as const,
+    status: foundUser.status,
     accessRoles: foundUser.accessRoles || [],
   } : null;
 
