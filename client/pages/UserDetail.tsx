@@ -417,7 +417,6 @@ export default function UserDetail() {
                           value={formData.startDate}
                           onChange={handleFormChange}
                           disabled={isSaving}
-                          className="rounded-[2px] border-bluegrey-500"
                         />
                       </div>
 
@@ -447,10 +446,10 @@ export default function UserDetail() {
                           <div className="ml-7 mt-2">
                             <Input
                               type="date"
+                              id="endDate"
                               value={formData.endDate}
                               onChange={handleFormChange}
                               disabled={isSaving}
-                              className="rounded-[2px] border-bluegrey-500"
                             />
                           </div>
                         )}
