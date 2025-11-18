@@ -37,13 +37,13 @@ export default function SuccessAlert({
 
   return (
     <div className={`fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up-in'}`}>
-      <div className="flex items-start rounded-[2px] bg-green-50 relative max-w-[600px]">
+      <div className="flex items-start rounded-[2px] bg-green-50 relative w-[600px]">
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
         <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
           <div className="flex items-start gap-2 flex-1 py-2">
             <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-sm text-bluegrey-900 leading-5">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-bluegrey-900 leading-5 line-clamp-2">
                 {message}
               </p>
             </div>
