@@ -206,6 +206,44 @@ export default function UserDetailHeader({
           </div>
         )}
       </div>
+
+      <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
+        <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <div className="flex items-start justify-between px-6 py-4">
+            <DialogHeader className="text-left">
+              <DialogTitle className="text-xl font-medium leading-8 text-bluegrey-900">
+                {pendingAction?.label}
+              </DialogTitle>
+            </DialogHeader>
+          </div>
+
+          <div className="px-6 py-4">
+            <DialogDescription className="text-base text-bluegrey-900">
+              Are you sure you want {pendingAction?.label?.toLowerCase()}?
+            </DialogDescription>
+          </div>
+
+          <div className="border-t border-[#DEDEE6] px-6 py-4">
+            <div className="flex items-center justify-end gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCancelAction}
+                className="rounded-[2px] text-bluegrey-700"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleConfirmAction}
+                className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
