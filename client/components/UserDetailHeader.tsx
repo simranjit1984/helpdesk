@@ -39,6 +39,8 @@ export default function UserDetailHeader({
   const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ label: string; action: string } | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const scrollStateRef = useRef({ lastY: 0, isCollapsed: false });
 
   const getMenuItems = () => {
