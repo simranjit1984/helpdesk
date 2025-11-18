@@ -136,7 +136,7 @@ const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
       <button
         type="button"
         onClick={handleAddFilter}
-        className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+        className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
         title={`Filter by ${column}`}
         aria-label={`Filter ${column} by ${value}`}
       >
@@ -433,7 +433,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.eventType,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/eventType:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/eventType:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                           title="Filter by Event type"
                           aria-label={`Filter by Event type ${event.eventType}`}
                         >
@@ -454,7 +454,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.application,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                           title="Filter by Application"
                           aria-label={`Filter by Application ${event.application}`}
                         >
@@ -475,7 +475,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.userId,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userId:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                           title="Filter by User ID"
                           aria-label={`Filter by User ID ${event.userId}`}
                         >
@@ -496,7 +496,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.clientIp,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                           title="Filter by Client IP"
                           aria-label={`Filter by Client IP ${event.clientIp}`}
                         >
@@ -525,7 +525,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.userAgent,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userAgent:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userAgent:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                                   title="Filter by User Agent"
                                   aria-label={`Filter by User Agent ${event.userAgent}`}
                                 >
@@ -547,7 +547,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.requestId,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/requestId:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/requestId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                                   title="Filter by Request ID"
                                   aria-label={`Filter by Request ID ${event.requestId}`}
                                 >
@@ -569,7 +569,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.agent,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/agent:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/agent:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                                   title="Filter by Agent"
                                   aria-label={`Filter by Agent ${event.agent}`}
                                 >
@@ -591,7 +591,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.identityApp,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/identityApp:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/identityApp:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                                   title="Filter by Identity App"
                                   aria-label={`Filter by Identity App ${event.identityApp}`}
                                 >
