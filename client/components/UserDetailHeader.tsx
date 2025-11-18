@@ -34,6 +34,7 @@ export default function UserDetailHeader({
   const [isOpen, setIsOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ label: string; action: string } | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isBlockedModal, setIsBlockedModal] = useState(false);
   const scrollStateRef = useRef({ lastY: 0, isCollapsed: false });
 
   const getMenuItems = () => {
@@ -79,6 +80,19 @@ export default function UserDetailHeader({
   const handleCancelAction = () => {
     setIsConfirmModalOpen(false);
     setPendingAction(null);
+  };
+
+  const handleResetPasswordClick = () => {
+    if (status === "blocked") {
+      setIsBlockedModal(true);
+    } else {
+      setPendingAction({ label: "Reset password", action: "Reset password" });
+      setIsConfirmModalOpen(true);
+    }
+  };
+
+  const handleCloseBlockedModal = () => {
+    setIsBlockedModal(false);
   };
 
   const menuItems = getMenuItems();
@@ -162,6 +176,7 @@ export default function UserDetailHeader({
           {/* Actions */}
           <div className="flex items-center gap-4">
             <Button
+              onClick={handleResetPasswordClick}
               variant="outline"
               className="rounded-[2px] border-2 border-blue-500 text-blue-500 hover:bg-blue-50"
             >
@@ -212,6 +227,17 @@ export default function UserDetailHeader({
         primaryAction={{
           label: "Continue",
           onClick: handleConfirmAction,
+        }}
+      />
+
+      <ConfirmationModal
+        open={isBlockedModal}
+        onOpenChange={setIsBlockedModal}
+        title="User authentication blocked"
+        description="Please unblock user's authentication status before resetting the password."
+        primaryAction={{
+          label: "Close",
+          onClick: handleCloseBlockedModal,
         }}
       />
     </div>
