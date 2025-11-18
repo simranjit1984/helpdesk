@@ -421,10 +421,46 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </div>
                     </TableCell>
                     <TableCell className="group/eventType">
-                      <FilterValue value={event.eventType} column="eventType" onFilterAdd={onFilterAdd} />
+                      <div className="flex items-center gap-2 w-full">
+                        <span className="text-sm text-bluegrey-900 flex-1">{event.eventType}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onFilterAdd?.({
+                              id: generateUUID(),
+                              column: "eventType",
+                              operator: "equals",
+                              value: event.eventType,
+                            })
+                          }
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/eventType:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          title="Filter by Event type"
+                          aria-label={`Filter by Event type ${event.eventType}`}
+                        >
+                          <Filter className="w-5 h-5 text-blue-500" />
+                        </button>
+                      </div>
                     </TableCell>
                     <TableCell className="group/application">
-                      <FilterValue value={event.application} column="application" onFilterAdd={onFilterAdd} />
+                      <div className="flex items-center gap-2 w-full">
+                        <span className="text-sm text-bluegrey-900 flex-1">{event.application}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onFilterAdd?.({
+                              id: generateUUID(),
+                              column: "application",
+                              operator: "equals",
+                              value: event.application,
+                            })
+                          }
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          title="Filter by Application"
+                          aria-label={`Filter by Application ${event.application}`}
+                        >
+                          <Filter className="w-5 h-5 text-blue-500" />
+                        </button>
+                      </div>
                     </TableCell>
                     <TableCell className="group/userId">
                       <div className="flex items-center gap-2 w-full">
