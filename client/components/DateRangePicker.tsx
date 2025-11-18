@@ -16,13 +16,8 @@ interface PresetOption {
 }
 
 const PRESET_OPTIONS: PresetOption[] = [
-  { label: "Last 24 hours", value: "last_24h", days: 1 },
-  { label: "Last 48 hours", value: "last_48h", days: 2 },
   { label: "Last 7 days", value: "last_7d", days: 7 },
-  { label: "Last 30 days", value: "last_30d", days: 30 },
-  { label: "Last 60 days", value: "last_60d", days: 60 },
-  { label: "Last 90 days", value: "last_90d", days: 90 },
-  { label: "Last 180 days", value: "last_180d", days: 180 },
+  { label: "Last 14 days", value: "last_14d", days: 14 },
 ];
 
 export default function DateRangePicker({
