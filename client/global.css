@@ -111,14 +111,13 @@
     white-space: pre;
   }
 
-  /* Style date picker icon for consistent appearance across browsers */
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    display: none;
+  /* Default styling for date picker icon */
+  input[type="date"] {
+    color-scheme: light;
   }
 
-  /* Show the calendar icon with custom styling */
   input[type="date"]::-webkit-calendar-picker-indicator {
-    display: block;
+    cursor: pointer;
+    filter: invert(0.8);
   }
 }
