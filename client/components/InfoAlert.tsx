@@ -6,13 +6,15 @@ interface InfoAlertProps {
   onClose: () => void;
   autoClose?: boolean;
   autoCloseDuration?: number;
+  bottomOffset?: number;
 }
 
 export default function InfoAlert({
   message,
   onClose,
-  autoClose = true,
+  autoClose = false,
   autoCloseDuration = 5000,
+  bottomOffset = 80,
 }: InfoAlertProps) {
   const [isClosing, setIsClosing] = useState(false);
 
