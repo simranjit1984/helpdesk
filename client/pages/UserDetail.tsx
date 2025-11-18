@@ -304,6 +304,7 @@ export default function UserDetail() {
                   <Label htmlFor="firstName">First name</Label>
                   <Input
                     id="firstName"
+                    type="text"
                     value={formData.firstName}
                     onChange={handleFormChange}
                     disabled={isSaving}
@@ -314,6 +315,7 @@ export default function UserDetail() {
                   <Label htmlFor="lastName">Last name</Label>
                   <Input
                     id="lastName"
+                    type="text"
                     value={formData.lastName}
                     onChange={handleFormChange}
                     disabled={isSaving}
@@ -334,7 +336,7 @@ export default function UserDetail() {
                   <Label htmlFor="phone">Phone number</Label>
                   <Input
                     id="phone"
-                    type="tel"
+                    type="text"
                     value={formData.phone}
                     onChange={handleFormChange}
                     disabled={isSaving}
@@ -345,6 +347,7 @@ export default function UserDetail() {
                   <Label htmlFor="address1">Address 1</Label>
                   <Input
                     id="address1"
+                    type="text"
                     value={formData.address1}
                     onChange={handleFormChange}
                     disabled={isSaving}
@@ -355,6 +358,7 @@ export default function UserDetail() {
                   <Label htmlFor="address2">Address 2</Label>
                   <Input
                     id="address2"
+                    type="text"
                     value={formData.address2}
                     onChange={handleFormChange}
                     disabled={isSaving}
@@ -365,6 +369,7 @@ export default function UserDetail() {
                   <Label htmlFor="city">City</Label>
                   <Input
                     id="city"
+                    type="text"
                     value={formData.city}
                     onChange={handleFormChange}
                     disabled={isSaving}
@@ -375,6 +380,7 @@ export default function UserDetail() {
                   <Label htmlFor="postalCode">Postal code</Label>
                   <Input
                     id="postalCode"
+                    type="text"
                     value={formData.postalCode}
                     onChange={handleFormChange}
                     disabled={isSaving}
