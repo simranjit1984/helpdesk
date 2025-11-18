@@ -32,6 +32,27 @@ export default function DateRangePicker({
 }: DateRangePickerProps) {
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
 
+  const MAX_DAYS = 14;
+
+  const getDateFromString = (dateStr: string): Date | null => {
+    if (!dateStr) return null;
+    const date = new Date(dateStr.replace(" ", "T"));
+    return isNaN(date.getTime()) ? null : date;
+  };
+
+  const isRangeExceeded = (): boolean => {
+    const start = getDateFromString(startDate);
+    const end = getDateFromString(endDate);
+    if (!start || !end) return false;
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > MAX_DAYS;
+  };
+
+  const isApplyDisabled = (): boolean => {
+    return !startDate || !endDate || isRangeExceeded();
+  };
+
   const applyPreset = (preset: PresetOption) => {
     const now = new Date();
     const start = new Date(now);
@@ -44,6 +65,16 @@ export default function DateRangePicker({
     onStartDateChange(startIso);
     onEndDateChange(endIso);
     setSelectedPreset(preset.value);
+  };
+
+  const handleStartDateChange = (value: string) => {
+    onStartDateChange(value);
+    handleCustomDateChange();
+  };
+
+  const handleEndDateChange = (value: string) => {
+    onEndDateChange(value);
+    handleCustomDateChange();
   };
 
   const handleCustomDateChange = () => {
