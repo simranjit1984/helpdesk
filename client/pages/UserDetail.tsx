@@ -743,6 +743,13 @@ export default function UserDetail() {
           onClose={() => setShowSuccessAlert(false)}
         />
       )}
+
+      {showInfoAlert && (
+        <InfoAlert
+          message={infoAlertMessage}
+          onClose={() => setShowInfoAlert(false)}
+        />
+      )}
     </Layout>
   );
 }
