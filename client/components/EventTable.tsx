@@ -420,10 +420,10 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                         </button>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="group/eventType">
                       <FilterValue value={event.eventType} column="eventType" onFilterAdd={onFilterAdd} />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="group/application">
                       <FilterValue value={event.application} column="application" onFilterAdd={onFilterAdd} />
                     </TableCell>
                     <TableCell className="group/userId">
