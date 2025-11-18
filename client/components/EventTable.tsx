@@ -417,12 +417,32 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
     );
   };
 
-  const renderDetailField = (label: string, value: string | undefined) => {
+  const renderDetailField = (label: string, value: string | undefined, column?: string, event?: Event, groupClass?: string) => {
     if (!value) return null;
     return (
-      <div className="flex flex-col gap-1.5" key={label}>
+      <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
         <span className="text-xs font-semibold text-bluegrey-700">{label}</span>
-        <span className="text-sm text-bluegrey-900 break-words">{value}</span>
+        <div className="flex items-center gap-1 w-full">
+          <span className="text-sm text-bluegrey-900 break-words flex-1">{value}</span>
+          {column && event && (
+            <button
+              type="button"
+              onClick={() =>
+                onFilterAdd?.({
+                  id: generateUUID(),
+                  column,
+                  operator: "equals",
+                  value,
+                })
+              }
+              className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
+              title={`Filter by ${label}`}
+              aria-label={`Filter by ${label} ${value}`}
+            >
+              <Filter className="w-5 h-5 text-blue-500" />
+            </button>
+          )}
+        </div>
       </div>
     );
   };
