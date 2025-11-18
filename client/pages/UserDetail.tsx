@@ -111,6 +111,47 @@ export default function UserDetail() {
     ]);
   }, []);
 
+  // Fetch user data based on username (email)
+  const decodedId = id ? decodeURIComponent(id) : null;
+  const foundUser = decodedId ? getUserByUsername(decodedId) : null;
+
+  const user = foundUser ? {
+    firstName: foundUser.firstName,
+    lastName: foundUser.lastName,
+    email: foundUser.username,
+    phone: foundUser.phoneNumber,
+    displayPhone: foundUser.phoneNumber,
+    address1: "1223, Fancy Street",
+    address2: "",
+    city: "Amsterdam",
+    postalCode: "125744",
+    country: "Netherlands",
+    startDate: "2025/04/18",
+    endDate: "2025/04/18",
+    organization: "InsurCar",
+    status: "active" as const,
+    accessRoles: foundUser.accessRoles || [],
+  } : null;
+
+  // Initialize form data when user is loaded
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        address1: user.address1,
+        address2: user.address2,
+        city: user.city,
+        postalCode: user.postalCode,
+        country: user.country,
+        startDate: user.startDate,
+        endDate: user.endDate,
+      });
+    }
+  }, [user]);
+
   const applicationsList: Record<string, Array<{ name: string; permissions: string[] }>> = {
     "1": [
       { name: "Claims Management System", permissions: ["View claims", "Create claims", "Approve claims"] },
