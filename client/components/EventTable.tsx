@@ -577,9 +577,27 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                 </button>
                               </div>
                             </div>
-                            <div className="flex flex-col gap-1.5">
+                            <div className="flex flex-col gap-1.5 group/identityApp">
                               <span className="text-xs font-semibold text-bluegrey-700">Identity App</span>
-                              <FilterValue value={event.identityApp} column="identityApp" onFilterAdd={onFilterAdd} />
+                              <div className="flex items-center gap-2 w-full">
+                                <span className="text-sm text-bluegrey-900 flex-1">{event.identityApp}</span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onFilterAdd?.({
+                                      id: generateUUID(),
+                                      column: "identityApp",
+                                      operator: "equals",
+                                      value: event.identityApp,
+                                    })
+                                  }
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/identityApp:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  title="Filter by Identity App"
+                                  aria-label={`Filter by Identity App ${event.identityApp}`}
+                                >
+                                  <Filter className="w-5 h-5 text-blue-500" />
+                                </button>
+                              </div>
                             </div>
                             <div className="flex flex-col gap-1.5 lg:col-span-2">
                               <span className="text-xs font-semibold text-bluegrey-700">Description</span>
