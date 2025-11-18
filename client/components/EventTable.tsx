@@ -400,8 +400,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </button>
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
-                      <div className="flex items-center gap-2 w-full">
-                        <span className="text-sm text-bluegrey-900 flex-1">{event.date}</span>
+                      <div className="flex items-center gap-1 w-full">
+                        <span className="text-sm text-bluegrey-900 truncate">{event.date}</span>
                         <button
                           type="button"
                           onClick={() =>
@@ -421,8 +421,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </div>
                     </TableCell>
                     <TableCell className="group/eventType">
-                      <div className="flex items-center gap-2 w-full">
-                        <span className="text-sm text-bluegrey-900 flex-1">{event.eventType}</span>
+                      <div className="flex items-center gap-1 w-full">
+                        <span className="text-sm text-bluegrey-900 truncate">{event.eventType}</span>
                         <button
                           type="button"
                           onClick={() =>
@@ -442,8 +442,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </div>
                     </TableCell>
                     <TableCell className="group/application">
-                      <div className="flex items-center gap-2 w-full">
-                        <span className="text-sm text-bluegrey-900 flex-1">{event.application}</span>
+                      <div className="flex items-center gap-1 w-full">
+                        <span className="text-sm text-bluegrey-900 truncate">{event.application}</span>
                         <button
                           type="button"
                           onClick={() =>
@@ -463,8 +463,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </div>
                     </TableCell>
                     <TableCell className="group/userId">
-                      <div className="flex items-center gap-2 w-full">
-                        <span className="text-sm text-bluegrey-900 font-mono flex-1">{event.userId}</span>
+                      <div className="flex items-center gap-1 w-full">
+                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.userId}</span>
                         <button
                           type="button"
                           onClick={() =>
@@ -484,8 +484,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       </div>
                     </TableCell>
                     <TableCell className="group/clientIp">
-                      <div className="flex items-center gap-2 w-full">
-                        <span className="text-sm text-bluegrey-900 font-mono flex-1">{event.clientIp}</span>
+                      <div className="flex items-center gap-1 w-full">
+                        <span className="text-sm text-bluegrey-900 font-mono truncate">{event.clientIp}</span>
                         <button
                           type="button"
                           onClick={() =>
@@ -513,8 +513,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="flex flex-col gap-1.5 group/userAgent">
                               <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
-                              <div className="flex items-center gap-2 w-full">
-                                <span className="text-sm text-bluegrey-900 flex-1">{event.userAgent}</span>
+                              <div className="flex items-center gap-1 w-full">
+                                <span className="text-sm text-bluegrey-900 truncate">{event.userAgent}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -535,8 +535,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                             </div>
                             <div className="flex flex-col gap-1.5 group/requestId">
                               <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
-                              <div className="flex items-center gap-2 w-full">
-                                <span className="text-sm text-bluegrey-900 font-mono break-all flex-1">{event.requestId}</span>
+                              <div className="flex items-center gap-1 w-full">
+                                <span className="text-sm text-bluegrey-900 font-mono truncate">{event.requestId}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -557,8 +557,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                             </div>
                             <div className="flex flex-col gap-1.5 group/agent">
                               <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
-                              <div className="flex items-center gap-2 w-full">
-                                <span className="text-sm text-bluegrey-900 font-mono break-all flex-1">{event.agent}</span>
+                              <div className="flex items-center gap-1 w-full">
+                                <span className="text-sm text-bluegrey-900 font-mono truncate">{event.agent}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -579,8 +579,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                             </div>
                             <div className="flex flex-col gap-1.5 group/identityApp">
                               <span className="text-xs font-semibold text-bluegrey-700">Identity App</span>
-                              <div className="flex items-center gap-2 w-full">
-                                <span className="text-sm text-bluegrey-900 flex-1">{event.identityApp}</span>
+                              <div className="flex items-center gap-1 w-full">
+                                <span className="text-sm text-bluegrey-900 truncate">{event.identityApp}</span>
                                 <button
                                   type="button"
                                   onClick={() =>
