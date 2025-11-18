@@ -171,6 +171,14 @@ export default function UserDetailHeader({
                 <span className="text-base text-green-900">Active</span>
               </div>
             )}
+            {status === "blocked" && (
+              <div className="flex items-center gap-2 rounded-full bg-bluegrey-100 px-3 py-1">
+                <svg className="h-5 w-5 text-bluegrey-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM15.5 11H8.5C8.22 11 8 11.22 8 11.5V12.5C8 12.78 8.22 13 8.5 13H15.5C15.78 13 16 12.78 16 12.5V11.5C16 11.22 15.78 11 15.5 11Z" fill="currentColor"/>
+                </svg>
+                <span className="text-base text-bluegrey-900">Authentication blocked</span>
+              </div>
+            )}
           </div>
 
           {/* Actions */}
