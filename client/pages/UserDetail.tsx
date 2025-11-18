@@ -336,56 +336,61 @@ export default function UserDetail() {
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="phone">Phone number</Label>
-                  <Input
+                  <input
                     id="phone"
                     type="text"
                     value={formData.phone}
                     onChange={handleFormChange}
                     disabled={isSaving}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="address1">Address 1</Label>
-                  <Input
+                  <input
                     id="address1"
                     type="text"
                     value={formData.address1}
                     onChange={handleFormChange}
                     disabled={isSaving}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="address2">Address 2</Label>
-                  <Input
+                  <input
                     id="address2"
                     type="text"
                     value={formData.address2}
                     onChange={handleFormChange}
                     disabled={isSaving}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="city">City</Label>
-                  <Input
+                  <input
                     id="city"
                     type="text"
                     value={formData.city}
                     onChange={handleFormChange}
                     disabled={isSaving}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="postalCode">Postal code</Label>
-                  <Input
+                  <input
                     id="postalCode"
                     type="text"
                     value={formData.postalCode}
                     onChange={handleFormChange}
                     disabled={isSaving}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
 
@@ -419,12 +424,13 @@ export default function UserDetail() {
                           Start date
                           <span className="font-medium text-red-500">*</span>
                         </Label>
-                        <Input
+                        <input
                           id="startDate"
                           type="date"
                           value={formData.startDate}
                           onChange={handleFormChange}
                           disabled={isSaving}
+                          className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                         />
                       </div>
 
@@ -452,12 +458,13 @@ export default function UserDetail() {
 
                         {endDateOption === "custom" && (
                           <div className="ml-7 mt-2">
-                            <Input
+                            <input
                               type="date"
                               id="endDate"
                               value={formData.endDate}
                               onChange={handleFormChange}
                               disabled={isSaving}
+                              className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                             />
                           </div>
                         )}
