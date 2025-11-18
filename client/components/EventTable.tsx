@@ -33,14 +33,16 @@ interface Event {
   date: string;
   eventType: string;
   application: string;
-  userId: string;
+  actor: string;
   clientIp: string;
-  userAgent: string;
-  requestId: string;
-  agent: string;
-  identityApp: string;
-  description: string;
-  details: Record<string, any>;
+  userAgent?: string;
+  requestId?: string;
+  identityApp?: string;
+  identityAppInstanceId?: string;
+  description?: string;
+  subject?: string;
+  authenticationDetails?: string;
+  details?: Record<string, any>;
 }
 
 type SortColumn = "date" | "eventType" | "application";
