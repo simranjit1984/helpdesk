@@ -511,9 +511,27 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       <TableNestedCell colSpan={5}>
                         <div className="py-6 px-4 bg-bluegrey-50/50">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div className="flex flex-col gap-1.5">
+                            <div className="flex flex-col gap-1.5 group/userAgent">
                               <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
-                              <FilterValue value={event.userAgent} column="userAgent" onFilterAdd={onFilterAdd} />
+                              <div className="flex items-center gap-2 w-full">
+                                <span className="text-sm text-bluegrey-900 flex-1">{event.userAgent}</span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onFilterAdd?.({
+                                      id: generateUUID(),
+                                      column: "userAgent",
+                                      operator: "equals",
+                                      value: event.userAgent,
+                                    })
+                                  }
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userAgent:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  title="Filter by User Agent"
+                                  aria-label={`Filter by User Agent ${event.userAgent}`}
+                                >
+                                  <Filter className="w-5 h-5 text-blue-500" />
+                                </button>
+                              </div>
                             </div>
                             <div className="flex flex-col gap-1.5 group/requestId">
                               <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
