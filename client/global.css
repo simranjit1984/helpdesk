@@ -111,14 +111,18 @@
     white-space: pre;
   }
 
-  /* Style date input to show calendar icon clearly */
+  /* Style date input to show calendar icon clearly at the end */
   input[type="date"] {
     color-scheme: light;
+    position: relative;
   }
 
   input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     opacity: 1;
-    margin: 0 4px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
