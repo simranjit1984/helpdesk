@@ -399,7 +399,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                         )}
                       </button>
                     </TableExpandCell>
-                    <TableCell sticky className="w-48 group">
+                    <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-2 w-full">
                         <span className="text-sm text-bluegrey-900 flex-1">{event.date}</span>
                         <button
@@ -412,7 +412,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.date,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/date:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                           title="Filter by Date"
                           aria-label={`Filter by date ${event.date}`}
                         >
@@ -426,7 +426,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                     <TableCell>
                       <FilterValue value={event.application} column="application" onFilterAdd={onFilterAdd} />
                     </TableCell>
-                    <TableCell className="group">
+                    <TableCell className="group/userId">
                       <div className="flex items-center gap-2 w-full">
                         <span className="text-sm text-bluegrey-900 font-mono flex-1">{event.userId}</span>
                         <button
@@ -439,7 +439,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.userId,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/userId:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                           title="Filter by User ID"
                           aria-label={`Filter by User ID ${event.userId}`}
                         >
@@ -447,7 +447,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                         </button>
                       </div>
                     </TableCell>
-                    <TableCell className="group">
+                    <TableCell className="group/clientIp">
                       <div className="flex items-center gap-2 w-full">
                         <span className="text-sm text-bluegrey-900 font-mono flex-1">{event.clientIp}</span>
                         <button
@@ -460,7 +460,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               value: event.clientIp,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                           title="Filter by Client IP"
                           aria-label={`Filter by Client IP ${event.clientIp}`}
                         >
@@ -479,7 +479,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                               <span className="text-xs font-semibold text-bluegrey-700">User Agent</span>
                               <FilterValue value={event.userAgent} column="userAgent" onFilterAdd={onFilterAdd} />
                             </div>
-                            <div className="flex flex-col gap-1.5 group">
+                            <div className="flex flex-col gap-1.5 group/requestId">
                               <span className="text-xs font-semibold text-bluegrey-700">Request ID</span>
                               <div className="flex items-center gap-2 w-full">
                                 <span className="text-sm text-bluegrey-900 font-mono break-all flex-1">{event.requestId}</span>
@@ -493,7 +493,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.requestId,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/requestId:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                                   title="Filter by Request ID"
                                   aria-label={`Filter by Request ID ${event.requestId}`}
                                 >
@@ -501,7 +501,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                 </button>
                               </div>
                             </div>
-                            <div className="flex flex-col gap-1.5 group">
+                            <div className="flex flex-col gap-1.5 group/agent">
                               <span className="text-xs font-semibold text-bluegrey-700">Agent</span>
                               <div className="flex items-center gap-2 w-full">
                                 <span className="text-sm text-bluegrey-900 font-mono break-all flex-1">{event.agent}</span>
@@ -515,7 +515,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                                       value: event.agent,
                                     })
                                   }
-                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
+                                  className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/agent:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 flex-shrink-0"
                                   title="Filter by Agent"
                                   aria-label={`Filter by Agent ${event.agent}`}
                                 >
