@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import { Save, MoreVertical, Pencil, Calendar, ChevronDown, ChevronRight, PlusCircle, Search } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
@@ -119,7 +120,7 @@ export default function UserDetail() {
   const decodedId = id ? decodeURIComponent(id) : null;
   const foundUser = decodedId ? getUserByUsername(decodedId) : null;
 
-  const user = foundUser ? {
+  const user = useMemo(() => foundUser ? {
     firstName: foundUser.firstName,
     lastName: foundUser.lastName,
     email: foundUser.username,
@@ -135,7 +136,7 @@ export default function UserDetail() {
     organization: "InsurCar",
     status: foundUser.status,
     accessRoles: foundUser.accessRoles || [],
-  } : null;
+  } : null, [foundUser]);
 
   // Initialize form data when user is loaded
   useEffect(() => {
