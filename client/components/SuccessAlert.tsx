@@ -19,16 +19,18 @@ export default function SuccessAlert({
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
-    if (autoClose) {
-      const timer = setTimeout(() => {
-        setIsClosing(true);
-        setTimeout(() => {
-          onClose();
-        }, 300);
-      }, autoCloseDuration);
-      return () => clearTimeout(timer);
-    }
-  }, [autoClose, autoCloseDuration, onClose]);
+    if (!autoClose) return;
+
+    const timer = setTimeout(() => {
+      setIsClosing(true);
+      const closeTimer = setTimeout(() => {
+        onClose();
+      }, 300);
+      return () => clearTimeout(closeTimer);
+    }, autoCloseDuration);
+
+    return () => clearTimeout(timer);
+  }, [autoCloseDuration, onClose, autoClose]);
 
   const handleClose = () => {
     setIsClosing(true);
