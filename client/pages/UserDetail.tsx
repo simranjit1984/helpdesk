@@ -269,12 +269,6 @@ export default function UserDetail() {
           </div>
 
           <TabsContent value="basic" className="pt-6">
-            {isSaving && (
-              <div className="mb-6 flex flex-col gap-2">
-                <Progress value={saveProgress} className="h-2" />
-                <p className="text-xs text-bluegrey-600">Saving changes...</p>
-              </div>
-            )}
             <form onSubmit={handleSaveBasicInfo} className="flex flex-col gap-10">
               <div className="flex w-full max-w-sm flex-col gap-6">
                 <div className="flex flex-col gap-1">
