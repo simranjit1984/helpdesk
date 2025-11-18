@@ -114,13 +114,11 @@
   /* Style date input to show calendar icon clearly */
   input[type="date"] {
     color-scheme: light;
-    padding-right: 40px;
   }
 
   input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     opacity: 1;
-    position: absolute;
-    right: 8px;
+    margin: 0 4px;
   }
 }
