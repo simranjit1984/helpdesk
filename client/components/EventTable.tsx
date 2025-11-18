@@ -608,12 +608,12 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                       <TableNestedCell colSpan={5}>
                         <div className="py-6 px-4 bg-bluegrey-50/50">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {renderDetailField("User Agent", event.userAgent)}
-                            {renderDetailField("Request ID", event.requestId)}
-                            {renderDetailField("Identity App", event.identityApp)}
-                            {renderDetailField("Identity App Instance ID", event.identityAppInstanceId)}
-                            {renderDetailField("Authentication Details", event.authenticationDetails)}
-                            {renderDetailField("Subject", event.subject)}
+                            {renderDetailField("User Agent", event.userAgent, "userAgent", event, "group/userAgent")}
+                            {renderDetailField("Request ID", event.requestId, "requestId", event, "group/requestId")}
+                            {renderDetailField("Identity App", event.identityApp, "identityApp", event, "group/identityApp")}
+                            {renderDetailField("Identity App Instance ID", event.identityAppInstanceId, "identityAppInstanceId", event, "group/identityAppInstanceId")}
+                            {renderDetailField("Authentication Details", event.authenticationDetails, "authenticationDetails", event, "group/authenticationDetails")}
+                            {renderDetailField("Subject", event.subject, "subject", event, "group/subject")}
                             {event.description && (
                               <div className="flex flex-col gap-1.5 lg:col-span-2">
                                 <span className="text-xs font-semibold text-bluegrey-700">Description</span>
