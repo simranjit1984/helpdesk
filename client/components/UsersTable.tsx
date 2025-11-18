@@ -494,24 +494,35 @@ function UserActionsMenu({ user }: { user: User }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ label: string; action: string } | null>(null);
 
-  const handleAction = (action: string) => {
+  const handleAction = (item: { label: string; action: string }) => {
     // Navigate to user detail page
-    if (action === "View details") {
+    if (item.action === "View details" || item.action === "View invitation") {
       navigate(`/users/${encodeURIComponent(user.username)}`);
       return;
     }
 
-    // Show modal for "Reset password" action on blocked users
-    if (action === "Reset password" && user.status === "blocked") {
-      setIsModalOpen(true);
-      return;
-    }
+    // All other actions need confirmation
+    setPendingAction(item);
+    setIsModalOpen(true);
+    setIsOpen(false);
+  };
 
-    toast({
-      title: action,
-      description: `Action performed for ${user.username}`,
-    });
+  const handleConfirmAction = () => {
+    if (pendingAction) {
+      toast({
+        title: pendingAction.action,
+        description: `Action performed for ${user.username}`,
+      });
+      setIsModalOpen(false);
+      setPendingAction(null);
+    }
+  };
+
+  const handleCancelAction = () => {
+    setIsModalOpen(false);
+    setPendingAction(null);
   };
 
   const getMenuItems = () => {
