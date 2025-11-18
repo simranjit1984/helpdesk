@@ -188,35 +188,19 @@ const FilterValue = ({ value, column, onFilterAdd }: FilterValueProps) => {
   );
 };
 
-const EVENT_DESCRIPTIONS: Record<string, string> = {
-  "User Login": "User successfully authenticated and logged in",
-  "User Logout": "User logged out from the system",
-  "Password Changed": "User password was changed",
-  "User Created": "New user account was created",
-  "User Updated": "User profile information was updated",
-  "User Deleted": "User account was deleted",
-  "Role Assigned": "Role was assigned to user",
-  "Role Revoked": "Role was revoked from user",
-  "Permission Granted": "Permission was granted to user",
-  "Permission Revoked": "Permission was revoked from user",
-  "MFA Enabled": "Multi-factor authentication was enabled",
-  "Account Locked": "User account was locked due to security policy",
-  "Session Expired": "User session expired",
-  "Access Granted": "User was granted access to application",
-  "Access Revoked": "User access was revoked from application",
-};
-
 const generateMockEvents = (): Event[] => {
   const events: Event[] = [];
   const now = new Date();
   now.setHours(23, 59, 59, 999);
+
+  let eventCounter = 0;
 
   for (let dayOffset = 0; dayOffset <= 13; dayOffset++) {
     const date = new Date(now);
     date.setDate(date.getDate() - dayOffset);
     date.setHours(0, 0, 0, 0);
 
-    const eventsPerDay = Math.floor(Math.random() * 10) + 6;
+    const eventsPerDay = Math.floor(Math.random() * 20) + 20;
 
     for (let i = 0; i < eventsPerDay; i++) {
       const randomHour = Math.floor(Math.random() * 24);
@@ -227,13 +211,36 @@ const generateMockEvents = (): Event[] => {
       eventDate.setHours(randomHour, randomMinute, randomSecond);
 
       const eventType = MOCK_EVENT_TYPES[Math.floor(Math.random() * MOCK_EVENT_TYPES.length)];
-      const application = MOCK_APPLICATIONS[Math.floor(Math.random() * MOCK_APPLICATIONS.length)];
-      const identityApp = MOCK_IDENTITY_APPS[Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)];
-      const ip = MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)];
-      const userAgent = MOCK_USER_AGENTS[Math.floor(Math.random() * MOCK_USER_AGENTS.length)];
-      const userId = generateUUID();
-      const requestId = generateUUID();
-      const agent = generateUUID();
+      const shouldHaveApplication = Math.random() > 0.2;
+      const application = shouldHaveApplication
+        ? MOCK_APPLICATIONS[Math.floor(Math.random() * MOCK_APPLICATIONS.length)]
+        : "";
+      const actor = MOCK_ACTORS[Math.floor(Math.random() * MOCK_ACTORS.length)];
+      const clientIp = Math.random() > 0.1 ? MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)] : "";
+
+      const shouldHaveUserAgent = Math.random() > 0.15;
+      const userAgent = shouldHaveUserAgent
+        ? MOCK_USER_AGENTS[Math.floor(Math.random() * MOCK_USER_AGENTS.length)]
+        : undefined;
+
+      const shouldHaveRequestId = Math.random() > 0.1;
+      const requestId = shouldHaveRequestId ? generateUUID() : undefined;
+
+      const shouldHaveIdentityApp = Math.random() > 0.2;
+      const identityApp = shouldHaveIdentityApp
+        ? MOCK_IDENTITY_APPS[Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)]
+        : undefined;
+
+      const identityAppInstanceId = identityApp ? generateUUID() : undefined;
+
+      const description = MOCK_DESCRIPTIONS[Math.floor(Math.random() * MOCK_DESCRIPTIONS.length)];
+
+      const subject = Math.random() > 0.3 ? generateUUID() : undefined;
+
+      const shouldHaveAuthDetails = Math.random() > 0.7;
+      const authenticationDetails = shouldHaveAuthDetails
+        ? "https://ciam.test.onewelcome.com/oauth"
+        : undefined;
 
       const year = eventDate.getFullYear();
       const month = String(eventDate.getMonth() + 1).padStart(2, "0");
@@ -243,27 +250,39 @@ const generateMockEvents = (): Event[] => {
       const seconds = String(eventDate.getSeconds()).padStart(2, "0");
       const dateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-      const details: Record<string, any> = {
-        authMethod: ["OAuth2", "SAML", "Username/Password", "MFA"][Math.floor(Math.random() * 4)],
-        sessionDuration: `${Math.floor(Math.random() * 7200) + 1800}s`,
-        mfaEnabled: Math.random() > 0.5,
-        timestamp: eventDate.toISOString(),
-      };
+      const details: Record<string, any> = {};
+
+      if (clientIp) {
+        details.clientIp = clientIp;
+      }
+      if (requestId) {
+        details.requestId = requestId;
+      }
+      details.eventDate = eventDate.getTime();
+      details.eventType = eventType;
+      if (actor && !actor.includes("system")) {
+        details.userId = actor;
+      }
+      details.type = Math.random() > 0.5 ? "HTTP" : "DIRECT";
 
       events.push({
-        id: `event-${dayOffset}-${i}`,
+        id: `event-${eventCounter}`,
         date: dateTime,
         eventType,
         application,
-        userId,
-        clientIp: ip,
+        actor,
+        clientIp,
         userAgent,
         requestId,
-        agent,
         identityApp,
-        description: EVENT_DESCRIPTIONS[eventType] || eventType,
-        details,
+        identityAppInstanceId,
+        description,
+        subject,
+        authenticationDetails,
+        details: Object.keys(details).length > 0 ? details : undefined,
       });
+
+      eventCounter++;
     }
   }
 
