@@ -119,10 +119,7 @@ export default function DateRangePicker({
               name="filter-start-date"
               type="datetime-local"
               value={startDate}
-              onChange={(e) => {
-                onStartDateChange(e.target.value);
-                handleCustomDateChange();
-              }}
+              onChange={(e) => handleStartDateChange(e.target.value)}
               className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               autoComplete="off"
             />
@@ -138,15 +135,17 @@ export default function DateRangePicker({
               name="filter-end-date"
               type="datetime-local"
               value={endDate}
-              onChange={(e) => {
-                onEndDateChange(e.target.value);
-                handleCustomDateChange();
-              }}
+              onChange={(e) => handleEndDateChange(e.target.value)}
               className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               autoComplete="off"
             />
           </div>
         </div>
+        {isRangeExceeded() && (
+          <div className="text-xs text-red-600 font-medium">
+            Date range cannot exceed {MAX_DAYS} days
+          </div>
+        )}
       </div>
 
       {/* Buttons Row */}
