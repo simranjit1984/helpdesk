@@ -73,7 +73,6 @@ export default function UserDetail() {
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveProgress, setSaveProgress] = useState(0);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
