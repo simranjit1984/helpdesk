@@ -737,7 +737,7 @@ export default function UserDetail() {
                 type="button"
                 onClick={() => {
                   setIsValidityModalOpen(false);
-                  setShowSuccessAlert(true);
+                  showAlert("Validity period updated successfully.", "success");
                 }}
                 className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3"
               >
