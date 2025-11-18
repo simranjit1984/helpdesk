@@ -495,12 +495,20 @@ function UserActionsMenu({ user }: { user: User }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBlockedModal, setIsBlockedModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ label: string; action: string } | null>(null);
 
   const handleAction = (item: { label: string; action: string }) => {
     // Navigate to user detail page
     if (item.action === "View details" || item.action === "View invitation") {
       navigate(`/users/${encodeURIComponent(user.username)}`);
+      return;
+    }
+
+    // Special case: Reset password when authentication is blocked
+    if (item.action === "Reset password" && user.status === "blocked") {
+      setIsBlockedModal(true);
+      setIsOpen(false);
       return;
     }
 
@@ -524,6 +532,10 @@ function UserActionsMenu({ user }: { user: User }) {
   const handleCancelAction = () => {
     setIsModalOpen(false);
     setPendingAction(null);
+  };
+
+  const handleCloseBlockedModal = () => {
+    setIsBlockedModal(false);
   };
 
   const getMenuItems = () => {
