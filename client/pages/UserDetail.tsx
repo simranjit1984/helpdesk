@@ -415,7 +415,9 @@ export default function UserDetail() {
                         <Input
                           id="startDate"
                           type="date"
-                          defaultValue={user.startDate}
+                          value={formData.startDate}
+                          onChange={handleFormChange}
+                          disabled={isSaving}
                           className="rounded-[2px] border-bluegrey-500"
                         />
                       </div>
@@ -426,15 +428,16 @@ export default function UserDetail() {
                           value={endDateOption}
                           onValueChange={(value) => setEndDateOption(value as "no-end" | "custom")}
                           className="gap-3"
+                          disabled={isSaving}
                         >
                           <div className="flex items-center gap-2">
-                            <RadioGroupItem value="no-end" id="no-end" />
+                            <RadioGroupItem value="no-end" id="no-end" disabled={isSaving} />
                             <Label htmlFor="no-end" className="cursor-pointer font-normal">
                               No end date
                             </Label>
                           </div>
                           <div className="flex items-center gap-2">
-                            <RadioGroupItem value="custom" id="custom" />
+                            <RadioGroupItem value="custom" id="custom" disabled={isSaving} />
                             <Label htmlFor="custom" className="cursor-pointer font-normal">
                               Custom date
                             </Label>
@@ -445,7 +448,9 @@ export default function UserDetail() {
                           <div className="ml-7 mt-2">
                             <Input
                               type="date"
-                              defaultValue={user.endDate}
+                              value={formData.endDate}
+                              onChange={handleFormChange}
+                              disabled={isSaving}
                               className="rounded-[2px] border-bluegrey-500"
                             />
                           </div>
