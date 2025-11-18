@@ -1,5 +1,5 @@
 import { CheckCircle, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface SuccessAlertProps {
   message: string;
