@@ -744,7 +744,7 @@ export default function UserDetail() {
 
       {showSuccessAlert && (
         <SuccessAlert
-          message="Validity period updated successfully"
+          message="Changes saved successfully."
           onClose={() => setShowSuccessAlert(false)}
         />
       )}
