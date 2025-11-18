@@ -185,7 +185,7 @@ export default function UserDetailHeader({
                   {menuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.action}
-                      onClick={() => handleAction(item.label)}
+                      onClick={() => handleActionClick(item)}
                     >
                       {item.label}
                     </DropdownMenuItem>
