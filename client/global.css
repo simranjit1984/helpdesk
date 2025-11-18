@@ -114,13 +114,5 @@
   /* Style date picker icon for consistent appearance across browsers */
   input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    border-radius: 4px;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Ensure date inputs have proper padding for the icon */
-  input[type="date"] {
-    padding-right: 40px;
   }
 }
