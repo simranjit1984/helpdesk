@@ -122,17 +122,17 @@ export default function DateRangePicker({
       </div>
 
       {/* Buttons Row */}
-      <div className="flex justify-end items-start gap-3 pt-2">
+      <div className="flex justify-end items-start gap-4 pt-2">
         <button
           onClick={onCancel}
-          className="h-10 px-4 text-sm font-medium text-bluegrey-700 hover:bg-bluegrey-50 rounded-sm transition-colors border border-bluegrey-300"
+          className="h-10 px-3 py-2 text-sm font-medium text-[#383A4B] hover:bg-bluegrey-50 rounded-sm transition-colors"
         >
           Cancel
         </button>
         <button
           onClick={onApply}
           disabled={!startDate || !endDate}
-          className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+          className="h-10 px-3 py-2 bg-[#041295] hover:bg-[#041295]/90 text-[#F7F7F9] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
         >
           Apply
         </button>
