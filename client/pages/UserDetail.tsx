@@ -639,7 +639,7 @@ export default function UserDetail() {
           <div className="px-6">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-1">
-                <Label htmlFor="modal-start-date" className="text-sm font-normal text-bluegrey-900">
+                <Label htmlFor="modal-start-date" className="text-sm font-normal text-[#131319]">
                   Start date
                 </Label>
                 <div className="relative">
