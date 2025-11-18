@@ -307,7 +307,6 @@ export default function UserDetail() {
                     value={formData.firstName}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
@@ -318,7 +317,6 @@ export default function UserDetail() {
                     value={formData.lastName}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
@@ -329,7 +327,6 @@ export default function UserDetail() {
                     type="email"
                     value={formData.email}
                     readOnly
-                    className="rounded-[2px] border-bluegrey-100 cursor-text"
                   />
                 </div>
 
@@ -341,7 +338,6 @@ export default function UserDetail() {
                     value={formData.phone}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
@@ -352,7 +348,6 @@ export default function UserDetail() {
                     value={formData.address1}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
@@ -363,7 +358,6 @@ export default function UserDetail() {
                     value={formData.address2}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
@@ -374,7 +368,6 @@ export default function UserDetail() {
                     value={formData.city}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
@@ -385,14 +378,13 @@ export default function UserDetail() {
                     value={formData.postalCode}
                     onChange={handleFormChange}
                     disabled={isSaving}
-                    className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="country">Country</Label>
                   <Select value={formData.country} onValueChange={handleCountryChange} disabled={isSaving}>
-                    <SelectTrigger className="rounded-[2px] border-bluegrey-500">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
