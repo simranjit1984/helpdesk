@@ -506,14 +506,12 @@ function UserActionsMenu({ user }: { user: User }) {
 
     // Special case: Reset password when authentication is blocked
     if (item.action === "Reset password" && user.status === "blocked") {
-      console.log("Blocked modal triggered for user:", user.username, "status:", user.status);
       setIsBlockedModal(true);
       setIsOpen(false);
       return;
     }
 
     // All other actions need confirmation
-    console.log("Regular confirmation modal for action:", item.action, "user status:", user.status);
     setPendingAction(item);
     setIsModalOpen(true);
     setIsOpen(false);
