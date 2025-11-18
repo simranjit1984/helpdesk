@@ -656,7 +656,7 @@ export default function UserDetail() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <Label className="text-sm font-normal text-bluegrey-900">End date</Label>
+                <Label className="text-sm font-normal text-[#131319]">End date</Label>
                 <RadioGroup
                   value={modalEndDateOption}
                   onValueChange={(value) => setModalEndDateOption(value as "no-end" | "custom")}
@@ -664,13 +664,13 @@ export default function UserDetail() {
                 >
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="no-end" id="modal-no-end" className="border-bluegrey-500" />
-                    <Label htmlFor="modal-no-end" className="cursor-pointer text-sm font-normal text-bluegrey-900">
+                    <Label htmlFor="modal-no-end" className="cursor-pointer text-sm font-normal text-[#131319]">
                       No end date
                     </Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="custom" id="modal-custom" className="border-bluegrey-500" />
-                    <Label htmlFor="modal-custom" className="cursor-pointer text-sm font-normal text-bluegrey-900">
+                    <Label htmlFor="modal-custom" className="cursor-pointer text-sm font-normal text-[#131319]">
                       Custom date
                     </Label>
                   </div>
