@@ -70,6 +70,8 @@ export default function UserDetail() {
   const [modalEndDate, setModalEndDate] = useState("2025/04/18");
   const [expandedRoles, setExpandedRoles] = useState<Set<string>>(new Set());
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showInfoAlert, setShowInfoAlert] = useState(false);
+  const [infoAlertMessage, setInfoAlertMessage] = useState("");
   const [accessRoleSearchQuery, setAccessRoleSearchQuery] = useState("");
   const [eventSearchQuery, setEventSearchQuery] = useState("");
   const [eventFilters, setEventFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
