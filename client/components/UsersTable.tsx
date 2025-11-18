@@ -626,6 +626,17 @@ function UserActionsMenu({ user }: { user: User }) {
           onClick: handleConfirmAction,
         }}
       />
+
+      <ConfirmationModal
+        open={isBlockedModal}
+        onOpenChange={setIsBlockedModal}
+        title="User authentication blocked"
+        description="Please unblock user's authentication status before resetting the password."
+        primaryAction={{
+          label: "Close",
+          onClick: handleCloseBlockedModal,
+        }}
+      />
     </>
   );
 }
