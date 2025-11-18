@@ -215,6 +215,16 @@ export default function UserDetail() {
   };
 
 
+  const showAlert = (message: string, type: "success" | "info") => {
+    const alertId = `alert-${Date.now()}-${Math.random()}`;
+    const newAlert: Alert = { id: alertId, message, type };
+    setAlerts((prev) => [...prev, newAlert]);
+  };
+
+  const removeAlert = (alertId: string) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== alertId));
+  };
+
   const addEventFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
     // Check if the same filter already exists
     const isDuplicate = eventFilters.some(
@@ -225,8 +235,7 @@ export default function UserDetail() {
     );
 
     if (isDuplicate) {
-      setInfoAlertMessage("This filter already applied.");
-      setShowInfoAlert(true);
+      showAlert("This filter already applied.", "info");
       return;
     }
 
