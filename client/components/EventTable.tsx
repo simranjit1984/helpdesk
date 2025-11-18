@@ -424,9 +424,18 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
     groupClass?: string;
   }
 
+  const getGroupHoverClass = (groupClass: string): string => {
+    if (groupClass.startsWith("group/")) {
+      const groupName = groupClass.substring(6);
+      return `group/${groupName}:opacity-100`;
+    }
+    return "group-hover:opacity-100";
+  };
+
   const renderDetailField = ({ label, value, column, groupClass }: DetailFieldProps) => {
     if (!value) return null;
     const hasFilter = column && onFilterAdd;
+    const hoverClass = groupClass ? getGroupHoverClass(groupClass) : "hover:opacity-100";
 
     return (
       <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
@@ -444,7 +453,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                   value,
                 })
               }
-              className={`w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 ${groupClass}:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0`}
+              className={`w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 ${hoverClass} focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0`}
               title={`Filter by ${label}`}
               aria-label={`Filter by ${label} ${value}`}
             >
