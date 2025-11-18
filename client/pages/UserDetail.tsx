@@ -285,13 +285,21 @@ export default function UserDetail() {
           </div>
 
           <TabsContent value="basic" className="pt-6">
-            <form className="flex flex-col gap-10">
+            {isSaving && (
+              <div className="mb-6 flex flex-col gap-2">
+                <Progress value={saveProgress} className="h-2" />
+                <p className="text-xs text-bluegrey-600">Saving changes...</p>
+              </div>
+            )}
+            <form onSubmit={handleSaveBasicInfo} className="flex flex-col gap-10">
               <div className="flex w-full max-w-sm flex-col gap-6">
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="firstName">First name</Label>
                   <Input
                     id="firstName"
-                    defaultValue={user.firstName}
+                    value={formData.firstName}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
@@ -300,7 +308,9 @@ export default function UserDetail() {
                   <Label htmlFor="lastName">Last name</Label>
                   <Input
                     id="lastName"
-                    defaultValue={user.lastName}
+                    value={formData.lastName}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
@@ -310,7 +320,7 @@ export default function UserDetail() {
                   <Input
                     id="email"
                     type="email"
-                    defaultValue={user.email}
+                    value={formData.email}
                     readOnly
                     className="rounded-[2px] border-bluegrey-100 cursor-text"
                   />
@@ -321,7 +331,9 @@ export default function UserDetail() {
                   <Input
                     id="phone"
                     type="tel"
-                    defaultValue={user.phone}
+                    value={formData.phone}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
@@ -330,7 +342,9 @@ export default function UserDetail() {
                   <Label htmlFor="address1">Address 1</Label>
                   <Input
                     id="address1"
-                    defaultValue={user.address1}
+                    value={formData.address1}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
@@ -339,7 +353,9 @@ export default function UserDetail() {
                   <Label htmlFor="address2">Address 2</Label>
                   <Input
                     id="address2"
-                    defaultValue={user.address2}
+                    value={formData.address2}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
@@ -348,7 +364,9 @@ export default function UserDetail() {
                   <Label htmlFor="city">City</Label>
                   <Input
                     id="city"
-                    defaultValue={user.city}
+                    value={formData.city}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
@@ -357,14 +375,16 @@ export default function UserDetail() {
                   <Label htmlFor="postalCode">Postal code</Label>
                   <Input
                     id="postalCode"
-                    defaultValue={user.postalCode}
+                    value={formData.postalCode}
+                    onChange={handleFormChange}
+                    disabled={isSaving}
                     className="rounded-[2px] border-bluegrey-500"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="country">Country</Label>
-                  <Select defaultValue={user.country}>
+                  <Select value={formData.country} onValueChange={handleCountryChange} disabled={isSaving}>
                     <SelectTrigger className="rounded-[2px] border-bluegrey-500">
                       <SelectValue />
                     </SelectTrigger>
