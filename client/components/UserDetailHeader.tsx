@@ -157,7 +157,7 @@ export default function UserDetailHeader({
                     <MoreVertical className="h-6 w-6 text-bluegrey-700" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="min-w-[280px]">
                   {menuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.action}
