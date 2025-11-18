@@ -116,7 +116,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
     <tr
       ref={ref}
       className={cn(
-        "hover:bg-bluegrey-25/50 transition-colors",
+        "group hover:bg-bluegrey-25/50 transition-colors",
         !expandable || !isExpanded ? "border-b-2 border-bluegrey-100" : "",
         className
       )}
