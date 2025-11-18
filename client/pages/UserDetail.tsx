@@ -89,8 +89,8 @@ export default function UserDetail() {
     city: "",
     postalCode: "",
     country: "",
-    startDate: "",
-    endDate: "",
+    startDate: "2025-04-18",
+    endDate: "2025-04-18",
   });
 
   useEffect(() => {
@@ -130,8 +130,8 @@ export default function UserDetail() {
     city: "Amsterdam",
     postalCode: "125744",
     country: "Netherlands",
-    startDate: "2025/04/18",
-    endDate: "2025/04/18",
+    startDate: "2025-04-18",
+    endDate: "2025-04-18",
     organization: "InsurCar",
     status: foundUser.status,
     accessRoles: foundUser.accessRoles || [],
