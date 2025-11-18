@@ -421,7 +421,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
     if (!value) return null;
     const hasFilter = column && event;
     return (
-      <div className={`flex flex-col gap-1.5 ${hasFilter ? groupClass || "" : ""}`} key={label}>
+      <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
         <span className="text-xs font-semibold text-bluegrey-700">{label}</span>
         <div className="flex items-center gap-1 w-full">
           <span className="text-sm text-bluegrey-900 break-words flex-1">{value}</span>
@@ -436,9 +436,7 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
                   value,
                 })
               }
-              className={`w-6 h-6 flex items-center justify-center rounded transition-opacity focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0 ${
-                groupClass ? `opacity-0 ${groupClass}:opacity-100` : "opacity-100"
-              }`}
+              className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
               title={`Filter by ${label}`}
               aria-label={`Filter by ${label} ${value}`}
             >
