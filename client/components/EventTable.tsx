@@ -440,8 +440,8 @@ export default function EventTable({ filters, searchQuery = "", onFilterAdd }: E
     return (
       <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
         <span className="text-xs font-semibold text-bluegrey-700">{label}</span>
-        <div className="flex items-center gap-1 w-full">
-          <span className="text-sm text-bluegrey-900 break-words flex-1">{value}</span>
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-bluegrey-900 break-words">{value}</span>
           {hasFilter && groupClass && (
             <button
               type="button"
