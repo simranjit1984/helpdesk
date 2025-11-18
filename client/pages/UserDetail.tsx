@@ -749,19 +749,25 @@ export default function UserDetail() {
         </DialogContent>
       </Dialog>
 
-      {showSuccessAlert && (
-        <SuccessAlert
-          message="Changes saved successfully."
-          onClose={() => setShowSuccessAlert(false)}
-        />
-      )}
-
-      {showInfoAlert && (
-        <InfoAlert
-          message={infoAlertMessage}
-          onClose={() => setShowInfoAlert(false)}
-        />
-      )}
+      {alerts.map((alert, index) => {
+        const bottomOffset = 80 + index * 72;
+        return alert.type === "success" ? (
+          <SuccessAlert
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+            bottomOffset={bottomOffset}
+          />
+        ) : (
+          <InfoAlert
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+            bottomOffset={bottomOffset}
+            autoClose={false}
+          />
+        );
+      })}
     </Layout>
   );
 }
