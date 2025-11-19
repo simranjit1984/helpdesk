@@ -346,21 +346,27 @@ export default function EventTable({
       return;
     }
 
-    const offsets = new Map<string, number>();
-    const tableRect = tableRef.current.getBoundingClientRect();
+    const updatePositions = () => {
+      const offsets = new Map<string, number>();
+      const tableRect = tableRef.current!.getBoundingClientRect();
 
-    baseEvents.forEach((event) => {
-      if (event.requestId === selectedTraceId) {
-        const rowElement = document.querySelector(`[data-event-row="${event.id}"]`);
-        if (rowElement) {
-          const rowRect = rowElement.getBoundingClientRect();
-          const relativeTop = rowRect.top - tableRect.top;
-          offsets.set(event.id, relativeTop);
+      baseEvents.forEach((event) => {
+        if (event.requestId === selectedTraceId) {
+          const rowElement = document.querySelector(`[data-event-row="${event.id}"]`);
+          if (rowElement) {
+            const rowRect = rowElement.getBoundingClientRect();
+            const relativeTop = rowRect.top - tableRect.top;
+            offsets.set(event.id, relativeTop);
+          }
         }
-      }
-    });
+      });
 
-    setLinkedRowOffsets(offsets);
+      setLinkedRowOffsets(offsets);
+    };
+
+    updatePositions();
+    const timer = setTimeout(updatePositions, 50);
+    return () => clearTimeout(timer);
   }, [selectedTraceId]);
 
   const getFilteredEvents = () => {
