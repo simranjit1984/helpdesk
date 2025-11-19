@@ -138,6 +138,15 @@ export function MultiSelect({
         }
         break;
 
+      case "Tab":
+        if (isOpen) {
+          e.preventDefault();
+          setIsOpen(false);
+          setInputValue("");
+          setFocusedOptionIndex(-1);
+        }
+        break;
+
       default:
         break;
     }
