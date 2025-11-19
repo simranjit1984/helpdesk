@@ -722,7 +722,10 @@ export default function EventTable({
                     </TableCell>
                   </TableRow>
                   {expandedEvents.has(event.id) && (
-                    <TableNestedRow colSpan={6}>
+                    <TableNestedRow
+                      colSpan={6}
+                      className={selectedRequestId && event.requestId === selectedRequestId ? "bg-blue-100/50" : ""}
+                    >
                       <TableExpandCell></TableExpandCell>
                       <TableNestedCell colSpan={5}>
                         <div className="py-6 px-4 bg-bluegrey-50/50">
