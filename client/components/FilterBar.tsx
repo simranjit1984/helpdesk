@@ -352,30 +352,13 @@ export default function FilterBar({
                 </div>
 
                 {/* Multi-select value picker */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
-                    Values
-                  </label>
-                  <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border border-[#5D607E] rounded-sm p-2 bg-white">
-                    {columnOptions[pendingFilter.column]?.map((option) => (
-                      <label key={option.value} className="flex items-center gap-2 cursor-pointer hover:bg-bluegrey-50 p-1 rounded">
-                        <input
-                          type="checkbox"
-                          checked={selectedValues.includes(option.value)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedValues([...selectedValues, option.value]);
-                            } else {
-                              setSelectedValues(selectedValues.filter((v) => v !== option.value));
-                            }
-                          }}
-                          className="rounded"
-                        />
-                        <span className="text-sm text-bluegrey-900">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                <MultiSelect
+                  label="Values"
+                  options={columnOptions[pendingFilter.column] || []}
+                  selectedValues={selectedValues}
+                  onChange={setSelectedValues}
+                  placeholder=" "
+                />
 
                 {/* Buttons */}
                 <div className="flex justify-end items-start gap-4">
