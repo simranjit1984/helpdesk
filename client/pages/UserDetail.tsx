@@ -601,19 +601,6 @@ export default function UserDetail() {
               </form>
             </TabsContent>
 
-            <TabsContent value="organizations" className="pt-6">
-              <div className="flex items-center justify-center min-h-96">
-                <div className="text-center">
-                  <p className="text-bluegrey-600 text-lg font-medium">
-                    Organizations
-                  </p>
-                  <p className="text-bluegrey-500 text-sm mt-2">
-                    Organization details will be displayed here
-                  </p>
-                </div>
-              </div>
-            </TabsContent>
-
             <TabsContent value="access" className="pt-6">
               <div className="flex flex-col gap-6">
                 {/* Toolbar */}
