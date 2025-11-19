@@ -585,9 +585,23 @@ export default function EventTable({
                     className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                   >
                     <TableExpandCell>
-                      {selectedTraceId && event.requestId === selectedTraceId && (
-                        <LinkIcon className="h-5 w-5 text-blue-500 mr-1" title="This event is linked" />
-                      )}
+                      <div className="flex items-center justify-center gap-1">
+                        {selectedTraceId && event.requestId === selectedTraceId && (
+                          <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="This event is linked" />
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => toggleEventExpanded(event.id)}
+                          className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                          aria-label="Toggle event details"
+                        >
+                          {expandedEvents.has(event.id) ? (
+                            <ChevronDown className="h-5 w-5 text-bluegrey-700" />
+                          ) : (
+                            <ChevronRight className="h-5 w-5 text-bluegrey-700" />
+                          )}
+                        </button>
+                      </div>
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-1 w-full">
