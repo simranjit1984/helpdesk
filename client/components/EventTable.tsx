@@ -574,7 +574,7 @@ export default function EventTable({
   return (
     <Table variant="expandable" ref={tableRef} className="relative">
       {selectedTraceId && linkedRowPositions.size > 0 && (
-        <div className="absolute left-0 top-0 w-6 pointer-events-none z-20">
+        <div className="absolute left-0 top-0 w-6 pointer-events-none z-20 sticky left-0 overflow-visible">
           {Array.from(linkedRowPositions.entries()).map(([eventId, topOffset]) => (
             <div
               key={eventId}
