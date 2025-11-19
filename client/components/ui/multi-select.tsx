@@ -70,17 +70,18 @@ export function MultiSelect({
   }, [inputValue]);
 
   const handleInputFocus = () => {
+    setIsOpen(true);
     setFocusedChipIndex(-1);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setInputValue(newValue);
-    if (newValue.trim()) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
+    setInputValue(e.target.value);
+    setIsOpen(true);
+    setFocusedOptionIndex(-1);
+  };
+
+  const handleInputBlur = () => {
+    setIsOpen(false);
     setFocusedOptionIndex(-1);
   };
 
