@@ -337,6 +337,7 @@ export default function EventTable({
   const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
 
   const toggleEventExpanded = (eventId: string) => {
     const newExpanded = new Set(expandedEvents);
