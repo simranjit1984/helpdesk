@@ -606,11 +606,6 @@ export default function EventTable({
                     className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                   >
                     <TableExpandCell>
-                      {selectedTraceId && event.requestId === selectedTraceId && (
-                        <div className="absolute -left-2.5 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
-                          <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="This event is linked" />
-                        </div>
-                      )}
                       <button
                         type="button"
                         onClick={() => toggleEventExpanded(event.id)}
