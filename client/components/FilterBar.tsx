@@ -332,13 +332,13 @@ export default function FilterBar({
                       Operator
                     </label>
                     <Select
-                      value={pendingFilter.operator || getOperatorsForColumn(pendingFilter.column)[0]?.value || "is"}
+                      value={pendingFilter.operator}
                       onValueChange={(value) =>
                         setPendingFilter((prev) => ({ ...prev, operator: value }))
                       }
                     >
                       <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
-                        <SelectValue />
+                        <SelectValue placeholder={getOperatorsForColumn(pendingFilter.column)[0]?.label} />
                       </SelectTrigger>
                       <SelectContent>
                         {getOperatorsForColumn(pendingFilter.column).map((op) => (
