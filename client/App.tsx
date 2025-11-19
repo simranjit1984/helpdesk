@@ -24,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/event-log" element={<EventLog />} />
           <Route path="/users/:id" element={<UserDetail />} />
+          <Route path="/tooltip-demo" element={<TooltipDemo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
