@@ -287,7 +287,104 @@ export default function FilterBar({
         >
           <div className="flex flex-col gap-4 p-4">
             {/* Conditional rendering based on field type */}
-            {isDateField(pendingFilter.column) ? (
+            {hasColumnOptions(pendingFilter.column) ? (
+              // Multi-select for columns with predefined options
+              <>
+                <div className="flex items-start gap-4">
+                  <div className="flex flex-col gap-1 w-60">
+                    <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                      Filter by
+                    </label>
+                    <Select
+                      value={pendingFilter.column}
+                      onValueChange={(value) => {
+                        setPendingFilter((prev) => ({ ...prev, column: value, operator: "is" }));
+                        setSelectedValues([]);
+                        setDateRange({ start: "", end: "" });
+                      }}
+                    >
+                      <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {columns.map((col) => (
+                          <SelectItem key={col.value} value={col.value}>
+                            {col.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Operator for multi-select */}
+                  <div className="flex flex-col gap-1 w-[130px]">
+                    <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                      Operator
+                    </label>
+                    <Select
+                      value={pendingFilter.operator}
+                      onValueChange={(value) =>
+                        setPendingFilter((prev) => ({ ...prev, operator: value }))
+                      }
+                    >
+                      <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getOperatorsForColumn(pendingFilter.column).map((op) => (
+                          <SelectItem key={op.value} value={op.value}>
+                            {op.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Multi-select value picker */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                    Values
+                  </label>
+                  <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border border-[#5D607E] rounded-sm p-2 bg-white">
+                    {columnOptions[pendingFilter.column]?.map((option) => (
+                      <label key={option.value} className="flex items-center gap-2 cursor-pointer hover:bg-bluegrey-50 p-1 rounded">
+                        <input
+                          type="checkbox"
+                          checked={selectedValues.includes(option.value)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedValues([...selectedValues, option.value]);
+                            } else {
+                              setSelectedValues(selectedValues.filter((v) => v !== option.value));
+                            }
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-sm text-bluegrey-900">{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end items-start gap-4">
+                  <button
+                    onClick={() => setIsFilterPopoverOpen(false)}
+                    className="h-10 px-3 py-2 text-sm font-medium text-[#383A4B] hover:bg-bluegrey-50 rounded-sm transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={applyFilter}
+                    disabled={selectedValues.length === 0}
+                    className="h-10 px-3 py-2 bg-[#041295] hover:bg-[#041295]/90 text-[#F7F7F9] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </>
+            ) : isDateField(pendingFilter.column) ? (
               // Date range picker for date fields
               <>
                 <div className="flex items-start gap-4">
