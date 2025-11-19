@@ -583,6 +583,7 @@ export default function EventTable({
                   <TableRow
                     expandable
                     isExpanded={expandedEvents.has(event.id)}
+                    className={selectedRequestId && event.requestId === selectedRequestId ? "bg-blue-50" : ""}
                   >
                     <TableExpandCell>
                       <button
