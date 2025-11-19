@@ -338,8 +338,6 @@ export default function EventTable({
   searchQuery = "",
   onFilterAdd,
 }: EventTableProps) {
-  const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
   const [openTooltipEventId, setOpenTooltipEventId] = useState<string | null>(null);
