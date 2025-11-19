@@ -10,6 +10,7 @@ import {
   ChevronRight,
   PlusCircle,
   Search,
+  Trash2,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
