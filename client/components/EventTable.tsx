@@ -209,7 +209,6 @@ const generateMockEvents = (): Event[] => {
   now.setHours(23, 59, 59, 999);
 
   let eventCounter = 0;
-  const linkedRequestIds: string[] = [];
 
   for (let dayOffset = 0; dayOffset <= 13; dayOffset++) {
     const date = new Date(now);
@@ -217,106 +216,106 @@ const generateMockEvents = (): Event[] => {
     date.setHours(0, 0, 0, 0);
 
     const eventsPerDay = Math.floor(Math.random() * 20) + 20;
+    let i = 0;
 
-    for (let i = 0; i < eventsPerDay; i++) {
+    while (i < eventsPerDay) {
       const randomHour = Math.floor(Math.random() * 24);
       const randomMinute = Math.floor(Math.random() * 60);
-      const randomSecond = Math.floor(Math.random() * 60);
+      const baseSecond = Math.floor(Math.random() * 60);
 
-      const eventDate = new Date(date);
-      eventDate.setHours(randomHour, randomMinute, randomSecond);
+      const clusterTraceId = generateUUID();
+      const clusterSize = Math.floor(Math.random() * 3) + 6;
+      const eventsInCluster = Math.min(clusterSize, eventsPerDay - i);
 
-      const eventType =
-        MOCK_EVENT_TYPES[Math.floor(Math.random() * MOCK_EVENT_TYPES.length)];
-      const shouldHaveApplication = Math.random() > 0.2;
-      const application = shouldHaveApplication
-        ? MOCK_APPLICATIONS[
-            Math.floor(Math.random() * MOCK_APPLICATIONS.length)
-          ]
-        : "";
-      const actor = MOCK_ACTORS[Math.floor(Math.random() * MOCK_ACTORS.length)];
-      const clientIp =
-        Math.random() > 0.1
-          ? MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)]
+      for (let clusterIdx = 0; clusterIdx < eventsInCluster; clusterIdx++) {
+        const eventDate = new Date(date);
+        const secondOffset = Math.floor(Math.random() * 8);
+        eventDate.setHours(randomHour, randomMinute, Math.min(baseSecond + secondOffset, 59));
+
+        const eventType =
+          MOCK_EVENT_TYPES[Math.floor(Math.random() * MOCK_EVENT_TYPES.length)];
+        const shouldHaveApplication = Math.random() > 0.2;
+        const application = shouldHaveApplication
+          ? MOCK_APPLICATIONS[
+              Math.floor(Math.random() * MOCK_APPLICATIONS.length)
+            ]
           : "";
+        const actor = MOCK_ACTORS[Math.floor(Math.random() * MOCK_ACTORS.length)];
+        const clientIp =
+          Math.random() > 0.1
+            ? MOCK_IPS[Math.floor(Math.random() * MOCK_IPS.length)]
+            : "";
 
-      const shouldHaveUserAgent = Math.random() > 0.15;
-      const userAgent = shouldHaveUserAgent
-        ? MOCK_USER_AGENTS[Math.floor(Math.random() * MOCK_USER_AGENTS.length)]
-        : undefined;
+        const shouldHaveUserAgent = Math.random() > 0.15;
+        const userAgent = shouldHaveUserAgent
+          ? MOCK_USER_AGENTS[Math.floor(Math.random() * MOCK_USER_AGENTS.length)]
+          : undefined;
 
-      const shouldHaveRequestId = Math.random() > 0.1;
-      let requestId: string | undefined;
-      if (shouldHaveRequestId) {
-        const shouldLinkToExisting = Math.random() > 0.85 && linkedRequestIds.length > 0;
-        if (shouldLinkToExisting) {
-          requestId = linkedRequestIds[Math.floor(Math.random() * linkedRequestIds.length)];
-        } else {
-          requestId = generateUUID();
-          linkedRequestIds.push(requestId);
+        const requestId = clusterTraceId;
+
+        const shouldHaveIdentityApp = Math.random() > 0.2;
+        const identityApp = shouldHaveIdentityApp
+          ? MOCK_IDENTITY_APPS[
+              Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)
+            ]
+          : undefined;
+
+        const identityAppInstanceId = identityApp ? generateUUID() : undefined;
+
+        const description =
+          MOCK_DESCRIPTIONS[Math.floor(Math.random() * MOCK_DESCRIPTIONS.length)];
+
+        const subject = Math.random() > 0.3 ? generateUUID() : undefined;
+
+        const shouldHaveAuthDetails = Math.random() > 0.7;
+        const authenticationDetails = shouldHaveAuthDetails
+          ? "https://ciam.test.onewelcome.com/oauth"
+          : undefined;
+
+        const year = eventDate.getFullYear();
+        const month = String(eventDate.getMonth() + 1).padStart(2, "0");
+        const day = String(eventDate.getDate()).padStart(2, "0");
+        const hours = String(eventDate.getHours()).padStart(2, "0");
+        const minutes = String(eventDate.getMinutes()).padStart(2, "0");
+        const seconds = String(eventDate.getSeconds()).padStart(2, "0");
+        const dateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+        const details: Record<string, any> = {};
+
+        if (clientIp) {
+          details.clientIp = clientIp;
         }
+        if (requestId) {
+          details.requestId = requestId;
+        }
+        details.eventDate = eventDate.getTime();
+        details.eventType = eventType;
+        if (actor && !actor.includes("system")) {
+          details.userId = actor;
+        }
+        details.type = Math.random() > 0.5 ? "HTTP" : "DIRECT";
+
+        events.push({
+          id: `event-${eventCounter}`,
+          date: dateTime,
+          eventType,
+          application,
+          actor,
+          clientIp,
+          userAgent,
+          requestId,
+          identityApp,
+          identityAppInstanceId,
+          description,
+          subject,
+          authenticationDetails,
+          details: Object.keys(details).length > 0 ? details : undefined,
+        });
+
+        eventCounter++;
       }
 
-      const shouldHaveIdentityApp = Math.random() > 0.2;
-      const identityApp = shouldHaveIdentityApp
-        ? MOCK_IDENTITY_APPS[
-            Math.floor(Math.random() * MOCK_IDENTITY_APPS.length)
-          ]
-        : undefined;
-
-      const identityAppInstanceId = identityApp ? generateUUID() : undefined;
-
-      const description =
-        MOCK_DESCRIPTIONS[Math.floor(Math.random() * MOCK_DESCRIPTIONS.length)];
-
-      const subject = Math.random() > 0.3 ? generateUUID() : undefined;
-
-      const shouldHaveAuthDetails = Math.random() > 0.7;
-      const authenticationDetails = shouldHaveAuthDetails
-        ? "https://ciam.test.onewelcome.com/oauth"
-        : undefined;
-
-      const year = eventDate.getFullYear();
-      const month = String(eventDate.getMonth() + 1).padStart(2, "0");
-      const day = String(eventDate.getDate()).padStart(2, "0");
-      const hours = String(eventDate.getHours()).padStart(2, "0");
-      const minutes = String(eventDate.getMinutes()).padStart(2, "0");
-      const seconds = String(eventDate.getSeconds()).padStart(2, "0");
-      const dateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-      const details: Record<string, any> = {};
-
-      if (clientIp) {
-        details.clientIp = clientIp;
-      }
-      if (requestId) {
-        details.requestId = requestId;
-      }
-      details.eventDate = eventDate.getTime();
-      details.eventType = eventType;
-      if (actor && !actor.includes("system")) {
-        details.userId = actor;
-      }
-      details.type = Math.random() > 0.5 ? "HTTP" : "DIRECT";
-
-      events.push({
-        id: `event-${eventCounter}`,
-        date: dateTime,
-        eventType,
-        application,
-        actor,
-        clientIp,
-        userAgent,
-        requestId,
-        identityApp,
-        identityAppInstanceId,
-        description,
-        subject,
-        authenticationDetails,
-        details: Object.keys(details).length > 0 ? details : undefined,
-      });
-
-      eventCounter++;
+      i += eventsInCluster;
     }
   }
 
