@@ -1268,8 +1268,8 @@ export default function UserDetail() {
 
           {/* Side Sheet for Section Details */}
           <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && setOpenSideSheet(null)}>
-            <SheetContent side="right">
-              <SheetHeader className="flex flex-row items-center justify-between mb-6">
+            <SheetContent side="right" className="w-full sm:w-[500px]">
+              <SheetHeader className="flex flex-row items-center justify-between mb-8">
                 <button
                   onClick={() => setOpenSideSheet(null)}
                   className="flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-100 transition-colors"
@@ -1280,9 +1280,49 @@ export default function UserDetail() {
                 <SheetTitle className="flex-1 text-center">{openSideSheet}</SheetTitle>
                 <div className="w-10" />
               </SheetHeader>
-              <div className="text-bluegrey-600">
-                {openSideSheet ? `Details for ${openSideSheet}` : ""}
-              </div>
+
+              {/* Username & Password Section */}
+              {openSideSheet === "Username & Password" && (
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="emailId" className="text-sm font-medium text-bluegrey-900">
+                      Email ID
+                    </label>
+                    <input
+                      id="emailId"
+                      type="email"
+                      value={user?.email || ""}
+                      readOnly
+                      className="w-full px-3 py-2 border border-bluegrey-200 rounded bg-bluegrey-50 text-bluegrey-900 text-sm"
+                    />
+                    <Button className="mt-2 bg-blue-500 hover:bg-blue-600 text-white">
+                      Update Email ID
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="tempPassword" className="text-sm font-medium text-bluegrey-900">
+                      Set temporary password
+                    </label>
+                    <input
+                      id="tempPassword"
+                      type="password"
+                      placeholder="Enter temporary password"
+                      className="w-full px-3 py-2 border border-bluegrey-200 rounded text-bluegrey-900 text-sm"
+                    />
+                    <Button className="mt-2 bg-blue-500 hover:bg-blue-600 text-white">
+                      Set Temporary Password
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Default content for other sections */}
+              {openSideSheet && openSideSheet !== "Username & Password" && (
+                <div className="text-bluegrey-600">
+                  Details for {openSideSheet}
+                </div>
+              )}
             </SheetContent>
           </Sheet>
         </div>
