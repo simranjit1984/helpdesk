@@ -582,7 +582,7 @@ export default function EventTable({
                   <TableRow
                     expandable
                     isExpanded={expandedEvents.has(event.id)}
-                    className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
+                    className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50 hover:bg-blue-50" : ""}
                     data-event-row={event.id}
                   >
                     <TableExpandCell className={`sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 ${selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : "bg-white"}`}>
