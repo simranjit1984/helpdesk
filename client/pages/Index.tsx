@@ -5,6 +5,16 @@ import FilterBar from "@/components/FilterBar";
 import UsersTable from "@/components/UsersTable";
 import { Send } from "lucide-react";
 
+const STATUS_OPTIONS = [
+  { value: "active", label: "Active" },
+  { value: "invited", label: "Invited" },
+  { value: "invitation-withdrawn", label: "Invitation withdrawn" },
+  { value: "invitation-expired", label: "Invitation expired" },
+  { value: "blocked", label: "Blocked" },
+  { value: "grace", label: "Grace" },
+  { value: "inactive", label: "Inactive" },
+];
+
 export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
