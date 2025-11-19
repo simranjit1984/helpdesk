@@ -592,29 +592,30 @@ export default function EventTable({
   };
 
   return (
-    <div className="relative">
-      {linkedRowOffsets.size > 0 && (
-        <div
-          className="absolute left-0 top-0 w-8 pointer-events-none z-30"
-          style={{ height: '100%' }}
-        >
-          {Array.from(linkedRowOffsets.entries()).map(([eventId, topOffset]) => (
+    <Table variant="expandable" ref={tableRef}>
+      <TableScroll ref={tableScrollRef}>
+        <div className="relative">
+          {linkedRowOffsets.size > 0 && (
             <div
-              key={eventId}
-              className="absolute flex items-center justify-center w-8 h-10"
-              style={{
-                top: `${topOffset - scrollOffset}px`,
-                left: '-12px',
-              }}
+              className="absolute left-0 top-0 w-8 pointer-events-none z-30"
+              style={{ height: '100%' }}
             >
-              <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+              {Array.from(linkedRowOffsets.entries()).map(([eventId, topOffset]) => (
+                <div
+                  key={eventId}
+                  className="absolute flex items-center justify-center w-8 h-10"
+                  style={{
+                    top: `${topOffset - scrollOffset}px`,
+                    left: '-12px',
+                  }}
+                >
+                  <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
-      <Table variant="expandable" ref={tableRef}>
-        <TableScroll ref={tableScrollRef}>
-          <TableContent>
+        <TableContent>
           <TableHeader>
             <TableHeadRow>
               <TableHeadCell className="w-10"></TableHeadCell>
@@ -872,6 +873,5 @@ export default function EventTable({
         </TableContent>
       </TableScroll>
     </Table>
-    </div>
   );
 }
