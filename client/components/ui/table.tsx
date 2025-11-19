@@ -205,7 +205,7 @@ const TableExpandCell = React.forwardRef<
   }[height];
 
   return (
-    <td ref={ref} className={cn("px-3 py-1 w-10", className)} {...props}>
+    <td ref={ref} className={cn("px-3 py-1 w-10 relative", className)} {...props}>
       <div className={cn("flex items-center justify-center", heightClass)}>
         {props.children}
       </div>
