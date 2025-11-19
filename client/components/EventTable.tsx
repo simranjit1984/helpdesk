@@ -338,46 +338,6 @@ export default function EventTable({
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!selectedTraceId || !tableRef.current) {
-      setLinkedRowOffsets(new Map());
-      return;
-    }
-
-    const updatePositions = () => {
-      const offsets = new Map<string, number>();
-      const tableRect = tableRef.current!.getBoundingClientRect();
-
-      baseEvents.forEach((event) => {
-        if (event.requestId === selectedTraceId) {
-          const rowElement = document.querySelector(`[data-event-row="${event.id}"]`);
-          if (rowElement) {
-            const rowRect = rowElement.getBoundingClientRect();
-            const relativeTop = rowRect.top - tableRect.top;
-            offsets.set(event.id, relativeTop);
-          }
-        }
-      });
-
-      setLinkedRowOffsets(offsets);
-    };
-
-    const handleScroll = () => {
-      const newScroll = tableScrollRef.current?.scrollTop || 0;
-      setScrollOffset(newScroll);
-      updatePositions();
-    };
-
-    updatePositions();
-    const timer = setTimeout(updatePositions, 50);
-    const scrollContainer = tableScrollRef.current;
-    scrollContainer?.addEventListener('scroll', handleScroll);
-
-    return () => {
-      clearTimeout(timer);
-      scrollContainer?.removeEventListener('scroll', handleScroll);
-    };
-  }, [selectedTraceId]);
 
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
