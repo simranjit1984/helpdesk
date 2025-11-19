@@ -338,7 +338,9 @@ export default function EventTable({
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
   const tableRef = useRef<HTMLDivElement>(null);
+  const tableScrollRef = useRef<HTMLDivElement>(null);
   const [linkedRowOffsets, setLinkedRowOffsets] = useState<Map<string, number>>(new Map());
+  const [scrollOffset, setScrollOffset] = useState(0);
 
   useEffect(() => {
     if (!selectedTraceId || !tableRef.current) {
