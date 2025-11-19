@@ -65,19 +65,6 @@ export default function FilterBar({
   searchPlaceholder = "Search",
   columnOptions = {},
 }: FilterBarProps) {
-  const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
-  const multiSelectOpenRef = useRef(false);
-  const [pendingFilter, setPendingFilter] = useState({
-    column: columns[0]?.value || "",
-    operator: operators[0]?.value || "contains",
-    value: "",
-  });
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState({
-    start: "",
-    end: "",
-  });
-
   const isDateField = (column: string) => {
     return column === "date" || column === "dateCreated";
   };
@@ -95,6 +82,19 @@ export default function FilterBar({
     }
     return operators;
   };
+
+  const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
+  const multiSelectOpenRef = useRef(false);
+  const [pendingFilter, setPendingFilter] = useState({
+    column: columns[0]?.value || "",
+    operator: operators[0]?.value || "contains",
+    value: "",
+  });
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState({
+    start: "",
+    end: "",
+  });
 
   const initializeDateRange = () => {
     const now = new Date();
