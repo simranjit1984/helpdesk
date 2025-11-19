@@ -141,7 +141,6 @@ export function MultiSelect({
   const handleSelectOption = (value: string) => {
     onChange([...selectedValues, value]);
     setInputValue("");
-    setIsOpen(false);
     setFocusedOptionIndex(-1);
     inputRef.current?.focus();
   };
