@@ -583,9 +583,9 @@ export default function EventTable({
                     isExpanded={expandedEvents.has(event.id)}
                     className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                   >
-                    <TableExpandCell className="relative">
+                    <TableExpandCell>
                       {selectedTraceId && event.requestId === selectedTraceId && (
-                        <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 z-10">
+                        <div className="absolute -left-2.5 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
                           <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="This event is linked" />
                         </div>
                       )}
