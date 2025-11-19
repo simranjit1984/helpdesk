@@ -758,7 +758,7 @@ export default function UserDetail() {
                     No authenticators configured
                   </p>
                   <p className="text-bluegrey-500 text-sm mt-2">
-                    Authenticators will be displayed here once configured
+                    No authenticators linked to this user's account.
                   </p>
                 </div>
               </div>
