@@ -358,6 +358,15 @@ export default function EventTable({
     }
   };
 
+  const getLinkedEventCount = (requestId: string | undefined): number => {
+    if (!requestId) return 0;
+    return baseEvents.filter(e => e.requestId === requestId).length;
+  };
+
+  const isEventLinked = (event: Event): boolean => {
+    return event.requestId ? getLinkedEventCount(event.requestId) > 1 : false;
+  };
+
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
 
