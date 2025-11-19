@@ -801,37 +801,31 @@ export default function EventTable({
                               label: "Trace ID",
                               value: event.requestId,
                               column: "requestId",
-                              groupClass: "group/requestId",
                             })}
                             {renderDetailField({
                               label: "User Agent",
                               value: event.userAgent,
                               column: "userAgent",
-                              groupClass: "group/userAgent",
                             })}
                             {renderDetailField({
                               label: "Identity App",
                               value: event.identityApp,
                               column: "identityApp",
-                              groupClass: "group/identityApp",
                             })}
                             {renderDetailField({
                               label: "Identity App Instance ID",
                               value: event.identityAppInstanceId,
                               column: "identityAppInstanceId",
-                              groupClass: "group/identityAppInstanceId",
                             })}
                             {renderDetailField({
                               label: "Authentication Details",
                               value: event.authenticationDetails,
                               column: "authenticationDetails",
-                              groupClass: "group/authenticationDetails",
                             })}
                             {renderDetailField({
                               label: "Subject",
                               value: event.subject,
                               column: "subject",
-                              groupClass: "group/subject",
                             })}
                             {event.description && (
                               <div className="flex flex-col gap-1.5 lg:col-span-2">
