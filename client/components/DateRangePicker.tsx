@@ -123,7 +123,7 @@ export default function DateRangePicker({
               type="datetime-local"
               value={startDate}
               onChange={(e) => handleStartDateChange(e.target.value)}
-              className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               autoComplete="off"
             />
           </div>
@@ -142,7 +142,7 @@ export default function DateRangePicker({
               type="datetime-local"
               value={endDate}
               onChange={(e) => handleEndDateChange(e.target.value)}
-              className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              className="w-52 h-10 px-2 py-2 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-bluegrey-500 rounded-sm bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               autoComplete="off"
             />
           </div>
