@@ -547,7 +547,7 @@ export default function EventTable({
   };
 
   return (
-    <Table variant="expandable">
+    <Table variant="expandable" className="relative">
       <TableScroll>
         <TableContent>
           <TableHeader>
