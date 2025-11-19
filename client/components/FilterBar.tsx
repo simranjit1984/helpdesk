@@ -503,7 +503,7 @@ export default function FilterBar({
                           applyFilter();
                         }
                       }}
-                      className="w-full h-11 px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-[#5D607E] rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 font-normal"
+                      className="w-full h-11 px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-[#5D607E] rounded-sm bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 font-normal"
                       autoComplete="off"
                     />
                   </div>
