@@ -109,6 +109,26 @@ export default function UserDetail() {
     endDate: "2025-04-18",
   });
 
+  // Generate random past timestamp for "Last used"
+  const generateRandomTimestamp = () => {
+    const now = new Date();
+    const daysAgo = Math.floor(Math.random() * 30) + 1;
+    const hoursAgo = Math.floor(Math.random() * 24);
+    const minutesAgo = Math.floor(Math.random() * 60);
+
+    const date = new Date(now);
+    date.setDate(date.getDate() - daysAgo);
+    date.setHours(date.getHours() - hoursAgo);
+    date.setMinutes(date.getMinutes() - minutesAgo);
+
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const day = date.getDate();
+    const year = date.getFullYear();
+    const time = date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+    return `${month} ${day}, ${year} ${time}`;
+  };
+
   // Fetch user data based on username (email)
   const decodedId = id ? decodeURIComponent(id) : null;
   const foundUser = decodedId ? getUserByUsername(decodedId) : null;
