@@ -750,6 +750,19 @@ export default function UserDetail() {
                 />
               </div>
             </TabsContent>
+
+            <TabsContent value="authenticators" className="pt-6">
+              <div className="flex items-center justify-center min-h-96">
+                <div className="text-center">
+                  <p className="text-bluegrey-600 text-lg font-medium">
+                    No authenticators configured
+                  </p>
+                  <p className="text-bluegrey-500 text-sm mt-2">
+                    Authenticators will be displayed here once configured
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
