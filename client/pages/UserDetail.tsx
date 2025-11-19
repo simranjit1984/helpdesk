@@ -962,9 +962,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         Google
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 15, 2025 09:30 AM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
 
                     {/* Facebook */}
@@ -972,9 +985,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         Facebook
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 12, 2025 02:15 PM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
 
                     {/* Apple */}
@@ -982,9 +1008,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         Apple
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 10, 2025 11:45 AM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
 
                     {/* DigiD */}
@@ -992,9 +1031,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         DigiD
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 08, 2025 04:20 PM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
 
                     {/* eHerkenning */}
@@ -1002,9 +1054,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         eHerkenning
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 05, 2025 10:10 AM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
 
                     {/* Microsoft EntraID */}
@@ -1012,9 +1077,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         Microsoft EntraID
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 02, 2025 03:50 PM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
 
                     {/* Microsoft AD */}
@@ -1022,9 +1100,22 @@ export default function UserDetail() {
                       <h3 className="font-semibold text-bluegrey-900">
                         Microsoft AD
                       </h3>
-                      <div className="text-sm text-bluegrey-600">
-                        Not configured
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Dec 28, 2024 08:25 AM
+                        </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
                     </div>
                   </div>
                 </div>
