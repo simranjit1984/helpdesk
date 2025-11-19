@@ -401,27 +401,6 @@ export default function EventTable({
     return filtered;
   };
 
-  const getSortedEvents = () => {
-    const filteredEvents = getFilteredEvents();
-    const sorted = [...filteredEvents].sort((a, b) => {
-      let aVal: any = a[sortColumn];
-      let bVal: any = b[sortColumn];
-
-      if (sortColumn === "date") {
-        aVal = new Date(aVal.replace(" ", "T")).getTime();
-        bVal = new Date(bVal.replace(" ", "T")).getTime();
-      } else if (typeof aVal === "string") {
-        aVal = aVal.toLowerCase();
-        bVal = (bVal as string).toLowerCase();
-      }
-
-      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
-      return 0;
-    });
-    return sorted;
-  };
-
   const toggleEventExpanded = (eventId: string) => {
     const newExpanded = new Set(expandedEvents);
     if (newExpanded.has(eventId)) {
@@ -430,15 +409,6 @@ export default function EventTable({
       newExpanded.add(eventId);
     }
     setExpandedEvents(newExpanded);
-  };
-
-  const handleSort = (column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("desc");
-    }
   };
 
   const getTraceIdEventCount = (traceId: string | undefined): number => {
