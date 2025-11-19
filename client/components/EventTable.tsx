@@ -586,18 +586,31 @@ export default function EventTable({
                     className={selectedRequestId && event.requestId === selectedRequestId ? "bg-blue-50" : ""}
                   >
                     <TableExpandCell>
-                      <button
-                        type="button"
-                        onClick={() => toggleEventExpanded(event.id)}
-                        className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
-                        aria-label="Toggle event details"
-                      >
-                        {expandedEvents.has(event.id) ? (
-                          <ChevronDown className="h-5 w-5 text-bluegrey-700" />
-                        ) : (
-                          <ChevronRight className="h-5 w-5 text-bluegrey-700" />
+                      <div className="flex items-center justify-center relative">
+                        <button
+                          type="button"
+                          onClick={() => toggleEventExpanded(event.id)}
+                          className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                          aria-label="Toggle event details"
+                        >
+                          {expandedEvents.has(event.id) ? (
+                            <ChevronDown className="h-5 w-5 text-bluegrey-700" />
+                          ) : (
+                            <ChevronRight className="h-5 w-5 text-bluegrey-700" />
+                          )}
+                        </button>
+                        {isEventLinked(event) && (
+                          <div
+                            className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
+                              selectedRequestId === event.requestId
+                                ? "bg-blue-500"
+                                : "bg-blue-300"
+                            } transition-colors`}
+                            title={`This event is linked with ${getLinkedEventCount(event.requestId) - 1} other event(s)`}
+                            aria-label={`Linked event indicator`}
+                          />
                         )}
-                      </button>
+                      </div>
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-1 w-full">
