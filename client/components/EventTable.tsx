@@ -351,13 +351,15 @@ export default function EventTable({
     const updatePositions = () => {
       const offsets = new Map<string, number>();
       const tableRect = tableRef.current!.getBoundingClientRect();
+      const scrollContainer = tableScrollRef.current;
+      const currentScroll = scrollContainer?.scrollTop || 0;
 
       baseEvents.forEach((event) => {
         if (event.requestId === selectedTraceId) {
           const rowElement = document.querySelector(`[data-event-row="${event.id}"]`);
           if (rowElement) {
             const rowRect = rowElement.getBoundingClientRect();
-            const relativeTop = rowRect.top - tableRect.top;
+            const relativeTop = rowRect.top - tableRect.top + currentScroll;
             offsets.set(event.id, relativeTop);
           }
         }
@@ -366,9 +368,19 @@ export default function EventTable({
       setLinkedRowOffsets(offsets);
     };
 
+    const handleScroll = () => {
+      setScrollOffset(tableScrollRef.current?.scrollTop || 0);
+    };
+
     updatePositions();
     const timer = setTimeout(updatePositions, 50);
-    return () => clearTimeout(timer);
+    const scrollContainer = tableScrollRef.current;
+    scrollContainer?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      clearTimeout(timer);
+      scrollContainer?.removeEventListener('scroll', handleScroll);
+    };
   }, [selectedTraceId]);
 
   const getFilteredEvents = () => {
