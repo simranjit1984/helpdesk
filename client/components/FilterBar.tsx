@@ -364,6 +364,7 @@ export default function FilterBar({
                       selectedValues={selectedValues}
                       onChange={setSelectedValues}
                       placeholder=" "
+                      isOpenRef={multiSelectOpenRef}
                     />
                   </div>
                 </div>
