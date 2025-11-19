@@ -1317,8 +1317,29 @@ export default function UserDetail() {
                 </div>
               )}
 
+              {/* SMS OTP Section */}
+              {openSideSheet === "SMS OTP" && (
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="phoneNumber" className="text-sm font-medium text-bluegrey-900">
+                      Phone number
+                    </label>
+                    <input
+                      id="phoneNumber"
+                      type="tel"
+                      value={user?.phone || ""}
+                      readOnly
+                      className="w-full px-3 py-2 border border-bluegrey-200 rounded bg-bluegrey-50 text-bluegrey-900 text-sm"
+                    />
+                    <Button className="mt-2 bg-blue-500 hover:bg-blue-600 text-white">
+                      Update Phone number
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {/* Default content for other sections */}
-              {openSideSheet && openSideSheet !== "Username & Password" && (
+              {openSideSheet && openSideSheet !== "Username & Password" && openSideSheet !== "SMS OTP" && (
                 <div className="text-bluegrey-600">
                   Details for {openSideSheet}
                 </div>
