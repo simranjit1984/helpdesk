@@ -47,13 +47,13 @@ export function DataGrid({
   return (
     <div
       className={cn(
-        "flex flex-col gap-1 rounded bg-white p-1",
+        "flex flex-col gap-1 rounded bg-white",
         className,
       )}
     >
       {/* Toolbar */}
       {(showSearch || showAddButton) && (
-        <div className="flex items-center justify-between gap-3 bg-white px-0 py-3">
+        <div className="flex items-center justify-between gap-3 bg-white p-3">
           {/* Left Section - Search */}
           <div className="flex flex-1 flex-wrap items-center gap-2">
             {showSearch && (
@@ -68,7 +68,7 @@ export function DataGrid({
 
           {/* Right Section - Add Button */}
           {showAddButton && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pt-1">
               <Button
                 onClick={onAddItem}
                 className="h-10 gap-2 rounded-sm bg-blue-500 px-3 text-sm font-medium text-bluegrey-25 hover:bg-blue-500/90"
