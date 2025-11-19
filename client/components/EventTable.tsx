@@ -582,34 +582,12 @@ export default function EventTable({
                   <TableRow
                     expandable
                     isExpanded={expandedEvents.has(event.id)}
-                    className={selectedRequestId && event.requestId === selectedRequestId ? "bg-blue-50" : ""}
+                    className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                   >
                     <TableExpandCell>
-                      <div className="flex items-center justify-center relative">
-                        <button
-                          type="button"
-                          onClick={() => toggleEventExpanded(event.id)}
-                          className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
-                          aria-label="Toggle event details"
-                        >
-                          {expandedEvents.has(event.id) ? (
-                            <ChevronDown className="h-5 w-5 text-bluegrey-700" />
-                          ) : (
-                            <ChevronRight className="h-5 w-5 text-bluegrey-700" />
-                          )}
-                        </button>
-                        {isEventLinked(event) && (
-                          <div
-                            className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
-                              selectedRequestId === event.requestId
-                                ? "bg-blue-500"
-                                : "bg-blue-300"
-                            } transition-colors`}
-                            title={`This event is linked with ${getLinkedEventCount(event.requestId) - 1} other event(s)`}
-                            aria-label={`Linked event indicator`}
-                          />
-                        )}
-                      </div>
+                      {selectedTraceId && event.requestId === selectedTraceId && (
+                        <LinkIcon className="h-5 w-5 text-blue-500 mr-1" title="This event is linked" />
+                      )}
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-1 w-full">
@@ -736,7 +714,7 @@ export default function EventTable({
                   {expandedEvents.has(event.id) && (
                     <TableNestedRow
                       colSpan={6}
-                      className={selectedRequestId && event.requestId === selectedRequestId ? "bg-blue-100/50" : ""}
+                      className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-100/50" : ""}
                     >
                       <TableExpandCell></TableExpandCell>
                       <TableNestedCell colSpan={5}>
