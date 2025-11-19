@@ -113,12 +113,14 @@ export function MultiSelect({
         break;
 
       case "Escape":
-        e.preventDefault();
-        e.stopPropagation();
-        setIsOpen(false);
-        setInputValue("");
-        setFocusedOptionIndex(-1);
-        setFocusedChipIndex(-1);
+        if (isOpen) {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsOpen(false);
+          setInputValue("");
+          setFocusedOptionIndex(-1);
+          setFocusedChipIndex(-1);
+        }
         break;
 
       case "Backspace":
