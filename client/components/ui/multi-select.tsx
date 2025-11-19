@@ -70,11 +70,6 @@ export function MultiSelect({
     setFocusedOptionIndex(-1);
   }, [inputValue]);
 
-  // Call onOpenChange when isOpen changes
-  useEffect(() => {
-    onOpenChange?.(isOpen);
-  }, [isOpen, onOpenChange]);
-
   const handleInputFocus = () => {
     setFocusedChipIndex(-1);
   };
