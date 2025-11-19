@@ -358,13 +358,13 @@ export default function EventTable({
     }
   };
 
-  const getLinkedEventCount = (requestId: string | undefined): number => {
-    if (!requestId) return 0;
-    return baseEvents.filter(e => e.requestId === requestId).length;
+  const getTraceIdEventCount = (traceId: string | undefined): number => {
+    if (!traceId) return 0;
+    return baseEvents.filter(e => e.requestId === traceId).length;
   };
 
-  const isEventLinked = (event: Event): boolean => {
-    return event.requestId ? getLinkedEventCount(event.requestId) > 1 : false;
+  const hasLinkedEvents = (traceId: string | undefined): boolean => {
+    return traceId ? getTraceIdEventCount(traceId) > 1 : false;
   };
 
   const getFilteredEvents = () => {
