@@ -955,6 +955,78 @@ export default function UserDetail() {
                   <h2 className="text-xl font-semibold text-[#131319] mt-8">
                     External Identity Providers
                   </h2>
+
+                  <div className="grid grid-cols-4 gap-4 auto-rows-max mt-6">
+                    {/* Google */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Google
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+
+                    {/* Facebook */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Facebook
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+
+                    {/* Apple */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Apple
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+
+                    {/* DigiD */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        DigiD
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+
+                    {/* eHerkenning */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        eHerkenning
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+
+                    {/* Microsoft EntraID */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Microsoft EntraID
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+
+                    {/* Microsoft AD */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Microsoft AD
+                      </h3>
+                      <div className="text-sm text-bluegrey-600">
+                        Not configured
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </TabsContent>
