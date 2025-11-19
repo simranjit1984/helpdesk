@@ -308,7 +308,8 @@ export default function FilterBar({
                     <Select
                       value={pendingFilter.column}
                       onValueChange={(value) => {
-                        setPendingFilter((prev) => ({ ...prev, column: value, operator: "is" }));
+                        const firstOperator = getOperatorsForColumn(value)[0]?.value || "contains";
+                        setPendingFilter((prev) => ({ ...prev, column: value, operator: firstOperator }));
                         setSelectedValues([]);
                         setDateRange({ start: "", end: "" });
                       }}
