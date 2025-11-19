@@ -773,16 +773,187 @@ export default function UserDetail() {
             </TabsContent>
 
             <TabsContent value="authenticators" className="pt-6">
-              <div className="flex items-center justify-center min-h-96">
-                <div className="text-center">
-                  <p className="text-bluegrey-600 text-lg font-medium">
-                    No authenticators configured
-                  </p>
-                  <p className="text-bluegrey-500 text-sm mt-2">
-                    No authenticators linked to this user's account.
-                  </p>
+              {user?.status === "Inactive" ? (
+                <div className="flex items-center justify-center min-h-96">
+                  <div className="text-center">
+                    <p className="text-bluegrey-600 text-lg font-medium">
+                      No authenticators configured
+                    </p>
+                    <p className="text-bluegrey-500 text-sm mt-2">
+                      No authenticators linked to this user's account.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col gap-6">
+                  <h2 className="text-xl font-semibold text-[#131319]">
+                    Authenticators
+                  </h2>
+
+                  <div className="grid grid-cols-4 gap-4 auto-rows-max">
+                    {/* Username & Password */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Username & Password
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* SMS OTP */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        SMS OTP
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Email OTP */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Email OTP
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* TOTP */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        TOTP
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* QR code Enrollment */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        QR code Enrollment
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Magic link authentication */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Magic link authentication
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Push MFA */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Push MFA
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          {generateRandomTimestamp()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>
