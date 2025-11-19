@@ -801,9 +801,12 @@ export default function UserDetail() {
                   <div className="grid grid-cols-4 gap-4 auto-rows-max">
                     {/* Username & Password */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Username & Password")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Username & Password
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -823,9 +826,12 @@ export default function UserDetail() {
 
                     {/* SMS OTP */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("SMS OTP")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         SMS OTP
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -845,9 +851,12 @@ export default function UserDetail() {
 
                     {/* Email OTP */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Email OTP")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Email OTP
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -867,9 +876,12 @@ export default function UserDetail() {
 
                     {/* TOTP */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("TOTP")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         TOTP
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -889,9 +901,12 @@ export default function UserDetail() {
 
                     {/* QR code Enrollment */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("QR code Enrollment")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         QR code Enrollment
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -911,9 +926,12 @@ export default function UserDetail() {
 
                     {/* Magic link authentication */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Magic link authentication")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Magic link authentication
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -933,9 +951,12 @@ export default function UserDetail() {
 
                     {/* Push MFA */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Push MFA")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Push MFA
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -961,9 +982,12 @@ export default function UserDetail() {
                   <div className="grid grid-cols-4 gap-4 auto-rows-max mt-6">
                     {/* Google */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Google")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Google
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -983,9 +1007,12 @@ export default function UserDetail() {
 
                     {/* Facebook */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Facebook")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Facebook
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1005,9 +1032,12 @@ export default function UserDetail() {
 
                     {/* Apple */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Apple")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Apple
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1027,9 +1057,12 @@ export default function UserDetail() {
 
                     {/* DigiD */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("DigiD")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         DigiD
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1049,9 +1082,12 @@ export default function UserDetail() {
 
                     {/* eHerkenning */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("eHerkenning")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         eHerkenning
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1071,9 +1107,12 @@ export default function UserDetail() {
 
                     {/* Microsoft EntraID */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Microsoft EntraID")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Microsoft EntraID
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1093,9 +1132,12 @@ export default function UserDetail() {
 
                     {/* Microsoft AD */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Microsoft AD")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Microsoft AD
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1121,9 +1163,12 @@ export default function UserDetail() {
                   <div className="grid grid-cols-4 gap-4 auto-rows-max mt-6">
                     {/* iCloud Keychain */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("iCloud Keychain")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         iCloud Keychain
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1143,9 +1188,12 @@ export default function UserDetail() {
 
                     {/* Safenet FIDO Key */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Safenet FIDO Key")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Safenet FIDO Key
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1165,9 +1213,12 @@ export default function UserDetail() {
 
                     {/* Chrome Passkey */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Chrome Passkey")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Chrome Passkey
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
@@ -1187,9 +1238,12 @@ export default function UserDetail() {
 
                     {/* Yubikey */}
                     <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <h3 className="font-semibold text-bluegrey-900">
+                      <button
+                        onClick={() => setOpenSideSheet("Yubikey")}
+                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
+                      >
                         Yubikey
-                      </h3>
+                      </button>
                       <div className="flex flex-col gap-1">
                         <p className="text-xs text-bluegrey-600 font-medium">
                           Last used
