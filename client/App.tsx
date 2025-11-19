@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import EventLog from "./pages/EventLog";
 import UserDetail from "./pages/UserDetail";
+import TooltipDemo from "./pages/TooltipDemo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
