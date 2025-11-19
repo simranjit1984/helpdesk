@@ -584,26 +584,24 @@ export default function EventTable({
                     isExpanded={expandedEvents.has(event.id)}
                     className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                   >
-                    <TableExpandCell className="sticky left-0 bg-white z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 overflow-visible">
-                      <div className="flex items-center h-10 px-3">
-                        {selectedTraceId && event.requestId === selectedTraceId && (
-                          <div className="-ml-6 mr-1">
-                            <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
-                          </div>
+                    <TableExpandCell className="sticky left-0 bg-white z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] overflow-visible relative">
+                      {selectedTraceId && event.requestId === selectedTraceId && (
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5">
+                          <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => toggleEventExpanded(event.id)}
+                        className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                        aria-label="Toggle event details"
+                      >
+                        {expandedEvents.has(event.id) ? (
+                          <ChevronDown className="h-5 w-5 text-bluegrey-700" />
+                        ) : (
+                          <ChevronRight className="h-5 w-5 text-bluegrey-700" />
                         )}
-                        <button
-                          type="button"
-                          onClick={() => toggleEventExpanded(event.id)}
-                          className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
-                          aria-label="Toggle event details"
-                        >
-                          {expandedEvents.has(event.id) ? (
-                            <ChevronDown className="h-5 w-5 text-bluegrey-700" />
-                          ) : (
-                            <ChevronRight className="h-5 w-5 text-bluegrey-700" />
-                          )}
-                        </button>
-                      </div>
+                      </button>
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-1 w-full">
