@@ -581,7 +581,7 @@ export default function EventTable({
     <div className="relative">
       {linkedRowOffsets.size > 0 && (
         <div
-          className="absolute left-0 top-0 w-8 pointer-events-none z-20"
+          className="absolute left-0 top-0 w-8 pointer-events-none z-30"
           style={{ height: '100%' }}
         >
           {Array.from(linkedRowOffsets.entries()).map(([eventId, topOffset]) => (
@@ -593,7 +593,7 @@ export default function EventTable({
                 left: '-12px',
               }}
             >
-              <LinkIcon className="h-4 w-4 text-blue-500" title="Linked event" />
+              <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
             </div>
           ))}
         </div>
