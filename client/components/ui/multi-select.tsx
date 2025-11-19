@@ -24,6 +24,7 @@ export function MultiSelect({
   label,
   placeholder = " ",
   className,
+  isOpenRef,
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
