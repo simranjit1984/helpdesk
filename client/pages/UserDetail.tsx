@@ -1211,6 +1211,26 @@ export default function UserDetail() {
               )}
             </TabsContent>
           </Tabs>
+
+          {/* Side Sheet for Section Details */}
+          <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && setOpenSideSheet(null)}>
+            <SheetContent side="right">
+              <SheetHeader className="flex flex-row items-center justify-between mb-6">
+                <button
+                  onClick={() => setOpenSideSheet(null)}
+                  className="flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-100 transition-colors"
+                  aria-label="Close sheet"
+                >
+                  <ArrowLeft className="w-5 h-5 text-bluegrey-900" />
+                </button>
+                <SheetTitle className="flex-1 text-center">{openSideSheet}</SheetTitle>
+                <div className="w-10" />
+              </SheetHeader>
+              <div className="text-bluegrey-600">
+                {openSideSheet ? `Details for ${openSideSheet}` : ""}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 
