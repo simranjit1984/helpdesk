@@ -114,6 +114,7 @@ export function MultiSelect({
 
       case "Escape":
         e.preventDefault();
+        e.stopPropagation();
         setIsOpen(false);
         setInputValue("");
         setFocusedOptionIndex(-1);
