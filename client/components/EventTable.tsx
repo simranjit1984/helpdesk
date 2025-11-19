@@ -451,7 +451,7 @@ export default function EventTable({
         <span className="text-xs font-semibold text-bluegrey-700">
           {displayLabel}
         </span>
-        <div className="flex items-center gap-1 group">
+        <div className="flex items-center gap-2 group">
           <span className="text-sm text-bluegrey-900 break-words">{value}</span>
           {hasMultipleEvents && (
             <button
