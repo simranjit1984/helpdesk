@@ -603,7 +603,7 @@ export default function EventTable({
               key={eventId}
               className="absolute flex items-center justify-center w-8 h-10"
               style={{
-                top: `${topOffset}px`,
+                top: `${topOffset - scrollOffset}px`,
                 left: '-12px',
               }}
             >
