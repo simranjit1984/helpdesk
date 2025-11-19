@@ -28,6 +28,10 @@ export interface FilterOperator {
   label: string;
 }
 
+export interface ColumnOptions {
+  [columnValue: string]: Array<{ value: string; label: string }>;
+}
+
 interface FilterBarProps {
   columns: FilterColumn[];
   operators?: FilterOperator[];
