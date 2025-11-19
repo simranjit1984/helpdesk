@@ -349,10 +349,10 @@ export default function UserDetail() {
                   Basic information
                 </TabsTrigger>
                 <TabsTrigger
-                  value="organization"
+                  value="security"
                   className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
                 >
-                  Organization
+                  Security
                 </TabsTrigger>
                 <TabsTrigger
                   value="access"
@@ -361,16 +361,16 @@ export default function UserDetail() {
                   Access roles
                 </TabsTrigger>
                 <TabsTrigger
+                  value="organizations"
+                  className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
+                >
+                  Organizations
+                </TabsTrigger>
+                <TabsTrigger
                   value="events"
                   className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
                 >
                   Event log
-                </TabsTrigger>
-                <TabsTrigger
-                  value="security"
-                  className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
-                >
-                  Security
                 </TabsTrigger>
               </TabsList>
             </div>
