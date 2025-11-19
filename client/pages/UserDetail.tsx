@@ -1122,6 +1122,100 @@ export default function UserDetail() {
                   <h2 className="text-xl font-semibold text-[#131319] mt-8">
                     Passkeys
                   </h2>
+
+                  <div className="grid grid-cols-4 gap-4 auto-rows-max mt-6">
+                    {/* iCloud Keychain */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        iCloud Keychain
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 18, 2025 05:40 PM
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Safenet FIDO Key */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Safenet FIDO Key
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 16, 2025 01:15 PM
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Chrome Passkey */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Chrome Passkey
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 14, 2025 07:30 AM
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Yubikey */}
+                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
+                      <h3 className="font-semibold text-bluegrey-900">
+                        Yubikey
+                      </h3>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-bluegrey-600 font-medium">
+                          Last used
+                        </p>
+                        <p className="text-sm text-bluegrey-900">
+                          Jan 11, 2025 09:45 AM
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               )}
             </TabsContent>
