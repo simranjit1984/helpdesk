@@ -79,6 +79,8 @@ export function MultiSelect({
     setInputValue(newValue);
     if (newValue.trim()) {
       setIsOpen(true);
+    } else {
+      setIsOpen(false);
     }
     setFocusedOptionIndex(-1);
   };
