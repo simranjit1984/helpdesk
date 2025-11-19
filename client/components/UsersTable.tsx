@@ -807,7 +807,7 @@ export default function UsersTable({
                     onClick={() =>
                       navigate(`/users/${encodeURIComponent(user.username)}`)
                     }
-                    className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate font-medium transition-colors text-left w-full"
+                    className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left w-full"
                   >
                     {user.username}
                   </button>
