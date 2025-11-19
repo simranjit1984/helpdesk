@@ -202,6 +202,15 @@ export default function FilterBar({
       const endDate = parseDate(end);
       return `${getColumnLabel(filter.column)} between ${startDate} and ${endDate}`;
     }
+
+    if (filter.operator === "is" || filter.operator === "isNot") {
+      const values = filter.value.split(",").map((v) => {
+        const option = columnOptions[filter.column]?.find((opt) => opt.value === v);
+        return option?.label || v;
+      }).join(", ");
+      return `${getColumnLabel(filter.column)} ${getOperatorLabel(filter.operator)} ${values}`;
+    }
+
     return `${getColumnLabel(filter.column)} ${getOperatorLabel(filter.operator)} ${filter.value}`;
   };
 
