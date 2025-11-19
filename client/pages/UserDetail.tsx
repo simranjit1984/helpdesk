@@ -771,7 +771,7 @@ export default function UserDetail() {
               </div>
             </TabsContent>
 
-            <TabsContent value="authenticators" className="pt-6">
+            <TabsContent value="security" className="pt-6">
               {user?.status === "Inactive" ? (
                 <div className="flex items-center justify-center min-h-96">
                   <div className="text-center">
