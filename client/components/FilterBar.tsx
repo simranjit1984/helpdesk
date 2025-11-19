@@ -109,6 +109,7 @@ export default function FilterBar({
       operator: operators[0]?.value || "contains",
       value: "",
     });
+    setSelectedValues([]);
     initializeDateRange();
   };
 
