@@ -498,12 +498,33 @@ export default function EventTable({
     const hoverClass = groupClass
       ? getGroupHoverClass(groupClass)
       : "hover:opacity-100";
+    const isRequestIdField = column === "requestId";
+    const linkedCount = isRequestIdField ? getLinkedEventCount(value) : 0;
+    const hasLinkedEvents = linkedCount > 1;
 
     return (
       <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
         <span className="text-xs font-semibold text-bluegrey-700">{label}</span>
         <div className="flex items-center gap-1">
           <span className="text-sm text-bluegrey-900 break-words">{value}</span>
+          {hasLinkedEvents && (
+            <button
+              type="button"
+              onClick={() => setSelectedRequestId(selectedRequestId === value ? null : value)}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full transition-all ${
+                selectedRequestId === value
+                  ? "bg-blue-500 text-white"
+                  : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+              } cursor-pointer`}
+              title={`Click to highlight ${linkedCount} linked event(s)`}
+              aria-label={`${linkedCount} linked event(s) - click to highlight`}
+            >
+              <span className="w-4 h-4 flex items-center justify-center rounded-full bg-current bg-opacity-20 text-xs font-bold">
+                {linkedCount}
+              </span>
+              <span>linked</span>
+            </button>
+          )}
           {hasFilter && groupClass && (
             <button
               type="button"
