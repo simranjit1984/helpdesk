@@ -349,17 +349,18 @@ export default function FilterBar({
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
 
-                {/* Multi-select value picker - full width */}
-                <MultiSelect
-                  label="Values"
-                  options={columnOptions[pendingFilter.column] || []}
-                  selectedValues={selectedValues}
-                  onChange={setSelectedValues}
-                  placeholder=" "
-                  className="w-full"
-                />
+                  {/* Multi-select value picker - same row */}
+                  <div className="flex-1">
+                    <MultiSelect
+                      label="Values"
+                      options={columnOptions[pendingFilter.column] || []}
+                      selectedValues={selectedValues}
+                      onChange={setSelectedValues}
+                      placeholder=" "
+                    />
+                  </div>
+                </div>
 
                 {/* Buttons */}
                 <div className="flex justify-end items-start gap-4">
