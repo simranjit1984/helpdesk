@@ -42,6 +42,7 @@ interface FilterBarProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
+  columnOptions?: ColumnOptions;
 }
 
 const DEFAULT_OPERATORS: FilterOperator[] = [
