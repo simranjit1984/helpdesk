@@ -116,13 +116,17 @@ export function MultiSelect({
         break;
 
       case "Escape":
-        e.preventDefault();
-        e.stopPropagation();
         if (isOpen) {
+          e.preventDefault();
+          e.stopPropagation();
           setIsOpen(false);
           setInputValue("");
           setFocusedOptionIndex(-1);
           setFocusedChipIndex(-1);
+        } else {
+          // When dropdown is closed, don't prevent or stop - let Popover handle it
+          // but still prevent default browser behavior
+          e.preventDefault();
         }
         break;
 
