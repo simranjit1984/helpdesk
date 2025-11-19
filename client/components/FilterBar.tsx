@@ -432,7 +432,8 @@ export default function FilterBar({
                     <Select
                       value={pendingFilter.column}
                       onValueChange={(value) => {
-                        setPendingFilter((prev) => ({ ...prev, column: value }));
+                        const firstOperator = getOperatorsForColumn(value)[0]?.value || "contains";
+                        setPendingFilter((prev) => ({ ...prev, column: value, operator: firstOperator }));
                         setDateRange({ start: "", end: "" });
                         if (value === "date" || value === "dateCreated") {
                           initializeDateRange();
