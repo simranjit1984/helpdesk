@@ -174,7 +174,7 @@ export function MultiSelect({
         {/* Input Container */}
         <div
           className={cn(
-            "flex min-h-[44px] w-full flex-wrap items-center gap-1.5 rounded-sm border border-bluegrey-500 bg-white px-2 py-3 relative",
+            "flex h-11 w-full flex-wrap items-center gap-1 rounded-sm border border-bluegrey-500 bg-white px-2 py-3 relative overflow-hidden",
             "focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2",
           )}
           onClick={() => inputRef.current?.focus()}
@@ -184,13 +184,13 @@ export function MultiSelect({
             <div
               key={item.value}
               className={cn(
-                "flex items-center gap-1 rounded-sm px-3 py-1",
+                "flex items-center gap-0.5 rounded-sm px-2 py-1 flex-shrink-0",
                 focusedChipIndex === index
-                  ? "bg-bluegrey-200 ring-2 ring-blue-500"
+                  ? "bg-bluegrey-200 ring-1 ring-blue-500"
                   : "bg-bluegrey-100",
               )}
             >
-              <span className="text-base text-bluegrey-900 leading-6">
+              <span className="text-xs text-bluegrey-900 leading-4 whitespace-nowrap">
                 {item.label}
               </span>
               <button
@@ -200,10 +200,10 @@ export function MultiSelect({
                   handleRemoveValue(item.value);
                 }}
                 onKeyDown={(e) => handleChipKeyDown(e, index)}
-                className="flex h-5 w-5 items-center justify-center rounded-full hover:bg-bluegrey-300 transition-colors flex-shrink-0"
+                className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-bluegrey-300 transition-colors flex-shrink-0 ml-0.5"
                 aria-label={`Remove ${item.label}`}
               >
-                <X className="h-4 w-4 text-bluegrey-900" />
+                <X className="h-3 w-3 text-bluegrey-900" />
               </button>
             </div>
           ))}
