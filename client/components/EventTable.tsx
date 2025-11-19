@@ -350,6 +350,29 @@ export default function EventTable({
     setExpandedEvents(newExpanded);
   };
 
+  useEffect(() => {
+    if (!selectedTraceId || !tableRef.current) {
+      setLinkedRowPositions(new Map());
+      return;
+    }
+
+    const positions = new Map<string, number>();
+    const tableRect = tableRef.current.getBoundingClientRect();
+
+    getSortedEvents().forEach((event) => {
+      if (event.requestId === selectedTraceId) {
+        const eventRow = document.querySelector(`[data-event-id="${event.id}"]`);
+        if (eventRow) {
+          const rowRect = eventRow.getBoundingClientRect();
+          const relativeTop = rowRect.top - tableRect.top;
+          positions.set(event.id, relativeTop);
+        }
+      }
+    });
+
+    setLinkedRowPositions(positions);
+  }, [selectedTraceId, getSortedEvents()]);
+
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
