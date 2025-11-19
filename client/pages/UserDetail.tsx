@@ -116,6 +116,7 @@ export default function UserDetail() {
     startDate: "2025-04-18",
     endDate: "2025-04-18",
   });
+  const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
 
   // Generate random past timestamp for "Last used"
   const generateRandomTimestamp = () => {
