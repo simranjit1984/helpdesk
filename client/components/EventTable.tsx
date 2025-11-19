@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronRight, Filter, Link as LinkIcon } from "lucide-react";
+import { ChevronDown, ChevronRight, Filter, Link as LinkIcon } from "lucide-react";
 import {
   Table,
   TableScroll,
