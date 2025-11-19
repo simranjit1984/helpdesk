@@ -1118,6 +1118,10 @@ export default function UserDetail() {
                       </Button>
                     </div>
                   </div>
+
+                  <h2 className="text-xl font-semibold text-[#131319] mt-8">
+                    Passkeys
+                  </h2>
                 </div>
               )}
             </TabsContent>
