@@ -81,10 +81,6 @@ export function MultiSelect({
     setFocusedOptionIndex(-1);
   };
 
-  const handleInputBlur = () => {
-    setIsOpen(false);
-    setFocusedOptionIndex(-1);
-  };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
