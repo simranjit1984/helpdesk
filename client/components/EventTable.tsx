@@ -417,6 +417,34 @@ export default function EventTable({
     return sorted;
   };
 
+  const toggleEventExpanded = (eventId: string) => {
+    const newExpanded = new Set(expandedEvents);
+    if (newExpanded.has(eventId)) {
+      newExpanded.delete(eventId);
+    } else {
+      newExpanded.add(eventId);
+    }
+    setExpandedEvents(newExpanded);
+  };
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("desc");
+    }
+  };
+
+  const getTraceIdEventCount = (traceId: string | undefined): number => {
+    if (!traceId) return 0;
+    return baseEvents.filter(e => e.requestId === traceId).length;
+  };
+
+  const hasLinkedEvents = (traceId: string | undefined): boolean => {
+    return traceId ? getTraceIdEventCount(traceId) > 1 : false;
+  };
+
   const SortHeader = ({
     column,
     label,
