@@ -48,6 +48,9 @@ export default function Index() {
                   { value: "dateCreated", label: "Date created" },
                   { value: "status", label: "Status" },
                 ]}
+                columnOptions={{
+                  status: STATUS_OPTIONS,
+                }}
                 filters={filters}
                 onFilterAdd={handleAddFilter}
                 onFilterRemove={handleRemoveFilter}
