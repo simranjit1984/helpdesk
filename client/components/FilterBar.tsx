@@ -72,6 +72,10 @@ export default function FilterBar({
     value: "",
   });
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState({
+    start: "",
+    end: "",
+  });
 
   const isDateField = (column: string) => {
     return column === "date" || column === "dateCreated";
