@@ -351,7 +351,7 @@ export default function FilterBar({
                   </div>
 
                   {/* Multi-select value picker - same row */}
-                  <div className="flex flex-col gap-1" style={{ width: "380px" }}>
+                  <div className="flex flex-col gap-1 w-60">
                     <MultiSelect
                       label="Values"
                       options={columnOptions[pendingFilter.column] || []}
