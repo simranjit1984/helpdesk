@@ -79,6 +79,20 @@ export default function FilterBar({
     return column === "date" || column === "dateCreated";
   };
 
+  const hasColumnOptions = (column: string) => {
+    return columnOptions[column] && columnOptions[column].length > 0;
+  };
+
+  const getOperatorsForColumn = (column: string) => {
+    if (hasColumnOptions(column)) {
+      return [
+        { value: "is", label: "is" },
+        { value: "isNot", label: "is not" },
+      ];
+    }
+    return operators;
+  };
+
   const initializeDateRange = () => {
     const now = new Date();
     const endIso = now.toISOString().slice(0, 16);
