@@ -294,12 +294,6 @@ export default function FilterBar({
           style={{
             boxShadow: '0 8px 10px 0 rgba(1, 5, 50, 0.14), 0 3px 14px 0 rgba(1, 5, 50, 0.12), 0 4px 5px 0 rgba(1, 5, 50, 0.20)'
           }}
-          onKeyDown={(e) => {
-            if (e.key === "Escape" && isMultiSelectOpen) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-          }}
         >
           <div className="flex flex-col gap-4 p-4">
             {/* Conditional rendering based on field type */}
