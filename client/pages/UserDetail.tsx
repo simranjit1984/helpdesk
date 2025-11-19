@@ -349,6 +349,12 @@ export default function UserDetail() {
                   Basic information
                 </TabsTrigger>
                 <TabsTrigger
+                  value="organization"
+                  className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
+                >
+                  Organization
+                </TabsTrigger>
+                <TabsTrigger
                   value="access"
                   className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
                 >
