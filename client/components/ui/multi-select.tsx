@@ -261,7 +261,7 @@ export function MultiSelect({
 
         {/* Empty state */}
         {isOpen && filteredOptions.length === 0 && inputValue && (
-          <div className="absolute z-50 mt-1 w-full rounded-sm border border-bluegrey-100 bg-white shadow-lg p-3">
+          <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-sm border border-bluegrey-100 bg-white shadow-lg p-3">
             <p className="text-sm text-bluegrey-600 text-center">
               No results found
             </p>
