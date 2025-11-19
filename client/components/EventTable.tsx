@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { ChevronUp, ChevronDown, ChevronRight, Filter, Link as LinkIcon } from "lucide-react";
 import {
   Table,
