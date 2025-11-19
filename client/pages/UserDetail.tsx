@@ -331,6 +331,12 @@ export default function UserDetail() {
                 >
                   Event log
                 </TabsTrigger>
+                <TabsTrigger
+                  value="authenticators"
+                  className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
+                >
+                  Authenticators
+                </TabsTrigger>
               </TabsList>
             </div>
 
