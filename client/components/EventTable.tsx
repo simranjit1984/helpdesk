@@ -50,8 +50,6 @@ interface Event {
   details?: Record<string, any>;
 }
 
-type SortColumn = "date" | "eventType" | "application";
-
 interface EventTableProps {
   filters: Array<{
     id: string;
