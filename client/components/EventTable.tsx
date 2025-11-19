@@ -337,6 +337,8 @@ export default function EventTable({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [linkedRowOffsets, setLinkedRowOffsets] = useState<Map<string, number>>(new Map());
 
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
