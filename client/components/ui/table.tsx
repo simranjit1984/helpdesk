@@ -70,7 +70,7 @@ const TableHeadRow = React.forwardRef<HTMLTableRowElement, TableHeadRowProps>(
   ({ className, sticky = true, ...props }, ref) => (
     <tr
       ref={ref}
-      className={cn("border-b-2 border-bluegrey-100", className)}
+      className={cn("border-t-2 border-b-2 border-bluegrey-100", className)}
       {...props}
     />
   ),
