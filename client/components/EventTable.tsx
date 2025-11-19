@@ -556,21 +556,23 @@ export default function EventTable({
 
   return (
     <Table variant="expandable" className="relative">
-      <div className="absolute left-0 top-0 w-6 pointer-events-none z-30 sticky-icons-container">
-        {linkedEventRows.map((row) => (
-          <div
-            key={row.event.id}
-            className="absolute w-full h-10 flex items-center justify-center"
-            style={{
-              top: `${(row.index * 40) + 57}px`,
-              left: '-6px',
-            }}
-          >
-            <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
-          </div>
-        ))}
-      </div>
       <TableScroll>
+        {linkedEventRows.length > 0 && (
+          <div className="absolute left-0 top-0 w-6 pointer-events-none z-30 sticky left-0">
+            {linkedEventRows.map((row) => (
+              <div
+                key={row.event.id}
+                className="absolute w-full h-10 flex items-center justify-center"
+                style={{
+                  top: `${(row.index * 40) + 57}px`,
+                  left: '-6px',
+                }}
+              >
+                <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+              </div>
+            ))}
+          </div>
+        )}
         <TableContent>
           <TableHeader>
             <TableHeadRow>
