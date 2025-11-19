@@ -502,13 +502,17 @@ export default function EventTable({
             <TableHeadRow>
               <TableHeadCell className="w-10"></TableHeadCell>
               <TableHeadCell sticky className="w-48">
-                <SortHeader column="date" label="Date" />
+                <span className="text-sm font-bold text-bluegrey-900">Date</span>
               </TableHeadCell>
               <TableHeadCell>
-                <SortHeader column="eventType" label="Event type" />
+                <span className="text-sm font-bold text-bluegrey-900">
+                  Event type
+                </span>
               </TableHeadCell>
               <TableHeadCell>
-                <SortHeader column="application" label="Application" />
+                <span className="text-sm font-bold text-bluegrey-900">
+                  Application
+                </span>
               </TableHeadCell>
               <TableHeadCell>
                 <span className="text-sm font-bold text-bluegrey-900">
