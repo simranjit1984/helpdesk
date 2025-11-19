@@ -125,6 +125,7 @@ export default function FilterBar({
 
   const applyFilter = () => {
     const isDate = isDateField(pendingFilter.column);
+    const hasOptions = hasColumnOptions(pendingFilter.column);
 
     if (isDate) {
       if (dateRange.start && dateRange.end) {
@@ -141,6 +142,23 @@ export default function FilterBar({
           value: "",
         });
         setDateRange({ start: "", end: "" });
+        setIsFilterPopoverOpen(false);
+      }
+    } else if (hasOptions) {
+      if (selectedValues.length > 0) {
+        const newFilter: Filter = {
+          id: Math.random().toString(36).substr(2, 9),
+          column: pendingFilter.column,
+          operator: pendingFilter.operator,
+          value: selectedValues.join(","),
+        };
+        onFilterAdd(newFilter);
+        setPendingFilter({
+          column: columns[0]?.value || "",
+          operator: operators[0]?.value || "contains",
+          value: "",
+        });
+        setSelectedValues([]);
         setIsFilterPopoverOpen(false);
       }
     } else {
