@@ -7,12 +7,12 @@ import { Send } from "lucide-react";
 
 const STATUS_OPTIONS = [
   { value: "active", label: "Active" },
-  { value: "invited", label: "Invited" },
-  { value: "invitation-withdrawn", label: "Invitation withdrawn" },
-  { value: "invitation-expired", label: "Invitation expired" },
-  { value: "blocked", label: "Blocked" },
+  { value: "blocked", label: "Authentication blocked" },
   { value: "grace", label: "Grace" },
   { value: "inactive", label: "Inactive" },
+  { value: "invitation-expired", label: "Invitation expired" },
+  { value: "invitation-withdrawn", label: "Invitation withdrawn" },
+  { value: "invited", label: "Invited" },
 ];
 
 export default function Index() {
