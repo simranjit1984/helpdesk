@@ -14,7 +14,6 @@ interface MultiSelectProps {
   label?: string;
   placeholder?: string;
   className?: string;
-  onOpenChange?: (isOpen: boolean) => void;
 }
 
 export function MultiSelect({
