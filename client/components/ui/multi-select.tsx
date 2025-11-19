@@ -225,6 +225,7 @@ export function MultiSelect({
             value={inputValue}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             onKeyDown={handleInputKeyDown}
             placeholder={selectedValues.length === 0 ? placeholder : ""}
             className="flex-1 min-w-[40px] bg-transparent text-sm text-bluegrey-900 outline-none placeholder:text-bluegrey-500 py-0"
