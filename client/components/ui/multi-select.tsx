@@ -250,7 +250,10 @@ export function MultiSelect({
                 key={option.value}
                 role="option"
                 type="button"
-                onClick={() => handleOptionClick(option.value)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleOptionClick(option.value);
+                }}
                 onMouseEnter={() => setFocusedOptionIndex(index)}
                 aria-selected={focusedOptionIndex === index}
                 className={cn(
