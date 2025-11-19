@@ -66,6 +66,7 @@ export default function FilterBar({
   columnOptions = {},
 }: FilterBarProps) {
   const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
+  const [isMultiSelectOpen, setIsMultiSelectOpen] = useState(false);
   const [pendingFilter, setPendingFilter] = useState({
     column: columns[0]?.value || "",
     operator: operators[0]?.value || "contains",
