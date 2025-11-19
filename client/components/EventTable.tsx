@@ -593,7 +593,36 @@ export default function EventTable({
                     <TableExpandCell className={`sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 ${selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : "bg-white"}`}>
                       <div className="flex items-center gap-2 h-10 w-full px-3">
                         {selectedTraceId && event.requestId === selectedTraceId ? (
-                          <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="p-0 h-5 w-5 flex items-center justify-center cursor-pointer hover:text-blue-700 transition-colors"
+                                aria-label="Linked events"
+                              >
+                                <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              variant="dark"
+                              size="md"
+                              side="right"
+                              className="whitespace-nowrap"
+                            >
+                              <div className="flex flex-col gap-2">
+                                <span>
+                                  This event is linked to {getTraceIdEventCount(event.requestId) - 1} other event{getTraceIdEventCount(event.requestId) - 1 !== 1 ? 's' : ''}.
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedTraceId(null)}
+                                  className="text-left text-bluegrey-25 underline hover:opacity-80 transition-opacity text-xs"
+                                >
+                                  Clear selection
+                                </button>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
                         ) : (
                           <div className="w-4" />
                         )}
