@@ -806,7 +806,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -828,7 +828,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -850,7 +850,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -872,7 +872,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -894,7 +894,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -916,7 +916,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -938,7 +938,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -966,7 +966,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -988,7 +988,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1010,7 +1010,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1032,7 +1032,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1054,7 +1054,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1076,7 +1076,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1098,7 +1098,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1126,7 +1126,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1148,7 +1148,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1170,7 +1170,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
@@ -1192,7 +1192,7 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
                       >
                         Remove
                       </Button>
