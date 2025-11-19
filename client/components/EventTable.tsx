@@ -15,6 +15,11 @@ import {
   TableNestedCell,
   TableEmptyState,
 } from "./ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export type EventAction =
   | "user_created"
