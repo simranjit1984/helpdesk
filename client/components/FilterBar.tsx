@@ -351,13 +351,14 @@ export default function FilterBar({
                   </div>
                 </div>
 
-                {/* Multi-select value picker */}
+                {/* Multi-select value picker - full width */}
                 <MultiSelect
                   label="Values"
                   options={columnOptions[pendingFilter.column] || []}
                   selectedValues={selectedValues}
                   onChange={setSelectedValues}
                   placeholder=" "
+                  className="w-full"
                 />
 
                 {/* Buttons */}
