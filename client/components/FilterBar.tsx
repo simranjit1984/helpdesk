@@ -62,6 +62,7 @@ export default function FilterBar({
   searchValue = "",
   onSearchChange,
   searchPlaceholder = "Search",
+  columnOptions = {},
 }: FilterBarProps) {
   const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
   const [pendingFilter, setPendingFilter] = useState({
