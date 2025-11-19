@@ -70,6 +70,7 @@ export default function FilterBar({
     operator: operators[0]?.value || "contains",
     value: "",
   });
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState({
     start: "",
     end: "",
