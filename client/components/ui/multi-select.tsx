@@ -72,6 +72,13 @@ export function MultiSelect({
     setFocusedOptionIndex(-1);
   }, [inputValue]);
 
+  // Update parent's ref when isOpen changes
+  useEffect(() => {
+    if (isOpenRef) {
+      isOpenRef.current = isOpen;
+    }
+  }, [isOpen, isOpenRef]);
+
   const handleInputFocus = () => {
     setFocusedChipIndex(-1);
   };
