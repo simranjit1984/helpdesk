@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import EventLog from "./pages/EventLog";
 import UserDetail from "./pages/UserDetail";
 import TooltipDemo from "./pages/TooltipDemo";
+import DataGridDemo from "./pages/DataGridDemo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ export const App = () => (
           <Route path="/event-log" element={<EventLog />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
+          <Route path="/data-grid-demo" element={<DataGridDemo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
