@@ -253,7 +253,7 @@ export function MultiSelect({
               setIsOpen(!isOpen);
               inputRef.current?.focus();
             }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-bluegrey-100 rounded transition-colors"
+            className="absolute right-2 top-1/4 p-1 hover:bg-bluegrey-100 rounded transition-colors flex-shrink-0"
             aria-label="Toggle dropdown"
           >
             <ChevronDown className="h-5 w-5 text-bluegrey-500" />
