@@ -500,19 +500,27 @@ export default function EventTable({
     groupClass,
   }: DetailFieldProps) => {
     if (!value) return null;
-    const hasFilter = column && onFilterAdd;
-    const hoverClass = groupClass
-      ? getGroupHoverClass(groupClass)
-      : "hover:opacity-100";
+    const isFilterable =
+      column &&
+      onFilterAdd &&
+      [
+        "requestId",
+        "userAgent",
+        "identityApp",
+        "identityAppInstanceId",
+        "subject",
+      ].includes(column);
     const isTraceIdField = column === "requestId";
     const linkedCount = isTraceIdField ? getTraceIdEventCount(value) : 0;
     const hasMultipleEvents = linkedCount > 1;
     const displayLabel = isTraceIdField ? "Trace ID" : label;
 
     return (
-      <div className={`flex flex-col gap-1.5 ${groupClass || ""}`} key={label}>
-        <span className="text-xs font-semibold text-bluegrey-700">{displayLabel}</span>
-        <div className="flex items-center gap-1">
+      <div className="flex flex-col gap-1.5" key={label}>
+        <span className="text-xs font-semibold text-bluegrey-700">
+          {displayLabel}
+        </span>
+        <div className="flex items-center gap-1 group">
           <span className="text-sm text-bluegrey-900 break-words">{value}</span>
           {hasMultipleEvents && (
             <button
@@ -530,7 +538,7 @@ export default function EventTable({
               <span>{linkedCount}</span>
             </button>
           )}
-          {hasFilter && (
+          {isFilterable && (
             <button
               type="button"
               onClick={() =>
@@ -541,11 +549,11 @@ export default function EventTable({
                   value,
                 })
               }
-              className={`w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 ${hoverClass} focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0`}
+              className="w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
               title={`Filter by ${label}`}
               aria-label={`Filter by ${label} ${value}`}
             >
-              <Filter className="w-5 h-5 text-blue-500" />
+              <Filter className="w-4 h-4 text-blue-500" />
             </button>
           )}
         </div>
