@@ -482,14 +482,12 @@ export default function EventTable({
     label: string;
     value?: string;
     column?: string;
-    groupClass?: string;
   }
 
   const renderDetailField = ({
     label,
     value,
     column,
-    groupClass,
   }: DetailFieldProps) => {
     if (!value) return null;
     const isFilterable =
