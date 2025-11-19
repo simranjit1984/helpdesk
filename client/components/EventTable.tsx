@@ -749,16 +749,16 @@ export default function EventTable({
                         <div className="py-6 px-4 bg-bluegrey-50/50">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {renderDetailField({
+                              label: "Trace ID",
+                              value: event.requestId,
+                              column: "requestId",
+                              groupClass: "group/requestId",
+                            })}
+                            {renderDetailField({
                               label: "User Agent",
                               value: event.userAgent,
                               column: "userAgent",
                               groupClass: "group/userAgent",
-                            })}
-                            {renderDetailField({
-                              label: "Request ID",
-                              value: event.requestId,
-                              column: "requestId",
-                              groupClass: "group/requestId",
                             })}
                             {renderDetailField({
                               label: "Identity App",
