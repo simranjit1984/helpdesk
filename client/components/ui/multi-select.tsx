@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, type MutableRefObject } from "react";
 import { X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ interface MultiSelectProps {
   label?: string;
   placeholder?: string;
   className?: string;
+  isOpenRef?: MutableRefObject<boolean>;
 }
 
 export function MultiSelect({
