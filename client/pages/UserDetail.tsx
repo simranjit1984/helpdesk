@@ -10,6 +10,7 @@ import {
   PlusCircle,
   Search,
   Trash2,
+  ArrowLeft,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
