@@ -420,31 +420,6 @@ export default function EventTable({
     return traceId ? getTraceIdEventCount(traceId) > 1 : false;
   };
 
-  const SortHeader = ({
-    column,
-    label,
-  }: {
-    column: SortColumn;
-    label: string;
-  }) => {
-    const isActive = sortColumn === column;
-    return (
-      <button
-        onClick={() => handleSort(column)}
-        className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer"
-      >
-        <span className="text-sm font-bold text-bluegrey-900">{label}</span>
-        <div className="w-4 h-4">
-          {isActive &&
-            (sortDirection === "asc" ? (
-              <ChevronUp className="w-4 h-4 text-blue-500" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-blue-500" />
-            ))}
-        </div>
-      </button>
-    );
-  };
 
   interface DetailFieldProps {
     label: string;
