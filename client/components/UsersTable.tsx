@@ -710,6 +710,16 @@ export default function UsersTable({
             const fieldDate = new Date(fieldValue).getTime();
             return fieldDate >= startDate && fieldDate <= endDate;
           }
+          case "is": {
+            // Handle multi-select "is" operator
+            const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
+            return selectedValues.includes(fieldValue);
+          }
+          case "isNot": {
+            // Handle multi-select "is not" operator
+            const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
+            return !selectedValues.includes(fieldValue);
+          }
           case "contains":
             return fieldValue.includes(filter.value.toLowerCase());
           case "equals":
