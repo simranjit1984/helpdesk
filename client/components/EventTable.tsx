@@ -522,7 +522,7 @@ export default function EventTable({
                 selectedTraceId === value
                   ? "bg-blue-500 text-white"
                   : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-              } cursor-pointer`}
+              } cursor-pointer flex-shrink-0`}
               title={`Click to highlight ${linkedCount} linked event(s)`}
               aria-label={`${linkedCount} linked event(s) - click to highlight`}
             >
@@ -530,7 +530,7 @@ export default function EventTable({
               <span>{linkedCount}</span>
             </button>
           )}
-          {hasFilter && groupClass && (
+          {hasFilter && (
             <button
               type="button"
               onClick={() =>
