@@ -573,23 +573,7 @@ export default function EventTable({
 
   return (
     <Table variant="expandable" ref={tableRef} className="relative">
-      <TableScroll className="relative">
-        {selectedTraceId && linkedRowPositions.size > 0 && (
-          <div className="sticky left-0 top-0 w-6 pointer-events-none z-20 h-full">
-            {Array.from(linkedRowPositions.entries()).map(([eventId, topOffset]) => (
-              <div
-                key={eventId}
-                className="absolute w-full flex items-center justify-center h-10"
-                style={{
-                  top: `${topOffset}px`,
-                  left: '-6px',
-                }}
-              >
-                <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
-              </div>
-            ))}
-          </div>
-        )}
+      <TableScroll>
         <TableContent>
           <TableHeader>
             <TableHeadRow>
