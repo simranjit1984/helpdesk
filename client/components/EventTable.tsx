@@ -584,21 +584,23 @@ export default function EventTable({
                     className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                   >
                     <TableExpandCell className="sticky left-0 bg-white z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)]">
-                      <button
-                        type="button"
-                        onClick={() => toggleEventExpanded(event.id)}
-                        className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors relative"
-                        aria-label="Toggle event details"
-                      >
+                      <div className="flex items-center justify-center h-10 gap-1">
                         {selectedTraceId && event.requestId === selectedTraceId && (
-                          <LinkIcon className="absolute -left-6 h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+                          <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
                         )}
-                        {expandedEvents.has(event.id) ? (
-                          <ChevronDown className="h-5 w-5 text-bluegrey-700" />
-                        ) : (
-                          <ChevronRight className="h-5 w-5 text-bluegrey-700" />
-                        )}
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => toggleEventExpanded(event.id)}
+                          className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors"
+                          aria-label="Toggle event details"
+                        >
+                          {expandedEvents.has(event.id) ? (
+                            <ChevronDown className="h-5 w-5 text-bluegrey-700" />
+                          ) : (
+                            <ChevronRight className="h-5 w-5 text-bluegrey-700" />
+                          )}
+                        </button>
+                      </div>
                     </TableExpandCell>
                     <TableCell sticky className="w-48 group/date">
                       <div className="flex items-center gap-1 w-full">
