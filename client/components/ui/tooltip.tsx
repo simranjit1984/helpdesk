@@ -61,31 +61,27 @@ const TooltipContent = React.forwardRef<
           ref={ref}
           sideOffset={sideOffset}
           className={cn(
-            "flex items-center gap-0",
+            tooltipContentVariants({ variant, size }),
+            title ? "flex flex-col gap-1" : "",
             variant === "dark" &&
               "shadow-[0_2px_2px_0_rgba(1,5,50,0.14),0_3px_4px_0_rgba(1,5,50,0.12),0_1px_5px_0_rgba(1,5,50,0.20)]",
+            className,
           )}
           {...props}
         >
-          {showArrow && variant === "dark" && (
+          {showArrow && (
             <TooltipPrimitive.Arrow
-              className="fill-bluegrey-900"
+              className={cn(
+                variant === "dark" ? "fill-bluegrey-900" : "fill-popover",
+              )}
               width={8}
               height={8}
             />
           )}
-          <div
-            className={cn(
-              tooltipContentVariants({ variant, size }),
-              title ? "flex flex-col gap-1" : "",
-              className,
-            )}
-          >
-            {title && (
-              <div className="text-sm font-medium leading-5">{title}</div>
-            )}
-            <div className={title ? "text-xs leading-4" : ""}>{children}</div>
-          </div>
+          {title && (
+            <div className="text-sm font-medium leading-5">{title}</div>
+          )}
+          <div className={title ? "text-xs leading-4" : ""}>{children}</div>
         </TooltipPrimitive.Content>
       </TooltipPrimitive.Portal>
     );
