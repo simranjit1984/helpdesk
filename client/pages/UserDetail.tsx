@@ -806,9 +806,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -829,9 +828,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -852,9 +850,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -875,9 +872,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -898,9 +894,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -921,9 +916,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -944,9 +938,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -973,9 +966,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -996,9 +988,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1019,9 +1010,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1042,9 +1032,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1065,9 +1054,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1088,9 +1076,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1111,9 +1098,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1140,9 +1126,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1163,9 +1148,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1186,9 +1170,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
@@ -1209,9 +1192,8 @@ export default function UserDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 justify-start"
+                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Remove
                       </Button>
                     </div>
