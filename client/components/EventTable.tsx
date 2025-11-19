@@ -351,15 +351,13 @@ export default function EventTable({
     const updatePositions = () => {
       const offsets = new Map<string, number>();
       const tableRect = tableRef.current!.getBoundingClientRect();
-      const scrollContainer = tableScrollRef.current;
-      const currentScroll = scrollContainer?.scrollTop || 0;
 
       baseEvents.forEach((event) => {
         if (event.requestId === selectedTraceId) {
           const rowElement = document.querySelector(`[data-event-row="${event.id}"]`);
           if (rowElement) {
             const rowRect = rowElement.getBoundingClientRect();
-            const relativeTop = rowRect.top - tableRect.top + currentScroll;
+            const relativeTop = rowRect.top - tableRect.top;
             offsets.set(event.id, relativeTop);
           }
         }
