@@ -68,14 +68,10 @@ export default function FilterBar({
   const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
   const [pendingFilter, setPendingFilter] = useState({
     column: columns[0]?.value || "",
-    operator: hasColumnOptions(columns[0]?.value || "") ? "is" : (operators[0]?.value || "contains"),
+    operator: operators[0]?.value || "contains",
     value: "",
   });
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState({
-    start: "",
-    end: "",
-  });
 
   const isDateField = (column: string) => {
     return column === "date" || column === "dateCreated";
