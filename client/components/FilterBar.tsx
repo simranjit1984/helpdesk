@@ -332,7 +332,7 @@ export default function FilterBar({
                       Operator
                     </label>
                     <Select
-                      value={pendingFilter.operator}
+                      value={pendingFilter.operator || getOperatorsForColumn(pendingFilter.column)[0]?.value || "is"}
                       onValueChange={(value) =>
                         setPendingFilter((prev) => ({ ...prev, operator: value }))
                       }
