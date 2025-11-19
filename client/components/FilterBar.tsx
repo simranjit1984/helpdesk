@@ -273,6 +273,10 @@ export default function FilterBar({
       <Popover
         open={isFilterPopoverOpen}
         onOpenChange={(open) => {
+          // Prevent closing if MultiSelect is open
+          if (!open && multiSelectOpenRef.current) {
+            return;
+          }
           setIsFilterPopoverOpen(open);
           if (open) {
             // Reset to initial state when opening
