@@ -527,8 +527,8 @@ export default function EventTable({
             </TableHeadRow>
           </TableHeader>
           <TableBody>
-            {getSortedEvents().length > 0 ? (
-              getSortedEvents().map((event) => (
+            {getFilteredEvents().length > 0 ? (
+              getFilteredEvents().map((event) => (
                 <React.Fragment key={event.id}>
                   <TableRow
                     expandable
