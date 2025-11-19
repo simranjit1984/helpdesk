@@ -617,7 +617,7 @@ export default function EventTable({
                         </button>
                       </div>
                     </TableExpandCell>
-                    <TableCell sticky className="w-48 group/date">
+                    <TableCell sticky className={`w-48 group/date ${selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : "bg-white"}`}>
                       <div className="flex items-center gap-1 w-full">
                         <span className="text-sm text-bluegrey-900 truncate">
                           {event.date}
