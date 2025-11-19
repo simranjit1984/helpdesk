@@ -342,6 +342,7 @@ export default function EventTable({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
+  const [openTooltipEventId, setOpenTooltipEventId] = useState<string | null>(null);
 
 
   const getFilteredEvents = () => {
