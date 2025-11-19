@@ -140,7 +140,6 @@ export function MultiSelect({
 
       case "Tab":
         if (isOpen) {
-          e.preventDefault();
           setIsOpen(false);
           setInputValue("");
           setFocusedOptionIndex(-1);
