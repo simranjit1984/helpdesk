@@ -232,7 +232,7 @@ export function MultiSelect({
             ref={listboxRef}
             id={listboxId}
             role="listbox"
-            className="absolute z-50 mt-1 w-full rounded-sm border border-bluegrey-100 bg-white shadow-lg max-h-60 overflow-y-auto"
+            className="absolute z-50 top-full left-0 right-0 mt-1 rounded-sm border border-bluegrey-100 bg-white shadow-lg max-h-60 overflow-y-auto"
             style={{
               boxShadow:
                 "0 8px 10px 0 rgba(1, 5, 50, 0.14), 0 3px 14px 0 rgba(1, 5, 50, 0.12), 0 4px 5px 0 rgba(1, 5, 50, 0.20)",
