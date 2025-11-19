@@ -613,7 +613,7 @@ export default function EventTable({
         </div>
       )}
       <Table variant="expandable" ref={tableRef}>
-        <TableScroll>
+        <TableScroll ref={tableScrollRef}>
           <TableContent>
           <TableHeader>
             <TableHeadRow>
