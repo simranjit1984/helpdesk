@@ -340,6 +340,30 @@ export default function EventTable({
   const tableRef = useRef<HTMLDivElement>(null);
   const [linkedRowOffsets, setLinkedRowOffsets] = useState<Map<string, number>>(new Map());
 
+  useEffect(() => {
+    if (!selectedTraceId || !tableRef.current) {
+      setLinkedRowOffsets(new Map());
+      return;
+    }
+
+    const offsets = new Map<string, number>();
+    const tableRect = tableRef.current.getBoundingClientRect();
+    const scrollContainer = tableRef.current.querySelector('[class*="overflow-x-auto"]');
+
+    getSortedEvents().forEach((event) => {
+      if (event.requestId === selectedTraceId) {
+        const rowElement = document.querySelector(`[data-event-row="${event.id}"]`);
+        if (rowElement) {
+          const rowRect = rowElement.getBoundingClientRect();
+          const relativeTop = rowRect.top - tableRect.top + (scrollContainer?.scrollTop || 0);
+          offsets.set(event.id, relativeTop);
+        }
+      }
+    });
+
+    setLinkedRowOffsets(offsets);
+  }, [selectedTraceId]);
+
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
 
