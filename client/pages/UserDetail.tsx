@@ -1247,6 +1247,11 @@ export default function UserDetail() {
                     { value: "application", label: "Application" },
                     { value: "userId", label: "User ID" },
                     { value: "clientIp", label: "Client IP" },
+                    { value: "requestId", label: "Trace ID" },
+                    { value: "userAgent", label: "User agent" },
+                    { value: "identityApp", label: "Identity app" },
+                    { value: "identityAppInstanceId", label: "Identity app instance ID" },
+                    { value: "subject", label: "Subject" },
                   ]}
                   filters={eventFilters}
                   onFilterAdd={addEventFilter}
