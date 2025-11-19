@@ -209,6 +209,7 @@ const generateMockEvents = (): Event[] => {
   now.setHours(23, 59, 59, 999);
 
   let eventCounter = 0;
+  const linkedRequestIds: string[] = [];
 
   for (let dayOffset = 0; dayOffset <= 13; dayOffset++) {
     const date = new Date(now);
@@ -245,7 +246,16 @@ const generateMockEvents = (): Event[] => {
         : undefined;
 
       const shouldHaveRequestId = Math.random() > 0.1;
-      const requestId = shouldHaveRequestId ? generateUUID() : undefined;
+      let requestId: string | undefined;
+      if (shouldHaveRequestId) {
+        const shouldLinkToExisting = Math.random() > 0.85 && linkedRequestIds.length > 0;
+        if (shouldLinkToExisting) {
+          requestId = linkedRequestIds[Math.floor(Math.random() * linkedRequestIds.length)];
+        } else {
+          requestId = generateUUID();
+          linkedRequestIds.push(requestId);
+        }
+      }
 
       const shouldHaveIdentityApp = Math.random() > 0.2;
       const identityApp = shouldHaveIdentityApp
