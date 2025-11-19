@@ -585,8 +585,8 @@ export default function EventTable({
                     className={selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : ""}
                     data-event-row={event.id}
                   >
-                    <TableExpandCell className="sticky left-0 bg-white z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0">
-                      <div className="flex items-center justify-between h-10 w-full px-3">
+                    <TableExpandCell className={`sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 ${selectedTraceId && event.requestId === selectedTraceId ? "bg-blue-50" : "bg-white"}`}>
+                      <div className="flex items-center gap-2 h-10 w-full px-3">
                         {selectedTraceId && event.requestId === selectedTraceId ? (
                           <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
                         ) : (
@@ -595,7 +595,18 @@ export default function EventTable({
                         <button
                           type="button"
                           onClick={() => toggleEventExpanded(event.id)}
-                          className="flex h-10 w-10 items-center justify-center rounded hover:bg-bluegrey-100 transition-colors -mr-3"
+                          className="flex h-10 w-10 items-center justify-center rounded transition-colors"
+                          style={{
+                            backgroundColor: selectedTraceId && event.requestId === selectedTraceId ? 'transparent' : undefined,
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!(selectedTraceId && event.requestId === selectedTraceId)) {
+                              e.currentTarget.style.backgroundColor = '#e8ebed';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '';
+                          }}
                           aria-label="Toggle event details"
                         >
                           {expandedEvents.has(event.id) ? (
