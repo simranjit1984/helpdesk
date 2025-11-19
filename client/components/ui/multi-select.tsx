@@ -176,6 +176,7 @@ export function MultiSelect({
           className={cn(
             "flex min-h-[44px] w-full flex-wrap items-center gap-1.5 rounded-sm border border-bluegrey-500 bg-white px-2 py-3",
             "focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2",
+            "relative",
           )}
           onClick={() => inputRef.current?.focus()}
         >
