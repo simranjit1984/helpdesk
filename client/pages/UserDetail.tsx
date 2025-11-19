@@ -47,6 +47,13 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@/components/ui/sheet";
+import {
   Table,
   TableScroll,
   TableContent,
