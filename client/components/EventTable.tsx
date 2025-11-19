@@ -554,25 +554,37 @@ export default function EventTable({
     }))
     .filter(r => r.hasLink);
 
+  const [scrollLeft, setScrollLeft] = useState(0);
+
   return (
-    <Table variant="expandable" className="relative">
-      <TableScroll>
-        {linkedEventRows.length > 0 && (
-          <div className="absolute left-0 top-0 w-6 pointer-events-none z-30 sticky left-0">
-            {linkedEventRows.map((row) => (
-              <div
-                key={row.event.id}
-                className="absolute w-full h-10 flex items-center justify-center"
-                style={{
-                  top: `${(row.index * 40) + 57}px`,
-                  left: '-6px',
-                }}
-              >
-                <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
-              </div>
-            ))}
-          </div>
-        )}
+    <Table variant="expandable" className="relative overflow-visible">
+      <TableScroll
+        onScroll={(e) => setScrollLeft((e.target as HTMLDivElement).scrollLeft)}
+      >
+        <div className="relative">
+          {linkedEventRows.length > 0 && (
+            <div
+              className="fixed w-6 pointer-events-none z-30 top-0"
+              style={{
+                left: `calc(max(0px, var(--scroll-left, 0px) - 6px))`,
+              }}
+            >
+              {linkedEventRows.map((row) => (
+                <div
+                  key={row.event.id}
+                  className="absolute w-full h-10 flex items-center justify-center"
+                  style={{
+                    top: `${(row.index * 40) + 57}px`,
+                    left: '0px',
+                  }}
+                >
+                  <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" title="Linked event" />
+                </div>
+              ))}
+            </div>
+          )}
+          <style>{`:root { --scroll-left: ${scrollLeft}px; }`}</style>
+        </div>
         <TableContent>
           <TableHeader>
             <TableHeadRow>
