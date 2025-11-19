@@ -55,6 +55,7 @@ export function MultiSelect({
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setInputValue("");
         setFocusedOptionIndex(-1);
         setFocusedChipIndex(-1);
       }
