@@ -369,7 +369,9 @@ export default function EventTable({
     };
 
     const handleScroll = () => {
-      setScrollOffset(tableScrollRef.current?.scrollTop || 0);
+      const newScroll = tableScrollRef.current?.scrollTop || 0;
+      setScrollOffset(newScroll);
+      updatePositions();
     };
 
     updatePositions();
