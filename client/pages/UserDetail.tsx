@@ -953,7 +953,7 @@ export default function UserDetail() {
                   </div>
 
                   <h2 className="text-xl font-semibold text-[#131319] mt-8">
-                    Linked Accounts
+                    External Identity Providers
                   </h2>
                 </div>
               )}
