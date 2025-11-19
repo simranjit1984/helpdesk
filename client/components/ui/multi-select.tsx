@@ -245,9 +245,19 @@ export function MultiSelect({
           />
 
           {/* Dropdown Arrow */}
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+              inputRef.current?.focus();
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-bluegrey-100 rounded transition-colors"
+            aria-label="Toggle dropdown"
+          >
             <ChevronDown className="h-5 w-5 text-bluegrey-500" />
-          </div>
+          </button>
         </div>
 
         {/* Dropdown List */}
