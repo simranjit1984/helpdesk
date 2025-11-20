@@ -639,7 +639,11 @@ export default function UserDetail() {
                     {/* Username & Password */}
                     <button
                       onClick={() => setOpenSideSheet("Username & Password")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Username & Password"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Lock className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -657,7 +661,11 @@ export default function UserDetail() {
                     {/* SMS OTP */}
                     <button
                       onClick={() => setOpenSideSheet("SMS OTP")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "SMS OTP"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <MessageSquare className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -675,7 +683,11 @@ export default function UserDetail() {
                     {/* Email OTP */}
                     <button
                       onClick={() => setOpenSideSheet("Email OTP")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Email OTP"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Mail className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -693,7 +705,11 @@ export default function UserDetail() {
                     {/* TOTP */}
                     <button
                       onClick={() => setOpenSideSheet("TOTP")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "TOTP"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Clock className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -711,7 +727,11 @@ export default function UserDetail() {
                     {/* QR code Enrollment */}
                     <button
                       onClick={() => setOpenSideSheet("QR code Enrollment")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "QR code Enrollment"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <QrCode className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -729,7 +749,11 @@ export default function UserDetail() {
                     {/* Magic link authentication */}
                     <button
                       onClick={() => setOpenSideSheet("Magic link authentication")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Magic link authentication"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Link2 className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -747,7 +771,11 @@ export default function UserDetail() {
                     {/* Push MFA */}
                     <button
                       onClick={() => setOpenSideSheet("Push MFA")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Push MFA"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Bell className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -771,7 +799,11 @@ export default function UserDetail() {
                     {/* Google */}
                     <button
                       onClick={() => setOpenSideSheet("Google")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Google"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -789,7 +821,11 @@ export default function UserDetail() {
                     {/* Facebook */}
                     <button
                       onClick={() => setOpenSideSheet("Facebook")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Facebook"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -807,7 +843,11 @@ export default function UserDetail() {
                     {/* Apple */}
                     <button
                       onClick={() => setOpenSideSheet("Apple")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Apple"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -825,7 +865,11 @@ export default function UserDetail() {
                     {/* DigiD */}
                     <button
                       onClick={() => setOpenSideSheet("DigiD")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "DigiD"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -843,7 +887,11 @@ export default function UserDetail() {
                     {/* eHerkenning */}
                     <button
                       onClick={() => setOpenSideSheet("eHerkenning")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "eHerkenning"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -861,7 +909,11 @@ export default function UserDetail() {
                     {/* Microsoft EntraID */}
                     <button
                       onClick={() => setOpenSideSheet("Microsoft EntraID")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Microsoft EntraID"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -879,7 +931,11 @@ export default function UserDetail() {
                     {/* Microsoft AD */}
                     <button
                       onClick={() => setOpenSideSheet("Microsoft AD")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Microsoft AD"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -903,7 +959,11 @@ export default function UserDetail() {
                     {/* iCloud Keychain */}
                     <button
                       onClick={() => setOpenSideSheet("iCloud Keychain")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "iCloud Keychain"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Key className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -921,7 +981,11 @@ export default function UserDetail() {
                     {/* Safenet FIDO Key */}
                     <button
                       onClick={() => setOpenSideSheet("Safenet FIDO Key")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Safenet FIDO Key"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Key className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -939,7 +1003,11 @@ export default function UserDetail() {
                     {/* Chrome Passkey */}
                     <button
                       onClick={() => setOpenSideSheet("Chrome Passkey")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Chrome Passkey"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Chrome className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -957,7 +1025,11 @@ export default function UserDetail() {
                     {/* Yubikey */}
                     <button
                       onClick={() => setOpenSideSheet("Yubikey")}
-                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+                        openSideSheet === "Yubikey"
+                          ? "bg-bluegrey-50"
+                          : "bg-white hover:bg-bluegrey-50"
+                      }`}
                     >
                       <Smartphone className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
