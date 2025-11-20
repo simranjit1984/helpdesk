@@ -28,7 +28,7 @@ function SubmenuItem({ label, href, active }: SubmenuItemProps) {
       <Link
         ref={ref}
         to={href}
-        className={`flex items-center px-12 py-3 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 ${
+        className={`flex items-center px-12 py-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${
           active ? "bg-blue-50" : "hover:bg-bluegrey-25"
         }`}
       >
