@@ -52,6 +52,11 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Add transition classes for minimize/maximize animation
+  const handleMinimize = () => {
+    setIsMinimized(true);
+  };
+
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
 
