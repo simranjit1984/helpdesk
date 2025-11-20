@@ -54,6 +54,18 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle sidesheet open/close
+  useEffect(() => {
+    if (isSideSheetOpen) {
+      // Save current state and minimize
+      setPreviousMinimizedState(isMinimized);
+      setIsMinimized(true);
+    } else {
+      // Restore previous state
+      setIsMinimized(previousMinimizedState);
+    }
+  }, [isSideSheetOpen]);
+
   // Add transition classes for minimize/maximize animation
   const handleMinimize = () => {
     setIsMinimized(true);
