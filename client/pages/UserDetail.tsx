@@ -19,7 +19,8 @@ import InfoAlert from "@/components/InfoAlert";
 import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import FilterTag from "@/components/FilterTag";
-import EventTable from "@/components/EventTable";
+import EventLogSummary from "@/components/EventLogSummary";
+import { generateMockEvents } from "@/components/mockEvents";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
