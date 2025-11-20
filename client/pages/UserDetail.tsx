@@ -755,7 +755,7 @@ export default function UserDetail() {
                     </button>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-blue-500 mt-8">
+                  <h2 className="text-xl font-semibold text-blue-500 mt-10">
                     External Identity Providers
                   </h2>
 
