@@ -111,11 +111,13 @@ export default function EventLogSummary({
   filters,
   searchQuery = "",
   onFilterAdd,
-  events: baseEvents,
+  events: providedEvents,
 }: EventTableProps) {
   const [expandedTraces, setExpandedTraces] = useState<Set<string>>(
     new Set()
   );
+
+  const baseEvents = providedEvents || generateMockEvents();
 
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
