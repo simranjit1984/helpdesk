@@ -131,7 +131,17 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
 
   // Add transition classes for minimize/maximize animation
   const handleMinimize = () => {
+    setShowAnimation(true);
     setIsMinimized(true);
+    // Clear animation flag after animation completes
+    setTimeout(() => setShowAnimation(false), 300);
+  };
+
+  const handleRestore = () => {
+    setShowAnimation(true);
+    setIsMinimized(false);
+    // Clear animation flag after animation completes
+    setTimeout(() => setShowAnimation(false), 300);
   };
 
   const handleSendMessage = () => {
