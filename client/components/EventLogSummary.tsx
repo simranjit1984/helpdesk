@@ -298,8 +298,10 @@ export default function EventLogSummary({
                         </div>
                       </TableExpandCell>
                       <td className="px-4 py-3">
-                        <div className="flex items-start gap-2 w-full">
-                          {statusIcon}
+                        <div className="flex items-center gap-2 w-full">
+                          <div className="flex-shrink-0">
+                            {statusIcon}
+                          </div>
                           <span className="text-sm text-bluegrey-900 leading-relaxed whitespace-normal break-words">
                             {summary.summary}
                           </span>
