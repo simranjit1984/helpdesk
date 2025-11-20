@@ -214,7 +214,7 @@ export function MultiSelect({
               className={cn(
                 "flex items-center gap-1 rounded-sm px-2 py-1 flex-shrink-0 h-7",
                 focusedChipIndex === index
-                  ? "bg-bluegrey-200 ring-1 ring-blue-500"
+                  ? "bg-bluegrey-200 ring-1 ring-ring"
                   : "bg-bluegrey-100",
               )}
             >
