@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import PageHeader from "@/components/PageHeader";
 import FilterBar from "@/components/FilterBar";
@@ -18,6 +18,14 @@ const STATUS_OPTIONS = [
 export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
+
+  // Focus on first interactive element on page load
+  useEffect(() => {
+    const searchInput = document.querySelector("#search-input") as HTMLInputElement;
+    if (searchInput) {
+      searchInput.focus();
+    }
+  }, []);
 
   const handleAddFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
     setFilters([...filters, filter]);
