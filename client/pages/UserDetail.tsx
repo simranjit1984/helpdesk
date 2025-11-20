@@ -166,6 +166,54 @@ export default function UserDetail() {
     return authenticatorTimestamps[name] || "Never used";
   };
 
+  const handleStepUpAuth = () => {
+    setIsReauthDialogOpen(true);
+  };
+
+  const handleReauthSubmit = () => {
+    setReauthError("");
+    // Simple validation: password must be at least 6 characters
+    if (reauthPassword.length === 0) {
+      setReauthError("Password is required");
+      return;
+    }
+    if (reauthPassword.length < 6) {
+      setReauthError("Invalid password");
+      return;
+    }
+    // Success: move to update email step
+    setIsReauthDialogOpen(false);
+    setAuthStep("update");
+    setUpdateEmail(user?.email || "");
+    setReauthPassword("");
+  };
+
+  const handleUpdateEmail = async () => {
+    setIsSavingEmail(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsSavingEmail(false);
+      showAlert("Email address updated successfully.", "success");
+      setOpenSideSheet(null);
+      setAuthStep("initial");
+      setUpdateEmail("");
+      setReauthPassword("");
+    }, 1500);
+  };
+
+  const handleCancelEmailUpdate = () => {
+    setAuthStep("reauthenticate");
+    setUpdateEmail("");
+  };
+
+  const handleCloseSideSheet = () => {
+    setOpenSideSheet(null);
+    setAuthStep("initial");
+    setUpdateEmail("");
+    setReauthPassword("");
+    setReauthError("");
+  };
+
   // Fetch user data based on username (email)
   const decodedId = id ? decodeURIComponent(id) : null;
   const foundUser = decodedId ? getUserByUsername(decodedId) : null;
