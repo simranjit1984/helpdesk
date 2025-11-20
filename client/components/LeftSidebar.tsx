@@ -139,24 +139,11 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const [isAdministratorsExpanded, setIsAdministratorsExpanded] = useState(
     isAdministratorsActive || isAdministratorsSubmenuActive
   );
-  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
 
   const isUsersActive = location.pathname === "/" || location.pathname.startsWith("/users/");
   const isEventLogActive = location.pathname === "/event-log";
 
   const navRef = useRef<HTMLElement>(null);
-
-  // Track screen size for accessibility
-  useEffect(() => {
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 1024);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Sidebar is visible when: on large screen OR mobile with menu open
-  const sidebarVisible = isLargeScreen || isOpen;
 
   useEffect(() => {
     if ((isAdministratorsActive || isAdministratorsSubmenuActive) && !isAdministratorsExpanded) {
