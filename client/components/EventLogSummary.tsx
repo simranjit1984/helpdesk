@@ -15,35 +15,7 @@ import {
   TableNestedCell,
   TableEmptyState,
 } from "./ui/table";
-
-export type EventAction =
-  | "user_created"
-  | "user_deleted"
-  | "user_updated"
-  | "user_login"
-  | "user_logout"
-  | "password_changed"
-  | "role_assigned"
-  | "role_revoked"
-  | "permission_granted"
-  | "permission_revoked";
-
-interface Event {
-  id: string;
-  date: string;
-  eventType: string;
-  application: string;
-  actor: string;
-  clientIp: string;
-  userAgent?: string;
-  requestId?: string;
-  identityApp?: string;
-  identityAppInstanceId?: string;
-  description?: string;
-  subject?: string;
-  authenticationDetails?: string;
-  details?: Record<string, any>;
-}
+import { generateMockEvents, generateUUID, Event, EventAction } from "./mockEvents";
 
 interface EventTableProps {
   filters: Array<{
