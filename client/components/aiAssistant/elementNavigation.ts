@@ -51,7 +51,7 @@ export const highlightElement = (element: HTMLElement, duration: number = 5000) 
   element.classList.add(
     "animate-pulse",
     "ring-2",
-    "ring-blue-500",
+    "ring-ring",
     "ring-offset-2",
     "rounded"
   );
@@ -62,7 +62,7 @@ export const highlightElement = (element: HTMLElement, duration: number = 5000) 
     element.classList.remove(
       "animate-pulse",
       "ring-2",
-      "ring-blue-500",
+      "ring-ring",
       "ring-offset-2",
       "rounded"
     );
