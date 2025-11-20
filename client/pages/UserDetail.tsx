@@ -134,23 +134,30 @@ export default function UserDetail() {
   const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
 
   // Generate random past timestamp for "Last used"
-  const generateRandomTimestamp = () => {
-    const now = new Date();
-    const daysAgo = Math.floor(Math.random() * 30) + 1;
-    const hoursAgo = Math.floor(Math.random() * 24);
-    const minutesAgo = Math.floor(Math.random() * 60);
+  // Static timestamps for authenticators
+  const authenticatorTimestamps: Record<string, string> = {
+    "Username & Password": "Jan 19, 2025 02:45 PM",
+    "SMS OTP": "Jan 18, 2025 10:15 AM",
+    "Email OTP": "Jan 17, 2025 05:30 PM",
+    "TOTP": "Jan 16, 2025 03:20 PM",
+    "QR code Enrollment": "Jan 15, 2025 11:10 AM",
+    "Magic link authentication": "Jan 14, 2025 08:45 AM",
+    "Push MFA": "Jan 13, 2025 04:15 PM",
+    "Google": "Jan 15, 2025 09:30 AM",
+    "Facebook": "Jan 12, 2025 02:15 PM",
+    "Apple": "Jan 10, 2025 11:45 AM",
+    "DigiD": "Jan 08, 2025 04:20 PM",
+    "eHerkenning": "Jan 05, 2025 10:10 AM",
+    "Microsoft EntraID": "Jan 02, 2025 03:50 PM",
+    "Microsoft AD": "Dec 28, 2024 08:25 AM",
+    "iCloud Keychain": "Jan 18, 2025 05:40 PM",
+    "Safenet FIDO Key": "Jan 16, 2025 01:15 PM",
+    "Chrome Passkey": "Jan 14, 2025 07:30 AM",
+    "Yubikey": "Jan 11, 2025 09:45 AM",
+  };
 
-    const date = new Date(now);
-    date.setDate(date.getDate() - daysAgo);
-    date.setHours(date.getHours() - hoursAgo);
-    date.setMinutes(date.getMinutes() - minutesAgo);
-
-    const month = date.toLocaleString("en-US", { month: "short" });
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const time = date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
-
-    return `${month} ${day}, ${year} ${time}`;
+  const getAuthenticatorTimestamp = (name: string): string => {
+    return authenticatorTimestamps[name] || "Never used";
   };
 
   // Fetch user data based on username (email)
