@@ -103,6 +103,7 @@ export default function UserDetail() {
   const [eventFilters, setEventFilters] = useState<
     Array<{ id: string; column: string; operator: string; value: string }>
   >([]);
+  const [events] = useState(() => generateMockEvents());
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
