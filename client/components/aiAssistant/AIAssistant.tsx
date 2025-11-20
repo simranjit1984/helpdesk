@@ -218,20 +218,21 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     const rightPosition = isSideSheetOpen ? "calc(384px + 24px)" : "24px";
 
     return (
-      <button
-        onClick={handleRestore}
-        className={cn(
-          "fixed bottom-6 z-40 h-14 w-14 rounded-full text-white shadow-lg transition-all duration-300 flex items-center justify-center",
-          hasNewContent
-            ? "bg-orange-500 hover:bg-orange-600 animate-pulse"
-            : "bg-[#041295] hover:bg-[#041295]/90",
-          showAnimation && "animate-[slide-up-in_0.3s_ease-out_forwards]"
-        )}
-        style={{ right: rightPosition }}
-        title={hasNewContent ? "New recommendations available - Click to view" : "Open AI Assistant"}
-      >
-        <Brain className="h-6 w-6" />
-      </button>
+      <>
+        <style>{glowStyle}</style>
+        <button
+          onClick={handleRestore}
+          className={cn(
+            "fixed bottom-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center",
+            hasNewContent && "ai-assistant-glow",
+            showAnimation && "animate-[slide-up-in_0.3s_ease-out_forwards]"
+          )}
+          style={{ right: rightPosition }}
+          title={hasNewContent ? "New recommendations available - Click to view" : "Open AI Assistant"}
+        >
+          <Brain className="h-6 w-6" />
+        </button>
+      </>
     );
   }
 
