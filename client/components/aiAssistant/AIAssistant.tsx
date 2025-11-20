@@ -123,6 +123,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
         if (isMinimized) {
           setShowAnimation(true);
           setIsMinimized(false);
+          setHasNewContent(false); // Clear the highlight
           setTimeout(() => setShowAnimation(false), 300);
           // Focus input field after state update
           setTimeout(() => {
