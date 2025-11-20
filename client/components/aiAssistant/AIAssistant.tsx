@@ -82,10 +82,14 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     if (isSideSheetOpen) {
       // Save current state and minimize
       setPreviousMinimizedState(isMinimized);
+      setShowAnimation(true);
       setIsMinimized(true);
+      setTimeout(() => setShowAnimation(false), 300);
     } else {
       // Restore previous state
+      setShowAnimation(true);
       setIsMinimized(previousMinimizedState);
+      setTimeout(() => setShowAnimation(false), 300);
     }
   }, [isSideSheetOpen]);
 
