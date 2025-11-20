@@ -21,6 +21,7 @@ import FilterBar from "@/components/FilterBar";
 import FilterTag from "@/components/FilterTag";
 import EventLogSummary from "@/components/EventLogSummary";
 import { generateMockEvents } from "@/components/mockEvents";
+import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
