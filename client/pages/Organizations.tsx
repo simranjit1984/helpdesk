@@ -11,7 +11,7 @@ export default function Organizations() {
           <p className="text-bluegrey-900">Organizations page content coming soon...</p>
         </div>
       </Layout>
-      <AIAssistant userData={{}} />
+      <AIAssistant userData={{}} isOpen={false} />
     </>
   );
 }
