@@ -282,7 +282,7 @@ export default function EventLogSummary({
                       data-event-row={group.traceId}
                     >
                       <TableExpandCell className="sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 bg-white">
-                        <div className="flex items-center gap-2 h-10 w-full px-3">
+                        <div className="flex items-center gap-2 h-full w-full px-3">
                           <button
                             type="button"
                             onClick={() => toggleTraceExpanded(group.traceId)}
@@ -297,48 +297,16 @@ export default function EventLogSummary({
                           </button>
                         </div>
                       </TableExpandCell>
-                      <TableCell sticky className="w-48 bg-white group/traceId">
-                        <div className="flex items-center gap-1 w-full">
-                          <span className="text-sm text-bluegrey-900 truncate font-mono">
-                            {group.traceId === "no-trace"
-                              ? "No Trace ID"
-                              : group.traceId}
-                          </span>
-                          {group.traceId !== "no-trace" && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                onFilterAdd?.({
-                                  id: generateUUID(),
-                                  column: "requestId",
-                                  operator: "equals",
-                                  value: group.traceId,
-                                })
-                              }
-                              className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/traceId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                              title="Filter by Trace ID"
-                              aria-label={`Filter by Trace ID ${group.traceId}`}
-                            >
-                              <Filter className="w-5 h-5 text-blue-500" />
-                            </button>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-bluegrey-900 font-semibold">
-                          {group.eventCount}
-                        </span>
-                      </TableCell>
                       <TableCell>
                         <div className="flex items-start gap-2 w-full">
                           {statusIcon}
-                          <span className="text-sm text-bluegrey-900 leading-relaxed">
+                          <span className="text-sm text-bluegrey-900 leading-relaxed whitespace-normal break-words">
                             {summary.summary}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-bluegrey-900">
+                        <span className="text-sm text-bluegrey-900 whitespace-nowrap">
                           {group.firstEvent.date}
                         </span>
                       </TableCell>
