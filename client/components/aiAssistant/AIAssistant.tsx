@@ -118,12 +118,12 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-4 p-4 bg-bluegrey-25">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-3 p-3 bg-bluegrey-25">
         {/* Insights Section */}
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3" />
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#041295] mx-auto mb-3" />
               <p className="text-sm text-bluegrey-600">
                 Analyzing user profile...
               </p>
@@ -132,9 +132,9 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
         ) : (
           <>
             {/* Insights Header */}
-            <div className="mb-2">
-              <h3 className="text-sm font-semibold text-bluegrey-900">
-                Key Insights & Recommendations
+            <div className="mb-1">
+              <h3 className="text-xs font-semibold text-bluegrey-900 uppercase tracking-wider">
+                Insights & Recommendations
               </h3>
             </div>
 
