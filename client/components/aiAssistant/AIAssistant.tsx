@@ -97,10 +97,14 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   };
 
   if (isMinimized) {
+    // When sidesheet is open, move button left with proper spacing (sm:w-[500px] + 24px gap)
+    const rightPosition = isSideSheetOpen ? "calc(500px + 24px + 24px)" : "24px";
+
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white shadow-lg hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center animate-[slide-up-in_0.3s_ease-out_forwards]"
+        className="fixed bottom-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white shadow-lg hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center animate-[slide-up-in_0.3s_ease-out_forwards]"
+        style={{ right: rightPosition }}
         title="Open AI Assistant"
       >
         <Brain className="h-6 w-6" />
