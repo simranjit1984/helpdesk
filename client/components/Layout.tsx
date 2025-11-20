@@ -13,7 +13,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="bg-white">
       <TopNavigation onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
       <LeftSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="ml-0 lg:ml-60 mt-16 transition-all duration-300">
+      <main className="ml-0 lg:ml-72 mt-16 transition-all duration-300">
         {children}
       </main>
     </div>
