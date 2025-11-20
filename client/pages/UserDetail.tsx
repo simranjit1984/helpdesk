@@ -1393,7 +1393,13 @@ export default function UserDetail() {
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={() => setOpenSideSheet(null)}
+                  onClick={() => {
+                    if (openSideSheet === "Username & Password" && authStep === "update") {
+                      handleCancelEmailUpdate();
+                    } else {
+                      handleCloseSideSheet();
+                    }
+                  }}
                   className="rounded-[2px] text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
                 >
                   Cancel
