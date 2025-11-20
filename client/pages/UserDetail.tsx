@@ -11,6 +11,17 @@ import {
   Search,
   Trash2,
   ArrowLeft,
+  Lock,
+  MessageSquare,
+  Mail,
+  Clock,
+  QrCode,
+  Link2,
+  Bell,
+  Chrome,
+  Key,
+  Smartphone,
+  Globe,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
