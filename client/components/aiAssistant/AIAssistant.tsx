@@ -153,23 +153,23 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
 
             {/* Chat Messages */}
             {messages.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-bluegrey-200">
-                <h3 className="text-sm font-semibold text-bluegrey-900 mb-3">
+              <div className="mt-2 pt-3 border-t border-bluegrey-200">
+                <h3 className="text-xs font-semibold text-bluegrey-900 mb-2 uppercase tracking-wider">
                   Messages
                 </h3>
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={cn(
-                      "mb-3 flex",
+                      "mb-2 flex",
                       message.type === "user" ? "justify-end" : "justify-start"
                     )}
                   >
                     <div
                       className={cn(
-                        "max-w-[80%] rounded-lg px-3 py-2 text-sm",
+                        "max-w-[80%] rounded-lg px-3 py-2 text-xs leading-relaxed",
                         message.type === "user"
-                          ? "bg-blue-600 text-white"
+                          ? "bg-[#041295] text-white"
                           : "bg-white text-bluegrey-900 border border-bluegrey-200"
                       )}
                     >
