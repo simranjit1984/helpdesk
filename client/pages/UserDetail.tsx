@@ -905,114 +905,82 @@ export default function UserDetail() {
                     Passkeys
                   </h2>
 
-                  <div className="flex flex-col gap-4 mt-6">
+                  <div className="flex flex-col gap-3 max-w-2xl mt-6">
                     {/* iCloud Keychain */}
-                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
-                      <div className="flex flex-col gap-0.5 flex-1">
-                        <h3 className="text-base font-medium text-black">
+                    <button
+                      onClick={() => setOpenSideSheet("iCloud Keychain")}
+                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                    >
+                      <Key className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-black">
                           iCloud Keychain
                         </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
-                          <span className="text-xs text-bluegrey-600">Jan 18, 2025 05:40 PM</span>
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                          <span>Ottawa, ON, Canada</span>
+                          <span>•</span>
+                          <span>Jan 18, 2025 05:40 PM</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={() => setOpenSideSheet("iCloud Keychain")}
-                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => setOpenSideSheet("iCloud Keychain")}
-                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
-                        >
-                          <Trash2 className="h-6 w-6 text-red-500" />
-                        </button>
-                      </div>
-                    </div>
+                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                    </button>
 
                     {/* Safenet FIDO Key */}
-                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
-                      <div className="flex flex-col gap-0.5 flex-1">
-                        <h3 className="text-base font-medium text-black">
+                    <button
+                      onClick={() => setOpenSideSheet("Safenet FIDO Key")}
+                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                    >
+                      <Key className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-black">
                           Safenet FIDO Key
                         </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
-                          <span className="text-xs text-bluegrey-600">Jan 16, 2025 01:15 PM</span>
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                          <span>Ottawa, ON, Canada</span>
+                          <span>•</span>
+                          <span>Jan 16, 2025 01:15 PM</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={() => setOpenSideSheet("Safenet FIDO Key")}
-                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => setOpenSideSheet("Safenet FIDO Key")}
-                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
-                        >
-                          <Trash2 className="h-6 w-6 text-red-500" />
-                        </button>
-                      </div>
-                    </div>
+                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                    </button>
 
                     {/* Chrome Passkey */}
-                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
-                      <div className="flex flex-col gap-0.5 flex-1">
-                        <h3 className="text-base font-medium text-black">
+                    <button
+                      onClick={() => setOpenSideSheet("Chrome Passkey")}
+                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                    >
+                      <Chrome className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-black">
                           Chrome Passkey
                         </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
-                          <span className="text-xs text-bluegrey-600">Jan 14, 2025 07:30 AM</span>
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                          <span>Ottawa, ON, Canada</span>
+                          <span>•</span>
+                          <span>Jan 14, 2025 07:30 AM</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={() => setOpenSideSheet("Chrome Passkey")}
-                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => setOpenSideSheet("Chrome Passkey")}
-                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
-                        >
-                          <Trash2 className="h-6 w-6 text-red-500" />
-                        </button>
-                      </div>
-                    </div>
+                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                    </button>
 
                     {/* Yubikey */}
-                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
-                      <div className="flex flex-col gap-0.5 flex-1">
-                        <h3 className="text-base font-medium text-black">
+                    <button
+                      onClick={() => setOpenSideSheet("Yubikey")}
+                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                    >
+                      <Smartphone className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-black">
                           Yubikey
                         </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
-                          <span className="text-xs text-bluegrey-600">Jan 11, 2025 09:45 AM</span>
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                          <span>Ottawa, ON, Canada</span>
+                          <span>•</span>
+                          <span>Jan 11, 2025 09:45 AM</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={() => setOpenSideSheet("Yubikey")}
-                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => setOpenSideSheet("Yubikey")}
-                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
-                        >
-                          <Trash2 className="h-6 w-6 text-red-500" />
-                        </button>
-                      </div>
-                    </div>
+                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                    </button>
                   </div>
                 </div>
               )}
