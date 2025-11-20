@@ -74,7 +74,7 @@ function MenuItem({
       <div
         className={`flex items-center gap-3 px-4 py-[18px] transition-colors ${
           active ? "bg-blue-50" : "hover:bg-bluegrey-25"
-        }`}
+        } focus:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-inset`}
       >
         <div className="flex items-center gap-2 flex-1">
           <div className="w-6 h-6 flex-shrink-0">{icon}</div>
