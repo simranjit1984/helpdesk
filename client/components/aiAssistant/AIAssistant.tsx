@@ -4,6 +4,25 @@ import { InsightCard } from "./InsightCard";
 import { generateUserInsights, UserData, Insight } from "./insightsGenerator";
 import { cn } from "@/lib/utils";
 
+// Add glow animation styles
+const glowStyle = `
+  @keyframes button-glow {
+    0% {
+      box-shadow: 0 0 5px rgba(244, 63, 94, 0.3), 0 0 10px rgba(244, 63, 94, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(244, 63, 94, 0.6), 0 0 30px rgba(249, 115, 22, 0.4), 0 0 40px rgba(234, 179, 8, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 5px rgba(244, 63, 94, 0.3), 0 0 10px rgba(244, 63, 94, 0.2);
+    }
+  }
+
+  .ai-assistant-glow {
+    animation: button-glow 2s ease-in-out infinite;
+  }
+`;
+
 interface AIAssistantProps {
   userData: UserData;
   isOpen?: boolean;
