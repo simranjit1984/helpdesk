@@ -648,7 +648,7 @@ export default function UserDetail() {
                       value={formData.firstName}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -660,7 +660,7 @@ export default function UserDetail() {
                       value={formData.lastName}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -683,7 +683,7 @@ export default function UserDetail() {
                       value={formData.phone}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -695,7 +695,7 @@ export default function UserDetail() {
                       value={formData.address1}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -707,7 +707,7 @@ export default function UserDetail() {
                       value={formData.address2}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -719,7 +719,7 @@ export default function UserDetail() {
                       value={formData.city}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -731,7 +731,7 @@ export default function UserDetail() {
                       value={formData.postalCode}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -778,7 +778,7 @@ export default function UserDetail() {
                             value={formData.startDate}
                             onChange={handleFormChange}
                             disabled={isSaving}
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
 
@@ -828,7 +828,7 @@ export default function UserDetail() {
                                 value={formData.endDate}
                                 onChange={handleFormChange}
                                 disabled={isSaving}
-                                className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                               />
                             </div>
                           )}
@@ -1183,7 +1183,7 @@ export default function UserDetail() {
                           value={updateEmail}
                           onChange={(e) => setUpdateEmail(e.target.value)}
                           disabled={isSavingEmail}
-                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <Button
                           onClick={handleUpdateEmail}
