@@ -1305,7 +1305,7 @@ export default function UserDetail() {
                   <p className="text-base text-bluegrey-900">Description</p>
                 </div>
                 <button
-                  onClick={() => setOpenSideSheet(null)}
+                  onClick={handleCloseSideSheet}
                   className="flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-50 transition-colors flex-shrink-0"
                   aria-label="Close sheet"
                 >
