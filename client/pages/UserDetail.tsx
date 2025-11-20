@@ -258,7 +258,7 @@ export default function UserDetail() {
     return iconMap[name || ""] || null;
   };
 
-  const getAuthenticatorStatus = (authName: string): "healthy" | "warning" | "error" => {
+  const getAuthenticatorStatus = (authName: string): "healthy" | "alert" => {
     // Count failed authentication attempts for this authenticator
     const failedAttempts = events.filter(
       event =>
@@ -266,37 +266,20 @@ export default function UserDetail() {
         event.description.toLowerCase().includes(authName.toLowerCase())
     ).length;
 
-    const totalAttempts = events.filter(
-      event =>
-        event.description.toLowerCase().includes(authName.toLowerCase())
-    ).length;
-
-    // Determine status based on failed attempts
-    if (failedAttempts >= 3) {
-      return "error"; // 3+ failures = error state
-    } else if (failedAttempts >= 1) {
-      return "warning"; // 1+ failures = warning state
+    // Determine status based on failed attempts (both error and warning use alert state)
+    if (failedAttempts >= 1) {
+      return "alert"; // Any failures = alert state
     }
     return "healthy";
   };
 
-  const getSecurityTabStatus = (): "healthy" | "warning" | "error" => {
+  const getSecurityTabStatus = (): "healthy" | "alert" => {
     // Check all user authenticators for any issues
-    let hasError = false;
-    let hasWarning = false;
+    const hasAlert = userAuthenticators.some(
+      auth => getAuthenticatorStatus(auth) === "alert"
+    );
 
-    userAuthenticators.forEach(auth => {
-      const status = getAuthenticatorStatus(auth);
-      if (status === "error") {
-        hasError = true;
-      } else if (status === "warning") {
-        hasWarning = true;
-      }
-    });
-
-    if (hasError) return "error";
-    if (hasWarning) return "warning";
-    return "healthy";
+    return hasAlert ? "alert" : "healthy";
   };
 
   const renderAuthenticatorCard = (authName: string) => {
