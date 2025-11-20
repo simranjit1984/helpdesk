@@ -1336,7 +1336,8 @@ export default function UserDetail() {
                 </div>
                 <button
                   onClick={handleCloseSideSheet}
-                  className="absolute right-6 top-4 flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-50 transition-colors flex-shrink-0"
+                  className="absolute right-6 flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-50 transition-colors flex-shrink-0"
+                  style={{ top: "11px" }}
                   aria-label="Close sheet"
                 >
                   <X className="w-6 h-6 text-bluegrey-700" />
