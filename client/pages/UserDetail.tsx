@@ -310,7 +310,7 @@ export default function UserDetail() {
       <button
         key={authName}
         onClick={() => setOpenSideSheet(authName)}
-        className={`border-2 rounded py-4 px-6 flex items-center gap-3 transition-all cursor-pointer text-left ${borderColor} ${
+        className={`border rounded py-4 px-6 flex items-center gap-3 transition-all cursor-pointer text-left ${borderColor} ${
           openSideSheet === authName ? selectedBg : `${bgColor} ${hoverBg}`
         }`}
       >
