@@ -256,22 +256,86 @@ export default function UserDetail() {
     return iconMap[name || ""] || null;
   };
 
+  const getAuthenticatorStatus = (authName: string): "healthy" | "warning" | "error" => {
+    // Count failed authentication attempts for this authenticator
+    const failedAttempts = events.filter(
+      event =>
+        event.description.toLowerCase().includes("failed") &&
+        event.description.toLowerCase().includes(authName.toLowerCase())
+    ).length;
+
+    const totalAttempts = events.filter(
+      event =>
+        event.description.toLowerCase().includes(authName.toLowerCase())
+    ).length;
+
+    // Determine status based on failed attempts
+    if (failedAttempts >= 3) {
+      return "error"; // 3+ failures = error state
+    } else if (failedAttempts >= 1) {
+      return "warning"; // 1+ failures = warning state
+    }
+    return "healthy";
+  };
+
   const renderAuthenticatorCard = (authName: string) => {
+    const status = getAuthenticatorStatus(authName);
+    const borderColor = {
+      healthy: "border-bluegrey-100",
+      warning: "border-orange-300",
+      error: "border-red-300",
+    }[status];
+
+    const bgColor = {
+      healthy: "bg-white",
+      warning: "bg-orange-50",
+      error: "bg-red-50",
+    }[status];
+
+    const hoverBg = {
+      healthy: "hover:bg-bluegrey-50",
+      warning: "hover:bg-orange-100",
+      error: "hover:bg-red-100",
+    }[status];
+
+    const selectedBg = {
+      healthy: "bg-bluegrey-50",
+      warning: "bg-orange-100",
+      error: "bg-red-100",
+    }[status];
+
+    const statusBadgeColor = {
+      healthy: null,
+      warning: "bg-orange-100 text-orange-700 border border-orange-300",
+      error: "bg-red-100 text-red-700 border border-red-300",
+    }[status];
+
+    const statusLabel = {
+      healthy: null,
+      warning: "⚠ Warning",
+      error: "🛑 Error",
+    }[status];
+
     return (
       <button
         key={authName}
         onClick={() => setOpenSideSheet(authName)}
-        className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-          openSideSheet === authName
-            ? "bg-bluegrey-50"
-            : "bg-white hover:bg-bluegrey-50"
+        className={`border-2 rounded py-4 px-6 flex items-center gap-3 transition-all cursor-pointer text-left ${borderColor} ${
+          openSideSheet === authName ? selectedBg : `${bgColor} ${hoverBg}`
         }`}
       >
         {getAuthenticatorIcon(authName)}
         <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-          <h3 className="text-base font-medium text-black leading-6">
-            {authName}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-medium text-black leading-6">
+              {authName}
+            </h3>
+            {statusBadgeColor && (
+              <span className={`text-xs font-semibold px-2 py-1 rounded ${statusBadgeColor}`}>
+                {statusLabel}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
             <span>Ottawa, ON, Canada</span>
             <span>{getAuthenticatorTimestamp(authName)}</span>
