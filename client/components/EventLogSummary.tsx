@@ -305,8 +305,8 @@ export default function EventLogSummary({
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="text-sm text-bluegrey-900 whitespace-nowrap">
+                      <td className="px-4 py-3 w-40">
+                        <span className="text-sm text-bluegrey-900 whitespace-nowrap overflow-hidden text-ellipsis">
                           {group.firstEvent.date}
                         </span>
                       </td>
