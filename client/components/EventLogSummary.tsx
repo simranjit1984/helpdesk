@@ -248,17 +248,12 @@ export default function EventLogSummary({
               </TableHeadCell>
               <TableHeadCell>
                 <span className="text-sm font-bold text-bluegrey-900">
+                  Summary
+                </span>
+              </TableHeadCell>
+              <TableHeadCell>
+                <span className="text-sm font-bold text-bluegrey-900">
                   First Event Time
-                </span>
-              </TableHeadCell>
-              <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">
-                  Event Types
-                </span>
-              </TableHeadCell>
-              <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">
-                  Applications
                 </span>
               </TableHeadCell>
             </TableHeadRow>
