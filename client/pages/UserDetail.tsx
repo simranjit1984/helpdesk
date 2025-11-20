@@ -233,28 +233,55 @@ export default function UserDetail() {
     return authenticatorTimestamps[name] || "Never used";
   };
 
+  const iconMap: Record<string, React.ReactNode> = {
+    "Username & Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
+    "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
+    "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
+    "TOTP": <Clock className="h-5 w-5 text-bluegrey-600" />,
+    "QR code Enrollment": <QrCode className="h-5 w-5 text-bluegrey-600" />,
+    "Magic link authentication": <Link2 className="h-5 w-5 text-bluegrey-600" />,
+    "Push MFA": <Bell className="h-5 w-5 text-bluegrey-600" />,
+    "Google": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "Facebook": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "Apple": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "DigiD": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "eHerkenning": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "Microsoft EntraID": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "Microsoft AD": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    "iCloud Keychain": <Key className="h-5 w-5 text-bluegrey-600" />,
+    "Safenet FIDO Key": <Key className="h-5 w-5 text-bluegrey-600" />,
+    "Chrome Passkey": <Chrome className="h-5 w-5 text-bluegrey-600" />,
+    "Yubikey": <Smartphone className="h-5 w-5 text-bluegrey-600" />,
+  };
+
   const getAuthenticatorIcon = (name: string | null) => {
-    const iconMap: Record<string, React.ReactNode> = {
-      "Username & Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
-      "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
-      "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
-      "TOTP": <Clock className="h-5 w-5 text-bluegrey-600" />,
-      "QR code Enrollment": <QrCode className="h-5 w-5 text-bluegrey-600" />,
-      "Magic link authentication": <Link2 className="h-5 w-5 text-bluegrey-600" />,
-      "Push MFA": <Bell className="h-5 w-5 text-bluegrey-600" />,
-      "Google": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "Facebook": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "Apple": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "DigiD": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "eHerkenning": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "Microsoft EntraID": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "Microsoft AD": <Globe className="h-5 w-5 text-bluegrey-600" />,
-      "iCloud Keychain": <Key className="h-5 w-5 text-bluegrey-600" />,
-      "Safenet FIDO Key": <Key className="h-5 w-5 text-bluegrey-600" />,
-      "Chrome Passkey": <Chrome className="h-5 w-5 text-bluegrey-600" />,
-      "Yubikey": <Smartphone className="h-5 w-5 text-bluegrey-600" />,
-    };
     return iconMap[name || ""] || null;
+  };
+
+  const renderAuthenticatorCard = (authName: string) => {
+    return (
+      <button
+        key={authName}
+        onClick={() => setOpenSideSheet(authName)}
+        className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
+          openSideSheet === authName
+            ? "bg-bluegrey-50"
+            : "bg-white hover:bg-bluegrey-50"
+        }`}
+      >
+        {getAuthenticatorIcon(authName)}
+        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+          <h3 className="text-base font-medium text-black leading-6">
+            {authName}
+          </h3>
+          <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
+            <span>Ottawa, ON, Canada</span>
+            <span>{getAuthenticatorTimestamp(authName)}</span>
+          </div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
+      </button>
+    );
   };
 
   const authenticatorLocation = "Ottawa, ON, Canada";
