@@ -31,7 +31,7 @@ export default function SearchBar({
   return (
     <div className={width}>
       <div className="relative">
-        <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 transition-all">
+        <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white transition-all">
           <Search className="w-5 h-5 text-bluegrey-500 flex-shrink-0" />
           <input
             type="text"
