@@ -1670,6 +1670,7 @@ export default function UserDetail() {
             })),
           }}
           isOpen={true}
+          isSideSheetOpen={!!openSideSheet}
         />
       )}
 
