@@ -53,6 +53,16 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
 
   // Generate insights on mount
   useEffect(() => {
+    // Check if this is a new user (userData changed)
+    const currentUserId = userData.id || userData.email || "";
+    const isNewUser = currentUserId && previousUserDataId !== currentUserId;
+
+    // Only highlight if we're switching to a new user with content (not empty userData)
+    if (isNewUser && currentUserId) {
+      setHasNewContent(true);
+      setPreviousUserDataId(currentUserId);
+    }
+
     setIsLoading(true);
     // Simulate AI processing delay
     const timer = setTimeout(() => {
@@ -60,15 +70,17 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       setInsights(generated);
       setIsLoading(false);
 
-      // Add initial assistant message
-      setMessages([
-        {
-          id: "1",
-          type: "assistant",
-          content: `I've analyzed ${userData.firstName} ${userData.lastName}'s profile. I found ${generated.length} insights and recommendations that need your attention.`,
-          timestamp: new Date(),
-        },
-      ]);
+      // Add initial assistant message only if userData has content
+      if (currentUserId) {
+        setMessages([
+          {
+            id: "1",
+            type: "assistant",
+            content: `I've analyzed ${userData.firstName} ${userData.lastName}'s profile. I found ${generated.length} insights and recommendations that need your attention.`,
+            timestamp: new Date(),
+          },
+        ]);
+      }
     }, 1000);
 
     return () => clearTimeout(timer);
