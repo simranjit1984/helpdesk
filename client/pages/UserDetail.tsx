@@ -95,7 +95,9 @@ import { getUserByUsername } from "@/components/UsersTable";
 export default function UserDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [userAuthenticators, setUserAuthenticators] = useState<string[]>([]);
+  const [userAuthenticators, setUserAuthenticators] = useState<string[]>(
+    []
+  );
   const [endDateOption, setEndDateOption] = useState<"no-end" | "custom">(
     "custom",
   );
