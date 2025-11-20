@@ -86,7 +86,7 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white shadow-lg hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center animate-slide-up-in"
+        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white shadow-lg hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center animate-[slide-up-in_0.3s_ease-out_forwards]"
         title="Open AI Assistant"
       >
         <Brain className="h-6 w-6" />
