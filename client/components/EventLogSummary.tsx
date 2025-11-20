@@ -117,6 +117,9 @@ export default function EventLogSummary({
   const [expandedTraces, setExpandedTraces] = useState<Set<string>>(
     new Set()
   );
+  const [expandedEvents, setExpandedEvents] = useState<Set<string>>(
+    new Set()
+  );
 
   const baseEvents = providedEvents || generateMockEvents();
 
