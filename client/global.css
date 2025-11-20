@@ -141,8 +141,9 @@
   }
 
   /* Focus ring for search input containers */
-  .relative:focus-within {
+  [data-search-container]:focus-within {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+    border-radius: 0.125rem;
   }
 }
