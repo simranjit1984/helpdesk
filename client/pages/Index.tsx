@@ -74,7 +74,7 @@ export default function Index() {
           </div>
         </div>
       </Layout>
-      <AIAssistant userData={{}} />
+      <AIAssistant userData={{}} isOpen={false} />
     </>
   );
 }
