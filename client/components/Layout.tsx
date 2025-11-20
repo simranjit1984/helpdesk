@@ -16,6 +16,13 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     if (!mainRef.current) return;
 
+    // Helper function to check if element is visible
+    const isVisible = (element: HTMLElement): boolean => {
+      const style = window.getComputedStyle(element);
+      const isHidden = style.display === "none" || style.visibility === "hidden" || style.opacity === "0";
+      return !isHidden;
+    };
+
     // Small delay to ensure content has rendered
     const timer = setTimeout(() => {
       const main = mainRef.current;
@@ -52,13 +59,6 @@ export default function Layout({ children }: LayoutProps) {
 
     return () => clearTimeout(timer);
   }, [location.pathname]);
-
-  // Helper function to check if element is visible
-  const isVisible = (element: HTMLElement): boolean => {
-    const style = window.getComputedStyle(element);
-    const isHidden = style.display === "none" || style.visibility === "hidden" || style.opacity === "0";
-    return !isHidden;
-  };
 
   return (
     <div className="bg-white">
