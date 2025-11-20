@@ -1323,7 +1323,7 @@ export default function UserDetail() {
           {/* Side Sheet for Section Details */}
           <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && handleCloseSideSheet()}>
             <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col">
-              <div className="flex items-start justify-between px-6 py-4 border-b border-bluegrey-100">
+              <div className="flex items-start justify-between px-6 py-4">
                 <div className="flex items-start gap-3 flex-1">
                   <div className="flex-shrink-0 mt-0.5">
                     {getAuthenticatorIcon(openSideSheet)}
