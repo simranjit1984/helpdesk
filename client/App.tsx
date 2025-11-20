@@ -11,6 +11,13 @@ import UserDetail from "./pages/UserDetail";
 import TooltipDemo from "./pages/TooltipDemo";
 import DataGridDemo from "./pages/DataGridDemo";
 import NotFound from "./pages/NotFound";
+import Organizations from "./pages/Organizations";
+import Applications from "./pages/Applications";
+import AccessRoles from "./pages/AccessRoles";
+import Administrators from "./pages/Administrators";
+import AllAdministrators from "./pages/AllAdministrators";
+import AdministratorsRoles from "./pages/AdministratorsRoles";
+import Scopes from "./pages/Scopes";
 
 const queryClient = new QueryClient();
 
