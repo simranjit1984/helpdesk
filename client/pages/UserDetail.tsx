@@ -1332,10 +1332,6 @@ export default function UserDetail() {
                     <h2 className="text-xl font-bold text-bluegrey-750">
                       {openSideSheet}
                     </h2>
-                    <div className="flex items-center gap-2 text-xs text-bluegrey-600">
-                      <span>{authenticatorLocation}</span>
-                      <span>{openSideSheet ? getAuthenticatorTimestamp(openSideSheet) : ""}</span>
-                    </div>
                   </div>
                 </div>
                 <button
