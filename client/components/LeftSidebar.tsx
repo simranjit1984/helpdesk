@@ -204,7 +204,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         aria-hidden={!isOpen}
-        inert={!isOpen ? "" : undefined}
+        {...(!isOpen && { inert: true })}
       >
         <nav
           ref={navRef}
