@@ -61,27 +61,32 @@ function MenuItem({
   };
 
   const content = (
-    <div
-      className={`flex items-center gap-3 px-4 py-[18px] transition-colors ${
-        active || isExpanded ? "" : "hover:bg-bluegrey-25"
-      }`}
-    >
-      <div className="flex items-center gap-2 flex-1">
-        <div className="w-6 h-6 flex-shrink-0">{icon}</div>
-        <span
-          className={`text-base leading-6 ${
-            active || isExpanded ? "font-bold text-bluegrey-900" : "text-bluegrey-900"
-          }`}
-        >
-          {label}
-        </span>
+    <div className="relative">
+      <div
+        className={`flex items-center gap-3 px-4 py-[18px] transition-colors ${
+          active ? "bg-blue-50" : "hover:bg-bluegrey-25"
+        }`}
+      >
+        <div className="flex items-center gap-2 flex-1">
+          <div className="w-6 h-6 flex-shrink-0">{icon}</div>
+          <span
+            className={`text-base leading-6 ${
+              active || isExpanded ? "font-bold text-bluegrey-900" : "text-bluegrey-900"
+            }`}
+          >
+            {label}
+          </span>
+        </div>
+        {hasSubmenu && (
+          isExpanded ? (
+            <ChevronUp className="w-6 h-6 text-bluegrey-900" />
+          ) : (
+            <ChevronDown className="w-6 h-6 text-bluegrey-900" />
+          )
+        )}
       </div>
-      {hasSubmenu && (
-        isExpanded ? (
-          <ChevronUp className="w-6 h-6 text-bluegrey-900" />
-        ) : (
-          <ChevronDown className="w-6 h-6 text-bluegrey-900" />
-        )
+      {active && (
+        <div className="absolute left-0 top-0 w-1 h-full bg-[#041295] rounded-r" />
       )}
     </div>
   );
