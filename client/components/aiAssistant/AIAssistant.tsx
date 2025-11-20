@@ -67,6 +67,30 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     }
   }, [isSideSheetOpen]);
 
+  // Handle keyboard shortcut (Ctrl+Shift+A or Cmd+Shift+A)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === "A") {
+        event.preventDefault();
+
+        // If minimized, restore the window
+        if (isMinimized) {
+          setIsMinimized(false);
+          // Focus input field after state update
+          setTimeout(() => {
+            inputRef.current?.focus();
+          }, 0);
+        } else {
+          // If already open, just focus the input field
+          inputRef.current?.focus();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMinimized]);
+
   // Add transition classes for minimize/maximize animation
   const handleMinimize = () => {
     setIsMinimized(true);
