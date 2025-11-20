@@ -1,0 +1,234 @@
+import React, { useState, useEffect, useRef } from "react";
+import { X, Minimize2, Maximize2, Brain, Send } from "lucide-react";
+import { InsightCard } from "./InsightCard";
+import { generateUserInsights, UserData, Insight } from "./insightsGenerator";
+import { cn } from "@/lib/utils";
+
+interface AIAssistantProps {
+  userData: UserData;
+  isOpen?: boolean;
+}
+
+interface ChatMessage {
+  id: string;
+  type: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
+
+export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
+  const [isMinimized, setIsMinimized] = useState(!isOpen);
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Generate insights on mount
+  useEffect(() => {
+    setIsLoading(true);
+    // Simulate AI processing delay
+    const timer = setTimeout(() => {
+      const generated = generateUserInsights(userData);
+      setInsights(generated);
+      setIsLoading(false);
+
+      // Add initial assistant message
+      setMessages([
+        {
+          id: "1",
+          type: "assistant",
+          content: `I've analyzed ${userData.firstName} ${userData.lastName}'s profile. I found ${generated.length} insights and recommendations that need your attention.`,
+          timestamp: new Date(),
+        },
+      ]);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [userData]);
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSendMessage = () => {
+    if (!inputValue.trim()) return;
+
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      type: "user",
+      content: inputValue,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+
+    // Simulate assistant response
+    setTimeout(() => {
+      const assistantMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: "assistant",
+        content: generateMockResponse(inputValue),
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    }, 500);
+  };
+
+  if (isMinimized) {
+    return (
+      <button
+        onClick={() => setIsMinimized(false)}
+        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-200 flex items-center justify-center"
+        title="Open AI Assistant"
+      >
+        <Brain className="h-6 w-6" />
+      </button>
+    );
+  }
+
+  return (
+    <div className="fixed bottom-6 right-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-bluegrey-200">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-2">
+          <Brain className="h-5 w-5" />
+          <h2 className="font-semibold">AI Assistant</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsMinimized(true)}
+            className="p-1 hover:bg-blue-600 rounded transition-colors"
+            title="Minimize"
+          >
+            <Minimize2 className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => {
+              // Could close the assistant entirely here
+            }}
+            className="p-1 hover:bg-blue-600 rounded transition-colors"
+            title="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Content Area */}
+      <div className="flex-1 overflow-y-auto flex flex-col gap-4 p-4 bg-bluegrey-25">
+        {/* Insights Section */}
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3" />
+              <p className="text-sm text-bluegrey-600">
+                Analyzing user profile...
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Insights Header */}
+            <div className="mb-2">
+              <h3 className="text-sm font-semibold text-bluegrey-900">
+                Key Insights & Recommendations
+              </h3>
+            </div>
+
+            {/* Insight Cards */}
+            {insights.map((insight) => (
+              <InsightCard
+                key={insight.id}
+                type={insight.type}
+                severity={insight.severity}
+                title={insight.title}
+                description={insight.description}
+                actions={insight.actions}
+                icon={insight.icon}
+              />
+            ))}
+
+            {/* Chat Messages */}
+            {messages.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-bluegrey-200">
+                <h3 className="text-sm font-semibold text-bluegrey-900 mb-3">
+                  Messages
+                </h3>
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "mb-3 flex",
+                      message.type === "user" ? "justify-end" : "justify-start"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "max-w-[80%] rounded-lg px-3 py-2 text-sm",
+                        message.type === "user"
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-bluegrey-900 border border-bluegrey-200"
+                      )}
+                    >
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="border-t border-bluegrey-200 p-4 flex-shrink-0 bg-white">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") handleSendMessage();
+            }}
+            placeholder="Ask a question..."
+            className="flex-1 rounded-lg border border-bluegrey-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleSendMessage}
+            className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
+            title="Send message"
+          >
+            <Send className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Mock response generator for demo
+const generateMockResponse = (userInput: string): string => {
+  const input = userInput.toLowerCase();
+
+  if (input.includes("role") || input.includes("access")) {
+    return "You can add access roles by clicking the 'Add Role' button in the Access Roles section. This will open a dialog where you can select from available roles and set expiration dates.";
+  }
+
+  if (input.includes("expir") || input.includes("validity")) {
+    return "To update the account validity date, click on the 'Change Validity' button or directly edit the End Date field in the Basic Information tab.";
+  }
+
+  if (input.includes("security") || input.includes("mfa")) {
+    return "Multi-factor authentication adds an extra layer of security. You can configure it in the Security tab. Click 'Configure MFA' to set it up.";
+  }
+
+  if (input.includes("activity") || input.includes("event")) {
+    return "Recent events are displayed in the Event Log tab. You can view detailed information about user actions, logins, and system events.";
+  }
+
+  return "I'm here to help! You can ask me about user roles, account validity, security settings, or recent activity. I can also guide you to make specific changes.";
+};
