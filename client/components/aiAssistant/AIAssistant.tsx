@@ -28,6 +28,11 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Detect OS for correct keyboard shortcut display
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+  }, []);
+
   // Generate insights on mount
   useEffect(() => {
     setIsLoading(true);
