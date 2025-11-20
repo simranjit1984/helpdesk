@@ -112,7 +112,7 @@ function MenuItem({
       <Link
         ref={itemRef}
         to={navigateHref}
-        className="outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
       >
         {content}
       </Link>
