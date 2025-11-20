@@ -4,24 +4,70 @@ import { InsightCard } from "./InsightCard";
 import { generateUserInsights, UserData, Insight } from "./insightsGenerator";
 import { cn } from "@/lib/utils";
 
-// Add glow animation styles
-const glowStyle = `
-  @keyframes button-glow {
-    0% {
-      box-shadow: 0 0 5px rgba(244, 63, 94, 0.3), 0 0 10px rgba(244, 63, 94, 0.2);
-    }
-    50% {
-      box-shadow: 0 0 20px rgba(244, 63, 94, 0.6), 0 0 30px rgba(249, 115, 22, 0.4), 0 0 40px rgba(234, 179, 8, 0.2);
-    }
-    100% {
-      box-shadow: 0 0 5px rgba(244, 63, 94, 0.3), 0 0 10px rgba(244, 63, 94, 0.2);
-    }
-  }
+// Generate random bright color
+const getRandomGlowColor = () => {
+  const colors = [
+    // Red shades
+    { r: 239, g: 68, b: 68 },
+    { r: 220, g: 38, b: 38 },
+    { r: 185, g: 28, b: 28 },
+    // Blue shades
+    { r: 59, g: 130, b: 246 },
+    { r: 37, g: 99, b: 235 },
+    { r: 12, g: 74, b: 188 },
+    // Violet shades
+    { r: 139, g: 92, b: 246 },
+    { r: 124, g: 58, b: 238 },
+    // Magenta shades
+    { r: 236, g: 72, b: 153 },
+    { r: 219, g: 39, b: 119 },
+    // Cyan shades
+    { r: 34, g: 211, b: 238 },
+    { r: 6, g: 182, b: 212 },
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
 
-  .ai-assistant-glow {
-    animation: button-glow 2s ease-in-out infinite;
-  }
-`;
+// Create dynamic glow animation
+const createGlowAnimation = (color1: any, color2: any, color3: any) => {
+  return `
+    @keyframes button-glow {
+      0% {
+        box-shadow:
+          0 0 10px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.4),
+          0 0 20px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.3),
+          0 0 30px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.2);
+      }
+      33% {
+        box-shadow:
+          0 0 20px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.6),
+          0 0 40px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.4),
+          0 0 60px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.2);
+      }
+      66% {
+        box-shadow:
+          0 0 20px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.6),
+          0 0 40px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.4),
+          0 0 60px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.2);
+      }
+      100% {
+        box-shadow:
+          0 0 10px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.4),
+          0 0 20px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.3),
+          0 0 30px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.2);
+      }
+    }
+
+    .ai-assistant-glow {
+      animation: button-glow 2.5s ease-in-out infinite;
+    }
+  `;
+};
+
+const color1 = getRandomGlowColor();
+const color2 = getRandomGlowColor();
+const color3 = getRandomGlowColor();
+const glowStyle = createGlowAnimation(color1, color2, color3);
 
 interface AIAssistantProps {
   userData: UserData;
