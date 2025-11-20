@@ -205,6 +205,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             }
             label="Administrators"
             href="/administrators"
+            active={isAdministratorsActive}
             hasSubmenu={true}
             isExpanded={isAdministratorsExpanded}
             onToggle={() => setIsAdministratorsExpanded(!isAdministratorsExpanded)}
