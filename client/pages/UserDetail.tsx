@@ -1162,18 +1162,22 @@ export default function UserDetail() {
 
           {/* Side Sheet for Section Details */}
           <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && setOpenSideSheet(null)}>
-            <SheetContent side="right" className="w-full sm:w-[500px]">
-              <SheetHeader className="flex flex-row items-center justify-between mb-8">
+            <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col">
+              <div className="flex items-start justify-between px-6 py-4 border-b border-bluegrey-100">
+                <div className="flex flex-col gap-0.5 flex-1">
+                  <h2 className="text-xl font-bold text-bluegrey-750">
+                    {openSideSheet}
+                  </h2>
+                  <p className="text-base text-bluegrey-900">Description</p>
+                </div>
                 <button
                   onClick={() => setOpenSideSheet(null)}
-                  className="flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-100 transition-colors"
+                  className="flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-50 transition-colors flex-shrink-0"
                   aria-label="Close sheet"
                 >
-                  <ArrowLeft className="w-5 h-5 text-bluegrey-900" />
+                  <X className="w-6 h-6 text-bluegrey-700" />
                 </button>
-                <SheetTitle className="flex-1 text-center">{openSideSheet}</SheetTitle>
-                <div className="w-10" />
-              </SheetHeader>
+              </div>
 
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
