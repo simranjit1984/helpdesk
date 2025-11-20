@@ -805,419 +805,47 @@ export default function UserDetail() {
                 </div>
               ) : (
                 <div className="flex flex-col">
-                  <h2 className="text-xl font-semibold text-blue-500 mb-4">
-                    Authenticators
-                  </h2>
-
-                  <div className="flex flex-col gap-4 max-w-3xl">
-                    {/* Username & Password */}
-                    <button
-                      onClick={() => setOpenSideSheet("Username & Password")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Username & Password"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Lock className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Username & Password
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("Username & Password")}</span>
-                        </div>
+                  {/* Render Authenticators */}
+                  {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
+                    <>
+                      <h2 className="text-xl font-semibold text-blue-500 mb-4">
+                        Authenticators
+                      </h2>
+                      <div className="flex flex-col gap-4 max-w-3xl">
+                        {userAuthenticators
+                          .filter(auth => allAuthenticators.authenticators.includes(auth))
+                          .map(auth => renderAuthenticatorCard(auth))}
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
+                    </>
+                  )}
 
-                    {/* SMS OTP */}
-                    <button
-                      onClick={() => setOpenSideSheet("SMS OTP")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "SMS OTP"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <MessageSquare className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          SMS OTP
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("SMS OTP")}</span>
-                        </div>
+                  {/* Render External Identity Providers */}
+                  {userAuthenticators.some(auth => allAuthenticators.externalProviders.includes(auth)) && (
+                    <>
+                      <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
+                        External Identity Providers
+                      </h2>
+                      <div className="flex flex-col gap-4 max-w-3xl">
+                        {userAuthenticators
+                          .filter(auth => allAuthenticators.externalProviders.includes(auth))
+                          .map(auth => renderAuthenticatorCard(auth))}
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
+                    </>
+                  )}
 
-                    {/* Email OTP */}
-                    <button
-                      onClick={() => setOpenSideSheet("Email OTP")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Email OTP"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Mail className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Email OTP
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("Email OTP")}</span>
-                        </div>
+                  {/* Render Passkeys */}
+                  {userAuthenticators.some(auth => allAuthenticators.passkeys.includes(auth)) && (
+                    <>
+                      <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
+                        Passkeys
+                      </h2>
+                      <div className="flex flex-col gap-4 max-w-3xl">
+                        {userAuthenticators
+                          .filter(auth => allAuthenticators.passkeys.includes(auth))
+                          .map(auth => renderAuthenticatorCard(auth))}
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* TOTP */}
-                    <button
-                      onClick={() => setOpenSideSheet("TOTP")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "TOTP"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Clock className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          TOTP
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("TOTP")}</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* QR code Enrollment */}
-                    <button
-                      onClick={() => setOpenSideSheet("QR code Enrollment")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "QR code Enrollment"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <QrCode className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          QR code Enrollment
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("QR code Enrollment")}</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Magic link authentication */}
-                    <button
-                      onClick={() => setOpenSideSheet("Magic link authentication")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Magic link authentication"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Link2 className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Magic link authentication
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("Magic link authentication")}</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Push MFA */}
-                    <button
-                      onClick={() => setOpenSideSheet("Push MFA")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Push MFA"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Bell className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Push MFA
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>{getAuthenticatorTimestamp("Push MFA")}</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-                  </div>
-
-                  <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
-                    External Identity Providers
-                  </h2>
-
-                  <div className="flex flex-col gap-4 max-w-3xl">
-                    {/* Google */}
-                    <button
-                      onClick={() => setOpenSideSheet("Google")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Google"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Google
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 15, 2025 09:30 AM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Facebook */}
-                    <button
-                      onClick={() => setOpenSideSheet("Facebook")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Facebook"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Facebook
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 12, 2025 02:15 PM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Apple */}
-                    <button
-                      onClick={() => setOpenSideSheet("Apple")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Apple"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Apple
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 10, 2025 11:45 AM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* DigiD */}
-                    <button
-                      onClick={() => setOpenSideSheet("DigiD")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "DigiD"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          DigiD
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 08, 2025 04:20 PM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* eHerkenning */}
-                    <button
-                      onClick={() => setOpenSideSheet("eHerkenning")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "eHerkenning"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          eHerkenning
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 05, 2025 10:10 AM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Microsoft EntraID */}
-                    <button
-                      onClick={() => setOpenSideSheet("Microsoft EntraID")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Microsoft EntraID"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Microsoft EntraID
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 02, 2025 03:50 PM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Microsoft AD */}
-                    <button
-                      onClick={() => setOpenSideSheet("Microsoft AD")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Microsoft AD"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Microsoft AD
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Dec 28, 2024 08:25 AM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-                  </div>
-
-                  <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
-                    Passkeys
-                  </h2>
-
-                  <div className="flex flex-col gap-4 max-w-3xl">
-                    {/* iCloud Keychain */}
-                    <button
-                      onClick={() => setOpenSideSheet("iCloud Keychain")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "iCloud Keychain"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Key className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          iCloud Keychain
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 18, 2025 05:40 PM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Safenet FIDO Key */}
-                    <button
-                      onClick={() => setOpenSideSheet("Safenet FIDO Key")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Safenet FIDO Key"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Key className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Safenet FIDO Key
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 16, 2025 01:15 PM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Chrome Passkey */}
-                    <button
-                      onClick={() => setOpenSideSheet("Chrome Passkey")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Chrome Passkey"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Chrome className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Chrome Passkey
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 14, 2025 07:30 AM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-
-                    {/* Yubikey */}
-                    <button
-                      onClick={() => setOpenSideSheet("Yubikey")}
-                      className={`border border-bluegrey-100 rounded py-4 px-6 flex items-center gap-3 transition-colors cursor-pointer text-left ${
-                        openSideSheet === "Yubikey"
-                          ? "bg-bluegrey-50"
-                          : "bg-white hover:bg-bluegrey-50"
-                      }`}
-                    >
-                      <Smartphone className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-base font-medium text-black leading-6">
-                          Yubikey
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
-                          <span>Ottawa, ON, Canada</span>
-                          <span>Jan 11, 2025 09:45 AM</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
-                    </button>
-                  </div>
+                    </>
+                  )}
                 </div>
               )}
             </TabsContent>
