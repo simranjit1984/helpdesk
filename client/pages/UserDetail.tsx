@@ -1180,6 +1180,7 @@ export default function UserDetail() {
                 </button>
               </div>
 
+              <div className="flex-1 overflow-y-auto px-6 py-6">
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-6">
@@ -1243,6 +1244,7 @@ export default function UserDetail() {
                   Details for {openSideSheet}
                 </div>
               )}
+              </div>
             </SheetContent>
           </Sheet>
         </div>
