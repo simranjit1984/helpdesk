@@ -1264,10 +1264,11 @@ export default function UserDetail() {
                   searchPlaceholder="Search events"
                 />
 
-                <EventTable
+                <EventLogSummary
                   filters={eventFilters}
                   searchQuery={eventSearchQuery}
                   onFilterAdd={addEventFilter}
+                  events={events}
                 />
               </div>
             </TabsContent>
