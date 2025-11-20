@@ -357,6 +357,12 @@ export default function UserDetail() {
     [foundUser],
   );
 
+  // Generate authenticators for the user based on their email
+  const userAuthenticators = useMemo(
+    () => (user ? generateUserAuthenticators(user.email) : []),
+    [user]
+  );
+
   // Initialize form data when user is loaded
   useEffect(() => {
     if (user) {
