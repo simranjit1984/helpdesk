@@ -286,26 +286,22 @@ export default function UserDetail() {
     const status = getAuthenticatorStatus(authName);
     const borderColor = {
       healthy: "border-bluegrey-100",
-      warning: "border-orange-400",
-      error: "border-red-500",
+      alert: "border-orange-400",
     }[status];
 
     const bgColor = {
       healthy: "bg-white",
-      warning: "bg-white",
-      error: "bg-white",
+      alert: "bg-white",
     }[status];
 
     const hoverBg = {
       healthy: "hover:bg-bluegrey-50",
-      warning: "hover:bg-orange-50",
-      error: "hover:bg-red-50",
+      alert: "hover:bg-orange-50",
     }[status];
 
     const selectedBg = {
       healthy: "bg-bluegrey-50",
-      warning: "bg-orange-50",
-      error: "bg-red-50",
+      alert: "bg-orange-50",
     }[status];
 
     return (
@@ -322,13 +318,7 @@ export default function UserDetail() {
             <h3 className="text-base font-medium text-black leading-6">
               {authName}
             </h3>
-            {status === "error" && (
-              <div className="flex items-center gap-1">
-                <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
-                <span className="text-xs font-semibold text-red-600">Error</span>
-              </div>
-            )}
-            {status === "warning" && (
+            {status === "alert" && (
               <div className="flex items-center gap-1">
                 <AlertTriangle className="h-4 w-4 text-orange-600 flex-shrink-0" />
                 <span className="text-xs font-semibold text-orange-600">Alert</span>
