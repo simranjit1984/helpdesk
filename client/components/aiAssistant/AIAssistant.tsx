@@ -81,7 +81,7 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-200 flex items-center justify-center"
+        className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white shadow-lg hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center animate-in fade-in slide-in-from-bottom-2"
         title="Open AI Assistant"
       >
         <Brain className="h-6 w-6" />
@@ -90,9 +90,9 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-bluegrey-200">
+    <div className="fixed bottom-6 right-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-bluegrey-200 animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
+      <div className="bg-gradient-to-r from-[#041295] to-[#041295]/90 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
           <Brain className="h-5 w-5" />
           <h2 className="font-semibold">AI Assistant</h2>
