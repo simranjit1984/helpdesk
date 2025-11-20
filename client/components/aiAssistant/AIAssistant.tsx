@@ -148,13 +148,24 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     <div className="fixed bottom-6 right-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-bluegrey-200 animate-[slide-up-in_0.3s_ease-out_forwards]">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#041295] to-[#041295]/90 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Brain className="h-5 w-5" />
-          <h2 className="font-semibold">AI Assistant</h2>
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-[#041295]/40 rounded border border-white/20 ml-auto mr-2">
-            <span>⌘</span>
-            <span>K</span>
-          </kbd>
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold">AI Assistant</h2>
+            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-[#041295]/40 rounded border border-white/20">
+              {isMac ? (
+                <>
+                  <span>⌘</span>
+                  <span>K</span>
+                </>
+              ) : (
+                <>
+                  <span>Ctrl</span>
+                  <span>K</span>
+                </>
+              )}
+            </kbd>
+          </div>
         </div>
         <button
           onClick={handleMinimize}
