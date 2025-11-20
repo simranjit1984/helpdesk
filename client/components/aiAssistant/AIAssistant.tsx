@@ -74,11 +74,17 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     }
   }, [isSideSheetOpen]);
 
-  // Handle keyboard shortcut (Ctrl+K or Cmd+K)
+  // Handle keyboard shortcuts (Ctrl+K or Cmd+K, and Escape)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Handle Ctrl+K or Cmd+K
       if ((event.ctrlKey || event.metaKey) && event.key === "k") {
         event.preventDefault();
+
+        // Store the current focus before opening
+        if (isMinimized && document.activeElement instanceof HTMLElement) {
+          previousFocusRef.current = document.activeElement;
+        }
 
         // If minimized, restore the window
         if (isMinimized) {
@@ -91,6 +97,16 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
           // If already open, just focus the input field
           inputRef.current?.focus();
         }
+      }
+
+      // Handle Escape key
+      if (event.key === "Escape" && !isMinimized) {
+        event.preventDefault();
+        setIsMinimized(true);
+        // Restore focus to the previous element
+        setTimeout(() => {
+          previousFocusRef.current?.focus();
+        }, 0);
       }
     };
 
