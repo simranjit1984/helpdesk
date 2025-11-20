@@ -203,7 +203,6 @@ export function MultiSelect({
         <div
           className={cn(
             "flex min-h-11 w-full flex-wrap items-start gap-1 rounded-sm border border-bluegrey-500 bg-white px-2 py-1.5 pr-10 relative",
-            "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
           )}
           onClick={() => inputRef.current?.focus()}
         >
