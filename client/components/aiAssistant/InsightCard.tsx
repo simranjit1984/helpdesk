@@ -55,34 +55,34 @@ export const InsightCard = ({
   return (
     <div
       className={cn(
-        "rounded-lg border p-4 space-y-3",
+        "rounded-lg border p-3 space-y-2",
         typeStyles[type]
       )}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2">
         <div className={cn("flex-shrink-0 mt-0.5", iconStyles[type])}>
           {icon || defaultIcon[type]}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-sm text-bluegrey-900">
+          <h3 className="font-semibold text-xs text-bluegrey-900 leading-tight">
             {title}
           </h3>
-          <p className="text-sm text-bluegrey-700 mt-1 leading-relaxed">
+          <p className="text-xs text-bluegrey-700 mt-0.5 leading-relaxed">
             {description}
           </p>
         </div>
       </div>
 
       {actions && actions.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-2">
+        <div className="flex flex-wrap gap-1.5 pt-1">
           {actions.map((action, index) => (
             <button
               key={index}
               onClick={action.onClick}
               className={cn(
-                "px-3 py-1.5 rounded text-sm font-medium transition-all",
+                "px-2.5 py-1 rounded text-xs font-medium transition-all",
                 action.variant === "primary"
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  ? "bg-[#041295] text-white hover:bg-[#041295]/90"
                   : "bg-white border border-bluegrey-300 text-bluegrey-900 hover:bg-bluegrey-50"
               )}
             >
