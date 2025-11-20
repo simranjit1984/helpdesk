@@ -185,7 +185,7 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-bluegrey-200 p-4 flex-shrink-0 bg-white">
+      <div className="border-t border-bluegrey-200 p-3 flex-shrink-0 bg-white">
         <div className="flex gap-2">
           <input
             type="text"
@@ -194,12 +194,12 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
             onKeyPress={(e) => {
               if (e.key === "Enter") handleSendMessage();
             }}
-            placeholder="Ask a question..."
-            className="flex-1 rounded-lg border border-bluegrey-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ask..."
+            className="flex-1 rounded-lg border border-bluegrey-300 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#041295]"
           />
           <button
             onClick={handleSendMessage}
-            className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-[#041295] text-white p-2 rounded-lg hover:bg-[#041295]/90 transition-colors"
             title="Send message"
           >
             <Send className="h-4 w-4" />
