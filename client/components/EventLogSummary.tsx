@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown, ChevronRight, Filter } from "lucide-react";
+import { ChevronDown, ChevronRight, Filter, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
 import {
   Table,
   TableScroll,
@@ -16,6 +16,7 @@ import {
   TableEmptyState,
 } from "./ui/table";
 import { generateMockEvents, generateUUID, Event, EventAction } from "./mockEvents";
+import { generateTraceSummary } from "./eventSummaryGenerator";
 
 interface EventTableProps {
   filters: Array<{
