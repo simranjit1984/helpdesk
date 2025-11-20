@@ -141,6 +141,33 @@ export default function UserDetail() {
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
+  const allAuthenticators = {
+    authenticators: [
+      "Username & Password",
+      "SMS OTP",
+      "Email OTP",
+      "TOTP",
+      "QR code Enrollment",
+      "Magic link authentication",
+      "Push MFA",
+    ],
+    externalProviders: [
+      "Google",
+      "Facebook",
+      "Apple",
+      "DigiD",
+      "eHerkenning",
+      "Microsoft EntraID",
+      "Microsoft AD",
+    ],
+    passkeys: [
+      "iCloud Keychain",
+      "Safenet FIDO Key",
+      "Chrome Passkey",
+      "Yubikey",
+    ],
+  };
+
   const authenticatorTimestamps: Record<string, string> = {
     "Username & Password": "Jan 19, 2025 02:45 PM",
     "SMS OTP": "Jan 18, 2025 10:15 AM",
@@ -161,6 +188,46 @@ export default function UserDetail() {
     "Chrome Passkey": "Jan 14, 2025 07:30 AM",
     "Yubikey": "Jan 11, 2025 09:45 AM",
   };
+
+  // Generate deterministic authenticators for each user based on email
+  const generateUserAuthenticators = (email: string): string[] => {
+    // Simple hash function to generate consistent "random" number from email
+    let hash = 0;
+    for (let i = 0; i < email.length; i++) {
+      const char = email.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+
+    // Use hash to seed random selection
+    const seededRandom = (index: number) => {
+      const seed = hash + index;
+      const x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
+
+    const selected: string[] = ["Username & Password"];
+    const allOptions = [
+      ...allAuthenticators.authenticators.slice(1),
+      ...allAuthenticators.externalProviders,
+      ...allAuthenticators.passkeys,
+    ];
+
+    // Randomly select 3-6 additional authenticators (total 4-7)
+    const additionalCount = Math.floor(seededRandom(1) * 4) + 3; // 3 to 6
+
+    const shuffled = [...allOptions].sort(
+      (a, b) => seededRandom(allOptions.indexOf(a)) - seededRandom(allOptions.indexOf(b))
+    );
+
+    selected.push(...shuffled.slice(0, additionalCount));
+    return selected;
+  };
+
+  const userAuthenticators = useMemo(
+    () => (user ? generateUserAuthenticators(user.email) : []),
+    [user]
+  );
 
   const getAuthenticatorTimestamp = (name: string): string => {
     return authenticatorTimestamps[name] || "Never used";
