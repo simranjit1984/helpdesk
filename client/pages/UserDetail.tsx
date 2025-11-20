@@ -755,11 +755,11 @@ export default function UserDetail() {
                     </button>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-blue-500 mt-10">
+                  <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
                     External Identity Providers
                   </h2>
 
-                  <div className="flex flex-col gap-4 max-w-3xl mt-6">
+                  <div className="flex flex-col gap-4 max-w-3xl">
                     {/* Google */}
                     <button
                       onClick={() => setOpenSideSheet("Google")}
@@ -887,11 +887,11 @@ export default function UserDetail() {
                     </button>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-blue-500 mt-10">
+                  <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
                     Passkeys
                   </h2>
 
-                  <div className="flex flex-col gap-4 max-w-3xl mt-6">
+                  <div className="flex flex-col gap-4 max-w-3xl">
                     {/* iCloud Keychain */}
                     <button
                       onClick={() => setOpenSideSheet("iCloud Keychain")}
