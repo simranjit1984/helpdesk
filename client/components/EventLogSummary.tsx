@@ -232,6 +232,16 @@ export default function EventLogSummary({
     setExpandedTraces(newExpanded);
   };
 
+  const toggleEventExpanded = (eventId: string) => {
+    const newExpanded = new Set(expandedEvents);
+    if (newExpanded.has(eventId)) {
+      newExpanded.delete(eventId);
+    } else {
+      newExpanded.add(eventId);
+    }
+    setExpandedEvents(newExpanded);
+  };
+
   return (
     <Table variant="expandable">
       <TableScroll>
