@@ -25,6 +25,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Generate insights on mount
   useEffect(() => {
