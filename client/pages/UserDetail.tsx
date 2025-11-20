@@ -1322,7 +1322,7 @@ export default function UserDetail() {
 
           {/* Side Sheet for Section Details */}
           <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && handleCloseSideSheet()}>
-            <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col">
+            <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col gap-0">
               <div className="relative flex items-center justify-start px-6 py-4">
                 <div className="flex items-center gap-3 flex-1">
                   <div className="flex-shrink-0">
