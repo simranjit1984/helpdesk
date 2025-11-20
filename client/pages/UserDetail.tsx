@@ -1482,11 +1482,12 @@ export default function UserDetail() {
 
       <Dialog open={isValidityModalOpen} onOpenChange={setIsValidityModalOpen}>
         <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <DialogTitle className="sr-only">Edit validity period</DialogTitle>
           <div className="flex items-start justify-between px-6 py-4">
             <DialogHeader className="text-left">
-              <DialogTitle className="text-xl font-medium leading-8 text-[#131319]">
+              <div className="text-xl font-medium leading-8 text-[#131319]">
                 Edit validity period
-              </DialogTitle>
+              </div>
             </DialogHeader>
             <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B]">
               <svg
