@@ -29,7 +29,14 @@ export const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/organizations" element={<Organizations />} />
+          <Route path="/applications" element={<Applications />} />
+          <Route path="/access-roles" element={<AccessRoles />} />
           <Route path="/event-log" element={<EventLog />} />
+          <Route path="/administrators" element={<Administrators />} />
+          <Route path="/administrators/all" element={<AllAdministrators />} />
+          <Route path="/administrators/roles" element={<AdministratorsRoles />} />
+          <Route path="/administrators/scopes" element={<Scopes />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
           <Route path="/data-grid-demo" element={<DataGridDemo />} />
