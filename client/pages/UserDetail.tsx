@@ -622,7 +622,7 @@ export default function UserDetail() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col">
                   <h2 className="text-xl font-semibold text-blue-500 mb-4">
                     Authenticators
                   </h2>
