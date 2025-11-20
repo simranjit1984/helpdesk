@@ -189,7 +189,7 @@ export default function EventTable({
                   value,
                 })
               }
-              className="w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex-shrink-0"
+              className="w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity  flex-shrink-0"
               title={`Filter by ${label}`}
               aria-label={`Filter by ${label} ${value}`}
             >
@@ -333,7 +333,7 @@ export default function EventTable({
                               value: event.date,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/date:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/date:opacity-100 focus-visible:opacity-100  flex-shrink-0"
                           title="Filter by Date"
                           aria-label={`Filter by date ${event.date}`}
                         >
@@ -356,7 +356,7 @@ export default function EventTable({
                               value: event.eventType,
                             })
                           }
-                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/eventType:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex-shrink-0"
+                          className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/eventType:opacity-100 focus-visible:opacity-100  flex-shrink-0"
                           title="Filter by Event type"
                           aria-label={`Filter by Event type ${event.eventType}`}
                         >
@@ -380,7 +380,7 @@ export default function EventTable({
                                 value: event.application,
                               })
                             }
-                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex-shrink-0"
+                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/application:opacity-100 focus-visible:opacity-100  flex-shrink-0"
                             title="Filter by Application"
                             aria-label={`Filter by Application ${event.application}`}
                           >
@@ -405,7 +405,7 @@ export default function EventTable({
                                 value: event.actor,
                               })
                             }
-                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/actor:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex-shrink-0"
+                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/actor:opacity-100 focus-visible:opacity-100  flex-shrink-0"
                             title="Filter by Actor"
                             aria-label={`Filter by Actor ${event.actor}`}
                           >
@@ -430,7 +430,7 @@ export default function EventTable({
                                 value: event.clientIp,
                               })
                             }
-                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex-shrink-0"
+                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/clientIp:opacity-100 focus-visible:opacity-100  flex-shrink-0"
                             title="Filter by Client IP"
                             aria-label={`Filter by Client IP ${event.clientIp}`}
                           >
