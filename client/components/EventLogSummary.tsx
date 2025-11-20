@@ -254,7 +254,7 @@ export default function EventLogSummary({
                   Summary
                 </span>
               </TableHeadCell>
-              <TableHeadCell>
+              <TableHeadCell className="w-40">
                 <span className="text-sm font-bold text-bluegrey-900">
                   First Event Time
                 </span>
