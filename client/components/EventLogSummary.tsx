@@ -305,11 +305,11 @@ export default function EventLogSummary({
                           </span>
                         </div>
                       </td>
-                      <TableCell>
+                      <td className="px-4 py-3">
                         <span className="text-sm text-bluegrey-900 whitespace-nowrap">
                           {group.firstEvent.date}
                         </span>
-                      </TableCell>
+                      </td>
                     </TableRow>
 
                     {expandedTraces.has(group.traceId) && (
