@@ -44,31 +44,34 @@ export default function EventLog() {
   };
 
   return (
-    <Layout>
-      <PageHeader title="Event log" />
+    <>
+      <Layout>
+        <PageHeader title="Event log" />
 
-      <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-        <div className="space-y-6 lg:space-y-8">
-          <div className="flex items-center gap-2 flex-wrap">
-            <FilterBar
-              columns={[
-                { value: "timestamp", label: "Timestamp" },
-                { value: "username", label: "Username" },
-                { value: "action", label: "Action" },
-              ]}
-              filters={filters}
-              onFilterAdd={handleAddFilter}
-              onFilterRemove={handleRemoveFilter}
-              onClearFilters={handleClearFilters}
-              searchValue={searchQuery}
-              onSearchChange={setSearchQuery}
-              searchPlaceholder="Search events"
-            />
+        <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          <div className="space-y-6 lg:space-y-8">
+            <div className="flex items-center gap-2 flex-wrap">
+              <FilterBar
+                columns={[
+                  { value: "timestamp", label: "Timestamp" },
+                  { value: "username", label: "Username" },
+                  { value: "action", label: "Action" },
+                ]}
+                filters={filters}
+                onFilterAdd={handleAddFilter}
+                onFilterRemove={handleRemoveFilter}
+                onClearFilters={handleClearFilters}
+                searchValue={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search events"
+              />
+            </div>
+
+            <EventTable searchQuery={searchQuery} filters={filters} onFilterAdd={handleAddFilter} />
           </div>
-
-          <EventTable searchQuery={searchQuery} filters={filters} onFilterAdd={handleAddFilter} />
         </div>
-      </div>
-    </Layout>
+      </Layout>
+      <AIAssistant userData={{}} />
+    </>
   );
 }
