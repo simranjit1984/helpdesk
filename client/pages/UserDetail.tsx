@@ -1323,9 +1323,9 @@ export default function UserDetail() {
           {/* Side Sheet for Section Details */}
           <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && handleCloseSideSheet()}>
             <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col">
-              <div className="flex items-start justify-between px-6 py-4">
-                <div className="flex items-start gap-3 flex-1">
-                  <div className="flex-shrink-0 mt-0.5">
+              <div className="relative flex items-center justify-start px-6 py-4">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="flex-shrink-0">
                     {getAuthenticatorIcon(openSideSheet)}
                   </div>
                   <div className="flex flex-col gap-0.5 flex-1">
@@ -1336,7 +1336,7 @@ export default function UserDetail() {
                 </div>
                 <button
                   onClick={handleCloseSideSheet}
-                  className="flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-50 transition-colors flex-shrink-0"
+                  className="absolute right-6 top-4 flex items-center justify-center w-10 h-10 rounded hover:bg-bluegrey-50 transition-colors flex-shrink-0"
                   aria-label="Close sheet"
                 >
                   <X className="w-6 h-6 text-bluegrey-700" />
