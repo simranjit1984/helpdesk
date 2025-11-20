@@ -17,8 +17,9 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
+export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }: AIAssistantProps) => {
   const [isMinimized, setIsMinimized] = useState(!isOpen);
+  const [previousMinimizedState, setPreviousMinimizedState] = useState(!isOpen);
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
