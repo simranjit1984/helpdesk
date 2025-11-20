@@ -18,8 +18,17 @@ interface ChatMessage {
 }
 
 export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }: AIAssistantProps) => {
-  const [isMinimized, setIsMinimized] = useState(!isOpen);
-  const [previousMinimizedState, setPreviousMinimizedState] = useState(!isOpen);
+  // Initialize from localStorage if available, otherwise use isOpen prop
+  const [isMinimized, setIsMinimized] = useState(() => {
+    const saved = localStorage.getItem("aiAssistantMinimized");
+    return saved !== null ? JSON.parse(saved) : !isOpen;
+  });
+  const [previousMinimizedState, setPreviousMinimizedState] = useState(
+    () => {
+      const saved = localStorage.getItem("aiAssistantMinimized");
+      return saved !== null ? JSON.parse(saved) : !isOpen;
+    }
+  );
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
