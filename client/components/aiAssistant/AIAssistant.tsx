@@ -97,8 +97,9 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   };
 
   if (isMinimized) {
-    // When sidesheet is open, move button left with proper spacing (sm:w-[500px] + 24px gap)
-    const rightPosition = isSideSheetOpen ? "calc(500px + 24px + 24px)" : "24px";
+    // When sidesheet is open, move button left to maintain same spacing
+    // Sidesheet width is 500px (sm:w-[500px]) + same gap from left side (24px)
+    const rightPosition = isSideSheetOpen ? "calc(500px + 24px)" : "24px";
 
     return (
       <button
