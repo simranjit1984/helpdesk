@@ -759,138 +759,131 @@ export default function UserDetail() {
                     External Identity Providers
                   </h2>
 
-                  <div className="flex flex-col gap-3 max-w-2xl mt-6">
+                  <div className="flex flex-col gap-4 max-w-3xl mt-6">
                     {/* Google */}
                     <button
                       onClick={() => setOpenSideSheet("Google")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Google
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 15, 2025 09:30 AM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Facebook */}
                     <button
                       onClick={() => setOpenSideSheet("Facebook")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Facebook
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 12, 2025 02:15 PM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Apple */}
                     <button
                       onClick={() => setOpenSideSheet("Apple")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Apple
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 10, 2025 11:45 AM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* DigiD */}
                     <button
                       onClick={() => setOpenSideSheet("DigiD")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           DigiD
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 08, 2025 04:20 PM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* eHerkenning */}
                     <button
                       onClick={() => setOpenSideSheet("eHerkenning")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           eHerkenning
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 05, 2025 10:10 AM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Microsoft EntraID */}
                     <button
                       onClick={() => setOpenSideSheet("Microsoft EntraID")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Microsoft EntraID
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 02, 2025 03:50 PM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Microsoft AD */}
                     <button
                       onClick={() => setOpenSideSheet("Microsoft AD")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Globe className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Globe className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Microsoft AD
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Dec 28, 2024 08:25 AM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
                   </div>
 
@@ -898,81 +891,77 @@ export default function UserDetail() {
                     Passkeys
                   </h2>
 
-                  <div className="flex flex-col gap-3 max-w-2xl mt-6">
+                  <div className="flex flex-col gap-4 max-w-3xl mt-6">
                     {/* iCloud Keychain */}
                     <button
                       onClick={() => setOpenSideSheet("iCloud Keychain")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Key className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Key className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           iCloud Keychain
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 18, 2025 05:40 PM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Safenet FIDO Key */}
                     <button
                       onClick={() => setOpenSideSheet("Safenet FIDO Key")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Key className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Key className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Safenet FIDO Key
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 16, 2025 01:15 PM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Chrome Passkey */}
                     <button
                       onClick={() => setOpenSideSheet("Chrome Passkey")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Chrome className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Chrome className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Chrome Passkey
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 14, 2025 07:30 AM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Yubikey */}
                     <button
                       onClick={() => setOpenSideSheet("Yubikey")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Smartphone className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Smartphone className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Yubikey
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>Jan 11, 2025 09:45 AM</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
                   </div>
                 </div>
