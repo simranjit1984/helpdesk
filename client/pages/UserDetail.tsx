@@ -280,6 +280,25 @@ export default function UserDetail() {
     return "healthy";
   };
 
+  const getSecurityTabStatus = (): "healthy" | "warning" | "error" => {
+    // Check all user authenticators for any issues
+    let hasError = false;
+    let hasWarning = false;
+
+    userAuthenticators.forEach(auth => {
+      const status = getAuthenticatorStatus(auth);
+      if (status === "error") {
+        hasError = true;
+      } else if (status === "warning") {
+        hasWarning = true;
+      }
+    });
+
+    if (hasError) return "error";
+    if (hasWarning) return "warning";
+    return "healthy";
+  };
+
   const renderAuthenticatorCard = (authName: string) => {
     const status = getAuthenticatorStatus(authName);
     const borderColor = {
