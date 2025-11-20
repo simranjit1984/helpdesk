@@ -1169,14 +1169,15 @@ export default function UserDetail() {
                     </p>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       onClick={() => {
                         showAlert(`${openSideSheet} authenticator has been deleted.`, "success");
                         handleCloseSideSheet();
                       }}
-                      className="rounded-[2px] border-red-500 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-full"
+                      className="rounded-[2px] text-red-600 hover:bg-red-50 h-auto px-3 py-2 gap-2"
                     >
-                      Delete Authenticator
+                      <Trash2 className="h-4 w-4" />
+                      Delete
                     </Button>
                   </div>
                 </div>
