@@ -52,7 +52,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/25 z-30 lg:hidden"
           onClick={onClose}
         />
       )}
