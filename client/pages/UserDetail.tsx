@@ -224,11 +224,6 @@ export default function UserDetail() {
     return selected;
   };
 
-  const userAuthenticators = useMemo(
-    () => (user ? generateUserAuthenticators(user.email) : []),
-    [user]
-  );
-
   const getAuthenticatorTimestamp = (name: string): string => {
     return authenticatorTimestamps[name] || "Never used";
   };
