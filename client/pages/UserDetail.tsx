@@ -1486,6 +1486,40 @@ export default function UserDetail() {
         </DialogContent>
       </Dialog>
 
+      {/* AI Assistant */}
+      {user && (
+        <AIAssistant
+          userData={{
+            id: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.displayPhone,
+            status: user.status as "Active" | "Inactive",
+            startDate: user.startDate,
+            endDate: user.endDate,
+            address1: user.address1,
+            address2: user.address2,
+            city: user.city,
+            postalCode: user.postalCode,
+            country: user.country,
+            organization: user.organization,
+            accessRoles: user.accessRoles?.map((role) => ({
+              id: role.id,
+              name: role.name,
+              expiryDate: role.expiryDate,
+            })),
+            recentEvents: events.slice(0, 10).map((event) => ({
+              id: event.id,
+              eventType: event.eventType,
+              date: event.date,
+              description: event.description,
+            })),
+          }}
+          isOpen={true}
+        />
+      )}
+
       {alerts.map((alert, index) => {
         const positionFromBottom = alerts.length - 1 - index;
         const bottomOffset = 80 + positionFromBottom * 72;
