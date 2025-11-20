@@ -104,7 +104,7 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setIsMinimized(true)}
+            onClick={handleMinimize}
             className="p-1 hover:bg-[#041295]/30 rounded transition-colors"
             title="Minimize"
           >
