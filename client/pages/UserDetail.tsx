@@ -22,6 +22,7 @@ import {
   Key,
   Smartphone,
   Globe,
+  X,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
