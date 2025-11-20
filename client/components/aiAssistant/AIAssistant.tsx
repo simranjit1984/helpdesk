@@ -145,6 +145,10 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
         <div className="flex items-center gap-2">
           <Brain className="h-5 w-5" />
           <h2 className="font-semibold">AI Assistant</h2>
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-[#041295]/40 rounded border border-white/20 ml-auto mr-2">
+            <span>⌘</span>
+            <span>K</span>
+          </kbd>
         </div>
         <button
           onClick={handleMinimize}
