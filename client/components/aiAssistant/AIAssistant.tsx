@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, Minimize2, Maximize2, Brain, Send } from "lucide-react";
+import { Minimize2, Brain, Send } from "lucide-react";
 import { InsightCard } from "./InsightCard";
 import { generateUserInsights, UserData, Insight } from "./insightsGenerator";
 import { cn } from "@/lib/utils";
