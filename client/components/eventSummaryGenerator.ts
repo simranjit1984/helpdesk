@@ -6,6 +6,24 @@ interface EventSummaryData {
   keyActions: string[];
 }
 
+export const generateEventSummary = (event: Event): string => {
+  let summary = "";
+
+  const action = simplifyEventType(event.eventType);
+  const actor = event.actor ? (event.actor === "system" ? "System" :
+               event.actor === "api-client" ? "API client" :
+               `User`) : "Unknown";
+  const app = event.application ? ` in ${event.application}` : "";
+
+  summary = `${actor} ${action.toLowerCase()}${app}`;
+
+  if (event.description) {
+    summary += ` - ${event.description}`;
+  }
+
+  return summary;
+};
+
 export const generateTraceSummary = (events: Event[]): EventSummaryData => {
   if (events.length === 0) {
     return {
