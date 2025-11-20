@@ -131,7 +131,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     if (isAdministratorsActive && !isAdministratorsExpanded) {
       setIsAdministratorsExpanded(true);
     }
-  }, [isAdministratorsActive, isAdministratorsExpanded]);
+  }, [location.pathname]);
 
   return (
     <>
