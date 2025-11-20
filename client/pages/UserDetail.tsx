@@ -616,180 +616,250 @@ export default function UserDetail() {
                     Authenticators
                   </h2>
 
-                  <div className="grid grid-cols-4 gap-4 auto-rows-max">
+                  <div className="grid grid-cols-2 gap-4 auto-rows-max">
                     {/* Username & Password */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Username & Password")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Username & Password
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Username & Password
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Username & Password")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Change Password
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Username & Password")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Update Email
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Username & Password")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* SMS OTP */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("SMS OTP")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        SMS OTP
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          SMS OTP
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("SMS OTP")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Update Phone
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("SMS OTP")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Email OTP */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Email OTP")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Email OTP
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Email OTP
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Email OTP")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Update Email
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Email OTP")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* TOTP */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("TOTP")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        TOTP
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          TOTP
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("TOTP")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Reconfigure
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("TOTP")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* QR code Enrollment */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("QR code Enrollment")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        QR code Enrollment
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          QR code Enrollment
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("QR code Enrollment")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Regenerate
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("QR code Enrollment")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Magic link authentication */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Magic link authentication")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Magic link authentication
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Magic link authentication
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Magic link authentication")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Resend Link
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Magic link authentication")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Push MFA */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Push MFA")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Push MFA
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          {generateRandomTimestamp()}
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Push MFA
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            {generateRandomTimestamp()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Push MFA")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Configure
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Push MFA")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -797,180 +867,243 @@ export default function UserDetail() {
                     External Identity Providers
                   </h2>
 
-                  <div className="grid grid-cols-4 gap-4 auto-rows-max mt-6">
+                  <div className="grid grid-cols-2 gap-4 auto-rows-max mt-6">
                     {/* Google */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Google")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Google
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 15, 2025 09:30 AM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Google
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 15, 2025 09:30 AM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Google")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Google")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Facebook */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Facebook")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Facebook
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 12, 2025 02:15 PM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Facebook
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 12, 2025 02:15 PM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Facebook")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Facebook")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Apple */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Apple")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Apple
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 10, 2025 11:45 AM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Apple
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 10, 2025 11:45 AM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Apple")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Apple")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* DigiD */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("DigiD")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        DigiD
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 08, 2025 04:20 PM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          DigiD
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 08, 2025 04:20 PM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("DigiD")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("DigiD")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* eHerkenning */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("eHerkenning")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        eHerkenning
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 05, 2025 10:10 AM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          eHerkenning
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 05, 2025 10:10 AM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("eHerkenning")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("eHerkenning")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Microsoft EntraID */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Microsoft EntraID")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Microsoft EntraID
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 02, 2025 03:50 PM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Microsoft EntraID
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 02, 2025 03:50 PM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Microsoft EntraID")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Microsoft EntraID")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Microsoft AD */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Microsoft AD")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Microsoft AD
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Dec 28, 2024 08:25 AM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Microsoft AD
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Dec 28, 2024 08:25 AM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Microsoft AD")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Microsoft AD")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -978,105 +1111,141 @@ export default function UserDetail() {
                     Passkeys
                   </h2>
 
-                  <div className="grid grid-cols-4 gap-4 auto-rows-max mt-6">
+                  <div className="grid grid-cols-2 gap-4 auto-rows-max mt-6">
                     {/* iCloud Keychain */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("iCloud Keychain")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        iCloud Keychain
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 18, 2025 05:40 PM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          iCloud Keychain
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 18, 2025 05:40 PM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("iCloud Keychain")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("iCloud Keychain")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Safenet FIDO Key */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Safenet FIDO Key")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Safenet FIDO Key
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 16, 2025 01:15 PM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Safenet FIDO Key
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 16, 2025 01:15 PM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Safenet FIDO Key")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Safenet FIDO Key")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Chrome Passkey */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Chrome Passkey")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Chrome Passkey
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 14, 2025 07:30 AM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Chrome Passkey
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 14, 2025 07:30 AM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Chrome Passkey")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Chrome Passkey")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
 
                     {/* Yubikey */}
-                    <div className="border border-bluegrey-200 rounded p-4 flex flex-col gap-4 bg-white">
-                      <button
-                        onClick={() => setOpenSideSheet("Yubikey")}
-                        className="font-semibold text-bluegrey-900 text-left hover:cursor-pointer"
-                      >
-                        Yubikey
-                      </button>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-xs text-bluegrey-600 font-medium">
-                          Last used
-                        </p>
-                        <p className="text-sm text-bluegrey-900">
-                          Jan 11, 2025 09:45 AM
-                        </p>
+                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                          Yubikey
+                        </h3>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full flex justify-end pt-4 border-t border-bluegrey-200 text-black hover:text-black hover:bg-transparent font-normal"
-                      >
-                        Remove
-                      </Button>
+                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
+                        <div>
+                          <p className="text-xs text-bluegrey-600 font-medium">
+                            Last used
+                          </p>
+                          <p className="text-sm text-bluegrey-900">
+                            Jan 11, 2025 09:45 AM
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                        <button
+                          onClick={() => setOpenSideSheet("Yubikey")}
+                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          Details
+                        </button>
+                        <span className="text-bluegrey-300">•</span>
+                        <button
+                          onClick={() => setOpenSideSheet("Yubikey")}
+                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
