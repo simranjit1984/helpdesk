@@ -27,6 +27,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   const [isMac, setIsMac] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   // Detect OS for correct keyboard shortcut display
   useEffect(() => {
