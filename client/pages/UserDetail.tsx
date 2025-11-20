@@ -1324,11 +1324,19 @@ export default function UserDetail() {
           <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && handleCloseSideSheet()}>
             <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col">
               <div className="flex items-start justify-between px-6 py-4 border-b border-bluegrey-100">
-                <div className="flex flex-col gap-0.5 flex-1">
-                  <h2 className="text-xl font-bold text-bluegrey-750">
-                    {openSideSheet}
-                  </h2>
-                  <p className="text-base text-bluegrey-900">Description</p>
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {getAuthenticatorIcon(openSideSheet)}
+                  </div>
+                  <div className="flex flex-col gap-0.5 flex-1">
+                    <h2 className="text-xl font-bold text-bluegrey-750">
+                      {openSideSheet}
+                    </h2>
+                    <div className="flex items-center gap-2 text-xs text-bluegrey-600">
+                      <span>{authenticatorLocation}</span>
+                      <span>{openSideSheet ? getAuthenticatorTimestamp(openSideSheet) : ""}</span>
+                    </div>
+                  </div>
                 </div>
                 <button
                   onClick={handleCloseSideSheet}
