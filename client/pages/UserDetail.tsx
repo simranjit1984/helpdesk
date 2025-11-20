@@ -1242,30 +1242,35 @@ export default function UserDetail() {
 
               {/* Footer Section */}
               <div className="border-t border-bluegrey-100 px-6 py-4 flex items-center justify-between gap-3 mt-auto">
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
                   onClick={() => setOpenSideSheet(null)}
-                  className="px-3 py-2.5 rounded text-sm font-medium text-bluegrey-700 hover:bg-bluegrey-50 transition-colors"
+                  className="rounded-[2px] text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
                 >
                   Cancel
-                </button>
+                </Button>
 
                 <div className="flex items-center gap-2 ml-auto">
                   {/* Only show for non-authenticator sheets */}
                   {openSideSheet && !["Username & Password", "SMS OTP", "Email OTP", "TOTP", "QR code Enrollment", "Magic link authentication", "Push MFA"].includes(openSideSheet) && (
                     <>
-                      <button
+                      <Button
+                        type="button"
+                        variant="outline"
                         onClick={() => setOpenSideSheet(null)}
-                        className="px-3 py-2.5 rounded text-sm font-medium text-blue-500 border border-blue-500 hover:bg-blue-50 transition-colors"
+                        className="rounded-[2px] border-blue-500 text-blue-500 hover:bg-blue-50 h-auto px-3 py-2"
                       >
                         Discard changes
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        type="button"
                         onClick={() => setOpenSideSheet(null)}
-                        className="px-3 py-2.5 rounded text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors flex items-center gap-2"
+                        className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
                       >
-                        <Save className="w-4 h-4" />
+                        <Save className="h-4 w-4" />
                         Save
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>
