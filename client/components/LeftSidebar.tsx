@@ -127,6 +127,12 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const isUsersActive = location.pathname === "/" || location.pathname.startsWith("/users/");
   const isEventLogActive = location.pathname === "/event-log";
 
+  useEffect(() => {
+    if (isAdministratorsActive && !isAdministratorsExpanded) {
+      setIsAdministratorsExpanded(true);
+    }
+  }, [isAdministratorsActive, isAdministratorsExpanded]);
+
   return (
     <>
       {isOpen && (
