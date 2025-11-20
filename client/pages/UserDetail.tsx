@@ -1161,7 +1161,7 @@ export default function UserDetail() {
 
               {/* Danger Zone Section */}
               {openSideSheet && (
-                <div className="mt-auto pt-6 border-t border-bluegrey-100">
+                <div className="mt-auto pt-6 border-t-2 border-red-200">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex flex-col gap-3 flex-1">
                       <h3 className="text-sm font-semibold text-red-600">Danger Zone</h3>
