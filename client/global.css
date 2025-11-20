@@ -139,4 +139,10 @@
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
+
+  /* Focus ring for containers with focusable children */
+  div:focus-within {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
 }
