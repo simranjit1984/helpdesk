@@ -145,7 +145,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
         />
       )}
       <div
-        className={`fixed left-0 top-16 bottom-0 w-60 bg-white shadow-[0_2px_2px_0_rgba(1,5,50,0.02),0_3px_4px_0_rgba(1,5,50,0.02),0_1px_5px_0_rgba(1,5,50,0.04)] z-40 transition-transform duration-300 overflow-y-auto ${
+        className={`fixed left-0 top-16 bottom-0 w-72 bg-white shadow-[0_2px_2px_0_rgba(1,5,50,0.02),0_3px_4px_0_rgba(1,5,50,0.02),0_1px_5px_0_rgba(1,5,50,0.04)] z-40 transition-transform duration-300 overflow-y-auto ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
