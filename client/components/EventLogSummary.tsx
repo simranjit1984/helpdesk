@@ -236,16 +236,6 @@ export default function EventLogSummary({
           <TableHeader>
             <TableHeadRow>
               <TableHeadCell className="w-10"></TableHeadCell>
-              <TableHeadCell sticky className="w-48">
-                <span className="text-sm font-bold text-bluegrey-900">
-                  Trace ID
-                </span>
-              </TableHeadCell>
-              <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">
-                  Event Count
-                </span>
-              </TableHeadCell>
               <TableHeadCell>
                 <span className="text-sm font-bold text-bluegrey-900">
                   Summary
