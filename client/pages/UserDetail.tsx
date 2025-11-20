@@ -627,138 +627,131 @@ export default function UserDetail() {
                     Authenticators
                   </h2>
 
-                  <div className="flex flex-col gap-3 max-w-2xl">
+                  <div className="flex flex-col gap-4 max-w-3xl">
                     {/* Username & Password */}
                     <button
                       onClick={() => setOpenSideSheet("Username & Password")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Lock className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Lock className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Username & Password
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* SMS OTP */}
                     <button
                       onClick={() => setOpenSideSheet("SMS OTP")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <MessageSquare className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <MessageSquare className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           SMS OTP
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Email OTP */}
                     <button
                       onClick={() => setOpenSideSheet("Email OTP")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Mail className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Mail className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Email OTP
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* TOTP */}
                     <button
                       onClick={() => setOpenSideSheet("TOTP")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Clock className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Clock className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           TOTP
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* QR code Enrollment */}
                     <button
                       onClick={() => setOpenSideSheet("QR code Enrollment")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <QrCode className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <QrCode className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           QR code Enrollment
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Magic link authentication */}
                     <button
                       onClick={() => setOpenSideSheet("Magic link authentication")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Link2 className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Link2 className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Magic link authentication
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
 
                     {/* Push MFA */}
                     <button
                       onClick={() => setOpenSideSheet("Push MFA")}
-                      className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-4 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
+                      className="border border-bluegrey-100 rounded bg-white py-4 px-6 flex items-center gap-3 hover:bg-bluegrey-50 transition-colors cursor-pointer text-left"
                     >
-                      <Bell className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <Bell className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-black">
+                        <h3 className="text-base font-medium text-black leading-6">
                           Push MFA
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 truncate">
+                        <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>•</span>
                           <span>{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-bluegrey-700 flex-shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
                     </button>
                   </div>
 
