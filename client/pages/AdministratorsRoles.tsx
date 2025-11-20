@@ -11,7 +11,7 @@ export default function AdministratorsRoles() {
           <p className="text-bluegrey-900">Administrators roles page content coming soon...</p>
         </div>
       </Layout>
-      <AIAssistant userData={{}} />
+      <AIAssistant userData={{}} isOpen={false} />
     </>
   );
 }
