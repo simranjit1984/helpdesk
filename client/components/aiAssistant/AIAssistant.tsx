@@ -28,33 +28,33 @@ const getRandomGlowColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-// Create dynamic glow animation
-const createGlowAnimation = (color1: any, color2: any, color3: any) => {
+// Create dynamic glow animation with mixed colors
+const createGlowAnimation = (color1: any, color2: any, color3: any, color4: any, color5: any) => {
   return `
     @keyframes button-glow {
       0% {
         box-shadow:
-          0 0 10px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.4),
-          0 0 20px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.3),
-          0 0 30px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.2);
+          0 0 15px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.7),
+          0 0 30px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.6),
+          0 0 45px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.5),
+          0 0 60px rgba(${color4.r}, ${color4.g}, ${color4.b}, 0.4),
+          0 0 75px rgba(${color5.r}, ${color5.g}, ${color5.b}, 0.3);
       }
-      33% {
+      50% {
         box-shadow:
-          0 0 20px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.6),
-          0 0 40px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.4),
-          0 0 60px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.2);
-      }
-      66% {
-        box-shadow:
-          0 0 20px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.6),
-          0 0 40px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.4),
-          0 0 60px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.2);
+          0 0 25px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.8),
+          0 0 40px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.8),
+          0 0 55px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.7),
+          0 0 70px rgba(${color4.r}, ${color4.g}, ${color4.b}, 0.6),
+          0 0 85px rgba(${color5.r}, ${color5.g}, ${color5.b}, 0.5);
       }
       100% {
         box-shadow:
-          0 0 10px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.4),
-          0 0 20px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.3),
-          0 0 30px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.2);
+          0 0 15px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.7),
+          0 0 30px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.6),
+          0 0 45px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.5),
+          0 0 60px rgba(${color4.r}, ${color4.g}, ${color4.b}, 0.4),
+          0 0 75px rgba(${color5.r}, ${color5.g}, ${color5.b}, 0.3);
       }
     }
 
