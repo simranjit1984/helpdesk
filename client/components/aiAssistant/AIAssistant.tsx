@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 interface AIAssistantProps {
   userData: UserData;
   isOpen?: boolean;
+  isSideSheetOpen?: boolean;
 }
 
 interface ChatMessage {
