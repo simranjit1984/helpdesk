@@ -67,10 +67,10 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     }
   }, [isSideSheetOpen]);
 
-  // Handle keyboard shortcut (Ctrl+Shift+A or Cmd+Shift+A)
+  // Handle keyboard shortcut (Ctrl+K or Cmd+K)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === "A") {
+      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
         event.preventDefault();
 
         // If minimized, restore the window
