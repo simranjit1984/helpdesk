@@ -1245,6 +1245,37 @@ export default function UserDetail() {
                 </div>
               )}
               </div>
+
+              {/* Footer Section */}
+              <div className="border-t border-bluegrey-100 px-6 py-4 flex items-center justify-between gap-3 mt-auto">
+                <button
+                  onClick={() => setOpenSideSheet(null)}
+                  className="px-3 py-2.5 rounded text-sm font-medium text-bluegrey-700 hover:bg-bluegrey-50 transition-colors"
+                >
+                  Cancel
+                </button>
+
+                <div className="flex items-center gap-2 ml-auto">
+                  {/* Only show for non-authenticator sheets */}
+                  {openSideSheet && !["Username & Password", "SMS OTP", "Email OTP", "TOTP", "QR code Enrollment", "Magic link authentication", "Push MFA"].includes(openSideSheet) && (
+                    <>
+                      <button
+                        onClick={() => setOpenSideSheet(null)}
+                        className="px-3 py-2.5 rounded text-sm font-medium text-blue-500 border border-blue-500 hover:bg-blue-50 transition-colors"
+                      >
+                        Discard changes
+                      </button>
+                      <button
+                        onClick={() => setOpenSideSheet(null)}
+                        className="px-3 py-2.5 rounded text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        Save
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
