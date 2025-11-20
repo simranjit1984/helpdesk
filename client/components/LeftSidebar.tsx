@@ -121,14 +121,17 @@ interface LeftSidebarProps {
 
 export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const location = useLocation();
-  const isAdministratorsActive = location.pathname.startsWith("/administrators");
-  const [isAdministratorsExpanded, setIsAdministratorsExpanded] = useState(isAdministratorsActive);
+  const isAdministratorsActive = location.pathname === "/administrators";
+  const isAdministratorsSubmenuActive = location.pathname.startsWith("/administrators/");
+  const [isAdministratorsExpanded, setIsAdministratorsExpanded] = useState(
+    isAdministratorsActive || isAdministratorsSubmenuActive
+  );
 
   const isUsersActive = location.pathname === "/" || location.pathname.startsWith("/users/");
   const isEventLogActive = location.pathname === "/event-log";
 
   useEffect(() => {
-    if (isAdministratorsActive && !isAdministratorsExpanded) {
+    if ((isAdministratorsActive || isAdministratorsSubmenuActive) && !isAdministratorsExpanded) {
       setIsAdministratorsExpanded(true);
     }
   }, [location.pathname]);
