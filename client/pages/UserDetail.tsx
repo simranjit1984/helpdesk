@@ -138,6 +138,7 @@ export default function UserDetail() {
   const [reauthError, setReauthError] = useState("");
   const [updateEmail, setUpdateEmail] = useState("");
   const [isSavingEmail, setIsSavingEmail] = useState(false);
+  const [userAuthenticators, setUserAuthenticators] = useState<string[]>([]);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
