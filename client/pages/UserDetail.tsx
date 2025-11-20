@@ -623,7 +623,7 @@ export default function UserDetail() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
-                  <h2 className="text-xl font-semibold text-blue-500">
+                  <h2 className="text-xl font-semibold text-blue-500 mb-4">
                     Authenticators
                   </h2>
 
