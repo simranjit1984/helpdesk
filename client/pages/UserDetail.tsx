@@ -132,6 +132,12 @@ export default function UserDetail() {
     endDate: "2025-04-18",
   });
   const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
+  const [authStep, setAuthStep] = useState<"initial" | "reauthenticate" | "update">("initial");
+  const [isReauthDialogOpen, setIsReauthDialogOpen] = useState(false);
+  const [reauthPassword, setReauthPassword] = useState("");
+  const [reauthError, setReauthError] = useState("");
+  const [updateEmail, setUpdateEmail] = useState("");
+  const [isSavingEmail, setIsSavingEmail] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
