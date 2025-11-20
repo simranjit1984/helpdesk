@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface MenuItemProps {
   icon: React.ReactNode;
