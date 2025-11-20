@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import PageHeader from "@/components/PageHeader";
 import FilterBar from "@/components/FilterBar";
 import UsersTable from "@/components/UsersTable";
+import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Send } from "lucide-react";
 
 const STATUS_OPTIONS = [
