@@ -113,8 +113,14 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     );
   }
 
+  // When sidesheet is open, move window left to maintain same spacing
+  const windowRightPosition = isSideSheetOpen ? "calc(500px + 24px)" : "24px";
+
   return (
-    <div className="fixed bottom-6 right-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-bluegrey-200 animate-[slide-up-in_0.3s_ease-out_forwards]">
+    <div
+      className="fixed bottom-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-bluegrey-200 animate-[slide-up-in_0.3s_ease-out_forwards]"
+      style={{ right: windowRightPosition }}
+    >
       {/* Header */}
       <div className="bg-gradient-to-r from-[#041295] to-[#041295]/90 text-white px-6 py-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
