@@ -29,6 +29,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       return saved !== null ? JSON.parse(saved) : !isOpen;
     }
   );
+  const [showAnimation, setShowAnimation] = useState(false);
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
