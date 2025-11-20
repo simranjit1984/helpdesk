@@ -43,6 +43,11 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
     setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
   }, []);
 
+  // Persist minimized state to localStorage
+  useEffect(() => {
+    localStorage.setItem("aiAssistantMinimized", JSON.stringify(isMinimized));
+  }, [isMinimized]);
+
   // Generate insights on mount
   useEffect(() => {
     setIsLoading(true);
