@@ -623,7 +623,7 @@ export default function UserDetail() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
-                  <h2 className="text-xl font-semibold text-[#131319]">
+                  <h2 className="text-xl font-semibold text-blue-500">
                     Authenticators
                   </h2>
 
@@ -755,7 +755,7 @@ export default function UserDetail() {
                     </button>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-[#131319] mt-8">
+                  <h2 className="text-xl font-semibold text-blue-500 mt-8">
                     External Identity Providers
                   </h2>
 
@@ -887,7 +887,7 @@ export default function UserDetail() {
                     </button>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-[#131319] mt-8">
+                  <h2 className="text-xl font-semibold text-blue-500 mt-8">
                     Passkeys
                   </h2>
 
