@@ -282,38 +282,26 @@ export default function UserDetail() {
     const status = getAuthenticatorStatus(authName);
     const borderColor = {
       healthy: "border-bluegrey-100",
-      warning: "border-orange-300",
-      error: "border-red-300",
+      warning: "border-orange-400",
+      error: "border-red-500",
     }[status];
 
     const bgColor = {
       healthy: "bg-white",
-      warning: "bg-orange-50",
-      error: "bg-red-50",
+      warning: "bg-white",
+      error: "bg-white",
     }[status];
 
     const hoverBg = {
       healthy: "hover:bg-bluegrey-50",
-      warning: "hover:bg-orange-100",
-      error: "hover:bg-red-100",
+      warning: "hover:bg-orange-50",
+      error: "hover:bg-red-50",
     }[status];
 
     const selectedBg = {
       healthy: "bg-bluegrey-50",
-      warning: "bg-orange-100",
-      error: "bg-red-100",
-    }[status];
-
-    const statusBadgeColor = {
-      healthy: null,
-      warning: "bg-orange-100 text-orange-700 border border-orange-300",
-      error: "bg-red-100 text-red-700 border border-red-300",
-    }[status];
-
-    const statusLabel = {
-      healthy: null,
-      warning: "⚠ Warning",
-      error: "🛑 Error",
+      warning: "bg-orange-50",
+      error: "bg-red-50",
     }[status];
 
     return (
@@ -330,10 +318,17 @@ export default function UserDetail() {
             <h3 className="text-base font-medium text-black leading-6">
               {authName}
             </h3>
-            {statusBadgeColor && (
-              <span className={`text-xs font-semibold px-2 py-1 rounded ${statusBadgeColor}`}>
-                {statusLabel}
-              </span>
+            {status === "error" && (
+              <div className="flex items-center gap-1">
+                <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                <span className="text-xs font-semibold text-red-600">Error</span>
+              </div>
+            )}
+            {status === "warning" && (
+              <div className="flex items-center gap-1">
+                <AlertTriangle className="h-4 w-4 text-orange-600 flex-shrink-0" />
+                <span className="text-xs font-semibold text-orange-600">Alert</span>
+              </div>
             )}
           </div>
           <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
