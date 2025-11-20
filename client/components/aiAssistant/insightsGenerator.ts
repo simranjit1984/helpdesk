@@ -164,7 +164,7 @@ const analyzeAccessRoles = (userData: UserData): Insight | null => {
                 ) as HTMLElement;
                 if (addButton) {
                   addButton.scrollIntoView({ behavior: "smooth", block: "center" });
-                  addButton.classList.add("ring-2", "ring-blue-500");
+                  addButton.classList.add("ring-2", "ring-ring");
                 }
               }, 300);
             }
