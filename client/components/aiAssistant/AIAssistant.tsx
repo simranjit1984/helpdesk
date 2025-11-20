@@ -226,6 +226,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       <div className="border-t border-bluegrey-200 p-3 flex-shrink-0 bg-white">
         <div className="flex gap-2">
           <input
+            ref={inputRef}
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
