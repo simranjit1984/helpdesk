@@ -103,11 +103,13 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
 
         // If minimized, restore the window
         if (isMinimized) {
+          setShowAnimation(true);
           setIsMinimized(false);
+          setTimeout(() => setShowAnimation(false), 300);
           // Focus input field after state update
           setTimeout(() => {
             inputRef.current?.focus();
-          }, 0);
+          }, 50);
         } else {
           // If already open, just focus the input field
           inputRef.current?.focus();
@@ -117,11 +119,13 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       // Handle Escape key
       if (event.key === "Escape" && !isMinimized) {
         event.preventDefault();
+        setShowAnimation(true);
         setIsMinimized(true);
+        setTimeout(() => setShowAnimation(false), 300);
         // Restore focus to the previous element
         setTimeout(() => {
           previousFocusRef.current?.focus();
-        }, 0);
+        }, 50);
       }
     };
 
