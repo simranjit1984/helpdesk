@@ -1158,6 +1158,29 @@ export default function UserDetail() {
                   Details for {openSideSheet}
                 </div>
               )}
+
+              {/* Danger Zone Section */}
+              {openSideSheet && (
+                <div className="mt-auto pt-6 border-t border-bluegrey-100">
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-sm font-semibold text-red-600">Danger Zone</h3>
+                    <p className="text-xs text-bluegrey-600">
+                      Permanently delete this authenticator. This action cannot be undone.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        showAlert(`${openSideSheet} authenticator has been deleted.`, "success");
+                        handleCloseSideSheet();
+                      }}
+                      className="rounded-[2px] border-red-500 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-full"
+                    >
+                      Delete Authenticator
+                    </Button>
+                  </div>
+                </div>
+              )}
               </div>
 
               {/* Footer Section */}
