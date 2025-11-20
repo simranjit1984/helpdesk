@@ -98,8 +98,8 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
 
   if (isMinimized) {
     // When sidesheet is open, move button left to maintain 24px gap from sidesheet
-    // Formula: sidesheet width (500px) + sidesheet margin (24px) + button gap (24px) - button width (56px)
-    const rightPosition = isSideSheetOpen ? "calc(500px + 24px + 24px - 56px)" : "24px";
+    // Sidesheet width (500px) + sidesheet margin from right (24px) + desired gap (24px)
+    const rightPosition = isSideSheetOpen ? "calc(500px + 48px)" : "24px";
 
     return (
       <button
