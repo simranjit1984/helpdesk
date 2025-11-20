@@ -166,6 +166,32 @@ export default function UserDetail() {
     return authenticatorTimestamps[name] || "Never used";
   };
 
+  const getAuthenticatorIcon = (name: string | null) => {
+    const iconMap: Record<string, React.ReactNode> = {
+      "Username & Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
+      "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
+      "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
+      "TOTP": <Clock className="h-5 w-5 text-bluegrey-600" />,
+      "QR code Enrollment": <QrCode className="h-5 w-5 text-bluegrey-600" />,
+      "Magic link authentication": <Link2 className="h-5 w-5 text-bluegrey-600" />,
+      "Push MFA": <Bell className="h-5 w-5 text-bluegrey-600" />,
+      "Google": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "Facebook": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "Apple": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "DigiD": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "eHerkenning": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "Microsoft EntraID": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "Microsoft AD": <Globe className="h-5 w-5 text-bluegrey-600" />,
+      "iCloud Keychain": <Key className="h-5 w-5 text-bluegrey-600" />,
+      "Safenet FIDO Key": <Key className="h-5 w-5 text-bluegrey-600" />,
+      "Chrome Passkey": <Chrome className="h-5 w-5 text-bluegrey-600" />,
+      "Yubikey": <Smartphone className="h-5 w-5 text-bluegrey-600" />,
+    };
+    return iconMap[name || ""] || null;
+  };
+
+  const authenticatorLocation = "Ottawa, ON, Canada";
+
   const handleStepUpAuth = () => {
     setIsReauthDialogOpen(true);
   };
