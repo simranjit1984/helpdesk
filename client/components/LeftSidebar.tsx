@@ -53,12 +53,16 @@ function MenuItem({
   onToggle,
   submenuItems,
 }: MenuItemProps) {
-  const handleClick = (e: React.MouseEvent) => {
-    if (hasSubmenu && onToggle) {
-      e.preventDefault();
+  const handleChevronClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onToggle) {
       onToggle();
     }
   };
+
+  const firstSubmenuHref = submenuItems?.[0]?.href;
+  const navigateHref = hasSubmenu ? firstSubmenuHref || href : href;
 
   const content = (
     <div className="relative">
@@ -78,11 +82,16 @@ function MenuItem({
           </span>
         </div>
         {hasSubmenu && (
-          isExpanded ? (
-            <ChevronUp className="w-6 h-6 text-bluegrey-900" />
-          ) : (
-            <ChevronDown className="w-6 h-6 text-bluegrey-900" />
-          )
+          <button
+            onClick={handleChevronClick}
+            className="p-0 hover:opacity-70 transition-opacity"
+          >
+            {isExpanded ? (
+              <ChevronUp className="w-6 h-6 text-bluegrey-900" />
+            ) : (
+              <ChevronDown className="w-6 h-6 text-bluegrey-900" />
+            )}
+          </button>
         )}
       </div>
       {active && (
@@ -93,13 +102,7 @@ function MenuItem({
 
   return (
     <div className="flex flex-col">
-      {hasSubmenu ? (
-        <button onClick={handleClick} className="w-full text-left">
-          {content}
-        </button>
-      ) : (
-        <Link to={href}>{content}</Link>
-      )}
+      <Link to={navigateHref}>{content}</Link>
       {hasSubmenu && isExpanded && submenuItems && (
         <div className="flex flex-col">
           {submenuItems.map((item, index) => (
