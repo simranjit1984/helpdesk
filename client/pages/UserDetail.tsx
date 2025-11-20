@@ -648,7 +648,7 @@ export default function UserDetail() {
                       value={formData.firstName}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -660,7 +660,7 @@ export default function UserDetail() {
                       value={formData.lastName}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -671,7 +671,7 @@ export default function UserDetail() {
                       type="email"
                       value={formData.email}
                       readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  cursor-text"
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900   cursor-text"
                     />
                   </div>
 
@@ -683,7 +683,7 @@ export default function UserDetail() {
                       value={formData.phone}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -695,7 +695,7 @@ export default function UserDetail() {
                       value={formData.address1}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -707,7 +707,7 @@ export default function UserDetail() {
                       value={formData.address2}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -719,7 +719,7 @@ export default function UserDetail() {
                       value={formData.city}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -731,7 +731,7 @@ export default function UserDetail() {
                       value={formData.postalCode}
                       onChange={handleFormChange}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
@@ -778,7 +778,7 @@ export default function UserDetail() {
                             value={formData.startDate}
                             onChange={handleFormChange}
                             disabled={isSaving}
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
 
@@ -828,7 +828,7 @@ export default function UserDetail() {
                                 value={formData.endDate}
                                 onChange={handleFormChange}
                                 disabled={isSaving}
-                                className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 pr-10 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                               />
                             </div>
                           )}
@@ -1183,7 +1183,7 @@ export default function UserDetail() {
                           value={updateEmail}
                           onChange={(e) => setUpdateEmail(e.target.value)}
                           disabled={isSavingEmail}
-                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50"
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900   disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <Button
                           onClick={handleUpdateEmail}
@@ -1208,7 +1208,7 @@ export default function UserDetail() {
                       type="tel"
                       value={user?.phone || ""}
                       readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2  cursor-text"
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900   cursor-text"
                     />
                     <Button className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2">
                       Update Phone number
@@ -1469,7 +1469,7 @@ export default function UserDetail() {
                     setReauthError("");
                   }}
                   placeholder="Enter your password"
-                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 "
+                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900  "
                 />
                 {reauthError && (
                   <p className="text-xs text-red-500 mt-1">{reauthError}</p>
