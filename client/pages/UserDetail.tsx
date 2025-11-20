@@ -1344,6 +1344,21 @@ export default function UserDetail() {
               </div>
 
               <div className="flex-1 overflow-y-auto px-6 py-6">
+              {/* Last Access Section */}
+              <div className="flex flex-col gap-2 mb-6 pb-6 border-b border-bluegrey-100">
+                <h3 className="text-sm font-semibold text-bluegrey-900">Last Access</h3>
+                <div className="flex flex-col gap-1 text-xs text-bluegrey-700">
+                  <div className="flex items-center gap-2">
+                    <span className="text-bluegrey-600">Location:</span>
+                    <span>{authenticatorLocation}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-bluegrey-600">Date & Time:</span>
+                    <span>{openSideSheet ? getAuthenticatorTimestamp(openSideSheet) : "Never used"}</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-6">
