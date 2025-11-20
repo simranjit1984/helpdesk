@@ -59,38 +59,40 @@ export const InsightCard = ({
         typeStyles[type]
       )}
     >
+      {/* Header with title and actions */}
       <div className="flex items-start gap-2">
         <div className={cn("flex-shrink-0 mt-0.5", iconStyles[type])}>
           {icon || defaultIcon[type]}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-xs text-bluegrey-900 leading-tight">
-            {title}
-          </h3>
-          <p className="text-xs text-bluegrey-700 mt-0.5 leading-relaxed">
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <h3 className="font-semibold text-xs text-bluegrey-900 leading-tight">
+              {title}
+            </h3>
+            {actions && actions.length > 0 && (
+              <div className="flex gap-2 flex-wrap">
+                {actions.map((action, index) => (
+                  <button
+                    key={index}
+                    onClick={action.onClick}
+                    className={cn(
+                      "text-xs font-medium transition-colors whitespace-nowrap",
+                      action.variant === "primary"
+                        ? "text-[#041295] hover:text-[#041295]/70 underline"
+                        : "text-[#041295] hover:text-[#041295]/70 underline"
+                    )}
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <p className="text-xs text-bluegrey-700 mt-1 leading-relaxed">
             {description}
           </p>
         </div>
       </div>
-
-      {actions && actions.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {actions.map((action, index) => (
-            <button
-              key={index}
-              onClick={action.onClick}
-              className={cn(
-                "px-2.5 py-1 rounded text-xs font-medium transition-all",
-                action.variant === "primary"
-                  ? "bg-[#041295] text-white hover:bg-[#041295]/90"
-                  : "bg-white border border-bluegrey-300 text-bluegrey-900 hover:bg-bluegrey-50"
-              )}
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
