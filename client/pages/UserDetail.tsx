@@ -616,248 +616,192 @@ export default function UserDetail() {
                     Authenticators
                   </h2>
 
-                  <div className="grid grid-cols-2 gap-4 auto-rows-max">
+                  <div className="flex flex-col gap-4">
                     {/* Username & Password */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           Username & Password
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("Username & Password")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Change Password
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("Username & Password")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Update Email
-                        </button>
-                        <span className="text-bluegrey-300">•</span>
-                        <button
-                          onClick={() => setOpenSideSheet("Username & Password")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
-                        >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
 
                     {/* SMS OTP */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           SMS OTP
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("SMS OTP")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Update Phone
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("SMS OTP")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
 
                     {/* Email OTP */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           Email OTP
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("Email OTP")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Update Email
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("Email OTP")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
 
                     {/* TOTP */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           TOTP
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("TOTP")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Reconfigure
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("TOTP")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
 
                     {/* QR code Enrollment */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           QR code Enrollment
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("QR code Enrollment")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Regenerate
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("QR code Enrollment")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
 
                     {/* Magic link authentication */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           Magic link authentication
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("Magic link authentication")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Resend Link
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("Magic link authentication")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
 
                     {/* Push MFA */}
-                    <div className="border border-bluegrey-200 rounded p-6 flex flex-col gap-4 bg-white">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-bluegrey-900 text-base">
+                    <div className="border border-bluegrey-100 rounded bg-white p-4 flex items-center gap-24">
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <h3 className="text-base font-medium text-black">
                           Push MFA
                         </h3>
-                      </div>
-                      <div className="flex flex-col gap-3 border-t border-bluegrey-100 pt-4">
-                        <div>
-                          <p className="text-xs text-bluegrey-600 font-medium">
-                            Last used
-                          </p>
-                          <p className="text-sm text-bluegrey-900">
-                            {generateRandomTimestamp()}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-bluegrey-600">Ottawa, ON, Canada</span>
+                          <span className="text-xs text-bluegrey-600">{generateRandomTimestamp()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-2 border-t border-bluegrey-100">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={() => setOpenSideSheet("Push MFA")}
-                          className="text-sm text-blue-500 hover:text-blue-600 font-medium"
+                          className="h-8 px-3 rounded-sm text-xs font-bold text-blue-500 hover:bg-bluegrey-50 transition-colors"
                         >
-                          Configure
+                          Update
                         </button>
-                        <span className="text-bluegrey-300">•</span>
                         <button
                           onClick={() => setOpenSideSheet("Push MFA")}
-                          className="text-sm text-red-500 hover:text-red-600 font-medium"
+                          className="h-8 w-8 flex items-center justify-center rounded-sm hover:bg-bluegrey-50 transition-colors"
                         >
-                          Remove
+                          <Trash2 className="h-6 w-6 text-red-500" />
                         </button>
                       </div>
                     </div>
