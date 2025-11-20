@@ -23,7 +23,6 @@ import {
   Smartphone,
   Globe,
   X,
-  AlertCircle,
   AlertTriangle,
 } from "lucide-react";
 import Layout from "@/components/Layout";
