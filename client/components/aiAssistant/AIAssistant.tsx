@@ -102,24 +102,13 @@ export const AIAssistant = ({ userData, isOpen = true }: AIAssistantProps) => {
           <Brain className="h-5 w-5" />
           <h2 className="font-semibold">AI Assistant</h2>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleMinimize}
-            className="p-1 hover:bg-[#041295]/30 rounded transition-colors"
-            title="Minimize"
-          >
-            <Minimize2 className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => {
-              // Could close the assistant entirely here
-            }}
-            className="p-1 hover:bg-[#041295]/30 rounded transition-colors"
-            title="Close"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+        <button
+          onClick={handleMinimize}
+          className="p-1 hover:bg-[#041295]/30 rounded transition-colors"
+          title="Minimize"
+        >
+          <Minimize2 className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Content Area */}
