@@ -1317,32 +1317,47 @@ export default function UserDetail() {
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-6">
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="emailId">Email ID</Label>
-                    <input
-                      id="emailId"
-                      type="email"
-                      value={user?.email || ""}
-                      readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-text"
-                    />
-                    <Button className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2">
-                      Update Email ID
-                    </Button>
-                  </div>
+                  {/* Step 1: Initial - Show email as text with Step Up Auth button */}
+                  {authStep === "initial" && (
+                    <div className="flex flex-col gap-6">
+                      <div className="flex flex-col gap-1">
+                        <Label>Email ID</Label>
+                        <p className="text-sm text-bluegrey-900 py-3">
+                          {user?.email}
+                        </p>
+                      </div>
+                      <Button
+                        onClick={handleStepUpAuth}
+                        className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                      >
+                        Step Up Authentication
+                      </Button>
+                    </div>
+                  )}
 
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="tempPassword">Set temporary password</Label>
-                    <input
-                      id="tempPassword"
-                      type="password"
-                      placeholder="Enter temporary password"
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    <Button className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2">
-                      Set Temporary Password
-                    </Button>
-                  </div>
+                  {/* Step 2: Update - Show email in editable textbox after reauthentication */}
+                  {authStep === "update" && (
+                    <div className="flex flex-col gap-6">
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="updateEmailInput">Email ID</Label>
+                        <input
+                          id="updateEmailInput"
+                          type="email"
+                          value={updateEmail}
+                          onChange={(e) => setUpdateEmail(e.target.value)}
+                          disabled={isSavingEmail}
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                        <Button
+                          onClick={handleUpdateEmail}
+                          disabled={isSavingEmail}
+                          className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                        >
+                          {isSavingEmail ? "Updating..." : "Update Email Address"}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
