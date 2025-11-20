@@ -125,4 +125,19 @@
     top: 50%;
     transform: translateY(-50%);
   }
+
+  /* Global focus ring styling for all interactive elements */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [role="menuitem"]:focus-visible,
+  [role="option"]:focus-visible,
+  a:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--background)),
+                0 0 0 4px hsl(var(--ring));
+  }
 }
