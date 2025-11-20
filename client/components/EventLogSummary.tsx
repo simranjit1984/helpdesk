@@ -297,14 +297,14 @@ export default function EventLogSummary({
                           </button>
                         </div>
                       </TableExpandCell>
-                      <TableCell className="!h-auto">
-                        <div className="flex items-start gap-2 w-full py-2">
+                      <td className="px-4 py-3">
+                        <div className="flex items-start gap-2 w-full">
                           {statusIcon}
                           <span className="text-sm text-bluegrey-900 leading-relaxed whitespace-normal break-words">
                             {summary.summary}
                           </span>
                         </div>
-                      </TableCell>
+                      </td>
                       <TableCell>
                         <span className="text-sm text-bluegrey-900 whitespace-nowrap">
                           {group.firstEvent.date}
