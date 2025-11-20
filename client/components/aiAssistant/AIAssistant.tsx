@@ -24,6 +24,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [isMac, setIsMac] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
