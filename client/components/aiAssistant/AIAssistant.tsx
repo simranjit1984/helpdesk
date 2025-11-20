@@ -162,6 +162,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   const handleRestore = () => {
     setShowAnimation(true);
     setIsMinimized(false);
+    setHasNewContent(false); // Clear the highlight when opening
     // Clear animation flag after animation completes
     setTimeout(() => setShowAnimation(false), 300);
   };
