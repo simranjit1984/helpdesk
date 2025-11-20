@@ -439,6 +439,14 @@ export default function UserDetail() {
     }
   }, [user]);
 
+  // Focus on first form field on page load
+  useEffect(() => {
+    const firstInput = document.querySelector("#firstName") as HTMLInputElement;
+    if (firstInput) {
+      firstInput.focus();
+    }
+  }, []);
+
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
