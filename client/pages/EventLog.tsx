@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import PageHeader from "@/components/PageHeader";
 import FilterBar from "@/components/FilterBar";
 import EventTable from "@/components/EventTable";
+import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 
 export default function EventLog() {
   const [searchQuery, setSearchQuery] = useState("");
