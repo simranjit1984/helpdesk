@@ -118,6 +118,14 @@ const MOCK_DESCRIPTIONS = [
   "User access was revoked.",
   "Permission was granted to user.",
   "User role was assigned.",
+  "Failed SMS OTP authentication attempt",
+  "Failed SMS OTP authentication attempt",
+  "Failed SMS OTP authentication attempt",
+  "Failed Email OTP authentication attempt",
+  "Failed Email OTP authentication attempt",
+  "SMS OTP lockout - too many failed attempts",
+  "TOTP authentication failed - invalid code",
+  "QR code Enrollment failed - invalid QR code",
 ];
 
 export const generateUUID = () => {
