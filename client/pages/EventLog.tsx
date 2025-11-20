@@ -71,7 +71,7 @@ export default function EventLog() {
           </div>
         </div>
       </Layout>
-      <AIAssistant userData={{}} />
+      <AIAssistant userData={{}} isOpen={false} />
     </>
   );
 }
