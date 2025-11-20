@@ -260,250 +260,232 @@ export default function EventLogSummary({
           </TableHeader>
           <TableBody>
             {traceGroups.length > 0 ? (
-              traceGroups.map((group) => (
-                <React.Fragment key={group.traceId}>
-                  <TableRow
-                    expandable
-                    isExpanded={expandedTraces.has(group.traceId)}
-                    data-event-row={group.traceId}
-                  >
-                    <TableExpandCell className="sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 bg-white">
-                      <div className="flex items-center gap-2 h-10 w-full px-3">
-                        <button
-                          type="button"
-                          onClick={() => toggleTraceExpanded(group.traceId)}
-                          className="flex h-10 w-10 items-center justify-center rounded transition-colors hover:bg-bluegrey-100"
-                          aria-label="Toggle trace details"
-                        >
-                          {expandedTraces.has(group.traceId) ? (
-                            <ChevronDown className="h-5 w-5 text-bluegrey-700" />
-                          ) : (
-                            <ChevronRight className="h-5 w-5 text-bluegrey-700" />
-                          )}
-                        </button>
-                      </div>
-                    </TableExpandCell>
-                    <TableCell sticky className="w-48 bg-white group/traceId">
-                      <div className="flex items-center gap-1 w-full">
-                        <span className="text-sm text-bluegrey-900 truncate font-mono">
-                          {group.traceId === "no-trace"
-                            ? "No Trace ID"
-                            : group.traceId}
-                        </span>
-                        {group.traceId !== "no-trace" && (
+              traceGroups.map((group) => {
+                const summary = generateTraceSummary(group.events);
+                const statusIcon =
+                  summary.status === "success" ? (
+                    <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                  ) : summary.status === "failure" ? (
+                    <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                  ) : summary.status === "mixed" ? (
+                    <AlertTriangle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+                  ) : null;
+
+                return (
+                  <React.Fragment key={group.traceId}>
+                    <TableRow
+                      expandable
+                      isExpanded={expandedTraces.has(group.traceId)}
+                      data-event-row={group.traceId}
+                    >
+                      <TableExpandCell className="sticky left-0 z-10 shadow-[1px_0_3px_rgba(0,0,0,0.05)] px-0 bg-white">
+                        <div className="flex items-center gap-2 h-10 w-full px-3">
                           <button
                             type="button"
-                            onClick={() =>
-                              onFilterAdd?.({
-                                id: generateUUID(),
-                                column: "requestId",
-                                operator: "equals",
-                                value: group.traceId,
-                              })
-                            }
-                            className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/traceId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-                            title="Filter by Trace ID"
-                            aria-label={`Filter by Trace ID ${group.traceId}`}
+                            onClick={() => toggleTraceExpanded(group.traceId)}
+                            className="flex h-10 w-10 items-center justify-center rounded transition-colors hover:bg-bluegrey-100"
+                            aria-label="Toggle trace details"
                           >
-                            <Filter className="w-5 h-5 text-blue-500" />
+                            {expandedTraces.has(group.traceId) ? (
+                              <ChevronDown className="h-5 w-5 text-bluegrey-700" />
+                            ) : (
+                              <ChevronRight className="h-5 w-5 text-bluegrey-700" />
+                            )}
                           </button>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-bluegrey-900 font-semibold">
-                        {group.eventCount}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-bluegrey-900">
-                        {group.firstEvent.date}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {Array.from(group.eventTypes)
-                          .slice(0, 2)
-                          .map((type) => (
-                            <span
-                              key={type}
-                              className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded"
-                            >
-                              {type}
-                            </span>
-                          ))}
-                        {group.eventTypes.size > 2 && (
-                          <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                            +{group.eventTypes.size - 2}
+                        </div>
+                      </TableExpandCell>
+                      <TableCell sticky className="w-48 bg-white group/traceId">
+                        <div className="flex items-center gap-1 w-full">
+                          <span className="text-sm text-bluegrey-900 truncate font-mono">
+                            {group.traceId === "no-trace"
+                              ? "No Trace ID"
+                              : group.traceId}
                           </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {Array.from(group.applications)
-                          .slice(0, 2)
-                          .map((app) => (
-                            <span
-                              key={app}
-                              className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded"
+                          {group.traceId !== "no-trace" && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                onFilterAdd?.({
+                                  id: generateUUID(),
+                                  column: "requestId",
+                                  operator: "equals",
+                                  value: group.traceId,
+                                })
+                              }
+                              className="w-6 h-6 flex items-center justify-center rounded transition-opacity opacity-0 group-hover/traceId:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
+                              title="Filter by Trace ID"
+                              aria-label={`Filter by Trace ID ${group.traceId}`}
                             >
-                              {app}
-                            </span>
-                          ))}
-                        {group.applications.size > 2 && (
-                          <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
-                            +{group.applications.size - 2}
+                              <Filter className="w-5 h-5 text-blue-500" />
+                            </button>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-bluegrey-900 font-semibold">
+                          {group.eventCount}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-start gap-2 w-full">
+                          {statusIcon}
+                          <span className="text-sm text-bluegrey-900 leading-relaxed">
+                            {summary.summary}
                           </span>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-bluegrey-900">
+                          {group.firstEvent.date}
+                        </span>
+                      </TableCell>
+                    </TableRow>
 
-                  {expandedTraces.has(group.traceId) && (
-                    <TableNestedRow colSpan={6} className="bg-bluegrey-50/30">
-                      <TableExpandCell></TableExpandCell>
-                      <TableNestedCell colSpan={5}>
-                        <div className="py-6 px-4">
-                          <div className="mb-6">
-                            <h4 className="text-sm font-semibold text-bluegrey-900 mb-4">
-                              Events in this trace ({group.eventCount})
-                            </h4>
-                            <div className="space-y-4">
-                              {group.events.map((event, index) => (
-                                <div
-                                  key={event.id}
-                                  className="p-4 bg-white rounded-lg border border-bluegrey-200 hover:border-bluegrey-300 transition-colors"
-                                >
-                                  <div className="flex items-start justify-between mb-4">
-                                    <div className="flex-1">
-                                      <h5 className="text-sm font-semibold text-bluegrey-900 mb-1">
-                                        Event {index + 1}: {event.eventType}
-                                      </h5>
-                                      <p className="text-xs text-bluegrey-600">
-                                        {event.date}
-                                      </p>
-                                    </div>
-                                  </div>
-
-                                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    <div className="flex flex-col gap-1.5">
-                                      <span className="text-xs font-semibold text-bluegrey-700">
-                                        Event Type
-                                      </span>
-                                      <span className="text-sm text-bluegrey-900">
-                                        {event.eventType}
-                                      </span>
+                    {expandedTraces.has(group.traceId) && (
+                      <TableNestedRow colSpan={5} className="bg-bluegrey-50/30">
+                        <TableExpandCell></TableExpandCell>
+                        <TableNestedCell colSpan={4}>
+                          <div className="py-6 px-4">
+                            <div className="mb-6">
+                              <h4 className="text-sm font-semibold text-bluegrey-900 mb-4">
+                                Events in this trace ({group.eventCount})
+                              </h4>
+                              <div className="space-y-4">
+                                {group.events.map((event, index) => (
+                                  <div
+                                    key={event.id}
+                                    className="p-4 bg-white rounded-lg border border-bluegrey-200 hover:border-bluegrey-300 transition-colors"
+                                  >
+                                    <div className="flex items-start justify-between mb-4">
+                                      <div className="flex-1">
+                                        <h5 className="text-sm font-semibold text-bluegrey-900 mb-1">
+                                          Event {index + 1}: {event.eventType}
+                                        </h5>
+                                        <p className="text-xs text-bluegrey-600">
+                                          {event.date}
+                                        </p>
+                                      </div>
                                     </div>
 
-                                    {event.application && (
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                       <div className="flex flex-col gap-1.5">
                                         <span className="text-xs font-semibold text-bluegrey-700">
-                                          Application
+                                          Event Type
                                         </span>
                                         <span className="text-sm text-bluegrey-900">
-                                          {event.application}
+                                          {event.eventType}
                                         </span>
                                       </div>
-                                    )}
 
-                                    {event.actor && (
-                                      <div className="flex flex-col gap-1.5">
-                                        <span className="text-xs font-semibold text-bluegrey-700">
-                                          Actor
-                                        </span>
-                                        <span className="text-sm text-bluegrey-900 font-mono">
-                                          {event.actor}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {event.clientIp && (
-                                      <div className="flex flex-col gap-1.5">
-                                        <span className="text-xs font-semibold text-bluegrey-700">
-                                          Client IP
-                                        </span>
-                                        <span className="text-sm text-bluegrey-900 font-mono">
-                                          {event.clientIp}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {event.description && (
-                                      <div className="flex flex-col gap-1.5 lg:col-span-2">
-                                        <span className="text-xs font-semibold text-bluegrey-700">
-                                          Description
-                                        </span>
-                                        <span className="text-sm text-bluegrey-900 leading-relaxed">
-                                          {event.description}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {renderDetailField({
-                                      label: "User Agent",
-                                      value: event.userAgent,
-                                      column: "userAgent",
-                                      onFilterAdd,
-                                    })}
-
-                                    {renderDetailField({
-                                      label: "Identity App",
-                                      value: event.identityApp,
-                                      column: "identityApp",
-                                      onFilterAdd,
-                                    })}
-
-                                    {renderDetailField({
-                                      label: "Identity App Instance ID",
-                                      value: event.identityAppInstanceId,
-                                      column: "identityAppInstanceId",
-                                      onFilterAdd,
-                                    })}
-
-                                    {renderDetailField({
-                                      label: "Authentication Details",
-                                      value: event.authenticationDetails,
-                                      column: "authenticationDetails",
-                                      onFilterAdd,
-                                    })}
-
-                                    {renderDetailField({
-                                      label: "Subject",
-                                      value: event.subject,
-                                      column: "subject",
-                                      onFilterAdd,
-                                    })}
-
-                                    {event.details &&
-                                      Object.keys(event.details).length > 0 && (
-                                        <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                      {event.application && (
+                                        <div className="flex flex-col gap-1.5">
                                           <span className="text-xs font-semibold text-bluegrey-700">
-                                            Details
+                                            Application
                                           </span>
-                                          <pre className="text-xs text-bluegrey-900 bg-bluegrey-50 p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
-                                            {JSON.stringify(
-                                              event.details,
-                                              null,
-                                              2
-                                            )}
-                                          </pre>
+                                          <span className="text-sm text-bluegrey-900">
+                                            {event.application}
+                                          </span>
                                         </div>
                                       )}
+
+                                      {event.actor && (
+                                        <div className="flex flex-col gap-1.5">
+                                          <span className="text-xs font-semibold text-bluegrey-700">
+                                            Actor
+                                          </span>
+                                          <span className="text-sm text-bluegrey-900 font-mono">
+                                            {event.actor}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {event.clientIp && (
+                                        <div className="flex flex-col gap-1.5">
+                                          <span className="text-xs font-semibold text-bluegrey-700">
+                                            Client IP
+                                          </span>
+                                          <span className="text-sm text-bluegrey-900 font-mono">
+                                            {event.clientIp}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {event.description && (
+                                        <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                          <span className="text-xs font-semibold text-bluegrey-700">
+                                            Description
+                                          </span>
+                                          <span className="text-sm text-bluegrey-900 leading-relaxed">
+                                            {event.description}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {renderDetailField({
+                                        label: "User Agent",
+                                        value: event.userAgent,
+                                        column: "userAgent",
+                                        onFilterAdd,
+                                      })}
+
+                                      {renderDetailField({
+                                        label: "Identity App",
+                                        value: event.identityApp,
+                                        column: "identityApp",
+                                        onFilterAdd,
+                                      })}
+
+                                      {renderDetailField({
+                                        label: "Identity App Instance ID",
+                                        value: event.identityAppInstanceId,
+                                        column: "identityAppInstanceId",
+                                        onFilterAdd,
+                                      })}
+
+                                      {renderDetailField({
+                                        label: "Authentication Details",
+                                        value: event.authenticationDetails,
+                                        column: "authenticationDetails",
+                                        onFilterAdd,
+                                      })}
+
+                                      {renderDetailField({
+                                        label: "Subject",
+                                        value: event.subject,
+                                        column: "subject",
+                                        onFilterAdd,
+                                      })}
+
+                                      {event.details &&
+                                        Object.keys(event.details).length > 0 && (
+                                          <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                            <span className="text-xs font-semibold text-bluegrey-700">
+                                              Details
+                                            </span>
+                                            <pre className="text-xs text-bluegrey-900 bg-bluegrey-50 p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
+                                              {JSON.stringify(
+                                                event.details,
+                                                null,
+                                                2
+                                              )}
+                                            </pre>
+                                          </div>
+                                        )}
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </TableNestedCell>
-                    </TableNestedRow>
-                  )}
-                </React.Fragment>
-              ))
+                        </TableNestedCell>
+                      </TableNestedRow>
+                    )}
+                  </React.Fragment>
+                );
+              })
             ) : (
               <TableEmptyState
-                colSpan={6}
+                colSpan={5}
                 message={
                   searchQuery || filters.length > 0
                     ? "No events found matching your search or filters"
