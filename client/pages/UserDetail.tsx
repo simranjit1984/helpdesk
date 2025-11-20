@@ -1184,33 +1184,29 @@ export default function UserDetail() {
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-6">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="emailId" className="text-sm font-medium text-bluegrey-900">
-                      Email ID
-                    </label>
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="emailId">Email ID</Label>
                     <input
                       id="emailId"
                       type="email"
                       value={user?.email || ""}
                       readOnly
-                      className="w-full px-3 py-2 border border-bluegrey-200 rounded bg-bluegrey-50 text-bluegrey-900 text-sm"
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-text"
                     />
-                    <Button className="mt-2 bg-blue-500 hover:bg-blue-600 text-white">
+                    <Button className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2">
                       Update Email ID
                     </Button>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="tempPassword" className="text-sm font-medium text-bluegrey-900">
-                      Set temporary password
-                    </label>
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="tempPassword">Set temporary password</Label>
                     <input
                       id="tempPassword"
                       type="password"
                       placeholder="Enter temporary password"
-                      className="w-full px-3 py-2 border border-bluegrey-200 rounded text-bluegrey-900 text-sm"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
-                    <Button className="mt-2 bg-blue-500 hover:bg-blue-600 text-white">
+                    <Button className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2">
                       Set Temporary Password
                     </Button>
                   </div>
