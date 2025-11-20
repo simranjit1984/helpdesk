@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -11,6 +11,7 @@ interface MenuItemProps {
   isExpanded?: boolean;
   onToggle?: () => void;
   submenuItems?: SubmenuItemProps[];
+  itemRef?: React.RefObject<HTMLAnchorElement>;
 }
 
 interface SubmenuItemProps {
@@ -20,11 +21,14 @@ interface SubmenuItemProps {
 }
 
 function SubmenuItem({ label, href, active }: SubmenuItemProps) {
+  const ref = useRef<HTMLAnchorElement>(null);
+
   return (
     <div className="relative">
       <Link
+        ref={ref}
         to={href}
-        className={`flex items-center px-12 py-3 transition-colors ${
+        className={`flex items-center px-12 py-3 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 ${
           active ? "bg-blue-50" : "hover:bg-bluegrey-25"
         }`}
       >
@@ -52,6 +56,7 @@ function MenuItem({
   isExpanded,
   onToggle,
   submenuItems,
+  itemRef,
 }: MenuItemProps) {
   const handleChevronClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -85,6 +90,8 @@ function MenuItem({
           <button
             onClick={handleChevronClick}
             className="p-0 hover:opacity-70 transition-opacity"
+            aria-label={isExpanded ? `Collapse ${label}` : `Expand ${label}`}
+            tabIndex={-1}
           >
             {isExpanded ? (
               <ChevronUp className="w-6 h-6 text-bluegrey-900" />
@@ -102,7 +109,13 @@ function MenuItem({
 
   return (
     <div className="flex flex-col">
-      <Link to={navigateHref}>{content}</Link>
+      <Link
+        ref={itemRef}
+        to={navigateHref}
+        className="outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+      >
+        {content}
+      </Link>
       {hasSubmenu && isExpanded && submenuItems && (
         <div className="flex flex-col">
           {submenuItems.map((item, index) => (
@@ -130,11 +143,53 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const isUsersActive = location.pathname === "/" || location.pathname.startsWith("/users/");
   const isEventLogActive = location.pathname === "/event-log";
 
+  const navRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
     if ((isAdministratorsActive || isAdministratorsSubmenuActive) && !isAdministratorsExpanded) {
       setIsAdministratorsExpanded(true);
     }
   }, [location.pathname]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") {
+      return;
+    }
+
+    e.preventDefault();
+    const nav = navRef.current;
+    if (!nav) return;
+
+    // Get all focusable elements in the navigation
+    const focusableElements = Array.from(
+      nav.querySelectorAll("a[href]")
+    ) as HTMLAnchorElement[];
+
+    if (focusableElements.length === 0) return;
+
+    // Find the currently focused element
+    const currentElement = document.activeElement as HTMLElement;
+    const currentIndex = focusableElements.indexOf(
+      currentElement as HTMLAnchorElement
+    );
+
+    let nextIndex: number;
+
+    if (e.key === "ArrowDown") {
+      nextIndex = currentIndex + 1;
+      if (nextIndex >= focusableElements.length) {
+        nextIndex = 0; // Wrap to first
+      }
+    } else {
+      // ArrowUp
+      nextIndex = currentIndex - 1;
+      if (nextIndex < 0) {
+        nextIndex = focusableElements.length - 1; // Wrap to last
+      }
+    }
+
+    focusableElements[nextIndex].focus();
+  };
 
   return (
     <>
@@ -149,7 +204,13 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <nav className="flex flex-col">
+        <nav
+          ref={navRef}
+          className="flex flex-col"
+          onKeyDown={handleKeyDown}
+          role="navigation"
+          aria-label="Main navigation"
+        >
           <MenuItem
             icon={
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
