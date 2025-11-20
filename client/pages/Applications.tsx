@@ -11,7 +11,7 @@ export default function Applications() {
           <p className="text-bluegrey-900">Applications page content coming soon...</p>
         </div>
       </Layout>
-      <AIAssistant userData={{}} />
+      <AIAssistant userData={{}} isOpen={false} />
     </>
   );
 }
