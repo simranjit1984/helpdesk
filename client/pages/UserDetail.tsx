@@ -648,7 +648,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("Username & Password")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -666,7 +666,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("SMS OTP")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -684,7 +684,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("Email OTP")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -702,7 +702,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("TOTP")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -720,7 +720,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("QR code Enrollment")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -738,7 +738,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("Magic link authentication")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -756,7 +756,7 @@ export default function UserDetail() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-bluegrey-600 leading-6">
                           <span>Ottawa, ON, Canada</span>
-                          <span>{generateRandomTimestamp()}</span>
+                          <span>{getAuthenticatorTimestamp("Push MFA")}</span>
                         </div>
                       </div>
                       <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
