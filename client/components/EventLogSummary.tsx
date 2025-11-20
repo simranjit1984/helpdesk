@@ -16,7 +16,7 @@ import {
   TableEmptyState,
 } from "./ui/table";
 import { generateMockEvents, generateUUID, Event, EventAction } from "./mockEvents";
-import { generateTraceSummary } from "./eventSummaryGenerator";
+import { generateTraceSummary, generateEventSummary } from "./eventSummaryGenerator";
 
 interface EventTableProps {
   filters: Array<{
@@ -313,139 +313,164 @@ export default function EventLogSummary({
                     </TableRow>
 
                     {expandedTraces.has(group.traceId) && (
-                      <TableNestedRow colSpan={5} className="bg-bluegrey-50/30">
+                      <TableNestedRow colSpan={3} className="bg-bluegrey-50/30">
                         <TableExpandCell></TableExpandCell>
-                        <TableNestedCell colSpan={4}>
+                        <TableNestedCell colSpan={2}>
                           <div className="py-6 px-4">
-                            <div className="mb-6">
-                              <h4 className="text-sm font-semibold text-bluegrey-900 mb-4">
-                                Events in this trace ({group.eventCount})
-                              </h4>
-                              <div className="space-y-4">
-                                {group.events.map((event, index) => (
+                            <h4 className="text-sm font-semibold text-bluegrey-900 mb-4">
+                              Events in this trace ({group.eventCount})
+                            </h4>
+                            <div className="space-y-2">
+                              {group.events.map((event, index) => {
+                                const eventSummary = generateEventSummary(event);
+                                const isEventExpanded = expandedEvents.has(event.id);
+
+                                return (
                                   <div
                                     key={event.id}
-                                    className="p-4 bg-white rounded-lg border border-bluegrey-200 hover:border-bluegrey-300 transition-colors"
+                                    className="bg-white rounded-lg border border-bluegrey-200 hover:border-bluegrey-300 transition-colors overflow-hidden"
                                   >
-                                    <div className="flex items-start justify-between mb-4">
-                                      <div className="flex-1">
-                                        <h5 className="text-sm font-semibold text-bluegrey-900 mb-1">
-                                          Event {index + 1}: {event.eventType}
-                                        </h5>
-                                        <p className="text-xs text-bluegrey-600">
+                                    <button
+                                      type="button"
+                                      onClick={() => toggleEventExpanded(event.id)}
+                                      className="w-full px-4 py-3 flex items-start gap-3 hover:bg-bluegrey-50 transition-colors"
+                                    >
+                                      <div className="flex-shrink-0 mt-0.5">
+                                        {isEventExpanded ? (
+                                          <ChevronDown className="h-4 w-4 text-bluegrey-700" />
+                                        ) : (
+                                          <ChevronRight className="h-4 w-4 text-bluegrey-700" />
+                                        )}
+                                      </div>
+                                      <div className="flex-1 text-left">
+                                        <p className="text-sm text-bluegrey-900 leading-relaxed">
+                                          Event {index + 1}: {eventSummary}
+                                        </p>
+                                        <p className="text-xs text-bluegrey-600 mt-1">
                                           {event.date}
                                         </p>
                                       </div>
-                                    </div>
+                                    </button>
 
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                      <div className="flex flex-col gap-1.5">
-                                        <span className="text-xs font-semibold text-bluegrey-700">
-                                          Event Type
-                                        </span>
-                                        <span className="text-sm text-bluegrey-900">
-                                          {event.eventType}
-                                        </span>
-                                      </div>
-
-                                      {event.application && (
-                                        <div className="flex flex-col gap-1.5">
-                                          <span className="text-xs font-semibold text-bluegrey-700">
-                                            Application
-                                          </span>
-                                          <span className="text-sm text-bluegrey-900">
-                                            {event.application}
-                                          </span>
-                                        </div>
-                                      )}
-
-                                      {event.actor && (
-                                        <div className="flex flex-col gap-1.5">
-                                          <span className="text-xs font-semibold text-bluegrey-700">
-                                            Actor
-                                          </span>
-                                          <span className="text-sm text-bluegrey-900 font-mono">
-                                            {event.actor}
-                                          </span>
-                                        </div>
-                                      )}
-
-                                      {event.clientIp && (
-                                        <div className="flex flex-col gap-1.5">
-                                          <span className="text-xs font-semibold text-bluegrey-700">
-                                            Client IP
-                                          </span>
-                                          <span className="text-sm text-bluegrey-900 font-mono">
-                                            {event.clientIp}
-                                          </span>
-                                        </div>
-                                      )}
-
-                                      {event.description && (
-                                        <div className="flex flex-col gap-1.5 lg:col-span-2">
-                                          <span className="text-xs font-semibold text-bluegrey-700">
-                                            Description
-                                          </span>
-                                          <span className="text-sm text-bluegrey-900 leading-relaxed">
-                                            {event.description}
-                                          </span>
-                                        </div>
-                                      )}
-
-                                      {renderDetailField({
-                                        label: "User Agent",
-                                        value: event.userAgent,
-                                        column: "userAgent",
-                                        onFilterAdd,
-                                      })}
-
-                                      {renderDetailField({
-                                        label: "Identity App",
-                                        value: event.identityApp,
-                                        column: "identityApp",
-                                        onFilterAdd,
-                                      })}
-
-                                      {renderDetailField({
-                                        label: "Identity App Instance ID",
-                                        value: event.identityAppInstanceId,
-                                        column: "identityAppInstanceId",
-                                        onFilterAdd,
-                                      })}
-
-                                      {renderDetailField({
-                                        label: "Authentication Details",
-                                        value: event.authenticationDetails,
-                                        column: "authenticationDetails",
-                                        onFilterAdd,
-                                      })}
-
-                                      {renderDetailField({
-                                        label: "Subject",
-                                        value: event.subject,
-                                        column: "subject",
-                                        onFilterAdd,
-                                      })}
-
-                                      {event.details &&
-                                        Object.keys(event.details).length > 0 && (
-                                          <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                    {isEventExpanded && (
+                                      <div className="px-4 pb-4 pt-2 border-t border-bluegrey-200 bg-bluegrey-50/50">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                          <div className="flex flex-col gap-1.5">
                                             <span className="text-xs font-semibold text-bluegrey-700">
-                                              Details
+                                              Event Type
                                             </span>
-                                            <pre className="text-xs text-bluegrey-900 bg-bluegrey-50 p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
-                                              {JSON.stringify(
-                                                event.details,
-                                                null,
-                                                2
-                                              )}
-                                            </pre>
+                                            <span className="text-sm text-bluegrey-900">
+                                              {event.eventType}
+                                            </span>
                                           </div>
-                                        )}
-                                    </div>
+
+                                          {event.application && (
+                                            <div className="flex flex-col gap-1.5">
+                                              <span className="text-xs font-semibold text-bluegrey-700">
+                                                Application
+                                              </span>
+                                              <span className="text-sm text-bluegrey-900">
+                                                {event.application}
+                                              </span>
+                                            </div>
+                                          )}
+
+                                          {event.actor && (
+                                            <div className="flex flex-col gap-1.5">
+                                              <span className="text-xs font-semibold text-bluegrey-700">
+                                                Actor
+                                              </span>
+                                              <span className="text-sm text-bluegrey-900 font-mono">
+                                                {event.actor}
+                                              </span>
+                                            </div>
+                                          )}
+
+                                          {event.clientIp && (
+                                            <div className="flex flex-col gap-1.5">
+                                              <span className="text-xs font-semibold text-bluegrey-700">
+                                                Client IP
+                                              </span>
+                                              <span className="text-sm text-bluegrey-900 font-mono">
+                                                {event.clientIp}
+                                              </span>
+                                            </div>
+                                          )}
+
+                                          {event.description && (
+                                            <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                              <span className="text-xs font-semibold text-bluegrey-700">
+                                                Description
+                                              </span>
+                                              <span className="text-sm text-bluegrey-900 leading-relaxed">
+                                                {event.description}
+                                              </span>
+                                            </div>
+                                          )}
+
+                                          {renderDetailField({
+                                            label: "Trace ID",
+                                            value: event.requestId,
+                                            column: "requestId",
+                                            onFilterAdd,
+                                          })}
+
+                                          {renderDetailField({
+                                            label: "User Agent",
+                                            value: event.userAgent,
+                                            column: "userAgent",
+                                            onFilterAdd,
+                                          })}
+
+                                          {renderDetailField({
+                                            label: "Identity App",
+                                            value: event.identityApp,
+                                            column: "identityApp",
+                                            onFilterAdd,
+                                          })}
+
+                                          {renderDetailField({
+                                            label: "Identity App Instance ID",
+                                            value: event.identityAppInstanceId,
+                                            column: "identityAppInstanceId",
+                                            onFilterAdd,
+                                          })}
+
+                                          {renderDetailField({
+                                            label: "Authentication Details",
+                                            value: event.authenticationDetails,
+                                            column: "authenticationDetails",
+                                            onFilterAdd,
+                                          })}
+
+                                          {renderDetailField({
+                                            label: "Subject",
+                                            value: event.subject,
+                                            column: "subject",
+                                            onFilterAdd,
+                                          })}
+
+                                          {event.details &&
+                                            Object.keys(event.details).length > 0 && (
+                                              <div className="flex flex-col gap-1.5 lg:col-span-2">
+                                                <span className="text-xs font-semibold text-bluegrey-700">
+                                                  Details
+                                                </span>
+                                                <pre className="text-xs text-bluegrey-900 bg-white p-3 rounded border border-bluegrey-200 overflow-x-auto font-mono">
+                                                  {JSON.stringify(
+                                                    event.details,
+                                                    null,
+                                                    2
+                                                  )}
+                                                </pre>
+                                              </div>
+                                            )}
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
-                                ))}
-                              </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </TableNestedCell>
@@ -456,7 +481,7 @@ export default function EventLogSummary({
               })
             ) : (
               <TableEmptyState
-                colSpan={5}
+                colSpan={3}
                 message={
                   searchQuery || filters.length > 0
                     ? "No events found matching your search or filters"
