@@ -28,10 +28,11 @@ function SubmenuItem({ label, href, active }: SubmenuItemProps) {
       <Link
         ref={ref}
         to={href}
-        className={`flex items-center px-12 py-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset ${
+        className={`block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors ${
           active ? "bg-blue-50" : "hover:bg-bluegrey-25"
         }`}
       >
+        <div className="flex items-center px-12 py-3">
         <span
           className={`text-base leading-6 ${
             active ? "font-bold text-bluegrey-900" : "text-bluegrey-900"
@@ -39,6 +40,7 @@ function SubmenuItem({ label, href, active }: SubmenuItemProps) {
         >
           {label}
         </span>
+        </div>
       </Link>
       {active && (
         <div className="absolute left-0 top-0 w-1 h-full bg-[#041295] rounded-r" />
