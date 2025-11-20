@@ -11,7 +11,7 @@ export default function Scopes() {
           <p className="text-bluegrey-900">Scopes page content coming soon...</p>
         </div>
       </Layout>
-      <AIAssistant userData={{}} />
+      <AIAssistant userData={{}} isOpen={false} />
     </>
   );
 }
