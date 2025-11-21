@@ -102,23 +102,33 @@ export const generateTraceSummary = (events: Event[]): EventSummaryData => {
     applications
   );
 
-  // Add error/success information
+  // Add error/success/warning information
   if (hasErrors && hasSuccess) {
     summaryText += " Some operations succeeded while others encountered issues.";
   } else if (hasErrors) {
     summaryText += " One or more operations encountered errors.";
+  } else if (hasWarnings && hasSuccess) {
+    summaryText += " Operations completed with some warnings.";
+  } else if (hasWarnings) {
+    summaryText += " Warnings detected during operations.";
   } else if (hasSuccess) {
     summaryText += " All operations completed successfully.";
+  } else if (hasInformative) {
+    summaryText += " Operations logged and monitored.";
   }
 
-  // Determine status
-  let status: "success" | "failure" | "mixed" | "neutral" = "neutral";
+  // Determine status - prioritize errors, then warnings, then success, then informative
+  let status: "success" | "failure" | "warning" | "informative" | "mixed" | "neutral" = "neutral";
   if (hasErrors && hasSuccess) {
     status = "mixed";
   } else if (hasErrors) {
     status = "failure";
+  } else if (hasWarnings) {
+    status = "warning";
   } else if (hasSuccess) {
     status = "success";
+  } else if (hasInformative) {
+    status = "informative";
   }
 
   // Extract key actions
