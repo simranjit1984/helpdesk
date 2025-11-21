@@ -832,95 +832,111 @@ export default function UsersTable({
   };
 
   return (
-    <Table variant="flat">
-      <TableScroll>
-        <TableContent>
-          <TableHeader>
-            <TableHeadRow>
-              <TableHeadCell sticky className="w-64">
-                <SortHeader column="username" label="Username" />
-              </TableHeadCell>
-              <TableHeadCell>
-                <SortHeader column="firstName" label="First name" />
-              </TableHeadCell>
-              <TableHeadCell>
-                <SortHeader column="lastName" label="Last name" />
-              </TableHeadCell>
-              <TableHeadCell>
-                <SortHeader column="phoneNumber" label="Phone number" />
-              </TableHeadCell>
-              <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">Organization</span>
-              </TableHeadCell>
-              <TableHeadCell>
-                <SortHeader column="status" label="Status" />
-              </TableHeadCell>
-              <TableHeadCell></TableHeadCell>
-            </TableHeadRow>
-          </TableHeader>
-          <TableBody>
-            {getSortedUsers().map((user, index) => (
-              <TableRow key={index}>
-                <TableCell sticky className="w-56">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (user.organizations.length > 1) {
-                        setSelectedUserForOrganization(user);
-                      } else {
-                        navigate(
-                          `/users/${encodeURIComponent(user.username)}?organization=${encodeURIComponent(user.organizations[0])}`
-                        );
-                      }
-                    }}
-                    className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left w-full"
-                  >
-                    {user.username}
-                  </button>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-bluegrey-900 truncate">
-                    {user.firstName}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-bluegrey-900 truncate">
-                    {user.lastName}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-bluegrey-900 truncate">
-                    {user.phoneNumber}
-                  </span>
-                </TableCell>
-                {user.organizations.length === 1 ? (
+    <>
+      <Table variant="flat">
+        <TableScroll>
+          <TableContent>
+            <TableHeader>
+              <TableHeadRow>
+                <TableHeadCell sticky className="w-64">
+                  <SortHeader column="username" label="Username" />
+                </TableHeadCell>
+                <TableHeadCell>
+                  <SortHeader column="firstName" label="First name" />
+                </TableHeadCell>
+                <TableHeadCell>
+                  <SortHeader column="lastName" label="Last name" />
+                </TableHeadCell>
+                <TableHeadCell>
+                  <SortHeader column="phoneNumber" label="Phone number" />
+                </TableHeadCell>
+                <TableHeadCell>
+                  <span className="text-sm font-bold text-bluegrey-900">Organization</span>
+                </TableHeadCell>
+                <TableHeadCell>
+                  <SortHeader column="status" label="Status" />
+                </TableHeadCell>
+                <TableHeadCell></TableHeadCell>
+              </TableHeadRow>
+            </TableHeader>
+            <TableBody>
+              {getSortedUsers().map((user, index) => (
+                <TableRow key={index}>
+                  <TableCell sticky className="w-56">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (user.organizations.length > 1) {
+                          setSelectedUserForOrganization(user);
+                        } else {
+                          navigate(
+                            `/users/${encodeURIComponent(user.username)}?organization=${encodeURIComponent(user.organizations[0])}`
+                          );
+                        }
+                      }}
+                      className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left w-full"
+                    >
+                      {user.username}
+                    </button>
+                  </TableCell>
                   <TableCell>
                     <span className="text-sm text-bluegrey-900 truncate">
-                      {user.organizations[0]}
+                      {user.firstName}
                     </span>
                   </TableCell>
-                ) : (
-                  <td className="px-4 py-1">
-                    <div className="flex flex-col gap-2">
-                      {user.organizations.map((org, index) => (
-                        <span key={index} className="text-sm text-bluegrey-900">
-                          {org}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                )}
-                <TableCell>
-                  <StatusBadge status={user.status} />
-                </TableCell>
-                <TableActionCell>
-                  <UserActionsMenu user={user} />
-                </TableActionCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </TableContent>
-      </TableScroll>
-    </Table>
+                  <TableCell>
+                    <span className="text-sm text-bluegrey-900 truncate">
+                      {user.lastName}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm text-bluegrey-900 truncate">
+                      {user.phoneNumber}
+                    </span>
+                  </TableCell>
+                  {user.organizations.length === 1 ? (
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-900 truncate">
+                        {user.organizations[0]}
+                      </span>
+                    </TableCell>
+                  ) : (
+                    <td className="px-4 py-1">
+                      <div className="flex flex-col gap-2">
+                        {user.organizations.map((org, index) => (
+                          <span key={index} className="text-sm text-bluegrey-900">
+                            {org}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                  )}
+                  <TableCell>
+                    <StatusBadge status={user.status} />
+                  </TableCell>
+                  <TableActionCell>
+                    <UserActionsMenu user={user} />
+                  </TableActionCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </TableContent>
+        </TableScroll>
+      </Table>
+      {selectedUserForOrganization && (
+        <OrganizationSelectionModal
+          isOpen={selectedUserForOrganization !== null}
+          organizations={selectedUserForOrganization.organizations}
+          userName={`${selectedUserForOrganization.firstName} ${selectedUserForOrganization.lastName}`}
+          onContinue={(selectedOrganization) => {
+            navigate(
+              `/users/${encodeURIComponent(selectedUserForOrganization.username)}?organization=${encodeURIComponent(selectedOrganization)}`
+            );
+            setSelectedUserForOrganization(null);
+          }}
+          onCancel={() => setSelectedUserForOrganization(null)}
+        />
+      )}
+    </>
   );
 }
