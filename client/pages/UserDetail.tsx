@@ -1547,7 +1547,6 @@ export default function UserDetail() {
               description: event.description,
             })),
           }}
-          isOpen={!aiAssistantMinimized}
           isSideSheetOpen={!!openSideSheet}
           selectedCard={selectedCardForReview}
           events={events}
