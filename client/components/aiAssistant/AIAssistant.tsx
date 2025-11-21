@@ -39,8 +39,6 @@ const glowStyle = `
   }
 `;
 
-import { Event } from "@/components/mockEvents";
-
 interface AIAssistantProps {
   userData: UserData;
   isOpen?: boolean;
