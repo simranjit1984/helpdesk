@@ -186,7 +186,7 @@ const TableActionCell = React.forwardRef<
   }[height];
 
   return (
-    <td ref={ref} className={cn("py-2 w-10", className)} {...props}>
+    <td ref={ref} className={cn("py-1 w-10", className)} {...props}>
       <div className={cn("flex items-start justify-center", minHeightClass)}>
         {props.children}
       </div>
