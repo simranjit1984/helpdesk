@@ -884,7 +884,6 @@ export default function UserDetail() {
                     authenticatorCategories={allAuthenticators}
                     onReviewCard={(cardType, data) => {
                       setSelectedCardForReview({ cardType, data });
-                      setAiAssistantMinimized(false);
                     }}
                   />
 
