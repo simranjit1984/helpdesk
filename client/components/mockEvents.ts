@@ -108,7 +108,7 @@ const MOCK_ACTORS = [
 ];
 
 const MOCK_DESCRIPTIONS = [
-  // Success events
+  // Success events (25 - most common)
   "User has successfully logged into the admin console.",
   "Access token created via provided authorization code.",
   "User password was changed successfully.",
@@ -124,8 +124,18 @@ const MOCK_DESCRIPTIONS = [
   "Backup completed successfully.",
   "Configuration saved successfully.",
   "Integration completed successfully.",
+  "Authentication certificate renewed successfully.",
+  "User onboarding completed successfully.",
+  "Device enrollment completed successfully.",
+  "API connection established successfully.",
+  "Data synchronization completed successfully.",
+  "Security scan completed successfully.",
+  "User password reset completed successfully.",
+  "Multi-factor authentication setup completed.",
+  "Service health check passed successfully.",
+  "Compliance verification completed successfully.",
 
-  // Informative events
+  // Informative events (20)
   "Updated identity schema attribute.",
   "DEK requested for workload.",
   "User accessed sensitive resource.",
@@ -140,45 +150,42 @@ const MOCK_DESCRIPTIONS = [
   "User preference synchronized.",
   "Data migration started.",
   "Cache cleared successfully.",
+  "Scheduled backup started.",
+  "User login behavior tracked.",
+  "Authentication method recorded.",
+  "Access pattern analysis completed.",
+  "System configuration reviewed.",
+  "Device fingerprint updated.",
 
-  // Warning events
+  // Warning events (15 - less common)
   "Failed SMS OTP authentication attempt",
   "Failed Email OTP authentication attempt",
   "SMS OTP lockout - too many failed attempts",
   "TOTP authentication failed - invalid code",
   "QR code Enrollment failed - invalid QR code",
-  "Repeated failed login attempts detected.",
-  "Unusual activity detected for user.",
-  "Token expiration warning - renewal required.",
-  "API rate limit approaching.",
-  "Certificate expiring soon - renewal needed.",
-  "Weak password policy detected.",
-  "Unverified device attempting access.",
-  "Multiple concurrent sessions detected.",
-  "Failed to export an event.",
-  "Configuration validation warning.",
-  "User account nearing expiration.",
-  "API connectivity warning - latency increased.",
-  "Storage quota 80% utilized.",
+  "Repeated failed login attempts detected",
+  "Token expiration warning - renewal required",
+  "API rate limit approaching",
+  "Certificate expiring soon - renewal needed",
+  "User account nearing expiration",
+  "API connectivity warning - latency increased",
+  "Storage quota 80% utilized",
+  "Unusual activity detected for user",
+  "Configuration validation warning",
+  "Weak password policy detected",
 
-  // Error events
-  "Failed to export an event - database error.",
-  "User access was revoked due to compliance violation.",
+  // Error events (12 - least common)
   "Database connection failed.",
   "Service temporarily unavailable.",
   "Invalid authentication token.",
   "Insufficient permissions for operation.",
-  "Resource not found - 404 error.",
   "Server error occurred during processing.",
   "Network timeout while processing request.",
   "Failed to retrieve user data.",
   "Unauthorized access attempt detected.",
   "Data validation failed.",
-  "File upload failed - invalid format.",
-  "Webhook delivery failed - retrying.",
   "Integration error - endpoint unreachable.",
   "Encryption key rotation failed.",
-  "Backup restoration failed.",
   "Configuration load error.",
 ];
 
