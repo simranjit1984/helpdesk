@@ -171,6 +171,9 @@ const MOCK_DESCRIPTIONS = [
   "Access pattern analysis completed.",
   "System configuration reviewed.",
   "Device fingerprint updated.",
+  "User session activity recorded.",
+  "Authentication attempt logged.",
+  "API usage metrics tracked.",
 
   // Warning events (10 - less common)
   "Token expiration warning - renewal required",
