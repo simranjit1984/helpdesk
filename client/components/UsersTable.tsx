@@ -715,6 +715,8 @@ export default function UsersTable({
   const navigate = useNavigate();
   const [sortColumn, setSortColumn] = useState<SortColumn>("username");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [selectedUserForOrganization, setSelectedUserForOrganization] =
+    useState<User | null>(null);
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
