@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown, ChevronRight, Filter, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";
+import { ChevronDown, ChevronRight, Filter, AlertCircle, CheckCircle, AlertTriangle, Info } from "lucide-react";
 import {
   Table,
   TableScroll,
