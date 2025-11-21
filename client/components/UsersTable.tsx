@@ -3,7 +3,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 import ConfirmationModal from "./ConfirmationModal";
-import { OrganizationSelectionModal } from "./OrganizationSelectionModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
