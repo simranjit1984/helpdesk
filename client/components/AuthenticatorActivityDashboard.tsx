@@ -85,35 +85,6 @@ export default function AuthenticatorActivityDashboard({
     };
   }, [events]);
 
-  const authenticatorStats = useMemo(() => {
-    const authEvents = events.filter(isAuthenticatorEvent);
-    const groupMap = new Map<string, { success: number; failure: number }>();
-
-    authEvents.forEach((event) => {
-      const authName = getAuthenticatorFromEvent(event);
-      if (authName) {
-        if (!groupMap.has(authName)) {
-          groupMap.set(authName, { success: 0, failure: 0 });
-        }
-        const stat = groupMap.get(authName)!;
-        if (getEventStatus(event.description || "") === "success") {
-          stat.success++;
-        } else {
-          stat.failure++;
-        }
-      }
-    });
-
-    return Array.from(groupMap.entries())
-      .map(([name, stat]) => ({
-        name,
-        ...stat,
-        total: stat.success + stat.failure,
-        successRate: stat.total > 0 ? Math.round((stat.success / stat.total) * 100) : 0,
-      }))
-      .sort((a, b) => b.total - a.total);
-  }, [events]);
-
   const getStatusColor = (successRate: number) => {
     if (successRate === 100) return "text-green-600";
     if (successRate >= 75) return "text-green-500";
