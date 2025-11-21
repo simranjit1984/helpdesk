@@ -205,42 +205,6 @@ export default function AuthenticatorActivityDashboard({
         </div>
       </div>
 
-      {/* Authenticator Quick Stats */}
-      {authenticatorStats.length > 0 && (
-        <div className="bg-white border border-bluegrey-100 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-bluegrey-900 mb-4">
-            Authenticator Status
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {authenticatorStats.map((auth) => (
-              <div
-                key={auth.name}
-                className={`${getStatusBg(auth.successRate)} border border-bluegrey-100 rounded p-3 flex items-start justify-between`}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-bluegrey-900 truncate">
-                    {auth.name}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-semibold text-green-600">
-                      {auth.success}
-                    </span>
-                    <span className="text-xs text-bluegrey-600">/</span>
-                    <span className="text-xs font-semibold text-red-600">
-                      {auth.failure}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end ml-2 flex-shrink-0">
-                  <span className={`text-sm font-bold ${getStatusColor(auth.successRate)}`}>
-                    {auth.successRate}%
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
