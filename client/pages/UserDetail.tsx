@@ -885,7 +885,7 @@ export default function UserDetail() {
 
                   {/* Render Authenticators */}
                   {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
-                    <div>
+                    <div className="mt-10">
                       <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         Authenticators
                       </h2>
