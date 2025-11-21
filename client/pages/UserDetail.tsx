@@ -883,6 +883,10 @@ export default function UserDetail() {
                   <AuthenticatorActivityDashboard
                     events={events}
                     authenticatorCategories={allAuthenticators}
+                    onReviewCard={(cardType, data) => {
+                      setSelectedCardForReview({ cardType, data });
+                      setAiAssistantMinimized(false);
+                    }}
                   />
 
                   {/* Render Authenticators */}
