@@ -187,7 +187,7 @@ const MOCK_DESCRIPTIONS = [
   "Weak password policy detected",
   "Session timeout warning - re-authentication required",
 
-  // Error events (12 - least common)
+  // Error events (15 - least common)
   "Database connection failed.",
   "Service temporarily unavailable.",
   "Invalid authentication token.",
@@ -200,6 +200,9 @@ const MOCK_DESCRIPTIONS = [
   "Integration error - endpoint unreachable.",
   "Encryption key rotation failed.",
   "Configuration load error.",
+  "Internal server error occurred.",
+  "Service dependency unavailable.",
+  "Request processing failed.",
 ];
 
 export const generateUUID = () => {
