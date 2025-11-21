@@ -34,6 +34,7 @@ import FilterBar from "@/components/FilterBar";
 import FilterTag from "@/components/FilterTag";
 import EventLogSummary from "@/components/EventLogSummary";
 import AuthenticatorEventLog from "@/components/AuthenticatorEventLog";
+import AuthenticatorActivityDashboard from "@/components/AuthenticatorActivityDashboard";
 import { generateMockEvents } from "@/components/mockEvents";
 import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
