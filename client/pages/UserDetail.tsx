@@ -124,6 +124,8 @@ export default function UserDetail() {
     Array<{ id: string; column: string; operator: string; value: string }>
   >([]);
   const [events] = useState(() => generateMockEvents());
+  const [selectedCardForReview, setSelectedCardForReview] = useState<{ cardType: string; data: any } | null>(null);
+  const [aiAssistantMinimized, setAiAssistantMinimized] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
