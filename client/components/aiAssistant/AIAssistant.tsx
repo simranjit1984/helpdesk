@@ -34,7 +34,7 @@ const glowStyle = `
   }
 
   .ai-assistant-bounce {
-    animation: button-bounce 0.8s ease-out forwards;
+    animation: button-bounce 0.8s ease-out 3 forwards;
   }
 `;
 
