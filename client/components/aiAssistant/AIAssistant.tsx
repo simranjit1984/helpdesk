@@ -99,14 +99,13 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       setShowBounce(true);
       previousUserDataId.current = currentUserId;
 
-      // Stop bounce animation after 0.8s (one bounce cycle)
-      // This allows for 3 bounces total since useEffect might fire multiple times
+      // Stop bounce animation after 2.4s (3 bounce sequences, 0.8s each)
       if (bounceTimeoutRef.current) {
         clearTimeout(bounceTimeoutRef.current);
       }
       bounceTimeoutRef.current = setTimeout(() => {
         setShowBounce(false);
-      }, 800);
+      }, 2400);
     }
 
     setIsLoading(true);
