@@ -69,18 +69,19 @@ export const generateTraceSummary = (events: Event[]): EventSummaryData => {
       e.description?.toLowerCase().includes("completed successfully")
   );
 
-  const hasWarnings = sortedEvents.some(
-    (e) =>
-      e.description?.toLowerCase().includes("warning") ||
-      e.description?.toLowerCase().includes("repeated failed") ||
-      e.description?.toLowerCase().includes("unusual activity") ||
-      e.description?.toLowerCase().includes("expiring") ||
-      e.description?.toLowerCase().includes("approaching") ||
-      e.description?.toLowerCase().includes("weak password") ||
-      e.description?.toLowerCase().includes("nearing expiration") ||
-      e.description?.toLowerCase().includes("detected") ||
-      e.description?.toLowerCase().includes("lockout")
-  );
+  const warningCount = sortedEvents.filter((e) =>
+    e.description?.toLowerCase().includes("warning") ||
+    e.description?.toLowerCase().includes("repeated failed") ||
+    e.description?.toLowerCase().includes("unusual activity") ||
+    e.description?.toLowerCase().includes("expiring soon") ||
+    e.description?.toLowerCase().includes("approaching") ||
+    e.description?.toLowerCase().includes("weak password") ||
+    e.description?.toLowerCase().includes("nearing expiration") ||
+    e.description?.toLowerCase().includes("lockout")
+  ).length;
+
+  // Only mark as warning if majority of events are warnings
+  const hasWarnings = warningCount > sortedEvents.length / 2;
 
   const hasInformative = sortedEvents.some(
     (e) =>
