@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { CheckCircle, AlertCircle, Clock, Shield } from "lucide-react";
+import { CheckCircle, AlertCircle, Clock, Shield, Brain } from "lucide-react";
 import { Event } from "./mockEvents";
 
 interface AuthenticatorActivityDashboardProps {
@@ -9,6 +9,7 @@ interface AuthenticatorActivityDashboardProps {
     externalProviders: string[];
     passkeys: string[];
   };
+  onReviewCard?: (cardType: string, data: any) => void;
 }
 
 const getAuthenticatorFromEvent = (event: Event): string | null => {
