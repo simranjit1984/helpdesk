@@ -756,6 +756,14 @@ export default function UsersTable({
     // Apply filters
     filters.forEach((filter) => {
       filtered = filtered.filter((user) => {
+        // Special handling for organizations array
+        if (filter.column === "organizations") {
+          const searchTerm = filter.value.toLowerCase();
+          return user.organizations?.some((org) =>
+            org.toLowerCase().includes(searchTerm)
+          ) || false;
+        }
+
         const fieldValue = (user[filter.column as keyof typeof user] || "")
           .toString()
           .toLowerCase();
