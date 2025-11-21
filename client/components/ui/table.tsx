@@ -147,7 +147,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellExtendedProps>
       <td
         ref={ref}
         className={cn(
-          "px-4 py-2",
+          "px-4 py-1",
           sticky &&
             "sticky left-0 z-10 bg-white border-r border-bluegrey-100 shadow-[1px_0_3px_rgba(0,0,0,0.05)]",
           className,
