@@ -132,8 +132,8 @@ export default function AuthenticatorActivityDashboard({
         </div>
 
         {/* Success Rate Card */}
-        <div className="bg-white border border-bluegrey-100 rounded-lg p-4">
-          <div className="flex items-start justify-between">
+        <div className="bg-white border border-bluegrey-100 rounded-lg p-4 flex flex-col">
+          <div className="flex items-start justify-between mb-auto">
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
                 Success Rate
@@ -144,9 +144,25 @@ export default function AuthenticatorActivityDashboard({
             </div>
             <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
           </div>
-          <p className="text-xs text-bluegrey-600 mt-2">
-            {stats.successCount} successful out of {stats.totalCount}
-          </p>
+          <div className="flex items-end justify-between mt-2">
+            <p className="text-xs text-bluegrey-600">
+              {stats.successCount} successful out of {stats.totalCount}
+            </p>
+            <button
+              onClick={() =>
+                onReviewCard?.("successRate", {
+                  successRate: stats.successRate,
+                  successCount: stats.successCount,
+                  totalCount: stats.totalCount,
+                })
+              }
+              className="p-1.5 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
+              title="Review with AI Assistant"
+              type="button"
+            >
+              <Brain className="h-4 w-4 text-blue-600" />
+            </button>
+          </div>
         </div>
 
         {/* Failed Events Card */}
