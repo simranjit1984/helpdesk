@@ -884,7 +884,7 @@ export default function UsersTable({
                     {user.phoneNumber}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell multiline>
                   <div className="flex flex-col gap-2">
                     {user.organizations.map((org, index) => (
                       <span key={index} className="text-sm text-bluegrey-900">
