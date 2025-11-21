@@ -56,6 +56,7 @@ const getEventStatus = (description: string): "success" | "failure" => {
 export default function AuthenticatorActivityDashboard({
   events,
   authenticatorCategories,
+  onReviewCard,
 }: AuthenticatorActivityDashboardProps) {
   const stats = useMemo(() => {
     const authEvents = events.filter(isAuthenticatorEvent);
