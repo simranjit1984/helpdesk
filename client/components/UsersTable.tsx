@@ -305,7 +305,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 888999000",
     dateCreated: "2024-07-15 08:25:45",
     status: "active",
-    organizations: ["Mu Retail", "Nu Wholesale"],
+    organizations: ["InsurCar"],
     accessRoles: [
       {
         id: "1",
