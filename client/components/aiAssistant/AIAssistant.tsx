@@ -67,7 +67,9 @@ const createGlowAnimation = (color1: any, color2: any, color3: any, color4: any,
 const color1 = getRandomGlowColor();
 const color2 = getRandomGlowColor();
 const color3 = getRandomGlowColor();
-const glowStyle = createGlowAnimation(color1, color2, color3);
+const color4 = getRandomGlowColor();
+const color5 = getRandomGlowColor();
+const glowStyle = createGlowAnimation(color1, color2, color3, color4, color5);
 
 interface AIAssistantProps {
   userData: UserData;
