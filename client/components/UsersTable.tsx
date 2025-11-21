@@ -884,15 +884,15 @@ export default function UsersTable({
                     {user.phoneNumber}
                   </span>
                 </TableCell>
-                <TableCell multiline>
-                  <div className="flex flex-col gap-2">
+                <td className="px-4 py-1">
+                  <div className="flex flex-col gap-2 min-h-10">
                     {user.organizations.map((org, index) => (
                       <span key={index} className="text-sm text-bluegrey-900">
                         {org}
                       </span>
                     ))}
                   </div>
-                </TableCell>
+                </td>
                 <TableCell>
                   <StatusBadge status={user.status} />
                 </TableCell>
