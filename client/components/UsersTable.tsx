@@ -725,6 +725,7 @@ export default function UsersTable({
   const [selectedUserForOrganization, setSelectedUserForOrganization] =
     useState<User | null>(null);
   const [selectedOrganization, setSelectedOrganization] = useState<string>("");
+  const [organizationError, setOrganizationError] = useState<string>("");
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
