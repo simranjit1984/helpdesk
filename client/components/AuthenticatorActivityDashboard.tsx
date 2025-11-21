@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { CheckCircle, AlertCircle, Clock, Shield } from "lucide-react";
 import { Event } from "./mockEvents";
 
 interface AuthenticatorActivityDashboardProps {
