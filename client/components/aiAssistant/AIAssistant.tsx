@@ -67,7 +67,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   const [hasNewContent, setHasNewContent] = useState(false);
   const [showBounce, setShowBounce] = useState(false);
   const bounceTimeoutRef = useRef<NodeJS.Timeout>();
-  const previousUserDataId = useRef<string>("");
+  const previousUserDataIdRef = useRef<string>("");
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -91,13 +91,13 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   useEffect(() => {
     // Check if this is a new user (userData changed)
     const currentUserId = userData.id || userData.email || "";
-    const isNewUser = currentUserId && previousUserDataId.current !== currentUserId;
+    const isNewUser = currentUserId && previousUserDataIdRef.current !== currentUserId;
 
     // Only highlight if we're switching to a new user with content (not empty userData)
     if (isNewUser && currentUserId) {
       setHasNewContent(true);
       setShowBounce(true);
-      previousUserDataId.current = currentUserId;
+      previousUserDataIdRef.current = currentUserId;
 
       // Stop bounce animation after 3.6s (3 bounce sequences, 1.2s each)
       if (bounceTimeoutRef.current) {
@@ -155,7 +155,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       setIsMinimized(previousMinimizedState);
       setTimeout(() => setShowAnimation(false), 300);
     }
-  }, [isSideSheetOpen]);
+  }, [isSideSheetOpen, isMinimized, previousMinimizedState]);
 
   // Handle keyboard shortcuts (Ctrl+K or Cmd+K, and Escape)
   useEffect(() => {
