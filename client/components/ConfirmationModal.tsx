@@ -17,7 +17,7 @@ interface ConfirmationModalProps {
   children?: React.ReactNode;
   primaryAction?: {
     label: string;
-    onClick: () => void;
+    onClick: () => boolean | void;
   };
   secondaryAction?: {
     label: string;
