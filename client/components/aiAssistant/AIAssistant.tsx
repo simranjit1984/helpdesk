@@ -38,10 +38,14 @@ const glowStyle = `
   }
 `;
 
+import { Event } from "@/components/mockEvents";
+
 interface AIAssistantProps {
   userData: UserData;
   isOpen?: boolean;
   isSideSheetOpen?: boolean;
+  selectedCard?: { cardType: string; data: any } | null;
+  events?: Event[];
 }
 
 interface ChatMessage {
