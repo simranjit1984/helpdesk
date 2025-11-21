@@ -2,7 +2,7 @@ import { Event } from "./mockEvents";
 
 interface EventSummaryData {
   summary: string;
-  status: "success" | "failure" | "mixed" | "neutral";
+  status: "success" | "failure" | "warning" | "informative" | "mixed" | "neutral";
   keyActions: string[];
 }
 
