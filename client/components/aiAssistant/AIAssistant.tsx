@@ -155,7 +155,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       setIsMinimized(previousMinimizedState);
       setTimeout(() => setShowAnimation(false), 300);
     }
-  }, [isSideSheetOpen, isMinimized, previousMinimizedState]);
+  }, [isSideSheetOpen]);
 
   // Handle keyboard shortcuts (Ctrl+K or Cmd+K, and Escape)
   useEffect(() => {
