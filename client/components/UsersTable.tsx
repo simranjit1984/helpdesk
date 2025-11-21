@@ -939,8 +939,8 @@ export default function UsersTable({
             setSelectedOrganization("");
           }
         }}
-        title="Select Organization"
-        description={`${selectedUserForOrganization?.firstName} ${selectedUserForOrganization?.lastName} belongs to multiple organizations. Please select the organization context for viewing their details.`}
+        title="Select user's organization"
+        description=""
         primaryAction={{
           label: "Continue",
           onClick: () => {
@@ -962,21 +962,27 @@ export default function UsersTable({
         }}
       >
         {selectedUserForOrganization && (
-          <Select
-            value={selectedOrganization}
-            onValueChange={setSelectedOrganization}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select an organization" />
-            </SelectTrigger>
-            <SelectContent>
-              {selectedUserForOrganization.organizations.map((org) => (
-                <SelectItem key={org} value={org}>
-                  {org}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-1">
+            <Label className="text-sm font-normal text-[#131319] flex gap-1">
+              Please select the organization context for viewing user&apos;s details.
+              <span className="font-medium text-red-500">*</span>
+            </Label>
+            <Select
+              value={selectedOrganization}
+              onValueChange={setSelectedOrganization}
+            >
+              <SelectTrigger className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto">
+                <SelectValue placeholder="Select an organization" />
+              </SelectTrigger>
+              <SelectContent>
+                {selectedUserForOrganization.organizations.map((org) => (
+                  <SelectItem key={org} value={org}>
+                    {org}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         )}
       </ConfirmationModal>
     </>
