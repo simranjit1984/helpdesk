@@ -150,7 +150,7 @@ const MOCK_DESCRIPTIONS = [
   "User data export completed successfully.",
   "System backup created successfully.",
 
-  // Informative events (20)
+  // Informative events (25)
   "Updated identity schema attribute.",
   "DEK requested for workload.",
   "User accessed sensitive resource.",
