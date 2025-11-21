@@ -211,7 +211,7 @@ const TableExpandCell = React.forwardRef<
   }[height];
 
   return (
-    <td ref={ref} className={cn("px-3 py-2 w-10 relative", className)} style={{ overflow: "visible" }} {...props}>
+    <td ref={ref} className={cn("px-3 py-1 w-10 relative", className)} style={{ overflow: "visible" }} {...props}>
       <div className={cn("flex items-start justify-center relative", minHeightClass)}>
         {props.children}
       </div>
