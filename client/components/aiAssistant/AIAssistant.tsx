@@ -163,11 +163,16 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
   // Handle card review requests
   useEffect(() => {
     if (selectedCard && selectedCard.cardType) {
+      // Restore the AI Assistant window
+      if (isMinimized) {
+        handleRestore();
+      }
+
       let cardMessage = "";
 
       switch (selectedCard.cardType) {
         case "totalEvents":
-          cardMessage = `I've analyzed the authentication activity for this user. There are ${selectedCard.data.totalCount} total events recorded. The most recent activity was on ${selectedCard.data.latestEvent}. This shows a consistent level of authentication activity. Review specific events in the Event Log tab.`;
+          cardMessage = `I've analyzed the authentication activity for this user. There are ${selectedCard.data.totalCount} total events recorded. The most recent activity was on ${selectedCard.data.latestEvent}. This shows a consistent level of authentication activity. You can review specific events in the Event Log tab for more details.`;
           break;
         case "successRate":
           cardMessage = `The success rate for authentication attempts is ${selectedCard.data.successRate}%. Out of ${selectedCard.data.totalCount} attempts, ${selectedCard.data.successCount} were successful. ${selectedCard.data.successRate < 70 ? "This indicates potential authentication issues that should be reviewed in the Event Log." : "This is a healthy success rate."}`;
@@ -182,29 +187,24 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
 
       // Add the card review message to the chat
       const userMessage: ChatMessage = {
-        id: Date.now().toString(),
+        id: `card-review-user-${Date.now()}`,
         type: "user",
         content: `Review: ${selectedCard.cardType}`,
         timestamp: new Date(),
       };
 
       const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: `card-review-assistant-${Date.now()}`,
         type: "assistant",
-        content: cardMessage + " You can review specific events in the Event Log tab for more details.",
+        content: cardMessage,
         timestamp: new Date(),
       };
 
       setMessages((prev) => {
-        // Check if we already have messages from this card review
-        const hasCardReview = prev.some((msg) => msg.id === userMessage.id);
-        if (!hasCardReview) {
-          return [...prev, userMessage, assistantMessage];
-        }
-        return prev;
+        return [...prev, userMessage, assistantMessage];
       });
     }
-  }, [selectedCard]);
+  }, [selectedCard, isMinimized]);
 
   // Handle keyboard shortcuts (Ctrl+K or Cmd+K, and Escape)
   useEffect(() => {
