@@ -4,72 +4,39 @@ import { InsightCard } from "./InsightCard";
 import { generateUserInsights, UserData, Insight } from "./insightsGenerator";
 import { cn } from "@/lib/utils";
 
-// Generate random bright color
-const getRandomGlowColor = () => {
-  const colors = [
-    // Red shades
-    { r: 239, g: 68, b: 68 },
-    { r: 220, g: 38, b: 38 },
-    { r: 185, g: 28, b: 28 },
-    // Blue shades
-    { r: 59, g: 130, b: 246 },
-    { r: 37, g: 99, b: 235 },
-    { r: 12, g: 74, b: 188 },
-    // Violet shades
-    { r: 139, g: 92, b: 246 },
-    { r: 124, g: 58, b: 238 },
-    // Magenta shades
-    { r: 236, g: 72, b: 153 },
-    { r: 219, g: 39, b: 119 },
-    // Cyan shades
-    { r: 34, g: 211, b: 238 },
-    { r: 6, g: 182, b: 212 },
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
-
-// Create dynamic glow animation with mixed colors
-const createGlowAnimation = (color1: any, color2: any, color3: any, color4: any, color5: any) => {
-  return `
-    @keyframes button-glow {
-      0% {
-        box-shadow:
-          0 0 15px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.7),
-          0 0 30px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.6),
-          0 0 45px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.5),
-          0 0 60px rgba(${color4.r}, ${color4.g}, ${color4.b}, 0.4),
-          0 0 75px rgba(${color5.r}, ${color5.g}, ${color5.b}, 0.3);
-      }
-      50% {
-        box-shadow:
-          0 0 25px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.8),
-          0 0 40px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.8),
-          0 0 55px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.7),
-          0 0 70px rgba(${color4.r}, ${color4.g}, ${color4.b}, 0.6),
-          0 0 85px rgba(${color5.r}, ${color5.g}, ${color5.b}, 0.5);
-      }
-      100% {
-        box-shadow:
-          0 0 15px rgba(${color1.r}, ${color1.g}, ${color1.b}, 0.7),
-          0 0 30px rgba(${color2.r}, ${color2.g}, ${color2.b}, 0.6),
-          0 0 45px rgba(${color3.r}, ${color3.g}, ${color3.b}, 0.5),
-          0 0 60px rgba(${color4.r}, ${color4.g}, ${color4.b}, 0.4),
-          0 0 75px rgba(${color5.r}, ${color5.g}, ${color5.b}, 0.3);
-      }
+// Bounce animation styles
+const glowStyle = `
+  @keyframes button-bounce {
+    0% {
+      transform: translateY(0);
     }
-
-    .ai-assistant-glow {
-      animation: button-glow 2.5s ease-in-out infinite;
+    10% {
+      transform: translateY(-12px);
     }
-  `;
-};
+    20% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-8px);
+    }
+    40% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+    60% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 
-const color1 = getRandomGlowColor();
-const color2 = getRandomGlowColor();
-const color3 = getRandomGlowColor();
-const color4 = getRandomGlowColor();
-const color5 = getRandomGlowColor();
-const glowStyle = createGlowAnimation(color1, color2, color3, color4, color5);
+  .ai-assistant-bounce {
+    animation: button-bounce 0.8s ease-out forwards;
+  }
+`;
 
 interface AIAssistantProps {
   userData: UserData;
