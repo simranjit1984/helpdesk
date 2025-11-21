@@ -48,6 +48,7 @@ interface User {
   phoneNumber: string;
   dateCreated: string;
   status: StatusType;
+  organizations: string[];
   accessRoles?: AccessRole[];
 }
 
@@ -60,6 +61,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+44 123456789",
     dateCreated: "2024-07-15 11:57:50",
     status: "active",
+    organizations: ["Acme Corp", "Tech Solutions", "Global Services"],
   },
   {
     id: "2",
@@ -69,6 +71,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+33 987654321",
     dateCreated: "2024-07-13 09:23:21",
     status: "invited",
+    organizations: ["Beta Industries"],
   },
   {
     id: "3",
@@ -78,6 +81,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+39 555123456",
     dateCreated: "2024-07-12 13:15:24",
     status: "invitation-withdrawn",
+    organizations: ["Gamma Ltd"],
   },
   {
     id: "4",
@@ -87,6 +91,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+49 111222333",
     dateCreated: "2024-07-12 11:42:02",
     status: "invitation-expired",
+    organizations: ["Delta Partners"],
   },
   {
     id: "5",
@@ -96,6 +101,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+46 777888999",
     dateCreated: "2024-07-15 10:52:35",
     status: "active",
+    organizations: ["Epsilon Group", "Zeta Enterprises"],
   },
   {
     id: "6",
@@ -105,6 +111,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+41 333444555",
     dateCreated: "2024-07-12 08:16:38",
     status: "active",
+    organizations: ["Theta Systems"],
   },
   {
     id: "7",
@@ -114,6 +121,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+34 666777888",
     dateCreated: "2024-07-11 11:21:05",
     status: "active",
+    organizations: ["Iota Solutions", "Kappa Tech", "Lambda Consulting", "Mu Digital"],
   },
   {
     id: "8",
@@ -123,6 +131,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+31 999888777",
     dateCreated: "2024-07-13 08:52:38",
     status: "blocked",
+    organizations: ["Nu Analytics", "Xi Networks"],
   },
   {
     id: "9",
@@ -132,6 +141,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+32 888999000",
     dateCreated: "2024-07-13 09:33:13",
     status: "grace",
+    organizations: ["Omicron Ventures", "Pi Financial", "Rho Marketing", "Sigma Retail", "Tau Logistics"],
   },
   {
     id: "10",
@@ -141,6 +151,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+30 444555666",
     dateCreated: "2024-07-13 10:09:26",
     status: "blocked",
+    organizations: ["Upsilon Resources", "Phi Communications"],
   },
   {
     username: "kate.kennedy@example.com",
@@ -149,6 +160,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+45 222333444",
     dateCreated: "2024-07-14 14:22:11",
     status: "active",
+    organizations: ["Chi Manufacturing", "Psi Entertainment"],
   },
   {
     username: "lucas.lopez@example.com",
@@ -157,6 +169,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+34 111222333",
     dateCreated: "2024-07-10 16:45:30",
     status: "active",
+    organizations: ["Omega Technologies", "Alpha Analytics", "Beta Healthcare"],
   },
   {
     username: "maria.martinez@example.com",
@@ -165,6 +178,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+52 555666777",
     dateCreated: "2024-07-09 10:30:45",
     status: "active",
+    organizations: ["Gamma Finance"],
   },
   {
     username: "nathan.nelson@example.com",
@@ -173,6 +187,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 888999000",
     dateCreated: "2024-07-11 09:15:22",
     status: "grace",
+    organizations: ["Delta Consulting", "Epsilon Legal", "Zeta Real Estate", "Eta Insurance"],
   },
   {
     username: "olivia.oliver@example.com",
@@ -181,6 +196,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+61 777888999",
     dateCreated: "2024-07-08 13:40:18",
     status: "inactive",
+    organizations: ["Theta Energy"],
   },
   {
     username: "peter.parker@example.com",
@@ -189,6 +205,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 555444333",
     dateCreated: "2024-07-14 11:25:50",
     status: "active",
+    organizations: ["Iota Education", "Kappa Travel"],
   },
   {
     username: "quinn.quinn@example.com",
@@ -197,6 +214,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+353 666555444",
     dateCreated: "2024-07-07 15:10:35",
     status: "active",
+    organizations: ["Lambda Food", "Mu Beverage", "Nu Hospitality"],
   },
   {
     username: "rachel.rogers@example.com",
@@ -205,6 +223,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+44 333222111",
     dateCreated: "2024-07-12 08:55:42",
     status: "blocked",
+    organizations: ["Xi Fashion", "Omicron Luxury"],
   },
   {
     username: "steve.smith@example.com",
@@ -213,6 +232,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 444333222",
     dateCreated: "2024-07-06 12:30:20",
     status: "grace",
+    organizations: ["Pi Sports"],
   },
   {
     username: "thomas.thompson@example.com",
@@ -221,6 +241,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 555666777",
     dateCreated: "2024-07-15 09:20:15",
     status: "active",
+    organizations: ["Rho Media", "Sigma Publishing", "Tau Broadcasting", "Upsilon Streaming"],
   },
   {
     username: "uma.upadhyay@example.com",
@@ -229,6 +250,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+91 8899001122",
     dateCreated: "2024-07-14 14:35:40",
     status: "active",
+    organizations: ["Phi Software", "Chi Hardware"],
   },
   {
     username: "victor.victor@example.com",
@@ -237,6 +259,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+33 111222333",
     dateCreated: "2024-07-13 10:15:25",
     status: "active",
+    organizations: ["Psi Automotive", "Omega Defense", "Alpha Security", "Beta Telecommunications", "Gamma Aerospace"],
   },
   {
     username: "wendy.williams@example.com",
@@ -245,6 +268,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 777888999",
     dateCreated: "2024-07-12 16:45:50",
     status: "active",
+    organizations: ["Delta Mining", "Epsilon Agriculture"],
   },
   {
     username: "xavier.xu@example.com",
@@ -253,6 +277,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+86 2233445566",
     dateCreated: "2024-07-11 11:30:20",
     status: "active",
+    organizations: ["Zeta Utilities", "Eta Construction"],
   },
   {
     username: "yara.young@example.com",
@@ -261,6 +286,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+44 555666777",
     dateCreated: "2024-07-10 13:20:35",
     status: "active",
+    organizations: ["Theta Transportation", "Iota Logistics", "Kappa Distribution"],
   },
   {
     username: "zoe.zimmerman@example.com",
@@ -269,6 +295,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+49 222333444",
     dateCreated: "2024-07-09 15:50:10",
     status: "active",
+    organizations: ["Lambda Warehousing"],
   },
   {
     id: "0",
@@ -278,6 +305,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 888999000",
     dateCreated: "2024-07-15 08:25:45",
     status: "active",
+    organizations: ["Mu Retail", "Nu Wholesale"],
     accessRoles: [
       {
         id: "1",
@@ -309,6 +337,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+61 3344556677",
     dateCreated: "2024-07-14 12:10:30",
     status: "active",
+    organizations: ["Xi Ecommerce", "Omicron Digital"],
   },
   {
     username: "charlotte.chen@example.com",
@@ -317,6 +346,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+86 5566778899",
     dateCreated: "2024-07-13 14:40:20",
     status: "active",
+    organizations: ["Pi Analytics", "Rho Data", "Sigma Cloud"],
   },
   {
     username: "david.dunn@example.com",
@@ -325,6 +355,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 222333444",
     dateCreated: "2024-07-12 10:05:15",
     status: "active",
+    organizations: ["Tau Consulting"],
   },
   {
     username: "emily.edwards@example.com",
@@ -333,6 +364,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+44 666777888",
     dateCreated: "2024-07-11 15:30:50",
     status: "active",
+    organizations: ["Upsilon Marketing", "Phi Advertising"],
   },
   {
     username: "frank.fleming@example.com",
@@ -341,6 +373,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+33 555666777",
     dateCreated: "2024-07-10 09:45:25",
     status: "active",
+    organizations: ["Chi PR"],
   },
   {
     username: "grace.grant@example.com",
@@ -349,6 +382,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 111222333",
     dateCreated: "2024-07-09 16:20:40",
     status: "active",
+    organizations: ["Psi Design", "Omega Branding", "Alpha UX", "Beta Visual"],
   },
   {
     username: "henry.harris@example.com",
@@ -357,6 +391,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+49 333444555",
     dateCreated: "2024-07-15 13:15:10",
     status: "active",
+    organizations: ["Gamma Creative"],
   },
   {
     username: "iris.ingram@example.com",
@@ -365,6 +400,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+61 4455667788",
     dateCreated: "2024-07-14 11:50:35",
     status: "active",
+    organizations: ["Delta Development", "Epsilon Quality", "Zeta Testing"],
   },
   {
     username: "james.jackson@example.com",
@@ -373,6 +409,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 333444555",
     dateCreated: "2024-07-13 09:30:20",
     status: "active",
+    organizations: ["Eta DevOps"],
   },
   {
     username: "karen.kemp@example.com",
@@ -381,6 +418,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+44 777888999",
     dateCreated: "2024-07-12 14:25:45",
     status: "active",
+    organizations: ["Theta Infrastructure", "Iota Cloud"],
   },
   {
     username: "leon.lewis@example.com",
@@ -389,6 +427,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+33 666777888",
     dateCreated: "2024-07-11 10:40:15",
     status: "active",
+    organizations: ["Kappa Systems", "Lambda Networks", "Mu Servers", "Nu Database", "Xi Storage"],
   },
   {
     username: "maggie.miller@example.com",
@@ -397,6 +436,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 444555666",
     dateCreated: "2024-07-10 15:55:30",
     status: "active",
+    organizations: ["Omicron Security"],
   },
   {
     username: "noah.norman@example.com",
@@ -405,6 +445,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+49 444555666",
     dateCreated: "2024-07-09 12:30:50",
     status: "active",
+    organizations: ["Pi Monitoring", "Rho Alerting"],
   },
   {
     username: "oscar.owen@example.com",
@@ -413,6 +454,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+61 5566778899",
     dateCreated: "2024-07-15 10:15:20",
     status: "active",
+    organizations: ["Sigma Automation", "Tau Orchestration"],
   },
   {
     username: "paul.perry@example.com",
@@ -421,6 +463,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 555666777",
     dateCreated: "2024-07-14 16:40:35",
     status: "active",
+    organizations: ["Upsilon Configuration"],
   },
   {
     username: "quinn.quinn2@example.com",
@@ -429,6 +472,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+44 888999000",
     dateCreated: "2024-07-13 13:25:10",
     status: "active",
+    organizations: ["Phi Backup", "Chi Recovery"],
   },
   {
     username: "ruby.robinson@example.com",
@@ -437,6 +481,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+33 777888999",
     dateCreated: "2024-07-12 11:50:45",
     status: "active",
+    organizations: ["Psi Migration", "Omega Integration", "Alpha Synchronization"],
   },
   {
     username: "samuel.sanders@example.com",
@@ -445,6 +490,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+1 666777888",
     dateCreated: "2024-07-11 14:10:20",
     status: "active",
+    organizations: ["Beta Validation"],
   },
   {
     username: "tina.taylor@example.com",
@@ -453,6 +499,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+49 555666777",
     dateCreated: "2024-07-10 10:35:30",
     status: "active",
+    organizations: ["Gamma Performance", "Delta Optimization"],
   },
   {
     username: "uncle.usher@example.com",
@@ -461,6 +508,7 @@ export const baseUsers: Partial<User>[] = [
     phoneNumber: "+61 6677889900",
     dateCreated: "2024-07-09 15:45:15",
     status: "active",
+    organizations: ["Epsilon Compliance", "Zeta Governance", "Eta Risk", "Theta Audit"],
   },
 ];
 
@@ -490,7 +538,6 @@ type SortColumn =
   | "firstName"
   | "lastName"
   | "phoneNumber"
-  | "dateCreated"
   | "status";
 type SortDirection = "asc" | "desc";
 
@@ -689,8 +736,8 @@ export default function UsersTable({
           user.firstName?.toLowerCase().includes(query) ||
           user.lastName?.toLowerCase().includes(query) ||
           user.phoneNumber?.toLowerCase().includes(query) ||
-          user.dateCreated?.toLowerCase().includes(query) ||
-          user.status?.toLowerCase().includes(query),
+          user.status?.toLowerCase().includes(query) ||
+          user.organizations?.some((org) => org.toLowerCase().includes(query)),
       );
     }
 
@@ -800,7 +847,7 @@ export default function UsersTable({
                 <SortHeader column="phoneNumber" label="Phone number" />
               </TableHeadCell>
               <TableHeadCell>
-                <SortHeader column="dateCreated" label="Date created" />
+                <span className="text-sm font-bold text-bluegrey-900">Organization</span>
               </TableHeadCell>
               <TableHeadCell>
                 <SortHeader column="status" label="Status" />
@@ -838,9 +885,13 @@ export default function UsersTable({
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-bluegrey-900 truncate">
-                    {user.dateCreated}
-                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {user.organizations.map((org, index) => (
+                      <span key={index} className="text-sm text-bluegrey-900">
+                        {org}
+                      </span>
+                    ))}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <StatusBadge status={user.status} />
