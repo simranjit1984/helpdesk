@@ -65,7 +65,9 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   );
   const [showAnimation, setShowAnimation] = useState(false);
   const [hasNewContent, setHasNewContent] = useState(false);
-  const [previousUserDataId, setPreviousUserDataId] = useState<string>("");
+  const [showBounce, setShowBounce] = useState(false);
+  const bounceTimeoutRef = useRef<NodeJS.Timeout>();
+  const previousUserDataId = useRef<string>("");
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
