@@ -884,15 +884,23 @@ export default function UsersTable({
                     {user.phoneNumber}
                   </span>
                 </TableCell>
-                <td className="px-4 py-1">
-                  <div className="flex flex-col gap-2 min-h-10">
-                    {user.organizations.map((org, index) => (
-                      <span key={index} className="text-sm text-bluegrey-900">
-                        {org}
-                      </span>
-                    ))}
-                  </div>
-                </td>
+                {user.organizations.length === 1 ? (
+                  <TableCell>
+                    <span className="text-sm text-bluegrey-900 truncate">
+                      {user.organizations[0]}
+                    </span>
+                  </TableCell>
+                ) : (
+                  <td className="px-4 py-1">
+                    <div className="flex flex-col gap-2">
+                      {user.organizations.map((org, index) => (
+                        <span key={index} className="text-sm text-bluegrey-900">
+                          {org}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                )}
                 <TableCell>
                   <StatusBadge status={user.status} />
                 </TableCell>
