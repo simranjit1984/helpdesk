@@ -92,13 +92,6 @@ export default function AuthenticatorActivityDashboard({
     return "text-red-600";
   };
 
-  const getStatusBg = (successRate: number) => {
-    if (successRate === 100) return "bg-green-50";
-    if (successRate >= 75) return "bg-green-50";
-    if (successRate >= 50) return "bg-yellow-50";
-    return "bg-red-50";
-  };
-
   return (
     <div className="flex flex-col gap-6">
       {/* Summary Cards */}
