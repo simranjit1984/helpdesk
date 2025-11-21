@@ -40,8 +40,10 @@ export default function ConfirmationModal({
   tertiaryAction,
 }: ConfirmationModalProps) {
   const handlePrimaryClick = () => {
-    primaryAction?.onClick();
-    onOpenChange(false);
+    const result = primaryAction?.onClick();
+    if (result !== false) {
+      onOpenChange(false);
+    }
   };
 
   const handleSecondaryClick = () => {
