@@ -99,13 +99,13 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       setShowBounce(true);
       previousUserDataId.current = currentUserId;
 
-      // Stop bounce animation after 2.4s (3 bounce sequences, 0.8s each)
+      // Stop bounce animation after 3.6s (3 bounce sequences, 1.2s each)
       if (bounceTimeoutRef.current) {
         clearTimeout(bounceTimeoutRef.current);
       }
       bounceTimeoutRef.current = setTimeout(() => {
         setShowBounce(false);
-      }, 2400);
+      }, 3600);
     }
 
     setIsLoading(true);
