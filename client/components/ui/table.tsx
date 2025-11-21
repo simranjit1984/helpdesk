@@ -198,15 +198,15 @@ const TableExpandCell = React.forwardRef<
   HTMLTableCellElement,
   TableExpandCellProps
 >(({ className, height = "default", ...props }, ref) => {
-  const minHeightClass = {
-    compact: "min-h-8",
-    default: "min-h-10",
-    spacious: "min-h-12",
+  const heightClass = {
+    compact: "h-8",
+    default: "h-10",
+    spacious: "h-12",
   }[height];
 
   return (
     <td ref={ref} className={cn("px-3 py-1 w-10 relative", className)} style={{ overflow: "visible" }} {...props}>
-      <div className={cn("flex items-start justify-center relative", minHeightClass)}>
+      <div className={cn("flex items-center justify-center relative", heightClass)}>
         {props.children}
       </div>
     </td>
