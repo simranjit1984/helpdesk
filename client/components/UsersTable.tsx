@@ -938,6 +938,7 @@ export default function UsersTable({
           if (!open) {
             setSelectedUserForOrganization(null);
             setSelectedOrganization("");
+            setOrganizationError("");
           }
         }}
         title="Select user's organization"
