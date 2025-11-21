@@ -1549,8 +1549,10 @@ export default function UserDetail() {
               description: event.description,
             })),
           }}
-          isOpen={true}
+          isOpen={!aiAssistantMinimized}
           isSideSheetOpen={!!openSideSheet}
+          selectedCard={selectedCardForReview}
+          events={events}
         />
       )}
 
