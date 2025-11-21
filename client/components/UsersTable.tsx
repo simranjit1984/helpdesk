@@ -945,12 +945,17 @@ export default function UsersTable({
         primaryAction={{
           label: "Continue",
           onClick: () => {
-            if (selectedUserForOrganization && selectedOrganization) {
+            if (!selectedOrganization) {
+              setOrganizationError("Please select organization name before continue");
+              return;
+            }
+            if (selectedUserForOrganization) {
               navigate(
                 `/users/${encodeURIComponent(selectedUserForOrganization.username)}?organization=${encodeURIComponent(selectedOrganization)}`
               );
               setSelectedUserForOrganization(null);
               setSelectedOrganization("");
+              setOrganizationError("");
             }
           },
         }}
