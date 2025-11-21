@@ -166,8 +166,8 @@ export default function AuthenticatorActivityDashboard({
         </div>
 
         {/* Failed Events Card */}
-        <div className="bg-white border border-bluegrey-100 rounded-lg p-4">
-          <div className="flex items-start justify-between">
+        <div className="bg-white border border-bluegrey-100 rounded-lg p-4 flex flex-col">
+          <div className="flex items-start justify-between mb-auto">
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
                 Failed Events
@@ -178,9 +178,25 @@ export default function AuthenticatorActivityDashboard({
             </div>
             <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
           </div>
-          <p className="text-xs text-bluegrey-600 mt-2">
-            {stats.failureCount > 0 ? "Review failed attempts" : "No failures detected"}
-          </p>
+          <div className="flex items-end justify-between mt-2">
+            <p className="text-xs text-bluegrey-600">
+              {stats.failureCount > 0 ? "Review failed attempts" : "No failures detected"}
+            </p>
+            <button
+              onClick={() =>
+                onReviewCard?.("failedEvents", {
+                  failureCount: stats.failureCount,
+                  successCount: stats.successCount,
+                  totalCount: stats.totalCount,
+                })
+              }
+              className="p-1.5 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
+              title="Review with AI Assistant"
+              type="button"
+            >
+              <Brain className="h-4 w-4 text-blue-600" />
+            </button>
+          </div>
         </div>
 
         {/* Active Authenticators Card */}
