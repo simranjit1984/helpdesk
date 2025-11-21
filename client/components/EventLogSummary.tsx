@@ -271,9 +271,9 @@ export default function EventLogSummary({
                   ) : summary.status === "failure" ? (
                     <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
                   ) : summary.status === "warning" ? (
-                    <AlertTriangle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
-                  ) : summary.status === "mixed" ? (
                     <AlertTriangle className="h-4 w-4 text-orange-600 flex-shrink-0" />
+                  ) : summary.status === "mixed" ? (
+                    <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0" />
                   ) : summary.status === "informative" ? (
                     <Info className="h-4 w-4 text-blue-600 flex-shrink-0" />
                   ) : null;
