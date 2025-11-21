@@ -108,13 +108,13 @@ const MOCK_ACTORS = [
 ];
 
 const MOCK_DESCRIPTIONS = [
-  // Success events (35 - most common)
+  // Success events (40 - most common)
   "User has successfully logged into the admin console.",
-  "Access token created via provided authorization code.",
+  "Access token created successfully via provided authorization code.",
   "User password was changed successfully.",
   "User account was created successfully.",
-  "Permission was granted to user.",
-  "User role was assigned successfully.",
+  "Permission was successfully granted to user.",
+  "User role was successfully assigned.",
   "Email verification completed successfully.",
   "Two-factor authentication enabled successfully.",
   "Session established successfully.",
@@ -131,19 +131,24 @@ const MOCK_DESCRIPTIONS = [
   "Data synchronization completed successfully.",
   "Security scan completed successfully.",
   "User password reset completed successfully.",
-  "Multi-factor authentication setup completed.",
+  "Multi-factor authentication setup completed successfully.",
   "Service health check passed successfully.",
   "Compliance verification completed successfully.",
   "User authentication verified successfully.",
   "MFA challenge completed successfully.",
   "SSH key provisioned successfully.",
-  "Account unlock successful.",
+  "Account unlocked successfully.",
   "Credentials validated successfully.",
-  "Token refresh successful.",
-  "Login attempt successful.",
-  "Access request approved.",
-  "Service health restored.",
+  "Token refresh completed successfully.",
+  "Login attempt completed successfully.",
+  "Access request approved successfully.",
+  "Service health restored successfully.",
   "Database migration completed successfully.",
+  "User provision completed successfully.",
+  "Encryption key rotation completed successfully.",
+  "Audit trail generated successfully.",
+  "User data export completed successfully.",
+  "System backup created successfully.",
 
   // Informative events (20)
   "Updated identity schema attribute.",
