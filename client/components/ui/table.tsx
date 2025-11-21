@@ -133,10 +133,10 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
 
 const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
   ({ className, sticky = false, height = "default", ...props }, ref) => {
-    const heightClass = {
-      compact: "h-8",
-      default: "h-10",
-      spacious: "h-12",
+    const minHeightClass = {
+      compact: "min-h-8",
+      default: "min-h-10",
+      spacious: "min-h-12",
     }[height];
 
     return (
@@ -152,8 +152,8 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
       >
         <div
           className={cn(
-            "flex items-start whitespace-nowrap overflow-visible",
-            heightClass,
+            "flex items-start overflow-visible",
+            minHeightClass,
           )}
         >
           {props.children}
