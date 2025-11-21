@@ -876,7 +876,7 @@ export default function UserDetail() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col">
                   {/* Activity Dashboard */}
                   <AuthenticatorActivityDashboard
                     events={events}
@@ -885,7 +885,7 @@ export default function UserDetail() {
 
                   {/* Render Authenticators */}
                   {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
-                    <>
+                    <div>
                       <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         Authenticators
                       </h2>
@@ -894,13 +894,13 @@ export default function UserDetail() {
                           .filter(auth => allAuthenticators.authenticators.includes(auth))
                           .map(auth => renderAuthenticatorCard(auth))}
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {/* Render External Identity Providers */}
                   {userAuthenticators.some(auth => allAuthenticators.externalProviders.includes(auth)) && (
-                    <>
-                      <h2 className="text-xl font-semibold text-blue-500 mb-4 mt-10">
+                    <div className="mt-10">
+                      <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         External Identity Providers
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
@@ -908,13 +908,13 @@ export default function UserDetail() {
                           .filter(auth => allAuthenticators.externalProviders.includes(auth))
                           .map(auth => renderAuthenticatorCard(auth))}
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {/* Render Passkeys */}
                   {userAuthenticators.some(auth => allAuthenticators.passkeys.includes(auth)) && (
-                    <>
-                      <h2 className="text-xl font-semibold text-blue-500 mb-4 mt-10">
+                    <div className="mt-10">
+                      <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         Passkeys
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
@@ -922,7 +922,7 @@ export default function UserDetail() {
                           .filter(auth => allAuthenticators.passkeys.includes(auth))
                           .map(auth => renderAuthenticatorCard(auth))}
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               )}
