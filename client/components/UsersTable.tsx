@@ -952,7 +952,7 @@ export default function UsersTable({
             }
           },
         }}
-        secondaryAction={{
+        tertiaryAction={{
           label: "Cancel",
           onClick: () => {
             setSelectedUserForOrganization(null);
