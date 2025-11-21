@@ -131,16 +131,12 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
   height?: "compact" | "default" | "spacious";
 }
 
-interface TableCellExtendedProps extends TableCellProps {
-  multiline?: boolean;
-}
-
-const TableCell = React.forwardRef<HTMLTableCellElement, TableCellExtendedProps>(
-  ({ className, sticky = false, height = "default", multiline = false, ...props }, ref) => {
-    const minHeightClass = {
-      compact: "min-h-8",
-      default: "min-h-10",
-      spacious: "min-h-12",
+const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
+  ({ className, sticky = false, height = "default", ...props }, ref) => {
+    const heightClass = {
+      compact: "h-8",
+      default: "h-10",
+      spacious: "h-12",
     }[height];
 
     return (
@@ -156,10 +152,8 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellExtendedProps>
       >
         <div
           className={cn(
-            "flex items-start",
-            !multiline && "whitespace-nowrap overflow-hidden",
-            multiline && "overflow-visible",
-            minHeightClass,
+            "flex items-center whitespace-nowrap overflow-hidden",
+            heightClass,
           )}
         >
           {props.children}
