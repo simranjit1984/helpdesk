@@ -34,6 +34,7 @@ export default function ConfirmationModal({
   onOpenChange,
   title,
   description,
+  children,
   primaryAction,
   secondaryAction,
   tertiaryAction,
