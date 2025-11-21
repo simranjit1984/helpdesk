@@ -161,7 +161,7 @@ export default function AuthenticatorActivityDashboard({
                 {stats.uniqueAuthenticators}
               </p>
             </div>
-            <div className="h-5 w-5 bg-blue-100 rounded flex-shrink-0" />
+            <Shield className="h-5 w-5 text-blue-600 flex-shrink-0" />
           </div>
           <p className="text-xs text-bluegrey-600 mt-2">
             in use
