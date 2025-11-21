@@ -84,15 +84,27 @@ export const generateTraceSummary = (events: Event[]): EventSummaryData => {
   const hasWarnings = warningCount > sortedEvents.length / 2;
 
   const hasInformative = sortedEvents.some(
-    (e) =>
-      e.description?.toLowerCase().includes("updated") ||
-      e.description?.toLowerCase().includes("requested") ||
-      e.description?.toLowerCase().includes("accessed") ||
-      e.description?.toLowerCase().includes("initiated") ||
-      e.description?.toLowerCase().includes("completed") ||
-      e.description?.toLowerCase().includes("logged") ||
-      e.description?.toLowerCase().includes("monitored") ||
-      e.description?.toLowerCase().includes("synchronized")
+    (e) => {
+      const desc = e.description?.toLowerCase() || "";
+      // Only mark as informative if it doesn't have success or error keywords
+      const hasSuccessKeyword = desc.includes("successfully") || desc.includes("completed successfully");
+      const hasErrorKeyword = desc.includes("failed") || desc.includes("error") || desc.includes("database") || desc.includes("unavailable");
+
+      if (hasSuccessKeyword || hasErrorKeyword) return false;
+
+      return (
+        desc.includes("updated") ||
+        desc.includes("requested") ||
+        desc.includes("accessed") ||
+        desc.includes("initiated") ||
+        desc.includes("logged") ||
+        desc.includes("monitored") ||
+        desc.includes("synchronized") ||
+        desc.includes("tracked") ||
+        desc.includes("recorded") ||
+        desc.includes("reviewed")
+      );
+    }
   );
 
   // Build the summary text
