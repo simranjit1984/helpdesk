@@ -91,12 +91,22 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   useEffect(() => {
     // Check if this is a new user (userData changed)
     const currentUserId = userData.id || userData.email || "";
-    const isNewUser = currentUserId && previousUserDataId !== currentUserId;
+    const isNewUser = currentUserId && previousUserDataId.current !== currentUserId;
 
     // Only highlight if we're switching to a new user with content (not empty userData)
     if (isNewUser && currentUserId) {
       setHasNewContent(true);
-      setPreviousUserDataId(currentUserId);
+      setShowBounce(true);
+      previousUserDataId.current = currentUserId;
+
+      // Stop bounce animation after 0.8s (one bounce cycle)
+      // This allows for 3 bounces total since useEffect might fire multiple times
+      if (bounceTimeoutRef.current) {
+        clearTimeout(bounceTimeoutRef.current);
+      }
+      bounceTimeoutRef.current = setTimeout(() => {
+        setShowBounce(false);
+      }, 800);
     }
 
     setIsLoading(true);
