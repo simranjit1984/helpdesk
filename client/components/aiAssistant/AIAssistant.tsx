@@ -129,7 +129,12 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
       }
     }, 1000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (bounceTimeoutRef.current) {
+        clearTimeout(bounceTimeoutRef.current);
+      }
+    };
   }, [userData]);
 
   // Auto-scroll to latest message
