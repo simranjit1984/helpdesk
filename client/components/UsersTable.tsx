@@ -864,9 +864,15 @@ export default function UsersTable({
                 <TableCell sticky className="w-56">
                   <button
                     type="button"
-                    onClick={() =>
-                      navigate(`/users/${encodeURIComponent(user.username)}`)
-                    }
+                    onClick={() => {
+                      if (user.organizations.length > 1) {
+                        setSelectedUserForOrganization(user);
+                      } else {
+                        navigate(
+                          `/users/${encodeURIComponent(user.username)}?organization=${encodeURIComponent(user.organizations[0])}`
+                        );
+                      }
+                    }}
                     className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left w-full"
                   >
                     {user.username}
