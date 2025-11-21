@@ -10,22 +10,22 @@ const glowStyle = `
     0% {
       transform: translateY(0);
     }
-    10% {
+    6% {
       transform: translateY(-12px);
     }
-    20% {
+    12% {
+      transform: translateY(0);
+    }
+    18% {
+      transform: translateY(-8px);
+    }
+    24% {
       transform: translateY(0);
     }
     30% {
-      transform: translateY(-8px);
-    }
-    40% {
-      transform: translateY(0);
-    }
-    50% {
       transform: translateY(-4px);
     }
-    60% {
+    36% {
       transform: translateY(0);
     }
     100% {
@@ -34,7 +34,7 @@ const glowStyle = `
   }
 
   .ai-assistant-bounce {
-    animation: button-bounce 0.8s ease-out 3 forwards;
+    animation: button-bounce 1.2s ease-out 3 forwards;
   }
 `;
 
