@@ -976,7 +976,10 @@ export default function UsersTable({
             </Label>
             <Select
               value={selectedOrganization}
-              onValueChange={setSelectedOrganization}
+              onValueChange={(value) => {
+                setSelectedOrganization(value);
+                setOrganizationError("");
+              }}
             >
               <SelectTrigger className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto">
                 <SelectValue placeholder="Select an organization" />
@@ -989,6 +992,9 @@ export default function UsersTable({
                 ))}
               </SelectContent>
             </Select>
+            {organizationError && (
+              <p className="text-sm text-red-500">{organizationError}</p>
+            )}
           </div>
         )}
       </ConfirmationModal>
