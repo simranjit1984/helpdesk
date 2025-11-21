@@ -723,6 +723,7 @@ export default function UsersTable({
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [selectedUserForOrganization, setSelectedUserForOrganization] =
     useState<User | null>(null);
+  const [selectedOrganization, setSelectedOrganization] = useState<string>("");
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
