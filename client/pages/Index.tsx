@@ -48,7 +48,7 @@ export default function Index() {
                     { value: "firstName", label: "First name" },
                     { value: "lastName", label: "Last name" },
                     { value: "phoneNumber", label: "Phone number" },
-                    { value: "dateCreated", label: "Date created" },
+                    { value: "organizations", label: "Organization" },
                     { value: "status", label: "Status" },
                   ]}
                   columnOptions={{
