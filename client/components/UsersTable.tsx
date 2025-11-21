@@ -930,20 +930,54 @@ export default function UsersTable({
           </TableContent>
         </TableScroll>
       </Table>
-      {selectedUserForOrganization && (
-        <OrganizationSelectionModal
-          isOpen={selectedUserForOrganization !== null}
-          organizations={selectedUserForOrganization.organizations}
-          userName={`${selectedUserForOrganization.firstName} ${selectedUserForOrganization.lastName}`}
-          onContinue={(selectedOrganization) => {
-            navigate(
-              `/users/${encodeURIComponent(selectedUserForOrganization.username)}?organization=${encodeURIComponent(selectedOrganization)}`
-            );
+      <ConfirmationModal
+        open={selectedUserForOrganization !== null}
+        onOpenChange={(open) => {
+          if (!open) {
             setSelectedUserForOrganization(null);
-          }}
-          onCancel={() => setSelectedUserForOrganization(null)}
-        />
-      )}
+            setSelectedOrganization("");
+          }
+        }}
+        title="Select Organization"
+        description={`${selectedUserForOrganization?.firstName} ${selectedUserForOrganization?.lastName} belongs to multiple organizations. Please select the organization context for viewing their details.`}
+        primaryAction={{
+          label: "Continue",
+          onClick: () => {
+            if (selectedUserForOrganization && selectedOrganization) {
+              navigate(
+                `/users/${encodeURIComponent(selectedUserForOrganization.username)}?organization=${encodeURIComponent(selectedOrganization)}`
+              );
+              setSelectedUserForOrganization(null);
+              setSelectedOrganization("");
+            }
+          },
+        }}
+        secondaryAction={{
+          label: "Cancel",
+          onClick: () => {
+            setSelectedUserForOrganization(null);
+            setSelectedOrganization("");
+          },
+        }}
+      >
+        {selectedUserForOrganization && (
+          <Select
+            value={selectedOrganization}
+            onValueChange={setSelectedOrganization}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select an organization" />
+            </SelectTrigger>
+            <SelectContent>
+              {selectedUserForOrganization.organizations.map((org) => (
+                <SelectItem key={org} value={org}>
+                  {org}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </ConfirmationModal>
     </>
   );
 }
