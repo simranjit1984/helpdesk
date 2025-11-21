@@ -948,7 +948,7 @@ export default function UsersTable({
           onClick: () => {
             if (!selectedOrganization) {
               setOrganizationError("Please select organization name before continue");
-              return;
+              return false;
             }
             if (selectedUserForOrganization) {
               navigate(
