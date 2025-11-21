@@ -143,7 +143,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
       <td
         ref={ref}
         className={cn(
-          "px-4 py-1",
+          "px-4 py-2",
           sticky &&
             "sticky left-0 z-10 bg-white border-r border-bluegrey-100 shadow-[1px_0_3px_rgba(0,0,0,0.05)]",
           className,
@@ -152,7 +152,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
       >
         <div
           className={cn(
-            "flex items-center whitespace-nowrap overflow-hidden",
+            "flex items-start whitespace-nowrap overflow-visible",
             heightClass,
           )}
         >
