@@ -406,12 +406,12 @@ export default function UserDetail() {
             country: "Netherlands",
             startDate: "2025-04-18",
             endDate: "2025-04-18",
-            organization: "InsurCar",
+            organization: organizationFromUrl || "InsurCar",
             status: foundUser.status,
             accessRoles: foundUser.accessRoles || [],
           }
         : null,
-    [foundUser],
+    [foundUser, organizationFromUrl],
   );
 
   // Generate authenticators for the user based on their email
