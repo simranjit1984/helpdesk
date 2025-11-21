@@ -130,16 +130,17 @@ export const generateTraceSummary = (events: Event[]): EventSummaryData => {
     summaryText += " Operations logged and monitored.";
   }
 
-  // Determine status - prioritize errors, then warnings, then success, then informative
+  // Determine status - success is the default unless there are errors
   let status: "success" | "failure" | "warning" | "informative" | "mixed" | "neutral" = "neutral";
   if (hasErrors && hasSuccess) {
     status = "mixed";
   } else if (hasErrors) {
     status = "failure";
+  } else if (hasSuccess) {
+    // Success is primary - only show warning if no successes and majority are warnings
+    status = "success";
   } else if (hasWarnings) {
     status = "warning";
-  } else if (hasSuccess) {
-    status = "success";
   } else if (hasInformative) {
     status = "informative";
   }
