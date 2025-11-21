@@ -880,7 +880,7 @@ export default function UserDetail() {
                 <div className="flex flex-col">
                   {/* Activity Dashboard - Highlighted Section */}
                   <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-100/40 rounded-lg p-6 mb-8">
-                    <h2 className="text-xl font-semibold text-blue-500 mb-6">
+                    <h2 className="text-xl font-semibold text-blue-500 mb-4">
                       Activity Overview
                     </h2>
                     <AuthenticatorActivityDashboard
