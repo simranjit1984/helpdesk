@@ -90,24 +90,6 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
     localStorage.setItem("aiAssistantMinimized", JSON.stringify(isMinimized));
   }, [isMinimized]);
 
-  // Handle isOpen prop changes from parent
-  useEffect(() => {
-    if (isOpen !== undefined && isOpen !== !isMinimized) {
-      if (isOpen && isMinimized) {
-        // Should be open but is minimized - restore it
-        setShowAnimation(true);
-        setIsMinimized(false);
-        setHasNewContent(false);
-        setTimeout(() => setShowAnimation(false), 300);
-      } else if (!isOpen && !isMinimized) {
-        // Should be minimized but is open - minimize it
-        setShowAnimation(true);
-        setIsMinimized(true);
-        setTimeout(() => setShowAnimation(false), 300);
-      }
-    }
-  }, [isOpen, isMinimized]);
-
   // Generate insights on mount
   useEffect(() => {
     // Check if this is a new user (userData changed)
