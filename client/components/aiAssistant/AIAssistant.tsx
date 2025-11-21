@@ -55,7 +55,7 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }: AIAssistantProps) => {
+export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, selectedCard, events = [] }: AIAssistantProps) => {
   // Initialize from localStorage if available, otherwise use isOpen prop
   const [isMinimized, setIsMinimized] = useState(() => {
     const saved = localStorage.getItem("aiAssistantMinimized");
