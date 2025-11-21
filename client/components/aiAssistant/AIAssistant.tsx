@@ -251,7 +251,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
           onClick={handleRestore}
           className={cn(
             "fixed bottom-6 z-40 h-14 w-14 rounded-full bg-[#041295] text-white hover:bg-[#041295]/90 transition-all duration-300 flex items-center justify-center",
-            hasNewContent && "ai-assistant-glow",
+            showBounce && "ai-assistant-bounce",
             showAnimation && "animate-[slide-up-in_0.3s_ease-out_forwards]"
           )}
           style={{ right: rightPosition }}
