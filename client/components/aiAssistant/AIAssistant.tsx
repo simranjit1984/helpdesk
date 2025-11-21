@@ -3,6 +3,7 @@ import { Minimize2, Brain, Send } from "lucide-react";
 import { InsightCard } from "./InsightCard";
 import { generateUserInsights, UserData, Insight } from "./insightsGenerator";
 import { cn } from "@/lib/utils";
+import { Event } from "@/components/mockEvents";
 
 // Bounce animation styles
 const glowStyle = `
