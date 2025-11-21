@@ -122,11 +122,11 @@ export default function AuthenticatorActivityDashboard({
                   latestEvent: stats.latestEvent,
                 })
               }
-              className="p-1.5 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
+              className="p-1 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
               title="Review with AI Assistant"
               type="button"
             >
-              <Brain className="h-4 w-4 text-blue-600" />
+              <Brain className="h-6 w-6 text-blue-600" />
             </button>
           </div>
         </div>
