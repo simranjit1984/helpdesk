@@ -53,7 +53,10 @@ export const generateTraceSummary = (events: Event[]): EventSummaryData => {
       e.eventType.toLowerCase().includes("denied") ||
       e.eventType.toLowerCase().includes("rejected") ||
       e.description?.toLowerCase().includes("failed") ||
-      e.description?.toLowerCase().includes("error")
+      e.description?.toLowerCase().includes("error") ||
+      e.description?.toLowerCase().includes("database error") ||
+      e.description?.toLowerCase().includes("service temporarily unavailable") ||
+      e.description?.toLowerCase().includes("unauthorized")
   );
 
   const hasSuccess = sortedEvents.some(
@@ -62,7 +65,33 @@ export const generateTraceSummary = (events: Event[]): EventSummaryData => {
       e.eventType.toLowerCase().includes("created") ||
       e.eventType.toLowerCase().includes("granted") ||
       e.eventType.toLowerCase().includes("assigned") ||
-      e.description?.toLowerCase().includes("successfully")
+      e.description?.toLowerCase().includes("successfully") ||
+      e.description?.toLowerCase().includes("completed successfully")
+  );
+
+  const hasWarnings = sortedEvents.some(
+    (e) =>
+      e.description?.toLowerCase().includes("warning") ||
+      e.description?.toLowerCase().includes("repeated failed") ||
+      e.description?.toLowerCase().includes("unusual activity") ||
+      e.description?.toLowerCase().includes("expiring") ||
+      e.description?.toLowerCase().includes("approaching") ||
+      e.description?.toLowerCase().includes("weak password") ||
+      e.description?.toLowerCase().includes("nearing expiration") ||
+      e.description?.toLowerCase().includes("detected") ||
+      e.description?.toLowerCase().includes("lockout")
+  );
+
+  const hasInformative = sortedEvents.some(
+    (e) =>
+      e.description?.toLowerCase().includes("updated") ||
+      e.description?.toLowerCase().includes("requested") ||
+      e.description?.toLowerCase().includes("accessed") ||
+      e.description?.toLowerCase().includes("initiated") ||
+      e.description?.toLowerCase().includes("completed") ||
+      e.description?.toLowerCase().includes("logged") ||
+      e.description?.toLowerCase().includes("monitored") ||
+      e.description?.toLowerCase().includes("synchronized")
   );
 
   // Build the summary text
