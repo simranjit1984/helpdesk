@@ -167,22 +167,17 @@ const MOCK_DESCRIPTIONS = [
   "System configuration reviewed.",
   "Device fingerprint updated.",
 
-  // Warning events (15 - less common)
-  "Failed SMS OTP authentication attempt",
-  "Failed Email OTP authentication attempt",
-  "SMS OTP lockout - too many failed attempts",
-  "TOTP authentication failed - invalid code",
-  "QR code Enrollment failed - invalid QR code",
-  "Repeated failed login attempts detected",
+  // Warning events (10 - less common)
   "Token expiration warning - renewal required",
   "API rate limit approaching",
   "Certificate expiring soon - renewal needed",
   "User account nearing expiration",
   "API connectivity warning - latency increased",
   "Storage quota 80% utilized",
-  "Unusual activity detected for user",
+  "Repeated failed login attempts detected",
   "Configuration validation warning",
   "Weak password policy detected",
+  "Session timeout warning - re-authentication required",
 
   // Error events (12 - least common)
   "Database connection failed.",
