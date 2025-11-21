@@ -108,7 +108,7 @@ const MOCK_ACTORS = [
 ];
 
 const MOCK_DESCRIPTIONS = [
-  // Success events (25 - most common)
+  // Success events (35 - most common)
   "User has successfully logged into the admin console.",
   "Access token created via provided authorization code.",
   "User password was changed successfully.",
@@ -134,6 +134,16 @@ const MOCK_DESCRIPTIONS = [
   "Multi-factor authentication setup completed.",
   "Service health check passed successfully.",
   "Compliance verification completed successfully.",
+  "User authentication verified successfully.",
+  "MFA challenge completed successfully.",
+  "SSH key provisioned successfully.",
+  "Account unlock successful.",
+  "Credentials validated successfully.",
+  "Token refresh successful.",
+  "Login attempt successful.",
+  "Access request approved.",
+  "Service health restored.",
+  "Database migration completed successfully.",
 
   // Informative events (20)
   "Updated identity schema attribute.",
