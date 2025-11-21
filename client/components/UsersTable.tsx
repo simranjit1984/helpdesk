@@ -885,7 +885,7 @@ export default function UsersTable({
                   </span>
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col gap-2">
                     {user.organizations.map((org, index) => (
                       <span key={index} className="text-sm text-bluegrey-900">
                         {org}
