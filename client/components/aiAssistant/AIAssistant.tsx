@@ -178,6 +178,116 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
     }
   }, [isSideSheetOpen]);
 
+  // Generate insights from events based on card type
+  const generateCardInsights = (cardType: string, data: any, allEvents: Event[]) => {
+    const getEventStatus = (description: string): "success" | "failure" => {
+      const lowerDesc = description?.toLowerCase() || "";
+      if (lowerDesc.includes("failed") || lowerDesc.includes("failure") || lowerDesc.includes("lockout") || lowerDesc.includes("invalid")) {
+        return "failure";
+      }
+      return "success";
+    };
+
+    const getAuthenticatorFromEvent = (event: Event): string | null => {
+      if (!event.description) return null;
+      const description = event.description.toLowerCase();
+      if (description.includes("sms otp")) return "SMS OTP";
+      if (description.includes("email otp")) return "Email OTP";
+      if (description.includes("totp")) return "TOTP";
+      if (description.includes("qr code")) return "QR code Enrollment";
+      if (description.includes("push") || description.includes("mfa")) return "Push MFA";
+      if (description.includes("magic link")) return "Magic link authentication";
+      if (description.includes("username") || description.includes("password")) return "Username & Password";
+      if (description.includes("google")) return "Google";
+      if (description.includes("facebook")) return "Facebook";
+      if (description.includes("apple")) return "Apple";
+      return null;
+    };
+
+    let insights = "";
+
+    switch (cardType) {
+      case "totalEvents": {
+        const eventsByType = new Map<string, number>();
+        const eventsByApp = new Map<string, number>();
+        allEvents.forEach((event) => {
+          eventsByType.set(event.eventType, (eventsByType.get(event.eventType) || 0) + 1);
+          if (event.application) {
+            eventsByApp.set(event.application, (eventsByApp.get(event.application) || 0) + 1);
+          }
+        });
+
+        const topEventType = Array.from(eventsByType.entries()).sort((a, b) => b[1] - a[1])[0];
+        const topApp = Array.from(eventsByApp.entries()).sort((a, b) => b[1] - a[1])[0];
+
+        insights = `I've analyzed ${data.totalCount} total authentication events for this user.\n\n**Key Findings:**\n- Most common event type: ${topEventType ? topEventType[0] + ` (${topEventType[1]} occurrences)` : "N/A"}\n- Primary application: ${topApp ? topApp[0] + ` (${topApp[1]} events)` : "N/A"}\n- Latest activity: ${data.latestEvent}\n\n**Recommendations:**\nReview the Event Log tab for a detailed breakdown of all authentication attempts. Look for any unusual patterns or spikes in activity that might indicate security concerns.`;
+        break;
+      }
+
+      case "successRate": {
+        const failureEvents = allEvents.filter(e => getEventStatus(e.description || "") === "failure");
+        const failureTypes = new Map<string, number>();
+
+        failureEvents.forEach((event) => {
+          const auth = getAuthenticatorFromEvent(event);
+          if (auth) {
+            failureTypes.set(auth, (failureTypes.get(auth) || 0) + 1);
+          }
+        });
+
+        const topFailure = Array.from(failureTypes.entries()).sort((a, b) => b[1] - a[1])[0];
+
+        const analysis = data.successRate < 70 ? "⚠️ This is a concerning success rate that needs attention." : data.successRate < 90 ? "⚠️ This could be improved. There are some authentication issues." : "✓ This is a healthy success rate.";
+
+        insights = `Success rate analysis: ${data.successRate}% (${data.successCount}/${data.totalCount} successful)\n\n${analysis}\n\n**Failure Analysis:**\n${failureEvents.length > 0 ? `- Total failures: ${failureEvents.length}\n- Most problematic authenticator: ${topFailure ? topFailure[0] + ` (${topFailure[1]} failures)` : "N/A"}\n\n**Recommendations:**\nReview failed attempts in the Event Log tab, particularly for "${topFailure?.[0]}" authenticator. Check for:\n- Invalid credentials\n- Lockout conditions\n- Configuration issues\n- User education needs` : "- No failures detected - authentication methods are working well."}`;
+        break;
+      }
+
+      case "failedEvents": {
+        const failureEvents = allEvents.filter(e => getEventStatus(e.description || "") === "failure");
+        const failuresByAuth = new Map<string, number>();
+        const recentFailures: Event[] = [];
+
+        failureEvents.forEach((event) => {
+          const auth = getAuthenticatorFromEvent(event);
+          if (auth) {
+            failuresByAuth.set(auth, (failuresByAuth.get(auth) || 0) + 1);
+          }
+          if (recentFailures.length < 3) {
+            recentFailures.push(event);
+          }
+        });
+
+        const sortedFailures = Array.from(failuresByAuth.entries()).sort((a, b) => b[1] - a[1]);
+
+        if (data.failureCount > 0) {
+          insights = `**Failed Authentication Events: ${data.failureCount}**\n\n**Failure Breakdown by Authenticator:**\n${sortedFailures.map(([auth, count]) => `- ${auth}: ${count} failures`).join("\n")}\n\n**Recent Failures:**\n${recentFailures.map((e, i) => `${i + 1}. ${e.description} (${e.date})`).join("\n")}\n\n**Recommendations:**\n- Investigate the authenticator with highest failures: "${sortedFailures[0]?.[0]}"\n- Check Event Log tab for detailed error messages\n- Consider resetting credentials if they've been compromised\n- Review user training and documentation\n- Check for system configuration or integration issues`;
+        } else {
+          insights = `✓ **No Authentication Failures Detected**\n\nAll authentication attempts for this user have been successful, indicating:\n- Strong credential practices\n- Proper authenticator configuration\n- Good user understanding of the authentication process\n\n**Recommendation:**\nContinue monitoring through the Event Log tab to maintain this security posture.`;
+        }
+        break;
+      }
+
+      case "activeAuthenticators": {
+        const authCounts = new Map<string, number>();
+        allEvents.forEach((event) => {
+          const auth = getAuthenticatorFromEvent(event);
+          if (auth) {
+            authCounts.set(auth, (authCounts.get(auth) || 0) + 1);
+          }
+        });
+
+        const sortedAuths = Array.from(authCounts.entries()).sort((a, b) => b[1] - a[1]);
+        const avgUsagePerAuth = Math.round(data.totalCount / data.uniqueAuthenticators);
+
+        insights = `**Active Authenticators: ${data.uniqueAuthenticators}**\n\n**Usage Distribution:**\n${sortedAuths.map(([auth, count]) => `- ${auth}: ${count} uses (${Math.round((count / data.totalCount) * 100)}%)`).join("\n")}\n\n**Analysis:**\n- Average events per authenticator: ${avgUsagePerAuth}\n- Most used: ${sortedAuths[0]?.[0]}\n- Least used: ${sortedAuths[sortedAuths.length - 1]?.[0]}\n\n**Recommendations:**\n- Consider removing underutilized authenticators (${sortedAuths[sortedAuths.length - 1]?.[0]})\n- Monitor primary authenticator (${sortedAuths[0]?.[0]}) for reliability\n- Check Event Log for details on specific authenticator performance\n- Consider policy adjustments if usage distribution is unbalanced`;
+        break;
+      }
+    }
+
+    return insights;
+  };
+
   // Handle card review requests
   useEffect(() => {
     if (selectedCard && selectedCard.cardType) {
@@ -189,22 +299,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
         setTimeout(() => setShowAnimation(false), 300);
       }
 
-      let cardMessage = "";
-
-      switch (selectedCard.cardType) {
-        case "totalEvents":
-          cardMessage = `I've analyzed the authentication activity for this user. There are ${selectedCard.data.totalCount} total events recorded. The most recent activity was on ${selectedCard.data.latestEvent}. This shows a consistent level of authentication activity. You can review specific events in the Event Log tab for more details.`;
-          break;
-        case "successRate":
-          cardMessage = `The success rate for authentication attempts is ${selectedCard.data.successRate}%. Out of ${selectedCard.data.totalCount} attempts, ${selectedCard.data.successCount} were successful. ${selectedCard.data.successRate < 70 ? "This indicates potential authentication issues that should be reviewed in the Event Log." : "This is a healthy success rate."}`;
-          break;
-        case "failedEvents":
-          cardMessage = `There are ${selectedCard.data.failureCount} failed authentication attempts. ${selectedCard.data.failureCount > 0 ? "I recommend reviewing these failures in the Event Log to identify patterns or issues. Failed attempts can indicate weak credentials, incorrect configurations, or potential security concerns." : "No failures detected - the authenticators are working correctly."}`;
-          break;
-        case "activeAuthenticators":
-          cardMessage = `The user has ${selectedCard.data.uniqueAuthenticators} active authenticators in use across ${selectedCard.data.totalCount} authentication events. This provides good diversity in authentication methods. Check the Event Log for details on which authenticators are used most frequently.`;
-          break;
-      }
+      const cardMessage = generateCardInsights(selectedCard.cardType, selectedCard.data, events);
 
       // Add the card review message to the chat
       const userMessage: ChatMessage = {
@@ -233,7 +328,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
         });
       }, 350);
     }
-  }, [selectedCard]);
+  }, [selectedCard, events]);
 
   // Handle keyboard shortcuts (Ctrl+K or Cmd+K, and Escape)
   useEffect(() => {
