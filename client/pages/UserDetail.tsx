@@ -878,6 +878,12 @@ export default function UserDetail() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-8">
+                  {/* Activity Dashboard */}
+                  <AuthenticatorActivityDashboard
+                    events={events}
+                    authenticatorCategories={allAuthenticators}
+                  />
+
                   {/* Render Authenticators */}
                   {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
                     <>
