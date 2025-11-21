@@ -878,14 +878,21 @@ export default function UserDetail() {
                 </div>
               ) : (
                 <div className="flex flex-col">
-                  {/* Activity Dashboard */}
-                  <AuthenticatorActivityDashboard
-                    events={events}
-                    authenticatorCategories={allAuthenticators}
-                    onReviewCard={(cardType, data) => {
-                      setSelectedCardForReview({ cardType, data });
-                    }}
-                  />
+                  {/* Activity Dashboard - Highlighted Section */}
+                  <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-100/40 rounded-lg p-6 mb-8">
+                    <div className="mb-1">
+                      <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wide">
+                        Authentication Activity Overview
+                      </h3>
+                    </div>
+                    <AuthenticatorActivityDashboard
+                      events={events}
+                      authenticatorCategories={allAuthenticators}
+                      onReviewCard={(cardType, data) => {
+                        setSelectedCardForReview({ cardType, data });
+                      }}
+                    />
+                  </div>
 
                   {/* Render Authenticators */}
                   {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
