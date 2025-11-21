@@ -96,6 +96,8 @@ import { getUserByUsername } from "@/components/UsersTable";
 export default function UserDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const organizationFromUrl = searchParams.get("organization");
   const [userAuthenticators, setUserAuthenticators] = useState<string[]>(
     []
   );
