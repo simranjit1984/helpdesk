@@ -876,11 +876,11 @@ export default function UserDetail() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-8">
                   {/* Render Authenticators */}
                   {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
                     <>
-                      <h2 className="text-xl font-semibold text-blue-500 mb-4">
+                      <h2 className="text-xl font-semibold text-blue-500">
                         Authenticators
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
@@ -894,7 +894,7 @@ export default function UserDetail() {
                   {/* Render External Identity Providers */}
                   {userAuthenticators.some(auth => allAuthenticators.externalProviders.includes(auth)) && (
                     <>
-                      <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
+                      <h2 className="text-xl font-semibold text-blue-500">
                         External Identity Providers
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
@@ -908,7 +908,7 @@ export default function UserDetail() {
                   {/* Render Passkeys */}
                   {userAuthenticators.some(auth => allAuthenticators.passkeys.includes(auth)) && (
                     <>
-                      <h2 className="text-xl font-semibold text-blue-500 mt-10 mb-4">
+                      <h2 className="text-xl font-semibold text-blue-500">
                         Passkeys
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
@@ -918,6 +918,17 @@ export default function UserDetail() {
                       </div>
                     </>
                   )}
+
+                  {/* Authenticator Event Log */}
+                  <div className="border-t border-bluegrey-100 pt-8">
+                    <h2 className="text-xl font-semibold text-blue-500 mb-6">
+                      Activity
+                    </h2>
+                    <AuthenticatorEventLog
+                      events={events}
+                      authenticatorCategories={allAuthenticators}
+                    />
+                  </div>
                 </div>
               )}
             </TabsContent>
