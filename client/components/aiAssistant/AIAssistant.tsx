@@ -163,9 +163,12 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
   // Handle card review requests
   useEffect(() => {
     if (selectedCard && selectedCard.cardType) {
-      // Restore the AI Assistant window
+      // Restore the AI Assistant window if minimized
       if (isMinimized) {
-        handleRestore();
+        setShowAnimation(true);
+        setIsMinimized(false);
+        setHasNewContent(false);
+        setTimeout(() => setShowAnimation(false), 300);
       }
 
       let cardMessage = "";
@@ -187,24 +190,32 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
 
       // Add the card review message to the chat
       const userMessage: ChatMessage = {
-        id: `card-review-user-${Date.now()}`,
+        id: `card-review-user-${selectedCard.cardType}`,
         type: "user",
         content: `Review: ${selectedCard.cardType}`,
         timestamp: new Date(),
       };
 
       const assistantMessage: ChatMessage = {
-        id: `card-review-assistant-${Date.now()}`,
+        id: `card-review-assistant-${selectedCard.cardType}`,
         type: "assistant",
         content: cardMessage,
         timestamp: new Date(),
       };
 
-      setMessages((prev) => {
-        return [...prev, userMessage, assistantMessage];
-      });
+      // Add a small delay to allow the window to restore first
+      setTimeout(() => {
+        setMessages((prev) => {
+          // Check if this message already exists
+          const exists = prev.some((msg) => msg.id === assistantMessage.id);
+          if (!exists) {
+            return [...prev, userMessage, assistantMessage];
+          }
+          return prev;
+        });
+      }, 350);
     }
-  }, [selectedCard, isMinimized]);
+  }, [selectedCard]);
 
   // Handle keyboard shortcuts (Ctrl+K or Cmd+K, and Escape)
   useEffect(() => {
