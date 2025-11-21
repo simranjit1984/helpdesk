@@ -211,14 +211,16 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false }
   };
 
   const handleRestore = () => {
-    setShowAnimation(true);
-    setIsMinimized(false);
-    setHasNewContent(false); // Clear the highlight when opening
-    setShowBounce(false); // Stop bounce animation immediately
-    // Clear pending bounce timeout
+    // Clear pending bounce timeout FIRST
     if (bounceTimeoutRef.current) {
       clearTimeout(bounceTimeoutRef.current);
     }
+    // Stop bounce animation immediately
+    setShowBounce(false);
+    setHasNewContent(false); // Clear the highlight when opening
+    // Open the window
+    setShowAnimation(true);
+    setIsMinimized(false);
     // Clear animation flag after animation completes
     setTimeout(() => setShowAnimation(false), 300);
   };
