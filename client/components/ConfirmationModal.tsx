@@ -77,6 +77,7 @@ export default function ConfirmationModal({
               {description}
             </DialogDescription>
           </div>
+          {children && <div className="px-6 space-y-4">{children}</div>}
         </div>
 
         <div className="px-6 py-4">
