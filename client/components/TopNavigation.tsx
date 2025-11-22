@@ -63,7 +63,6 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <div className="px-2 py-1.5">
-                <p className="text-xs text-bluegrey-500 mb-1">Tenant</p>
                 <p className="text-sm font-semibold text-bluegrey-900">
                   Lucia Anderson
                 </p>
