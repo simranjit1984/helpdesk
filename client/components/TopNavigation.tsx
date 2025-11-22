@@ -1,5 +1,12 @@
-import { ChevronDown, Menu } from "lucide-react";
+import { Menu, Settings, LogOut, User } from "lucide-react";
 import NotificationPanel from "./NotificationPanel";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface TopNavigationProps {
   onMenuClick: () => void;
