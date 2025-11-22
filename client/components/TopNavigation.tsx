@@ -63,19 +63,16 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <div className="px-2 py-1.5">
+                <p className="text-xs text-bluegrey-500 mb-1">Tenant</p>
                 <p className="text-sm font-semibold text-bluegrey-900">
                   Lucia Anderson
                 </p>
-                <p className="text-xs text-bluegrey-600">Administrator</p>
+                <p className="text-xs text-bluegrey-600">InsurCar Inc.</p>
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
                 <User className="w-4 h-4" />
                 <span>Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
-                <Settings className="w-4 h-4" />
-                <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer flex items-center gap-2 text-red-600 hover:bg-red-50">
