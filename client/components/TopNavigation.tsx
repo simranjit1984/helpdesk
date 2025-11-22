@@ -1,4 +1,5 @@
 import { ChevronDown, Menu } from "lucide-react";
+import NotificationPanel from "./NotificationPanel";
 
 interface TopNavigationProps {
   onMenuClick: () => void;
@@ -42,6 +43,8 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
             </span>
             <ChevronDown className="w-5 h-5 text-bluegrey-700" />
           </button>
+
+          <NotificationPanel />
 
           <button className="flex items-center gap-2 h-10 px-0.5 rounded-sm hover:bg-bluegrey-25 transition-colors">
             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
