@@ -53,12 +53,37 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
 
           <NotificationPanel />
 
-          <button className="flex items-center gap-2 h-10 px-0.5 rounded-sm hover:bg-bluegrey-25 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
-              <span className="text-white font-bold text-base">L</span>
-            </div>
-            <ChevronDown className="w-5 h-5 text-blue-500" />
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 h-10 px-0.5 rounded-sm hover:bg-bluegrey-25 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                  <span className="text-white font-bold text-base">L</span>
+                </div>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <div className="px-2 py-1.5">
+                <p className="text-sm font-semibold text-bluegrey-900">
+                  Lucia Anderson
+                </p>
+                <p className="text-xs text-bluegrey-600">Administrator</p>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                <User className="w-4 h-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer flex items-center gap-2 text-red-600 hover:bg-red-50">
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>
