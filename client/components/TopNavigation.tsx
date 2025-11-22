@@ -1,4 +1,4 @@
-import { Menu, Settings, LogOut, User } from "lucide-react";
+import { Menu, Settings, LogOut, User, ChevronDown } from "lucide-react";
 import NotificationPanel from "./NotificationPanel";
 import {
   DropdownMenu,
