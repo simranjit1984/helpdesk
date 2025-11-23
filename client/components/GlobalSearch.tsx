@@ -250,7 +250,7 @@ export default function GlobalSearch() {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <div className="relative hidden lg:block w-64">
+        <div className="relative hidden lg:block flex-1 max-w-2xl">
           <div className="flex items-center gap-2 px-3 py-2 border border-bluegrey-300 rounded-sm bg-white transition-all hover:border-bluegrey-500 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
             <Search className="w-4 h-4 text-bluegrey-500 flex-shrink-0" />
             <input
