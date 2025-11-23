@@ -1,5 +1,6 @@
 import { Menu, LogOut, User, ChevronDown } from "lucide-react";
 import NotificationPanel from "./NotificationPanel";
+import GlobalSearch from "./GlobalSearch";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
