@@ -52,6 +52,8 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
             <ChevronDown className="w-5 h-5 text-bluegrey-700" />
           </button>
 
+          <GlobalSearch />
+
           <NotificationPanel />
 
           <DropdownMenu>
