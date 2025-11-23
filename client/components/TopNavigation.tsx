@@ -16,7 +16,7 @@ interface TopNavigationProps {
 export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
   return (
     <div className="fixed top-0 left-0 right-0 h-16 bg-white shadow-[0_2px_4px_0_rgba(1,5,50,0.04),0_4px_5px_0_rgba(1,5,50,0.04),0_1px_10px_0_rgba(1,5,50,0.08)] z-50">
-      <div className="flex items-center justify-between h-full px-3">
+      <div className="flex items-center h-full px-3 gap-4">
         <div className="flex items-center gap-3 lg:gap-12 h-full">
           <button
             onClick={onMenuClick}
@@ -40,7 +40,11 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4 h-10 pl-2 sm:pl-4">
+        <div className="flex-1 flex items-center justify-center h-10 px-2">
+          <GlobalSearch />
+        </div>
+
+        <div className="flex items-center gap-2 sm:gap-4 h-10">
           <button className="hidden sm:block h-10 px-3 rounded-sm hover:bg-bluegrey-25 transition-colors">
             <span className="text-sm font-medium text-bluegrey-700">Docs</span>
           </button>
@@ -51,8 +55,6 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
             </span>
             <ChevronDown className="w-5 h-5 text-bluegrey-700" />
           </button>
-
-          <GlobalSearch />
 
           <NotificationPanel />
 
