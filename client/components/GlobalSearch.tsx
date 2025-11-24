@@ -240,6 +240,25 @@ export default function GlobalSearch() {
     setGroupedResults(grouped);
   }, [searchQuery]);
 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "/" && !isOpen) {
+      e.preventDefault();
+      inputRef.current?.focus();
+      setIsOpen(true);
+    }
+    if (e.key === "Escape" && isOpen) {
+      setIsOpen(false);
+      inputRef.current?.blur();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   const totalResults = Object.values(groupedResults).reduce((sum, items) => sum + items.length, 0);
 
   const handleClear = () => {
