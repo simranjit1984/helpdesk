@@ -241,10 +241,7 @@ export default function GlobalSearch() {
   }, [searchQuery]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-    const isCtrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
-
-    if (isCtrlOrCmd && e.shiftKey && e.key === "S" && !isOpen) {
+    if (e.ctrlKey && e.shiftKey && e.key === "S" && !isOpen) {
       e.preventDefault();
       inputRef.current?.focus();
       setIsOpen(true);
