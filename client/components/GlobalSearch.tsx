@@ -278,7 +278,7 @@ export default function GlobalSearch() {
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search everything... (press / to search)"
+              placeholder="Search everything... (Cmd/Ctrl + Shift + S)"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
