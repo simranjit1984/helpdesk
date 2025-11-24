@@ -278,7 +278,7 @@ export default function GlobalSearch() {
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search everything... (Cmd/Ctrl + Shift + S)"
+              placeholder="Search everything..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -289,15 +289,20 @@ export default function GlobalSearch() {
               className="flex-1 text-sm text-bluegrey-700 placeholder:text-bluegrey-500 outline-none bg-transparent focus:outline-none focus:ring-0"
               autoComplete="off"
             />
-            {searchQuery && (
-              <button
-                onClick={handleClear}
-                className="text-bluegrey-400 hover:text-bluegrey-600 transition-colors"
-                aria-label="Clear search"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 text-xs font-semibold text-bluegrey-600 bg-bluegrey-100 border border-bluegrey-300 rounded-md whitespace-nowrap">
+                ⌘S
+              </kbd>
+              {searchQuery && (
+                <button
+                  onClick={handleClear}
+                  className="text-bluegrey-400 hover:text-bluegrey-600 transition-colors flex-shrink-0"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </PopoverTrigger>
