@@ -287,7 +287,7 @@ export default function GlobalSearch() {
               autoComplete="off"
             />
             <div className="flex items-center gap-2">
-              <kbd className="px-2 py-1 text-xs font-semibold text-bluegrey-600 bg-bluegrey-100 border border-bluegrey-300 rounded-md whitespace-nowrap">
+              <kbd className="px-2 py-1 text-xs text-bluegrey-500 bg-transparent border-0 rounded-md whitespace-nowrap">
                 Ctrl+Shift+S
               </kbd>
               {searchQuery && (
