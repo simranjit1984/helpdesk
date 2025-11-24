@@ -288,7 +288,7 @@ export default function GlobalSearch() {
             />
             <div className="flex items-center gap-2">
               <kbd className="px-2 py-1 text-xs font-semibold text-bluegrey-600 bg-bluegrey-100 border border-bluegrey-300 rounded-md whitespace-nowrap">
-                ⌘S
+                Ctrl+⇧S
               </kbd>
               {searchQuery && (
                 <button
