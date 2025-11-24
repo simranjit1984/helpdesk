@@ -275,7 +275,7 @@ export default function GlobalSearch() {
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search everything..."
+              placeholder="Search everything... (press / to search)"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -283,7 +283,6 @@ export default function GlobalSearch() {
                   setIsOpen(true);
                 }
               }}
-              onFocus={() => setIsOpen(true)}
               className="flex-1 text-sm text-bluegrey-700 placeholder:text-bluegrey-500 outline-none bg-transparent"
               autoComplete="off"
             />
