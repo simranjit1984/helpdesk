@@ -283,7 +283,7 @@ export default function GlobalSearch() {
                   setIsOpen(true);
                 }
               }}
-              className="flex-1 text-sm text-bluegrey-700 placeholder:text-bluegrey-500 outline-none bg-transparent"
+              className="flex-1 text-sm text-bluegrey-700 placeholder:text-bluegrey-500 outline-none bg-transparent focus:outline-none focus:ring-0"
               autoComplete="off"
             />
             {searchQuery && (
