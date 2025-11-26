@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown, ChevronRight, Filter, AlertCircle, CheckCircle, AlertTriangle, Info } from "lucide-react";
+import { ChevronDown, ChevronRight, Filter, AlertCircle, CheckCircle, AlertTriangle, Info, Lightbulb } from "lucide-react";
 import {
   Table,
   TableScroll,
@@ -17,6 +17,7 @@ import {
 } from "./ui/table";
 import { generateMockEvents, generateUUID, Event, EventAction } from "./mockEvents";
 import { generateTraceSummary, generateEventSummary } from "./eventSummaryGenerator";
+import { parseNaturalLanguageQuery, applyParsedQueryToEvents, analyzeEventsForSummary } from "@/lib/eventSearchNLP";
 
 interface EventTableProps {
   filters: Array<{
@@ -123,21 +124,25 @@ export default function EventLogSummary({
 
   const baseEvents = providedEvents || generateMockEvents();
 
+  const parsedQuery = useMemo(() => {
+    if (!searchQuery) return null;
+    return parseNaturalLanguageQuery(searchQuery);
+  }, [searchQuery]);
+
+  const analysisResult = useMemo(() => {
+    if (!parsedQuery || (parsedQuery.intent !== "why" && parsedQuery.intent !== "summary" && parsedQuery.intent !== "explain")) {
+      return null;
+    }
+
+    const nlpFiltered = applyParsedQueryToEvents(baseEvents, parsedQuery);
+    return analyzeEventsForSummary(nlpFiltered, parsedQuery);
+  }, [parsedQuery, baseEvents]);
+
   const getFilteredEvents = () => {
     let filtered = [...baseEvents];
 
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (event) =>
-          event.date.toLowerCase().includes(query) ||
-          event.eventType.toLowerCase().includes(query) ||
-          event.application.toLowerCase().includes(query) ||
-          event.actor.toLowerCase().includes(query) ||
-          event.clientIp.toLowerCase().includes(query) ||
-          (event.requestId?.toLowerCase().includes(query) ?? false) ||
-          (event.description?.toLowerCase().includes(query) ?? false)
-      );
+    if (searchQuery && parsedQuery) {
+      filtered = applyParsedQueryToEvents(filtered, parsedQuery);
     }
 
     filtered = filters.reduce((acc, filter) => {
