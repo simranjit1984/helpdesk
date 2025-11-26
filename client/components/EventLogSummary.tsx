@@ -248,25 +248,83 @@ export default function EventLogSummary({
   };
 
   return (
-    <Table variant="expandable">
-      <TableScroll>
-        <TableContent>
-          <TableHeader>
-            <TableHeadRow>
-              <TableHeadCell className="w-10"></TableHeadCell>
-              <TableHeadCell>
-                <span className="text-sm font-bold text-bluegrey-900">
-                  Summary
-                </span>
-              </TableHeadCell>
-              <TableHeadCell className="w-40">
-                <span className="text-sm font-bold text-bluegrey-900">
-                  First Event Time
-                </span>
-              </TableHeadCell>
-            </TableHeadRow>
-          </TableHeader>
-          <TableBody>
+    <>
+      {analysisResult && (
+        <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
+          <div className="flex items-start gap-3 mb-4">
+            <Lightbulb className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="text-base font-semibold text-blue-900 mb-2">
+                Analysis Summary
+              </h3>
+              <p className="text-sm text-blue-800 mb-4">
+                {analysisResult.summary}
+              </p>
+
+              {analysisResult.patterns.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-blue-900 mb-2">
+                    Detected Patterns:
+                  </h4>
+                  <ul className="list-disc list-inside space-y-1">
+                    {analysisResult.patterns.map((pattern, idx) => (
+                      <li key={idx} className="text-sm text-blue-800">
+                        {pattern}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {analysisResult.rootCause && (
+                <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded">
+                  <h4 className="text-sm font-semibold text-orange-900 mb-1">
+                    Likely Root Cause:
+                  </h4>
+                  <p className="text-sm text-orange-800">
+                    {analysisResult.rootCause}
+                  </p>
+                </div>
+              )}
+
+              {analysisResult.recommendations && analysisResult.recommendations.length > 0 && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded">
+                  <h4 className="text-sm font-semibold text-green-900 mb-2">
+                    Recommendations:
+                  </h4>
+                  <ul className="list-disc list-inside space-y-1">
+                    {analysisResult.recommendations.map((rec, idx) => (
+                      <li key={idx} className="text-sm text-green-800">
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Table variant="expandable">
+        <TableScroll>
+          <TableContent>
+            <TableHeader>
+              <TableHeadRow>
+                <TableHeadCell className="w-10"></TableHeadCell>
+                <TableHeadCell>
+                  <span className="text-sm font-bold text-bluegrey-900">
+                    Summary
+                  </span>
+                </TableHeadCell>
+                <TableHeadCell className="w-40">
+                  <span className="text-sm font-bold text-bluegrey-900">
+                    First Event Time
+                  </span>
+                </TableHeadCell>
+              </TableHeadRow>
+            </TableHeader>
+            <TableBody>
             {traceGroups.length > 0 ? (
               traceGroups.map((group) => {
                 const summary = generateTraceSummary(group.events);
@@ -506,5 +564,6 @@ export default function EventLogSummary({
         </TableContent>
       </TableScroll>
     </Table>
+    </>
   );
 }
