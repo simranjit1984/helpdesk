@@ -123,7 +123,7 @@ export default function AuthenticatorActivityDashboard({
                 })
               }
               className="p-1 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
-              title="Review with AI Assistant"
+              title="Review with Recovery Assistant"
               type="button"
             >
               <Brain className="h-6 w-6 text-blue-600" />
@@ -157,7 +157,7 @@ export default function AuthenticatorActivityDashboard({
                 })
               }
               className="p-1 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
-              title="Review with AI Assistant"
+              title="Review with Recovery Assistant"
               type="button"
             >
               <Brain className="h-6 w-6 text-blue-600" />
@@ -191,7 +191,7 @@ export default function AuthenticatorActivityDashboard({
                 })
               }
               className="p-1 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
-              title="Review with AI Assistant"
+              title="Review with Recovery Assistant"
               type="button"
             >
               <Brain className="h-6 w-6 text-blue-600" />
@@ -224,7 +224,7 @@ export default function AuthenticatorActivityDashboard({
                 })
               }
               className="p-1 hover:bg-bluegrey-50 rounded transition-colors flex-shrink-0"
-              title="Review with AI Assistant"
+              title="Review with Recovery Assistant"
               type="button"
             >
               <Brain className="h-6 w-6 text-blue-600" />
