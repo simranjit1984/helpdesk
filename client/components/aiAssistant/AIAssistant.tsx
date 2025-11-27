@@ -421,7 +421,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
             showAnimation && "animate-[slide-up-in_0.3s_ease-out_forwards]"
           )}
           style={{ right: rightPosition }}
-          title={hasNewContent ? "New recommendations available - Click to view" : "Open AI Assistant"}
+          title={hasNewContent ? "New recommendations available - Click to view" : "Open Recovery Assistant"}
         >
           <Brain className="h-6 w-6" />
         </button>
@@ -439,7 +439,7 @@ export const AIAssistant = ({ userData, isOpen = true, isSideSheetOpen = false, 
         <div className="flex items-center gap-3">
           <Brain className="h-5 w-5" />
           <div className="flex items-center gap-2">
-            <h2 className="font-semibold">AI Assistant</h2>
+            <h2 className="font-semibold">Recovery Assistant</h2>
             <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-[#041295]/40 rounded border border-white/20">
               {isMac ? (
                 <>
