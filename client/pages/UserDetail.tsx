@@ -320,14 +320,8 @@ export default function UserDetail() {
   };
 
   const handleAuthenticatorCardClick = (authName: string) => {
-    // Skip step-up authentication for Username & Password
-    if (authName === "Username & Password") {
-      setOpenSideSheet(authName);
-      setUsernameEmail(user?.email || "");
-    } else {
-      setPendingAuthenticator(authName);
-      setIsSecurityAuthDialogOpen(true);
-    }
+    setPendingAuthenticator(authName);
+    setIsSecurityAuthDialogOpen(true);
   };
 
   const renderAuthenticatorCard = (authName: string) => {
