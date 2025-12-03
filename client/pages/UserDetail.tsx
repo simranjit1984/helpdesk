@@ -1615,28 +1615,8 @@ export default function UserDetail() {
           <VisuallyHidden.Root>
             <DialogTitle>Step Up Authentication</DialogTitle>
           </VisuallyHidden.Root>
-          <div className="flex items-start justify-between px-6 py-4">
-            <DialogHeader className="text-left">
-              <div className="text-xl font-medium leading-8 text-[#131319]">
-                Step Up Authentication
-              </div>
-            </DialogHeader>
-            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleCancelBasicReauth} disabled={isAuthenticating}>
-              <svg
-                className="h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </DialogClose>
-          </div>
 
-          <div className="px-6 pb-2">
+          <div className="px-6 pt-6 pb-2">
             <div className="flex flex-col items-center gap-5">
               <div className="flex flex-col items-center gap-3">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
