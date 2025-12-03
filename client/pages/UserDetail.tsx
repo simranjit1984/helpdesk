@@ -1564,25 +1564,25 @@ export default function UserDetail() {
 
               {/* Footer Section */}
               <div className="border-t border-bluegrey-100 px-6 py-4 flex items-center justify-between gap-3 mt-auto">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    if (openSideSheet === "Username & Password" && authStep === "update") {
-                      handleCancelEmailUpdate();
-                    } else {
-                      handleCloseSideSheet();
-                    }
-                  }}
-                  className="rounded-[2px] text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
-                >
-                  Cancel
-                </Button>
-
-                <div className="flex items-center gap-2 ml-auto">
-                  {/* Only show for non-authenticator sheets */}
-                  {openSideSheet && !["Username & Password", "SMS OTP", "Email OTP", "TOTP", "QR code Enrollment", "Magic link authentication", "Push MFA"].includes(openSideSheet) && (
-                    <>
+                {openSideSheet && ["Username & Password", "SMS OTP", "Email OTP", "TOTP", "QR code Enrollment", "Magic link authentication", "Push MFA"].includes(openSideSheet) ? (
+                  <Button
+                    type="button"
+                    onClick={handleCloseSideSheet}
+                    className="ml-auto gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                  >
+                    Close
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleCloseSideSheet}
+                      className="rounded-[2px] text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                    >
+                      Cancel
+                    </Button>
+                    <div className="flex items-center gap-2 ml-auto">
                       <Button
                         type="button"
                         variant="outline"
@@ -1599,9 +1599,9 @@ export default function UserDetail() {
                         <Save className="h-4 w-4" />
                         Save
                       </Button>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </>
+                )}
               </div>
             </SheetContent>
           </Sheet>
