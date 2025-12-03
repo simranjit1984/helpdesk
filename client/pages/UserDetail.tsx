@@ -1325,7 +1325,7 @@ export default function UserDetail() {
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-8">
                   {/* Email Address */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="usernameEmail">Email address</Label>
                     <input
                       id="usernameEmail"
