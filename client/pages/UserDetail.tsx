@@ -1622,7 +1622,7 @@ export default function UserDetail() {
           <div className="px-6">
             <div className="flex flex-col gap-6">
               <p className="text-sm text-bluegrey-700">
-                Please enter your password to continue with updating your email address.
+                Please authenticate before updating the email address.
               </p>
               <div className="flex flex-col gap-1">
                 <Label htmlFor="basicReauthPassword" className="text-sm font-normal text-[#131319]">
