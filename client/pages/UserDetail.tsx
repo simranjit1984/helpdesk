@@ -1567,7 +1567,7 @@ export default function UserDetail() {
               {openSideSheet === "SMS OTP" && (
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
-                    <h3 className="text-base font-semibold text-bluegrey-900">Update Phone number</h3>
+                    <h2 className="text-xl font-semibold text-blue-500">Update Phone number</h2>
                     <div className="flex flex-col gap-1">
                       <Label htmlFor="phoneNumber">Phone number</Label>
                       <input
