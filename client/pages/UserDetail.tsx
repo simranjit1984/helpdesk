@@ -1386,7 +1386,7 @@ export default function UserDetail() {
                   </div>
 
                   {/* Password Section */}
-                  <div className="flex flex-col gap-6 pt-6 border-t border-bluegrey-200">
+                  <div className="flex flex-col gap-4 pt-6 border-t border-bluegrey-200">
                     <h2 className="text-xl font-semibold text-blue-500">Password</h2>
 
                     {/* Set Temporary Password */}
