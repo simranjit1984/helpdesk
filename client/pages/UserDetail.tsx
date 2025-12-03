@@ -175,6 +175,7 @@ export default function UserDetail() {
   const [usernameSuccess, setUsernameSuccess] = useState(false);
   const [tempPasswordSuccess, setTempPasswordSuccess] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
+  const [removePasswordSuccess, setRemovePasswordSuccess] = useState(false);
   const [tempPasswordError, setTempPasswordError] = useState("");
 
   // Generate random past timestamp for "Last used"
@@ -1519,9 +1520,36 @@ export default function UserDetail() {
                           Remove the password for this user account.
                         </p>
                       </div>
+                      {removePasswordSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  Password removed successfully
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setRemovePasswordSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                       <Button
                         onClick={() => {
-                          showAlert("Password removed successfully", "success");
+                          setRemovePasswordSuccess(true);
+                          setTimeout(() => {
+                            setRemovePasswordSuccess(false);
+                          }, 5000);
                         }}
                         variant="outline"
                         className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
