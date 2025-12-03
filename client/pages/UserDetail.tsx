@@ -1379,7 +1379,7 @@ export default function UserDetail() {
                       }}
                       disabled={isSavingUsername}
                       variant="outline"
-                      className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
+                      className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                     >
                       {isSavingUsername ? "Updating..." : "Update username"}
                     </Button>
@@ -1459,7 +1459,7 @@ export default function UserDetail() {
                         }}
                         disabled={isSavingTempPassword}
                         variant="outline"
-                        className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                       >
                         {isSavingTempPassword ? "Setting..." : "Set temporary password"}
                       </Button>
@@ -1505,7 +1505,7 @@ export default function UserDetail() {
                           }, 5000);
                         }}
                         variant="outline"
-                        className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
                       >
                         Reset password
                       </Button>
@@ -1524,7 +1524,7 @@ export default function UserDetail() {
                           showAlert("Password removed successfully", "success");
                         }}
                         variant="outline"
-                        className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
                       >
                         Remove password
                       </Button>
