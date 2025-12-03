@@ -152,6 +152,7 @@ export default function UserDetail() {
   const [isEmailUpdateDialogOpen, setIsEmailUpdateDialogOpen] = useState(false);
   const [newEmailAddress, setNewEmailAddress] = useState("");
   const [isSavingBasicEmail, setIsSavingBasicEmail] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -417,10 +418,14 @@ export default function UserDetail() {
       setBasicReauthError("Invalid password");
       return;
     }
-    setIsBasicEmailReauthDialogOpen(false);
-    setIsEmailUpdateDialogOpen(true);
-    setNewEmailAddress(user?.email || "");
-    setBasicReauthPassword("");
+    setIsAuthenticating(true);
+    setTimeout(() => {
+      setIsAuthenticating(false);
+      setIsBasicEmailReauthDialogOpen(false);
+      setIsEmailUpdateDialogOpen(true);
+      setNewEmailAddress(user?.email || "");
+      setBasicReauthPassword("");
+    }, 3500);
   };
 
   const handleBasicEmailUpdate = async () => {
@@ -443,6 +448,14 @@ export default function UserDetail() {
     setNewEmailAddress("");
     setBasicReauthPassword("");
     setBasicReauthError("");
+  };
+
+  const handleCancelBasicReauth = () => {
+    if (!isAuthenticating) {
+      setIsBasicEmailReauthDialogOpen(false);
+      setBasicReauthPassword("");
+      setBasicReauthError("");
+    }
   };
 
   // Fetch user data based on username (email)
