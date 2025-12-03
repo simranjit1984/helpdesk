@@ -1463,10 +1463,13 @@ export default function UserDetail() {
                     </div>
 
                     {/* Reset Password */}
-                    <div className="flex flex-col gap-3 pt-4">
-                      <p className="text-sm text-bluegrey-600">
-                        Send a password reset link to the user's email address.
-                      </p>
+                    <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="text-xl font-semibold text-blue-500">Reset password</h3>
+                        <p className="text-xs text-bluegrey-700">
+                          Send a password reset link to the user's email address.
+                        </p>
+                      </div>
                       {resetPasswordSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
                           <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
