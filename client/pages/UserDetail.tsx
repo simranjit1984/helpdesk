@@ -1568,7 +1568,7 @@ export default function UserDetail() {
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
-                      <h2 className="text-xl font-semibold text-blue-500">Update Phone number</h2>
+                      <h2 className="text-xl font-semibold text-blue-500">Phone number</h2>
                     </div>
                     <div className="flex flex-col gap-1">
                       <Label htmlFor="phoneNumber">Phone number</Label>
