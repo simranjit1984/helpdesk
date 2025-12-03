@@ -199,6 +199,15 @@ export default function UserDetail() {
 
   // Generate deterministic authenticators for each user based on email
   const generateUserAuthenticators = (email: string): string[] => {
+    // For Alison Adams, return all available authenticators
+    if (email === "alison.adams@example.com") {
+      return [
+        ...allAuthenticators.authenticators,
+        ...allAuthenticators.externalProviders,
+        ...allAuthenticators.passkeys,
+      ];
+    }
+
     // Simple hash function to generate consistent "random" number from email
     let hash = 0;
     for (let i = 0; i < email.length; i++) {
