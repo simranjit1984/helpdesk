@@ -1589,6 +1589,157 @@ export default function UserDetail() {
         </DialogContent>
       </Dialog>
 
+      {/* Basic Info Email Step-up Authentication Dialog */}
+      <Dialog open={isBasicEmailReauthDialogOpen} onOpenChange={setIsBasicEmailReauthDialogOpen}>
+        <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <DialogTitle className="sr-only">Step Up Authentication</DialogTitle>
+          <div className="flex items-start justify-between px-6 py-4">
+            <DialogHeader className="text-left">
+              <div className="text-xl font-medium leading-8 text-[#131319]">
+                Step Up Authentication
+              </div>
+            </DialogHeader>
+            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B]" onClick={() => {
+              setIsBasicEmailReauthDialogOpen(false);
+              setBasicReauthPassword("");
+              setBasicReauthError("");
+            }}>
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </DialogClose>
+          </div>
+
+          <div className="px-6">
+            <div className="flex flex-col gap-6">
+              <p className="text-sm text-bluegrey-700">
+                Please enter your password to continue with updating your email address.
+              </p>
+              <div className="flex flex-col gap-1">
+                <Label htmlFor="basicReauthPassword" className="text-sm font-normal text-[#131319]">
+                  Password
+                </Label>
+                <input
+                  id="basicReauthPassword"
+                  type="password"
+                  value={basicReauthPassword}
+                  onChange={(e) => {
+                    setBasicReauthPassword(e.target.value);
+                    setBasicReauthError("");
+                  }}
+                  placeholder="Enter your password"
+                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                />
+                {basicReauthError && (
+                  <p className="text-xs text-red-500 mt-1">{basicReauthError}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setIsBasicEmailReauthDialogOpen(false);
+                  setBasicReauthPassword("");
+                  setBasicReauthError("");
+                }}
+                className="rounded-[2px] text-[#383A4B] h-10 px-3"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleBasicEmailReauthSubmit}
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Email Update Dialog */}
+      <Dialog open={isEmailUpdateDialogOpen} onOpenChange={setIsEmailUpdateDialogOpen}>
+        <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <DialogTitle className="sr-only">Update Email Address</DialogTitle>
+          <div className="flex items-start justify-between px-6 py-4">
+            <DialogHeader className="text-left">
+              <div className="text-xl font-medium leading-8 text-[#131319]">
+                Update Email Address
+              </div>
+            </DialogHeader>
+            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B]" onClick={handleCancelBasicEmailUpdate}>
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </DialogClose>
+          </div>
+
+          <div className="px-6">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-1">
+                <Label htmlFor="newEmailAddress" className="text-sm font-normal text-[#131319]">
+                  Email Address
+                </Label>
+                <input
+                  id="newEmailAddress"
+                  type="email"
+                  value={newEmailAddress}
+                  onChange={(e) => setNewEmailAddress(e.target.value)}
+                  disabled={isSavingBasicEmail}
+                  placeholder="Enter new email address"
+                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCancelBasicEmailUpdate}
+                disabled={isSavingBasicEmail}
+                className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleBasicEmailUpdate}
+                disabled={isSavingBasicEmail}
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Save className="h-5 w-5" />
+                {isSavingBasicEmail ? "Updating..." : "Update Email"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* AI Assistant */}
       {user && (
         <AIAssistant
