@@ -1853,6 +1853,124 @@ export default function UserDetail() {
         </DialogContent>
       </Dialog>
 
+      {/* Security Tab Step-up Authentication Dialog */}
+      <Dialog open={isSecurityAuthDialogOpen} onOpenChange={setIsSecurityAuthDialogOpen}>
+        <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <VisuallyHidden.Root>
+            <DialogTitle>Step Up Authentication</DialogTitle>
+          </VisuallyHidden.Root>
+
+          <div className="px-6 pt-6 pb-2">
+            <div className="flex flex-col items-center gap-5">
+              <div className="flex flex-col items-center gap-3">
+                <div className={`flex h-14 w-14 items-center justify-center rounded-full shadow-md transition-all duration-300 ${
+                  isSecurityAuthSuccess
+                    ? "bg-gradient-to-br from-green-500 to-green-600"
+                    : "bg-gradient-to-br from-blue-500 to-blue-600"
+                }`}>
+                  {isSecurityAuthSuccess ? (
+                    <CheckCircle2 className="h-7 w-7 text-white" />
+                  ) : (
+                    <Lock className="h-7 w-7 text-white" />
+                  )}
+                </div>
+                <div className="text-center">
+                  <p className={`text-base font-medium mb-1 transition-colors duration-300 ${
+                    isSecurityAuthSuccess ? "text-green-600" : "text-bluegrey-900"
+                  }`}>
+                    {isSecurityAuthSuccess ? "Authentication Successful" : "Authentication Required"}
+                  </p>
+                  <p className="text-sm text-bluegrey-600">
+                    {isSecurityAuthSuccess
+                      ? "Opening authenticator details..."
+                      : "Please verify your identity to continue"
+                    }
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full rounded p-4" style={{ backgroundColor: '#EEEFF3' }}>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
+                    <span className="text-white font-semibold text-sm">LA</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-bluegrey-900 truncate">
+                      Lucia Anderson
+                    </p>
+                    <p className="text-xs text-bluegrey-600 truncate">
+                      lucia.anderson@insurcar.com
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full flex flex-col gap-1.5">
+                <Label htmlFor="securityAuthPassword" className="text-sm font-medium text-bluegrey-900">
+                  Password
+                </Label>
+                <div className="relative">
+                  <input
+                    id="securityAuthPassword"
+                    type={showSecurityPassword ? "text" : "password"}
+                    value={securityAuthPassword}
+                    onChange={(e) => {
+                      setSecurityAuthPassword(e.target.value);
+                      setSecurityAuthError("");
+                    }}
+                    placeholder="Enter your password"
+                    disabled={isSecurityAuthenticating || isSecurityAuthSuccess}
+                    className="flex w-full rounded-md border border-bluegrey-300 bg-white px-3 py-2.5 pr-10 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSecurityPassword(!showSecurityPassword)}
+                    disabled={isSecurityAuthenticating || isSecurityAuthSuccess}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-bluegrey-500 hover:text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label={showSecurityPassword ? "Hide password" : "Show password"}
+                  >
+                    {showSecurityPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {securityAuthError && (
+                  <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {securityAuthError}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCancelSecurityAuth}
+                disabled={isSecurityAuthenticating || isSecurityAuthSuccess}
+                className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleSecurityAuthSubmit}
+                disabled={isSecurityAuthenticating || isSecurityAuthSuccess}
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSecurityAuthenticating && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isSecurityAuthenticating ? "Authenticating..." : "Continue"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* AI Assistant */}
       {user && (
         <AIAssistant
