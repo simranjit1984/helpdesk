@@ -1341,7 +1341,7 @@ export default function UserDetail() {
                       }}
                       disabled={isSavingUsername}
                       variant="outline"
-                      className="mt-3 gap-2 rounded-[2px] border-bluegrey-500 text-bluegrey-700 hover:bg-bluegrey-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                      className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2"
                     >
                       {isSavingUsername ? "Updating..." : "Update username"}
                     </Button>
