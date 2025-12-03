@@ -1338,9 +1338,14 @@ export default function UserDetail() {
                       className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                     {usernameSuccess && (
-                      <div className="flex items-center gap-2 text-green-600 text-sm bg-green-50 border border-green-200 rounded px-3 py-2">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span>Username updated successfully</span>
+                      <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                        <div className="flex items-start gap-2 flex-1 pl-6 pr-3 py-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-bluegrey-900 leading-5">
+                            Username updated successfully
+                          </p>
+                        </div>
                       </div>
                     )}
                     <Button
