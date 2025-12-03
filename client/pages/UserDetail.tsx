@@ -1386,7 +1386,7 @@ export default function UserDetail() {
                   {/* Update Password Section */}
                   <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
                     <div className="flex flex-col gap-1">
-                      <h3 className="text-xl font-semibold text-blue-500">Set default password</h3>
+                      <h3 className="text-xl font-semibold text-blue-500">Set temporary password</h3>
                       <p className="text-xs text-bluegrey-700">
                         User will be required to change password on next login
                       </p>
