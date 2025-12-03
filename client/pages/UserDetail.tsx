@@ -24,6 +24,7 @@ import {
   Globe,
   X,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
@@ -1613,11 +1614,7 @@ export default function UserDetail() {
                 Step Up Authentication
               </div>
             </DialogHeader>
-            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B]" onClick={() => {
-              setIsBasicEmailReauthDialogOpen(false);
-              setBasicReauthPassword("");
-              setBasicReauthError("");
-            }}>
+            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleCancelBasicReauth} disabled={isAuthenticating}>
               <svg
                 className="h-6 w-6"
                 viewBox="0 0 24 24"
@@ -1655,7 +1652,8 @@ export default function UserDetail() {
                     setBasicReauthError("");
                   }}
                   placeholder="Enter your password"
-                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                  disabled={isAuthenticating}
+                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {basicReauthError && (
                   <p className="text-xs text-red-500 mt-1">{basicReauthError}</p>
@@ -1669,21 +1667,20 @@ export default function UserDetail() {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => {
-                  setIsBasicEmailReauthDialogOpen(false);
-                  setBasicReauthPassword("");
-                  setBasicReauthError("");
-                }}
-                className="rounded-[2px] text-[#383A4B] h-10 px-3"
+                onClick={handleCancelBasicReauth}
+                disabled={isAuthenticating}
+                className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </Button>
               <Button
                 type="button"
                 onClick={handleBasicEmailReauthSubmit}
-                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3"
+                disabled={isAuthenticating}
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Continue
+                {isAuthenticating && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isAuthenticating ? "Authenticating..." : "Continue"}
               </Button>
             </div>
           </div>
