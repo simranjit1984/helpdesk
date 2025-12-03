@@ -2305,6 +2305,7 @@ export default function UserDetail() {
                   setIsPhoneOtpDialogOpen(false);
                   setPhoneOtp("");
                   setPhoneOtpError("");
+                  setNewPhoneNumber("");
                 }}
                 disabled={isVerifyingPhoneOtp}
                 className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
