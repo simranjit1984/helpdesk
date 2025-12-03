@@ -175,6 +175,7 @@ export default function UserDetail() {
   const [usernameSuccess, setUsernameSuccess] = useState(false);
   const [tempPasswordSuccess, setTempPasswordSuccess] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
+  const [tempPasswordError, setTempPasswordError] = useState("");
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1392,14 +1393,22 @@ export default function UserDetail() {
                         onChange={(e) => {
                           setTemporaryPassword(e.target.value);
                           setTempPasswordSuccess(false);
+                          setTempPasswordError("");
                         }}
                         disabled={isSavingTempPassword}
                         placeholder="Enter temporary password"
                         className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                       />
-                      <p className="text-xs text-bluegrey-600">
-                        User will be required to change password on next login
-                      </p>
+                      {tempPasswordError && (
+                        <p className="text-xs text-red-500 mt-1">
+                          {tempPasswordError}
+                        </p>
+                      )}
+                      {!tempPasswordError && (
+                        <p className="text-xs text-bluegrey-600">
+                          User will be required to change password on next login
+                        </p>
+                      )}
                     </div>
                     {tempPasswordSuccess && (
                       <div className="flex items-start rounded-[2px] bg-green-50 relative">
@@ -1427,6 +1436,11 @@ export default function UserDetail() {
                     )}
                     <Button
                       onClick={() => {
+                        setTempPasswordError("");
+                        if (!temporaryPassword || temporaryPassword.trim() === "") {
+                          setTempPasswordError("Password is required");
+                          return;
+                        }
                         setIsSavingTempPassword(true);
                         setTempPasswordSuccess(false);
                         setTimeout(() => {
@@ -1435,7 +1449,7 @@ export default function UserDetail() {
                           setTemporaryPassword("");
                         }, 1500);
                       }}
-                      disabled={isSavingTempPassword || !temporaryPassword}
+                      disabled={isSavingTempPassword}
                       variant="outline"
                       className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                     >
