@@ -71,6 +71,7 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
                 <p className="text-sm font-semibold text-bluegrey-900">
                   Lucia Anderson
                 </p>
+                <p className="text-xs text-bluegrey-600">lucia.anderson@insurcar.com</p>
                 <p className="text-xs text-bluegrey-600">InsurCar Inc.</p>
               </div>
               <DropdownMenuSeparator />
