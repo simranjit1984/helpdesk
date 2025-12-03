@@ -1567,7 +1567,9 @@ export default function UserDetail() {
               {openSideSheet === "SMS OTP" && (
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
-                    <h2 className="text-xl font-semibold text-blue-500">Update Phone number</h2>
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-xl font-semibold text-blue-500">Update Phone number</h2>
+                    </div>
                     <div className="flex flex-col gap-1">
                       <Label htmlFor="phoneNumber">Phone number</Label>
                       <input
@@ -1575,7 +1577,7 @@ export default function UserDetail() {
                         type="tel"
                         value={user?.phone || ""}
                         readOnly
-                        className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900   cursor-text"
+                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
                       />
                     </div>
                     <Button variant="outline" className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2">
@@ -1583,11 +1585,13 @@ export default function UserDetail() {
                     </Button>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    <h3 className="text-base font-semibold text-bluegrey-900">Remove phone number</h3>
-                    <p className="text-xs text-bluegrey-700">
-                      Remove the phone number for this user account.
-                    </p>
+                  <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-base font-semibold text-bluegrey-900">Remove phone number</h3>
+                      <p className="text-xs text-bluegrey-700">
+                        Remove the phone number for this user account.
+                      </p>
+                    </div>
                     <Button variant="outline" className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2">
                       Remove phone number
                     </Button>
