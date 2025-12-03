@@ -1646,6 +1646,14 @@ export default function UserDetail() {
               <p className="text-sm text-bluegrey-700 text-center">
                 Please authenticate before updating the email address.
               </p>
+              <div className="flex flex-col gap-1 items-center py-2 px-4 bg-bluegrey-25 rounded-[2px]">
+                <p className="text-sm font-semibold text-bluegrey-900">
+                  Lucia Anderson
+                </p>
+                <p className="text-xs text-bluegrey-600">
+                  lucia.anderson@insurcar.com
+                </p>
+              </div>
               <div className="flex flex-col gap-1">
                 <Label htmlFor="basicReauthPassword" className="text-sm font-normal text-[#131319]">
                   Password
