@@ -1637,16 +1637,18 @@ export default function UserDetail() {
           </div>
 
           <div className="px-6">
-            <div className="flex flex-col gap-6">
-              <div className="flex justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
-                  <Lock className="h-8 w-8 text-blue-600" />
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-50">
+                  <Lock className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-bluegrey-700">
+                    Please authenticate before updating the email address.
+                  </p>
                 </div>
               </div>
-              <p className="text-sm text-bluegrey-700 text-center">
-                Please authenticate before updating the email address.
-              </p>
-              <div className="flex flex-col gap-1 items-center py-2 px-4 bg-bluegrey-25 rounded-[2px]">
+              <div className="flex flex-col gap-1 py-2 px-4 bg-bluegrey-25 rounded-[2px]">
                 <p className="text-sm font-semibold text-bluegrey-900">
                   Lucia Anderson
                 </p>
