@@ -1509,9 +1509,6 @@ export default function UserDetail() {
                       <Button
                         onClick={() => {
                           setResetPasswordSuccess(true);
-                          setTimeout(() => {
-                            setResetPasswordSuccess(false);
-                          }, 5000);
                         }}
                         variant="outline"
                         className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
@@ -1555,9 +1552,6 @@ export default function UserDetail() {
                       <Button
                         onClick={() => {
                           setRemovePasswordSuccess(true);
-                          setTimeout(() => {
-                            setRemovePasswordSuccess(false);
-                          }, 5000);
                         }}
                         variant="outline"
                         className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
@@ -2330,9 +2324,6 @@ export default function UserDetail() {
                     setIsPhoneOtpDialogOpen(false);
                     setPhoneUpdateSuccess(true);
                     setPhoneOtp("");
-                    setTimeout(() => {
-                      setPhoneUpdateSuccess(false);
-                    }, 5000);
                   }, 1500);
                 }}
                 disabled={isVerifyingPhoneOtp}
