@@ -1585,7 +1585,7 @@ export default function UserDetail() {
                     </Button>
                   </div>
 
-                  <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
+                  <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
                       <h3 className="text-base font-semibold text-bluegrey-900">Remove phone number</h3>
                       <p className="text-xs text-bluegrey-700">
