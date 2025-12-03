@@ -1323,21 +1323,23 @@ export default function UserDetail() {
 
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-6">
                   {/* Email Address */}
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="usernameEmail">Email address</Label>
-                    <input
-                      id="usernameEmail"
-                      type="email"
-                      value={usernameEmail || user?.email}
-                      onChange={(e) => {
-                        setUsernameEmail(e.target.value);
-                        setUsernameSuccess(false);
-                      }}
-                      disabled={isSavingUsername}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                      <Label htmlFor="usernameEmail">Email address</Label>
+                      <input
+                        id="usernameEmail"
+                        type="email"
+                        value={usernameEmail || user?.email}
+                        onChange={(e) => {
+                          setUsernameEmail(e.target.value);
+                          setUsernameSuccess(false);
+                        }}
+                        disabled={isSavingUsername}
+                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                    </div>
                     {usernameSuccess && (
                       <div className="flex items-start rounded-[2px] bg-green-50 relative">
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
