@@ -1320,82 +1320,90 @@ export default function UserDetail() {
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-6">
-                  {/* Email Address Field */}
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="usernameEmail">Email address</Label>
-                    <input
-                      id="usernameEmail"
-                      type="email"
-                      value={usernameEmail || user?.email}
-                      onChange={(e) => setUsernameEmail(e.target.value)}
-                      disabled={isSavingUsername}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    <Button
-                      onClick={() => {
-                        setIsSavingUsername(true);
-                        setTimeout(() => {
-                          setIsSavingUsername(false);
-                          showAlert("Username updated successfully.", "success");
-                        }, 1500);
-                      }}
-                      disabled={isSavingUsername}
-                      variant="outline"
-                      className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2"
-                    >
-                      {isSavingUsername ? "Updating..." : "Update username"}
-                    </Button>
+                  {/* Username Section */}
+                  <div className="border border-bluegrey-200 rounded-lg p-4 bg-bluegrey-25/30">
+                    <h3 className="text-sm font-semibold text-bluegrey-900 mb-4">Username</h3>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="usernameEmail" className="text-sm font-medium text-bluegrey-700">Email address</Label>
+                        <input
+                          id="usernameEmail"
+                          type="email"
+                          value={usernameEmail || user?.email}
+                          onChange={(e) => setUsernameEmail(e.target.value)}
+                          disabled={isSavingUsername}
+                          className="flex w-full rounded-[2px] border border-bluegrey-300 bg-white px-3 py-2.5 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                      </div>
+                      <Button
+                        onClick={() => {
+                          setIsSavingUsername(true);
+                          setTimeout(() => {
+                            setIsSavingUsername(false);
+                            showAlert("Username updated successfully.", "success");
+                          }, 1500);
+                        }}
+                        disabled={isSavingUsername}
+                        variant="outline"
+                        className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
+                      >
+                        {isSavingUsername ? "Updating..." : "Update username"}
+                      </Button>
+                    </div>
                   </div>
 
-                  {/* Password Field */}
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="temporaryPassword">Password</Label>
-                    <input
-                      id="temporaryPassword"
-                      type="text"
-                      value={temporaryPassword}
-                      onChange={(e) => setTemporaryPassword(e.target.value)}
-                      disabled={isSavingTempPassword}
-                      placeholder="Enter temporary password"
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    <p className="text-xs text-bluegrey-600 mt-1">
-                      Note: User will be required to change password on next login
-                    </p>
-                    <Button
-                      onClick={() => {
-                        setIsSavingTempPassword(true);
-                        setTimeout(() => {
-                          setIsSavingTempPassword(false);
-                          showAlert("Temporary password set successfully.", "success");
-                          setTemporaryPassword("");
-                        }, 1500);
-                      }}
-                      disabled={isSavingTempPassword || !temporaryPassword}
-                      variant="outline"
-                      className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2"
-                    >
-                      {isSavingTempPassword ? "Setting..." : "Set temporary password"}
-                    </Button>
+                  {/* Temporary Password Section */}
+                  <div className="border border-bluegrey-200 rounded-lg p-4 bg-bluegrey-25/30">
+                    <h3 className="text-sm font-semibold text-bluegrey-900 mb-4">Temporary Password</h3>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="temporaryPassword" className="text-sm font-medium text-bluegrey-700">Password</Label>
+                        <input
+                          id="temporaryPassword"
+                          type="text"
+                          value={temporaryPassword}
+                          onChange={(e) => setTemporaryPassword(e.target.value)}
+                          disabled={isSavingTempPassword}
+                          placeholder="Enter temporary password"
+                          className="flex w-full rounded-[2px] border border-bluegrey-300 bg-white px-3 py-2.5 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1.5 mt-1">
+                          <strong>Note:</strong> User will be required to change password on next login
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          setIsSavingTempPassword(true);
+                          setTimeout(() => {
+                            setIsSavingTempPassword(false);
+                            showAlert("Temporary password set successfully.", "success");
+                            setTemporaryPassword("");
+                          }, 1500);
+                        }}
+                        disabled={isSavingTempPassword || !temporaryPassword}
+                        variant="outline"
+                        className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
+                      >
+                        {isSavingTempPassword ? "Setting..." : "Set temporary password"}
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Reset Password Section */}
-                  <div className="border-t border-bluegrey-200 pt-6 mt-2">
-                    <div className="flex flex-col gap-3">
-                      <h3 className="text-sm font-semibold text-bluegrey-900">Password Reset</h3>
-                      <p className="text-xs text-bluegrey-600">
-                        Send a password reset link to the user's email address.
-                      </p>
-                      <Button
-                        onClick={() => {
-                          showAlert("Password reset link sent to user's email.", "success");
-                        }}
-                        variant="outline"
-                        className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
-                      >
-                        Reset password
-                      </Button>
-                    </div>
+                  <div className="border border-bluegrey-200 rounded-lg p-4 bg-bluegrey-25/30">
+                    <h3 className="text-sm font-semibold text-bluegrey-900 mb-2">Password Reset</h3>
+                    <p className="text-xs text-bluegrey-600 mb-4">
+                      Send a password reset link to the user's email address.
+                    </p>
+                    <Button
+                      onClick={() => {
+                        showAlert("Password reset link sent to user's email.", "success");
+                      }}
+                      variant="outline"
+                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                    >
+                      Reset password
+                    </Button>
                   </div>
                 </div>
               )}
