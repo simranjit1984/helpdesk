@@ -1564,17 +1564,20 @@ export default function UserDetail() {
               {/* SMS OTP Section */}
               {openSideSheet === "SMS OTP" && (
                 <div className="flex flex-col gap-6">
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="phoneNumber">Phone number</Label>
-                    <input
-                      id="phoneNumber"
-                      type="tel"
-                      value={user?.phone || ""}
-                      readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900   cursor-text"
-                    />
-                    <Button className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2">
-                      Update Phone number
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-base font-semibold text-bluegrey-900">Update Phone number</h3>
+                    <div className="flex flex-col gap-1">
+                      <Label htmlFor="phoneNumber">Phone number</Label>
+                      <input
+                        id="phoneNumber"
+                        type="tel"
+                        value={user?.phone || ""}
+                        readOnly
+                        className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900   cursor-text"
+                      />
+                    </div>
+                    <Button variant="outline" className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2">
+                      Update
                     </Button>
                   </div>
                 </div>
@@ -1587,8 +1590,8 @@ export default function UserDetail() {
                 </div>
               )}
 
-              {/* Danger Zone Section - Only for non-Username & Password authenticators */}
-              {openSideSheet && openSideSheet !== "Username & Password" && (
+              {/* Danger Zone Section - Only for non-Username & Password and non-SMS OTP authenticators */}
+              {openSideSheet && openSideSheet !== "Username & Password" && openSideSheet !== "SMS OTP" && (
                 <div className="border-t-2 border-red-200 pt-6 mt-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex flex-col gap-3 flex-1">
