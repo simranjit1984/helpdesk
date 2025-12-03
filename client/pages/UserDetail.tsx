@@ -1390,7 +1390,7 @@ export default function UserDetail() {
                           showAlert("Password reset link sent to user's email.", "success");
                         }}
                         variant="outline"
-                        className="rounded-[2px] border-blue-500 text-blue-500 hover:bg-blue-50 h-auto px-3 py-2 w-fit"
+                        className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
                       >
                         Reset password
                       </Button>
