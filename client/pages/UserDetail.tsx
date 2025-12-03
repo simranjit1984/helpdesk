@@ -1327,7 +1327,7 @@ export default function UserDetail() {
                 <div className="flex flex-col gap-6">
                   {/* Update Username Section */}
                   <div className="flex flex-col gap-3">
-                    <h3 className="text-base font-semibold text-bluegrey-900">Update user name</h3>
+                    <h3 className="text-xl font-semibold text-blue-500">Update user name</h3>
                     <div className="flex flex-col gap-1">
                       <Label htmlFor="usernameEmail">Email address</Label>
                       <input
@@ -1385,7 +1385,7 @@ export default function UserDetail() {
 
                   {/* Update Password Section */}
                   <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
-                    <h3 className="text-base font-semibold text-bluegrey-900">Update Password</h3>
+                    <h3 className="text-xl font-semibold text-blue-500">Update Password</h3>
 
                     {/* Set Temporary Password */}
                     <div className="flex flex-col gap-3">
