@@ -1636,28 +1636,40 @@ export default function UserDetail() {
             </DialogClose>
           </div>
 
-          <div className="px-6">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-50">
-                  <Lock className="h-6 w-6 text-blue-600" />
+          <div className="px-6 pb-2">
+            <div className="flex flex-col items-center gap-5">
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
+                  <Lock className="h-7 w-7 text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm text-bluegrey-700">
-                    Please authenticate before updating the email address.
+                <div className="text-center">
+                  <p className="text-base font-medium text-bluegrey-900 mb-1">
+                    Authentication Required
+                  </p>
+                  <p className="text-sm text-bluegrey-600">
+                    Please verify your identity to continue
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-1 py-2 px-4 bg-bluegrey-25 rounded-[2px]">
-                <p className="text-sm font-semibold text-bluegrey-900">
-                  Lucia Anderson
-                </p>
-                <p className="text-xs text-bluegrey-600">
-                  lucia.anderson@insurcar.com
-                </p>
+
+              <div className="w-full border border-bluegrey-200 rounded-md p-4 bg-gradient-to-b from-bluegrey-25 to-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
+                    <span className="text-white font-semibold text-sm">LA</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-bluegrey-900 truncate">
+                      Lucia Anderson
+                    </p>
+                    <p className="text-xs text-bluegrey-600 truncate">
+                      lucia.anderson@insurcar.com
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="basicReauthPassword" className="text-sm font-normal text-[#131319]">
+
+              <div className="w-full flex flex-col gap-1.5">
+                <Label htmlFor="basicReauthPassword" className="text-sm font-medium text-bluegrey-900">
                   Password
                 </Label>
                 <input
@@ -1670,10 +1682,13 @@ export default function UserDetail() {
                   }}
                   placeholder="Enter your password"
                   disabled={isAuthenticating}
-                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex w-full rounded-md border border-bluegrey-300 bg-white px-3 py-2.5 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 />
                 {basicReauthError && (
-                  <p className="text-xs text-red-500 mt-1">{basicReauthError}</p>
+                  <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {basicReauthError}
+                  </p>
                 )}
               </div>
             </div>
