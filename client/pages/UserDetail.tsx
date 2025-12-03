@@ -1292,9 +1292,11 @@ export default function UserDetail() {
                     {getAuthenticatorIcon(openSideSheet)}
                   </div>
                   <div className="flex flex-col gap-0.5 flex-1">
-                    <h2 className="text-xl font-bold text-bluegrey-750">
-                      {openSideSheet}
-                    </h2>
+                    <SheetTitle asChild>
+                      <h2 className="text-xl font-bold text-bluegrey-750">
+                        {openSideSheet}
+                      </h2>
+                    </SheetTitle>
                   </div>
                 </div>
                 <button
