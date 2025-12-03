@@ -1623,79 +1623,74 @@ export default function UserDetail() {
           </VisuallyHidden.Root>
 
           <div className="px-6 pt-6 pb-2">
-            {isAuthSuccess ? (
-              <div className="flex flex-col items-center gap-5 py-8">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow-lg animate-in zoom-in-50 duration-300">
-                    <CheckCircle2 className="h-10 w-10 text-white" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-semibold text-green-600 mb-1">
-                      Authentication Successful
-                    </p>
-                    <p className="text-sm text-bluegrey-600">
-                      Proceeding to update email address...
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-5">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
+            <div className="flex flex-col items-center gap-5">
+              <div className="flex flex-col items-center gap-3">
+                <div className={`flex h-14 w-14 items-center justify-center rounded-full shadow-md transition-all duration-300 ${
+                  isAuthSuccess
+                    ? "bg-gradient-to-br from-green-500 to-green-600"
+                    : "bg-gradient-to-br from-blue-500 to-blue-600"
+                }`}>
+                  {isAuthSuccess ? (
+                    <CheckCircle2 className="h-7 w-7 text-white" />
+                  ) : (
                     <Lock className="h-7 w-7 text-white" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-base font-medium text-bluegrey-900 mb-1">
-                      Authentication Required
-                    </p>
-                    <p className="text-sm text-bluegrey-600">
-                      Please verify your identity to continue
-                    </p>
-                  </div>
-                </div>
-
-                <div className="w-full border border-bluegrey-200 rounded-md p-4 bg-gradient-to-b from-bluegrey-25 to-white">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
-                      <span className="text-white font-semibold text-sm">LA</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-bluegrey-900 truncate">
-                        Lucia Anderson
-                      </p>
-                      <p className="text-xs text-bluegrey-600 truncate">
-                        lucia.anderson@insurcar.com
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full flex flex-col gap-1.5">
-                  <Label htmlFor="basicReauthPassword" className="text-sm font-medium text-bluegrey-900">
-                    Password
-                  </Label>
-                  <input
-                    id="basicReauthPassword"
-                    type="password"
-                    value={basicReauthPassword}
-                    onChange={(e) => {
-                      setBasicReauthPassword(e.target.value);
-                      setBasicReauthError("");
-                    }}
-                    placeholder="Enter your password"
-                    disabled={isAuthenticating}
-                    className="flex w-full rounded-md border border-bluegrey-300 bg-white px-3 py-2.5 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  />
-                  {basicReauthError && (
-                    <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
-                      <AlertTriangle className="h-3 w-3" />
-                      {basicReauthError}
-                    </p>
                   )}
                 </div>
+                <div className="text-center">
+                  <p className={`text-base font-medium mb-1 transition-colors duration-300 ${
+                    isAuthSuccess ? "text-green-600" : "text-bluegrey-900"
+                  }`}>
+                    {isAuthSuccess ? "Authentication Successful" : "Authentication Required"}
+                  </p>
+                  <p className="text-sm text-bluegrey-600">
+                    {isAuthSuccess
+                      ? "Proceeding to update email address..."
+                      : "Please verify your identity to continue"
+                    }
+                  </p>
+                </div>
               </div>
-            )}
+
+              <div className="w-full border border-bluegrey-200 rounded-md p-4 bg-gradient-to-b from-bluegrey-25 to-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
+                    <span className="text-white font-semibold text-sm">LA</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-bluegrey-900 truncate">
+                      Lucia Anderson
+                    </p>
+                    <p className="text-xs text-bluegrey-600 truncate">
+                      lucia.anderson@insurcar.com
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full flex flex-col gap-1.5">
+                <Label htmlFor="basicReauthPassword" className="text-sm font-medium text-bluegrey-900">
+                  Password
+                </Label>
+                <input
+                  id="basicReauthPassword"
+                  type="password"
+                  value={basicReauthPassword}
+                  onChange={(e) => {
+                    setBasicReauthPassword(e.target.value);
+                    setBasicReauthError("");
+                  }}
+                  placeholder="Enter your password"
+                  disabled={isAuthenticating || isAuthSuccess}
+                  className="flex w-full rounded-md border border-bluegrey-300 bg-white px-3 py-2.5 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                />
+                {basicReauthError && (
+                  <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {basicReauthError}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
           {!isAuthSuccess && (
