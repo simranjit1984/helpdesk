@@ -1385,126 +1385,131 @@ export default function UserDetail() {
                     </Button>
                   </div>
 
-                  {/* Set Temporary Password Section */}
-                  <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-xl font-semibold text-blue-500">Set temporary password</h3>
-                      <p className="text-xs text-bluegrey-700">
-                        User will be required to change password on next login
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Label htmlFor="temporaryPassword">Password</Label>
-                      <input
-                        id="temporaryPassword"
-                        type="text"
-                        value={temporaryPassword}
-                        onChange={(e) => {
-                          setTemporaryPassword(e.target.value);
-                          setTempPasswordSuccess(false);
+                  {/* Password Section */}
+                  <div className="flex flex-col gap-6 pt-6 border-t border-bluegrey-200">
+                    <h2 className="text-xl font-semibold text-blue-500">Password</h2>
+
+                    {/* Set Temporary Password */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="text-base font-semibold text-bluegrey-900">Set temporary password</h3>
+                        <p className="text-xs text-bluegrey-700">
+                          User will be required to change password on next login
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="temporaryPassword">Password</Label>
+                        <input
+                          id="temporaryPassword"
+                          type="text"
+                          value={temporaryPassword}
+                          onChange={(e) => {
+                            setTemporaryPassword(e.target.value);
+                            setTempPasswordSuccess(false);
+                            setTempPasswordError("");
+                          }}
+                          disabled={isSavingTempPassword}
+                          placeholder="Enter temporary password"
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                        {tempPasswordError && (
+                          <p className="text-xs text-red-500 mt-1">
+                            {tempPasswordError}
+                          </p>
+                        )}
+                      </div>
+                      {tempPasswordSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  Temporary password set successfully
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setTempPasswordSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <Button
+                        onClick={() => {
                           setTempPasswordError("");
+                          if (!temporaryPassword || temporaryPassword.trim() === "") {
+                            setTempPasswordError("Password is required");
+                            return;
+                          }
+                          setIsSavingTempPassword(true);
+                          setTempPasswordSuccess(false);
+                          setTimeout(() => {
+                            setIsSavingTempPassword(false);
+                            setTempPasswordSuccess(true);
+                            setTemporaryPassword("");
+                          }, 1500);
                         }}
                         disabled={isSavingTempPassword}
-                        placeholder="Enter temporary password"
-                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                      />
-                      {tempPasswordError && (
-                        <p className="text-xs text-red-500 mt-1">
-                          {tempPasswordError}
-                        </p>
-                      )}
+                        variant="outline"
+                        className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
+                      >
+                        {isSavingTempPassword ? "Setting..." : "Set temporary password"}
+                      </Button>
                     </div>
-                    {tempPasswordSuccess && (
-                      <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                        <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                          <div className="flex items-start gap-2 flex-1 py-2">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm text-bluegrey-900 leading-5">
-                                Temporary password set successfully
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex justify-end items-center">
-                            <button
-                              onClick={() => setTempPasswordSuccess(false)}
-                              className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                              aria-label="Close alert"
-                            >
-                              <X className="w-6 h-6 text-bluegrey-700" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <Button
-                      onClick={() => {
-                        setTempPasswordError("");
-                        if (!temporaryPassword || temporaryPassword.trim() === "") {
-                          setTempPasswordError("Password is required");
-                          return;
-                        }
-                        setIsSavingTempPassword(true);
-                        setTempPasswordSuccess(false);
-                        setTimeout(() => {
-                          setIsSavingTempPassword(false);
-                          setTempPasswordSuccess(true);
-                          setTemporaryPassword("");
-                        }, 1500);
-                      }}
-                      disabled={isSavingTempPassword}
-                      variant="outline"
-                      className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
-                    >
-                      {isSavingTempPassword ? "Setting..." : "Set temporary password"}
-                    </Button>
-                  </div>
 
-                  {/* Reset Password Section */}
-                  <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-xl font-semibold text-blue-500">Reset password</h3>
-                      <p className="text-xs text-bluegrey-700">
-                        Send a password reset link to the user's email address.
-                      </p>
-                    </div>
-                    {resetPasswordSuccess && (
-                      <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                        <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                          <div className="flex items-start gap-2 flex-1 py-2">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm text-bluegrey-900 leading-5">
-                                Password reset link sent to user's email
-                              </p>
+                    {/* Reset Password */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="text-base font-semibold text-bluegrey-900">Reset password</h3>
+                        <p className="text-xs text-bluegrey-700">
+                          Send a password reset link to the user's email address.
+                        </p>
+                      </div>
+                      {resetPasswordSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  Password reset link sent to user's email
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setResetPasswordSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
                             </div>
                           </div>
-                          <div className="flex justify-end items-center">
-                            <button
-                              onClick={() => setResetPasswordSuccess(false)}
-                              className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                              aria-label="Close alert"
-                            >
-                              <X className="w-6 h-6 text-bluegrey-700" />
-                            </button>
-                          </div>
                         </div>
-                      </div>
-                    )}
-                    <Button
-                      onClick={() => {
-                        setResetPasswordSuccess(true);
-                        setTimeout(() => {
-                          setResetPasswordSuccess(false);
-                        }, 5000);
-                      }}
-                      variant="outline"
-                      className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
-                    >
-                      Reset password
-                    </Button>
+                      )}
+                      <Button
+                        onClick={() => {
+                          setResetPasswordSuccess(true);
+                          setTimeout(() => {
+                            setResetPasswordSuccess(false);
+                          }, 5000);
+                        }}
+                        variant="outline"
+                        className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        Reset password
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
