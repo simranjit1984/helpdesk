@@ -737,11 +737,12 @@ export default function UserDetail() {
                       />
                       <Button
                         type="button"
+                        variant="ghost"
                         onClick={handleBasicEmailChangeClick}
                         disabled={isSaving}
-                        className="rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-4 py-3 whitespace-nowrap"
+                        className="rounded-[2px] text-bluegrey-700 hover:bg-bluegrey-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-3"
                       >
-                        Change Email
+                        <Pencil className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
