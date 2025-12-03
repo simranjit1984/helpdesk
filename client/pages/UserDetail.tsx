@@ -167,6 +167,10 @@ export default function UserDetail() {
   const [isSecurityAuthenticating, setIsSecurityAuthenticating] = useState(false);
   const [isSecurityAuthSuccess, setIsSecurityAuthSuccess] = useState(false);
   const [showSecurityPassword, setShowSecurityPassword] = useState(false);
+  const [usernameEmail, setUsernameEmail] = useState("");
+  const [temporaryPassword, setTemporaryPassword] = useState("");
+  const [isSavingUsername, setIsSavingUsername] = useState(false);
+  const [isSavingTempPassword, setIsSavingTempPassword] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -421,6 +425,8 @@ export default function UserDetail() {
     setUpdateEmail("");
     setReauthPassword("");
     setReauthError("");
+    setUsernameEmail("");
+    setTemporaryPassword("");
   };
 
   const handleBasicEmailChangeClick = () => {
@@ -1311,47 +1317,82 @@ export default function UserDetail() {
               {/* Username & Password Section */}
               {openSideSheet === "Username & Password" && (
                 <div className="flex flex-col gap-6">
-                  {/* Step 1: Initial - Show email as text with Step Up Auth button */}
-                  {authStep === "initial" && (
-                    <div className="flex flex-col gap-6">
-                      <div className="flex flex-col gap-1">
-                        <Label>Email ID</Label>
-                        <p className="text-sm text-bluegrey-900 py-3">
-                          {user?.email}
-                        </p>
-                      </div>
+                  {/* Email Address Field */}
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="usernameEmail">Email address</Label>
+                    <input
+                      id="usernameEmail"
+                      type="email"
+                      value={usernameEmail || user?.email}
+                      onChange={(e) => setUsernameEmail(e.target.value)}
+                      disabled={isSavingUsername}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    <Button
+                      onClick={() => {
+                        setIsSavingUsername(true);
+                        setTimeout(() => {
+                          setIsSavingUsername(false);
+                          showAlert("Username updated successfully.", "success");
+                        }, 1500);
+                      }}
+                      disabled={isSavingUsername}
+                      variant="outline"
+                      className="mt-3 gap-2 rounded-[2px] border-bluegrey-500 text-bluegrey-700 hover:bg-bluegrey-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                    >
+                      {isSavingUsername ? "Updating..." : "Update username"}
+                    </Button>
+                  </div>
+
+                  {/* Password Field */}
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="temporaryPassword">Password</Label>
+                    <input
+                      id="temporaryPassword"
+                      type="text"
+                      value={temporaryPassword}
+                      onChange={(e) => setTemporaryPassword(e.target.value)}
+                      disabled={isSavingTempPassword}
+                      placeholder="Enter temporary password"
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    <p className="text-xs text-bluegrey-600 mt-1">
+                      Note: User will be required to change password on next login
+                    </p>
+                    <Button
+                      onClick={() => {
+                        setIsSavingTempPassword(true);
+                        setTimeout(() => {
+                          setIsSavingTempPassword(false);
+                          showAlert("Temporary password set successfully.", "success");
+                          setTemporaryPassword("");
+                        }, 1500);
+                      }}
+                      disabled={isSavingTempPassword || !temporaryPassword}
+                      className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                    >
+                      {isSavingTempPassword ? "Setting..." : "Set temporary password"}
+                    </Button>
+                  </div>
+
+                  {/* Reset Password Section */}
+                  <div className="border-t border-bluegrey-200 pt-6 mt-2">
+                    <div className="flex flex-col gap-3">
+                      <h3 className="text-sm font-semibold text-bluegrey-900">Password Reset</h3>
+                      <p className="text-xs text-bluegrey-600">
+                        Send a password reset link to the user's email address.
+                      </p>
                       <Button
-                        onClick={handleStepUpAuth}
-                        className="gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
+                        onClick={() => {
+                          showAlert("Password reset link sent to user's email.", "success");
+                        }}
+                        variant="outline"
+                        className="rounded-[2px] border-blue-500 text-blue-500 hover:bg-blue-50 h-auto px-3 py-2 w-fit"
                       >
-                        Step Up Authentication
+                        Reset password
                       </Button>
                     </div>
-                  )}
-
-                  {/* Step 2: Update - Show email in editable textbox after reauthentication */}
-                  {authStep === "update" && (
-                    <div className="flex flex-col gap-6">
-                      <div className="flex flex-col gap-1">
-                        <Label htmlFor="updateEmailInput">Email ID</Label>
-                        <input
-                          id="updateEmailInput"
-                          type="email"
-                          value={updateEmail}
-                          onChange={(e) => setUpdateEmail(e.target.value)}
-                          disabled={isSavingEmail}
-                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                        <Button
-                          onClick={handleUpdateEmail}
-                          disabled={isSavingEmail}
-                          className="mt-3 gap-2 rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2"
-                        >
-                          {isSavingEmail ? "Updating..." : "Update Email Address"}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
               )}
 
@@ -1381,8 +1422,8 @@ export default function UserDetail() {
                 </div>
               )}
 
-              {/* Danger Zone Section */}
-              {openSideSheet && (
+              {/* Danger Zone Section - Only for non-Username & Password authenticators */}
+              {openSideSheet && openSideSheet !== "Username & Password" && (
                 <div className="border-t-2 border-red-200 pt-6 mt-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex flex-col gap-3 flex-1">
