@@ -26,6 +26,8 @@ import {
   AlertTriangle,
   Loader2,
   CheckCircle2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
@@ -157,6 +159,7 @@ export default function UserDetail() {
   const [isSavingBasicEmail, setIsSavingBasicEmail] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isAuthSuccess, setIsAuthSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1671,18 +1674,33 @@ export default function UserDetail() {
                 <Label htmlFor="basicReauthPassword" className="text-sm font-medium text-bluegrey-900">
                   Password
                 </Label>
-                <input
-                  id="basicReauthPassword"
-                  type="password"
-                  value={basicReauthPassword}
-                  onChange={(e) => {
-                    setBasicReauthPassword(e.target.value);
-                    setBasicReauthError("");
-                  }}
-                  placeholder="Enter your password"
-                  disabled={isAuthenticating || isAuthSuccess}
-                  className="flex w-full rounded-md border border-bluegrey-300 bg-white px-3 py-2.5 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                />
+                <div className="relative">
+                  <input
+                    id="basicReauthPassword"
+                    type={showPassword ? "text" : "password"}
+                    value={basicReauthPassword}
+                    onChange={(e) => {
+                      setBasicReauthPassword(e.target.value);
+                      setBasicReauthError("");
+                    }}
+                    placeholder="Enter your password"
+                    disabled={isAuthenticating || isAuthSuccess}
+                    className="flex w-full rounded-md border border-bluegrey-300 bg-white px-3 py-2.5 pr-10 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={isAuthenticating || isAuthSuccess}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-bluegrey-500 hover:text-bluegrey-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
                 {basicReauthError && (
                   <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" />
