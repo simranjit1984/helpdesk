@@ -1326,7 +1326,7 @@ export default function UserDetail() {
                 <div className="flex flex-col gap-8">
                   {/* Email Address */}
                   <div className="flex flex-col gap-3">
-                    <Label htmlFor="usernameEmail" className="text-sm font-medium text-bluegrey-900">Email address</Label>
+                    <Label htmlFor="usernameEmail">Email address</Label>
                     <input
                       id="usernameEmail"
                       type="email"
@@ -1381,7 +1381,7 @@ export default function UserDetail() {
 
                   {/* Password */}
                   <div className="flex flex-col gap-3">
-                    <Label htmlFor="temporaryPassword" className="text-sm font-medium text-bluegrey-900">Password</Label>
+                    <Label htmlFor="temporaryPassword">Password</Label>
                     <input
                       id="temporaryPassword"
                       type="text"
