@@ -37,6 +37,7 @@ import EventLogSummary from "@/components/EventLogSummary";
 import AuthenticatorActivityDashboard from "@/components/AuthenticatorActivityDashboard";
 import { generateMockEvents } from "@/components/mockEvents";
 import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
