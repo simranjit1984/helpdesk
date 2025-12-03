@@ -1620,16 +1620,19 @@ export default function UserDetail() {
                     </Button>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-base font-semibold text-bluegrey-900">Remove phone number</h3>
-                      <p className="text-xs text-bluegrey-700">
-                        Remove the phone number for this user account.
-                      </p>
+                  <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
+                    <h2 className="text-xl font-semibold text-red-600">Danger zone</h2>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="text-base font-semibold text-bluegrey-900">Remove phone number</h3>
+                        <p className="text-xs text-bluegrey-700">
+                          Remove the phone number for this user account.
+                        </p>
+                      </div>
+                      <Button variant="outline" className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2">
+                        Remove phone number
+                      </Button>
                     </div>
-                    <Button variant="outline" className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2">
-                      Remove phone number
-                    </Button>
                   </div>
                 </div>
               )}
