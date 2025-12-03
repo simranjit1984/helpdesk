@@ -146,6 +146,12 @@ export default function UserDetail() {
   const [reauthError, setReauthError] = useState("");
   const [updateEmail, setUpdateEmail] = useState("");
   const [isSavingEmail, setIsSavingEmail] = useState(false);
+  const [isBasicEmailReauthDialogOpen, setIsBasicEmailReauthDialogOpen] = useState(false);
+  const [basicReauthPassword, setBasicReauthPassword] = useState("");
+  const [basicReauthError, setBasicReauthError] = useState("");
+  const [isEmailUpdateDialogOpen, setIsEmailUpdateDialogOpen] = useState(false);
+  const [newEmailAddress, setNewEmailAddress] = useState("");
+  const [isSavingBasicEmail, setIsSavingBasicEmail] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -395,6 +401,48 @@ export default function UserDetail() {
     setUpdateEmail("");
     setReauthPassword("");
     setReauthError("");
+  };
+
+  const handleBasicEmailChangeClick = () => {
+    setIsBasicEmailReauthDialogOpen(true);
+  };
+
+  const handleBasicEmailReauthSubmit = () => {
+    setBasicReauthError("");
+    if (basicReauthPassword.length === 0) {
+      setBasicReauthError("Password is required");
+      return;
+    }
+    if (basicReauthPassword.length < 6) {
+      setBasicReauthError("Invalid password");
+      return;
+    }
+    setIsBasicEmailReauthDialogOpen(false);
+    setIsEmailUpdateDialogOpen(true);
+    setNewEmailAddress(user?.email || "");
+    setBasicReauthPassword("");
+  };
+
+  const handleBasicEmailUpdate = async () => {
+    setIsSavingBasicEmail(true);
+    setTimeout(() => {
+      setFormData((prev) => ({
+        ...prev,
+        email: newEmailAddress,
+      }));
+      setIsSavingBasicEmail(false);
+      showAlert("Email address updated successfully.", "success");
+      setIsEmailUpdateDialogOpen(false);
+      setNewEmailAddress("");
+      setBasicReauthPassword("");
+    }, 1500);
+  };
+
+  const handleCancelBasicEmailUpdate = () => {
+    setIsEmailUpdateDialogOpen(false);
+    setNewEmailAddress("");
+    setBasicReauthPassword("");
+    setBasicReauthError("");
   };
 
   // Fetch user data based on username (email)
@@ -679,13 +727,23 @@ export default function UserDetail() {
 
                   <div className="flex flex-col gap-1">
                     <Label htmlFor="email">Email ID</Label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900   cursor-text"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        readOnly
+                        className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleBasicEmailChangeClick}
+                        disabled={isSaving}
+                        className="rounded-[2px] bg-blue-500 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-4 py-3 whitespace-nowrap"
+                      >
+                        Change Email
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-1">
