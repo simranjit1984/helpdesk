@@ -1651,7 +1651,7 @@ export default function UserDetail() {
                 </div>
               </div>
 
-              <div className="w-full border border-bluegrey-200 rounded-md p-4" style={{ backgroundColor: '#EEEFF3' }}>
+              <div className="w-full rounded p-4" style={{ backgroundColor: '#EEEFF3' }}>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
                     <span className="text-white font-semibold text-sm">LA</span>
