@@ -1510,6 +1510,25 @@ export default function UserDetail() {
                         Reset password
                       </Button>
                     </div>
+
+                    {/* Remove Password */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="text-base font-semibold text-bluegrey-900">Remove password</h3>
+                        <p className="text-xs text-bluegrey-700">
+                          Remove the password for this user account.
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          showAlert("Password removed successfully", "success");
+                        }}
+                        variant="outline"
+                        className="mt-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        Remove password
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
