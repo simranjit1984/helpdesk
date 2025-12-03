@@ -160,6 +160,13 @@ export default function UserDetail() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isAuthSuccess, setIsAuthSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [pendingAuthenticator, setPendingAuthenticator] = useState<string | null>(null);
+  const [isSecurityAuthDialogOpen, setIsSecurityAuthDialogOpen] = useState(false);
+  const [securityAuthPassword, setSecurityAuthPassword] = useState("");
+  const [securityAuthError, setSecurityAuthError] = useState("");
+  const [isSecurityAuthenticating, setIsSecurityAuthenticating] = useState(false);
+  const [isSecurityAuthSuccess, setIsSecurityAuthSuccess] = useState(false);
+  const [showSecurityPassword, setShowSecurityPassword] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -308,6 +315,11 @@ export default function UserDetail() {
     return hasAlert ? "alert" : "healthy";
   };
 
+  const handleAuthenticatorCardClick = (authName: string) => {
+    setPendingAuthenticator(authName);
+    setIsSecurityAuthDialogOpen(true);
+  };
+
   const renderAuthenticatorCard = (authName: string) => {
     const status = getAuthenticatorStatus(authName);
     const borderColor = {
@@ -333,7 +345,7 @@ export default function UserDetail() {
     return (
       <button
         key={authName}
-        onClick={() => setOpenSideSheet(authName)}
+        onClick={() => handleAuthenticatorCardClick(authName)}
         className={`border rounded py-4 px-6 flex items-center gap-3 transition-all cursor-pointer text-left ${borderColor} ${
           openSideSheet === authName ? selectedBg : `${bgColor} ${hoverBg}`
         }`}
@@ -466,6 +478,41 @@ export default function UserDetail() {
       setIsBasicEmailReauthDialogOpen(false);
       setBasicReauthPassword("");
       setBasicReauthError("");
+    }
+  };
+
+  const handleSecurityAuthSubmit = () => {
+    setSecurityAuthError("");
+    if (securityAuthPassword.length === 0) {
+      setSecurityAuthError("Password is required");
+      return;
+    }
+    if (securityAuthPassword.length < 6) {
+      setSecurityAuthError("Invalid password");
+      return;
+    }
+    setIsSecurityAuthenticating(true);
+    setTimeout(() => {
+      setIsSecurityAuthenticating(false);
+      setIsSecurityAuthSuccess(true);
+      setTimeout(() => {
+        setIsSecurityAuthSuccess(false);
+        setIsSecurityAuthDialogOpen(false);
+        if (pendingAuthenticator) {
+          setOpenSideSheet(pendingAuthenticator);
+          setPendingAuthenticator(null);
+        }
+        setSecurityAuthPassword("");
+      }, 1500);
+    }, 2000);
+  };
+
+  const handleCancelSecurityAuth = () => {
+    if (!isSecurityAuthenticating && !isSecurityAuthSuccess) {
+      setIsSecurityAuthDialogOpen(false);
+      setSecurityAuthPassword("");
+      setSecurityAuthError("");
+      setPendingAuthenticator(null);
     }
   };
 
