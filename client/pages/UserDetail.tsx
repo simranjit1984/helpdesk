@@ -171,6 +171,9 @@ export default function UserDetail() {
   const [temporaryPassword, setTemporaryPassword] = useState("");
   const [isSavingUsername, setIsSavingUsername] = useState(false);
   const [isSavingTempPassword, setIsSavingTempPassword] = useState(false);
+  const [usernameSuccess, setUsernameSuccess] = useState(false);
+  const [tempPasswordSuccess, setTempPasswordSuccess] = useState(false);
+  const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1327,21 +1330,31 @@ export default function UserDetail() {
                       id="usernameEmail"
                       type="email"
                       value={usernameEmail || user?.email}
-                      onChange={(e) => setUsernameEmail(e.target.value)}
+                      onChange={(e) => {
+                        setUsernameEmail(e.target.value);
+                        setUsernameSuccess(false);
+                      }}
                       disabled={isSavingUsername}
                       className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
+                    {usernameSuccess && (
+                      <div className="flex items-center gap-2 text-green-600 text-sm bg-green-50 border border-green-200 rounded px-3 py-2">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span>Username updated successfully</span>
+                      </div>
+                    )}
                     <Button
                       onClick={() => {
                         setIsSavingUsername(true);
+                        setUsernameSuccess(false);
                         setTimeout(() => {
                           setIsSavingUsername(false);
-                          showAlert("Username updated successfully.", "success");
+                          setUsernameSuccess(true);
                         }, 1500);
                       }}
                       disabled={isSavingUsername}
                       variant="outline"
-                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit self-end"
+                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                     >
                       {isSavingUsername ? "Updating..." : "Update username"}
                     </Button>
@@ -1354,7 +1367,10 @@ export default function UserDetail() {
                       id="temporaryPassword"
                       type="text"
                       value={temporaryPassword}
-                      onChange={(e) => setTemporaryPassword(e.target.value)}
+                      onChange={(e) => {
+                        setTemporaryPassword(e.target.value);
+                        setTempPasswordSuccess(false);
+                      }}
                       disabled={isSavingTempPassword}
                       placeholder="Enter temporary password"
                       className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
@@ -1362,18 +1378,25 @@ export default function UserDetail() {
                     <p className="text-xs text-bluegrey-600">
                       User will be required to change password on next login
                     </p>
+                    {tempPasswordSuccess && (
+                      <div className="flex items-center gap-2 text-green-600 text-sm bg-green-50 border border-green-200 rounded px-3 py-2">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span>Temporary password set successfully</span>
+                      </div>
+                    )}
                     <Button
                       onClick={() => {
                         setIsSavingTempPassword(true);
+                        setTempPasswordSuccess(false);
                         setTimeout(() => {
                           setIsSavingTempPassword(false);
-                          showAlert("Temporary password set successfully.", "success");
+                          setTempPasswordSuccess(true);
                           setTemporaryPassword("");
                         }, 1500);
                       }}
                       disabled={isSavingTempPassword || !temporaryPassword}
                       variant="outline"
-                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit self-end"
+                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                     >
                       {isSavingTempPassword ? "Setting..." : "Set temporary password"}
                     </Button>
@@ -1385,12 +1408,21 @@ export default function UserDetail() {
                     <p className="text-sm text-bluegrey-600">
                       Send a password reset link to the user's email address.
                     </p>
+                    {resetPasswordSuccess && (
+                      <div className="flex items-center gap-2 text-green-600 text-sm bg-green-50 border border-green-200 rounded px-3 py-2">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span>Password reset link sent to user's email</span>
+                      </div>
+                    )}
                     <Button
                       onClick={() => {
-                        showAlert("Password reset link sent to user's email.", "success");
+                        setResetPasswordSuccess(true);
+                        setTimeout(() => {
+                          setResetPasswordSuccess(false);
+                        }, 5000);
                       }}
                       variant="outline"
-                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2 self-start"
+                      className="rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
                     >
                       Reset password
                     </Button>
