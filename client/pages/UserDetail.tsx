@@ -1621,7 +1621,12 @@ export default function UserDetail() {
 
           <div className="px-6">
             <div className="flex flex-col gap-6">
-              <p className="text-sm text-bluegrey-700">
+              <div className="flex justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
+                  <Lock className="h-8 w-8 text-blue-600" />
+                </div>
+              </div>
+              <p className="text-sm text-bluegrey-700 text-center">
                 Please authenticate before updating the email address.
               </p>
               <div className="flex flex-col gap-1">
