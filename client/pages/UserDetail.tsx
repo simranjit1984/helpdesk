@@ -506,6 +506,9 @@ export default function UserDetail() {
         setIsSecurityAuthDialogOpen(false);
         if (pendingAuthenticator) {
           setOpenSideSheet(pendingAuthenticator);
+          if (pendingAuthenticator === "Username & Password") {
+            setUsernameEmail(user?.email || "");
+          }
           setPendingAuthenticator(null);
         }
         setSecurityAuthPassword("");
