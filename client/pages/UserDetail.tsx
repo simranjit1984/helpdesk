@@ -1382,23 +1382,25 @@ export default function UserDetail() {
                   </div>
 
                   {/* Password */}
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="temporaryPassword">Password</Label>
-                    <input
-                      id="temporaryPassword"
-                      type="text"
-                      value={temporaryPassword}
-                      onChange={(e) => {
-                        setTemporaryPassword(e.target.value);
-                        setTempPasswordSuccess(false);
-                      }}
-                      disabled={isSavingTempPassword}
-                      placeholder="Enter temporary password"
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                    <p className="text-xs text-bluegrey-600">
-                      User will be required to change password on next login
-                    </p>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                      <Label htmlFor="temporaryPassword">Password</Label>
+                      <input
+                        id="temporaryPassword"
+                        type="text"
+                        value={temporaryPassword}
+                        onChange={(e) => {
+                          setTemporaryPassword(e.target.value);
+                          setTempPasswordSuccess(false);
+                        }}
+                        disabled={isSavingTempPassword}
+                        placeholder="Enter temporary password"
+                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                      <p className="text-xs text-bluegrey-600">
+                        User will be required to change password on next login
+                      </p>
+                    </div>
                     {tempPasswordSuccess && (
                       <div className="flex items-start rounded-[2px] bg-green-50 relative">
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
