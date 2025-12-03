@@ -1748,7 +1748,6 @@ export default function UserDetail() {
                 disabled={isSavingBasicEmail}
                 className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Save className="h-5 w-5" />
                 {isSavingBasicEmail ? "Updating..." : "Update Email"}
               </Button>
             </div>
