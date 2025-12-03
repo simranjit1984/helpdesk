@@ -1380,7 +1380,7 @@ export default function UserDetail() {
                   </div>
 
                   {/* Password */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="temporaryPassword">Password</Label>
                     <input
                       id="temporaryPassword"
