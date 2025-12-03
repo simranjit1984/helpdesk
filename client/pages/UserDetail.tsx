@@ -1693,30 +1693,28 @@ export default function UserDetail() {
             </div>
           </div>
 
-          {!isAuthSuccess && (
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={handleCancelBasicReauth}
-                  disabled={isAuthenticating}
-                  className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleBasicEmailReauthSubmit}
-                  disabled={isAuthenticating}
-                  className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isAuthenticating && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {isAuthenticating ? "Authenticating..." : "Continue"}
-                </Button>
-              </div>
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCancelBasicReauth}
+                disabled={isAuthenticating || isAuthSuccess}
+                className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleBasicEmailReauthSubmit}
+                disabled={isAuthenticating || isAuthSuccess}
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isAuthenticating && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isAuthenticating ? "Authenticating..." : "Continue"}
+              </Button>
             </div>
-          )}
+          </div>
         </DialogContent>
       </Dialog>
 
