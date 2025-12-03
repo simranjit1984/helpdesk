@@ -1400,7 +1400,9 @@ export default function UserDetail() {
 
       <Dialog open={isValidityModalOpen} onOpenChange={setIsValidityModalOpen}>
         <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-          <DialogTitle className="sr-only">Edit validity period</DialogTitle>
+          <VisuallyHidden.Root>
+            <DialogTitle>Edit validity period</DialogTitle>
+          </VisuallyHidden.Root>
           <div className="flex items-start justify-between px-6 py-4">
             <DialogHeader className="text-left">
               <div className="text-xl font-medium leading-8 text-[#131319]">
@@ -1530,7 +1532,9 @@ export default function UserDetail() {
       {/* Reauthentication Dialog */}
       <Dialog open={isReauthDialogOpen} onOpenChange={setIsReauthDialogOpen}>
         <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-          <DialogTitle className="sr-only">Step Up Authentication</DialogTitle>
+          <VisuallyHidden.Root>
+            <DialogTitle>Step Up Authentication</DialogTitle>
+          </VisuallyHidden.Root>
           <div className="flex items-start justify-between px-6 py-4">
             <DialogHeader className="text-left">
               <div className="text-xl font-medium leading-8 text-[#131319]">
@@ -1608,7 +1612,9 @@ export default function UserDetail() {
       {/* Basic Info Email Step-up Authentication Dialog */}
       <Dialog open={isBasicEmailReauthDialogOpen} onOpenChange={setIsBasicEmailReauthDialogOpen}>
         <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-          <DialogTitle className="sr-only">Step Up Authentication</DialogTitle>
+          <VisuallyHidden.Root>
+            <DialogTitle>Step Up Authentication</DialogTitle>
+          </VisuallyHidden.Root>
           <div className="flex items-start justify-between px-6 py-4">
             <DialogHeader className="text-left">
               <div className="text-xl font-medium leading-8 text-[#131319]">
@@ -1691,7 +1697,9 @@ export default function UserDetail() {
       {/* Email Update Dialog */}
       <Dialog open={isEmailUpdateDialogOpen} onOpenChange={setIsEmailUpdateDialogOpen}>
         <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
-          <DialogTitle className="sr-only">Update Email Address</DialogTitle>
+          <VisuallyHidden.Root>
+            <DialogTitle>Update Email Address</DialogTitle>
+          </VisuallyHidden.Root>
           <div className="flex items-start justify-between px-6 py-4">
             <DialogHeader className="text-left">
               <div className="text-xl font-medium leading-8 text-[#131319]">
