@@ -25,6 +25,7 @@ import {
   X,
   AlertTriangle,
   Loader2,
+  CheckCircle2,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
@@ -155,6 +156,7 @@ export default function UserDetail() {
   const [newEmailAddress, setNewEmailAddress] = useState("");
   const [isSavingBasicEmail, setIsSavingBasicEmail] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isAuthSuccess, setIsAuthSuccess] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -423,11 +425,15 @@ export default function UserDetail() {
     setIsAuthenticating(true);
     setTimeout(() => {
       setIsAuthenticating(false);
-      setIsBasicEmailReauthDialogOpen(false);
-      setIsEmailUpdateDialogOpen(true);
-      setNewEmailAddress(user?.email || "");
-      setBasicReauthPassword("");
-    }, 3500);
+      setIsAuthSuccess(true);
+      setTimeout(() => {
+        setIsAuthSuccess(false);
+        setIsBasicEmailReauthDialogOpen(false);
+        setIsEmailUpdateDialogOpen(true);
+        setNewEmailAddress(user?.email || "");
+        setBasicReauthPassword("");
+      }, 1500);
+    }, 2000);
   };
 
   const handleBasicEmailUpdate = async () => {
@@ -453,7 +459,7 @@ export default function UserDetail() {
   };
 
   const handleCancelBasicReauth = () => {
-    if (!isAuthenticating) {
+    if (!isAuthenticating && !isAuthSuccess) {
       setIsBasicEmailReauthDialogOpen(false);
       setBasicReauthPassword("");
       setBasicReauthError("");
