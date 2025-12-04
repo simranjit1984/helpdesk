@@ -1671,16 +1671,9 @@ export default function UserDetail() {
                 </div>
               )}
 
-              {/* Default content for other sections */}
-              {openSideSheet && openSideSheet !== "Username & Password" && openSideSheet !== "SMS OTP" && (
-                <div className="text-bluegrey-600">
-                  Details for {openSideSheet}
-                </div>
-              )}
-
               {/* Danger Zone Section - Only for non-Username & Password and non-SMS OTP authenticators */}
               {openSideSheet && openSideSheet !== "Username & Password" && openSideSheet !== "SMS OTP" && (
-                <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
+                <div className="flex flex-col gap-4">
                   <h2 className="text-xl font-semibold text-red-600">Danger zone</h2>
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
