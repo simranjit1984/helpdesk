@@ -1525,7 +1525,7 @@ export default function UserDetail() {
                         <div className="flex flex-col gap-1">
                           <h3 className="text-base font-semibold text-bluegrey-900">Remove password</h3>
                           <p className="text-xs text-bluegrey-700">
-                            Remove the password for this user account.
+                            The current password for this user will be removed. The user will be required to set a new password upon their next login attempt.
                           </p>
                         </div>
                         {removePasswordSuccess && (
