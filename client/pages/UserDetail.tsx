@@ -395,7 +395,6 @@ export default function UserDetail() {
       showAlert("Email address updated successfully.", "success");
       setIsEmailUpdateDialogOpen(false);
       setNewEmailAddress("");
-      setBasicReauthPassword("");
     }, 1500);
   };
 
