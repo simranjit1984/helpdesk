@@ -146,28 +146,9 @@ export default function UserDetail() {
     endDate: "2025-04-18",
   });
   const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
-  const [authStep, setAuthStep] = useState<"initial" | "reauthenticate" | "update">("initial");
-  const [isReauthDialogOpen, setIsReauthDialogOpen] = useState(false);
-  const [reauthPassword, setReauthPassword] = useState("");
-  const [reauthError, setReauthError] = useState("");
-  const [updateEmail, setUpdateEmail] = useState("");
-  const [isSavingEmail, setIsSavingEmail] = useState(false);
-  const [isBasicEmailReauthDialogOpen, setIsBasicEmailReauthDialogOpen] = useState(false);
-  const [basicReauthPassword, setBasicReauthPassword] = useState("");
-  const [basicReauthError, setBasicReauthError] = useState("");
   const [isEmailUpdateDialogOpen, setIsEmailUpdateDialogOpen] = useState(false);
   const [newEmailAddress, setNewEmailAddress] = useState("");
   const [isSavingBasicEmail, setIsSavingBasicEmail] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [isAuthSuccess, setIsAuthSuccess] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [pendingAuthenticator, setPendingAuthenticator] = useState<string | null>(null);
-  const [isSecurityAuthDialogOpen, setIsSecurityAuthDialogOpen] = useState(false);
-  const [securityAuthPassword, setSecurityAuthPassword] = useState("");
-  const [securityAuthError, setSecurityAuthError] = useState("");
-  const [isSecurityAuthenticating, setIsSecurityAuthenticating] = useState(false);
-  const [isSecurityAuthSuccess, setIsSecurityAuthSuccess] = useState(false);
-  const [showSecurityPassword, setShowSecurityPassword] = useState(false);
   const [usernameEmail, setUsernameEmail] = useState("");
   const [temporaryPassword, setTemporaryPassword] = useState("");
   const [isSavingUsername, setIsSavingUsername] = useState(false);
