@@ -25,9 +25,6 @@ import {
   X,
   AlertTriangle,
   Loader2,
-  CheckCircle2,
-  Eye,
-  EyeOff,
   CheckCircle,
 } from "lucide-react";
 import Layout from "@/components/Layout";
