@@ -314,8 +314,10 @@ export default function UserDetail() {
   };
 
   const handleAuthenticatorCardClick = (authName: string) => {
-    setPendingAuthenticator(authName);
-    setIsSecurityAuthDialogOpen(true);
+    setOpenSideSheet(authName);
+    if (authName === "Username & Password") {
+      setUsernameEmail(user?.email || "");
+    }
   };
 
   const renderAuthenticatorCard = (authName: string) => {
@@ -373,82 +375,16 @@ export default function UserDetail() {
 
   const authenticatorLocation = "Ottawa, ON, Canada";
 
-  const handleStepUpAuth = () => {
-    setIsReauthDialogOpen(true);
-  };
-
-  const handleReauthSubmit = () => {
-    setReauthError("");
-    // Simple validation: password must be at least 6 characters
-    if (reauthPassword.length === 0) {
-      setReauthError("Password is required");
-      return;
-    }
-    if (reauthPassword.length < 6) {
-      setReauthError("Invalid password");
-      return;
-    }
-    // Success: move to update email step
-    setIsReauthDialogOpen(false);
-    setAuthStep("update");
-    setUpdateEmail(user?.email || "");
-    setReauthPassword("");
-  };
-
-  const handleUpdateEmail = async () => {
-    setIsSavingEmail(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSavingEmail(false);
-      showAlert("Email address updated successfully.", "success");
-      setOpenSideSheet(null);
-      setAuthStep("initial");
-      setUpdateEmail("");
-      setReauthPassword("");
-    }, 1500);
-  };
-
-  const handleCancelEmailUpdate = () => {
-    setAuthStep("reauthenticate");
-    setUpdateEmail("");
-  };
 
   const handleCloseSideSheet = () => {
     setOpenSideSheet(null);
-    setAuthStep("initial");
-    setUpdateEmail("");
-    setReauthPassword("");
-    setReauthError("");
     setUsernameEmail("");
     setTemporaryPassword("");
   };
 
   const handleBasicEmailChangeClick = () => {
-    setIsBasicEmailReauthDialogOpen(true);
-  };
-
-  const handleBasicEmailReauthSubmit = () => {
-    setBasicReauthError("");
-    if (basicReauthPassword.length === 0) {
-      setBasicReauthError("Password is required");
-      return;
-    }
-    if (basicReauthPassword.length < 6) {
-      setBasicReauthError("Invalid password");
-      return;
-    }
-    setIsAuthenticating(true);
-    setTimeout(() => {
-      setIsAuthenticating(false);
-      setIsAuthSuccess(true);
-      setTimeout(() => {
-        setIsAuthSuccess(false);
-        setIsBasicEmailReauthDialogOpen(false);
-        setIsEmailUpdateDialogOpen(true);
-        setNewEmailAddress(user?.email || "");
-        setBasicReauthPassword("");
-      }, 1500);
-    }, 2000);
+    setIsEmailUpdateDialogOpen(true);
+    setNewEmailAddress(user?.email || "");
   };
 
   const handleBasicEmailUpdate = async () => {
@@ -469,54 +405,6 @@ export default function UserDetail() {
   const handleCancelBasicEmailUpdate = () => {
     setIsEmailUpdateDialogOpen(false);
     setNewEmailAddress("");
-    setBasicReauthPassword("");
-    setBasicReauthError("");
-  };
-
-  const handleCancelBasicReauth = () => {
-    if (!isAuthenticating && !isAuthSuccess) {
-      setIsBasicEmailReauthDialogOpen(false);
-      setBasicReauthPassword("");
-      setBasicReauthError("");
-    }
-  };
-
-  const handleSecurityAuthSubmit = () => {
-    setSecurityAuthError("");
-    if (securityAuthPassword.length === 0) {
-      setSecurityAuthError("Password is required");
-      return;
-    }
-    if (securityAuthPassword.length < 6) {
-      setSecurityAuthError("Invalid password");
-      return;
-    }
-    setIsSecurityAuthenticating(true);
-    setTimeout(() => {
-      setIsSecurityAuthenticating(false);
-      setIsSecurityAuthSuccess(true);
-      setTimeout(() => {
-        setIsSecurityAuthSuccess(false);
-        setIsSecurityAuthDialogOpen(false);
-        if (pendingAuthenticator) {
-          setOpenSideSheet(pendingAuthenticator);
-          if (pendingAuthenticator === "Username & Password") {
-            setUsernameEmail(user?.email || "");
-          }
-          setPendingAuthenticator(null);
-        }
-        setSecurityAuthPassword("");
-      }, 1500);
-    }, 2000);
-  };
-
-  const handleCancelSecurityAuth = () => {
-    if (!isSecurityAuthenticating && !isSecurityAuthSuccess) {
-      setIsSecurityAuthDialogOpen(false);
-      setSecurityAuthPassword("");
-      setSecurityAuthError("");
-      setPendingAuthenticator(null);
-    }
   };
 
   // Fetch user data based on username (email)
