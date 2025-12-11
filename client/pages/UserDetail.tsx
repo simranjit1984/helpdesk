@@ -895,11 +895,11 @@ export default function UserDetail() {
                     </div>
                   )}
 
-                  {/* Render External Identity Providers */}
+                  {/* Render Linked accounts */}
                   {userAuthenticators.some(auth => allAuthenticators.externalProviders.includes(auth)) && (
                     <div className="mt-10">
                       <h2 className="text-xl font-semibold text-blue-500 mb-4">
-                        External Identity Providers
+                        Linked accounts
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
                         {userAuthenticators
