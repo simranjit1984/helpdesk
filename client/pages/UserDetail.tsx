@@ -143,9 +143,6 @@ export default function UserDetail() {
     endDate: "2025-04-18",
   });
   const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
-  const [isEmailUpdateDialogOpen, setIsEmailUpdateDialogOpen] = useState(false);
-  const [newEmailAddress, setNewEmailAddress] = useState("");
-  const [isSavingBasicEmail, setIsSavingBasicEmail] = useState(false);
   const [usernameEmail, setUsernameEmail] = useState("");
   const [temporaryPassword, setTemporaryPassword] = useState("");
   const [isSavingUsername, setIsSavingUsername] = useState(false);
@@ -379,29 +376,6 @@ export default function UserDetail() {
     setTemporaryPassword("");
   };
 
-  const handleBasicEmailChangeClick = () => {
-    setIsEmailUpdateDialogOpen(true);
-    setNewEmailAddress(user?.email || "");
-  };
-
-  const handleBasicEmailUpdate = async () => {
-    setIsSavingBasicEmail(true);
-    setTimeout(() => {
-      setFormData((prev) => ({
-        ...prev,
-        email: newEmailAddress,
-      }));
-      setIsSavingBasicEmail(false);
-      showAlert("Email address updated successfully.", "success");
-      setIsEmailUpdateDialogOpen(false);
-      setNewEmailAddress("");
-    }, 1500);
-  };
-
-  const handleCancelBasicEmailUpdate = () => {
-    setIsEmailUpdateDialogOpen(false);
-    setNewEmailAddress("");
-  };
 
   // Fetch user data based on username (email)
   const decodedId = id ? decodeURIComponent(id) : null;
