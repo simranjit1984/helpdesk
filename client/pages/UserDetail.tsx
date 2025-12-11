@@ -685,24 +685,13 @@ export default function UserDetail() {
 
                   <div className="flex flex-col gap-1">
                     <Label htmlFor="email">Email ID</Label>
-                    <div className="flex gap-2">
-                      <input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        readOnly
-                        className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={handleBasicEmailChangeClick}
-                        disabled={isSaving}
-                        className="rounded-[2px] text-bluegrey-700 hover:bg-bluegrey-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-3"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      readOnly
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
