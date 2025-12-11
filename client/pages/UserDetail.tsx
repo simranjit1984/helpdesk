@@ -358,8 +358,8 @@ export default function UserDetail() {
             )}
           </div>
           <div className="flex items-center gap-4 text-xs leading-6">
-            <span><span className="font-semibold text-bluegrey-700">Location:</span> <span className="text-bluegrey-600">Ottawa, ON, Canada</span></span>
             <span><span className="font-semibold text-bluegrey-700">Last used:</span> <span className="text-bluegrey-600">{getAuthenticatorTimestamp(authName)}</span></span>
+            <span><span className="font-semibold text-bluegrey-700">Location:</span> <span className="text-bluegrey-600">Ottawa, ON, Canada</span></span>
           </div>
         </div>
         <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
