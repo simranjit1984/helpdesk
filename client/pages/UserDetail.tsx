@@ -102,9 +102,7 @@ export default function UserDetail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const organizationFromUrl = searchParams.get("organization");
-  const [userAuthenticators, setUserAuthenticators] = useState<string[]>(
-    []
-  );
+  const [userAuthenticators, setUserAuthenticators] = useState<string[]>([]);
   const [endDateOption, setEndDateOption] = useState<"no-end" | "custom">(
     "custom",
   );
@@ -127,7 +125,10 @@ export default function UserDetail() {
     Array<{ id: string; column: string; operator: string; value: string }>
   >([]);
   const [events] = useState(() => generateMockEvents());
-  const [selectedCardForReview, setSelectedCardForReview] = useState<{ cardType: string; data: any } | null>(null);
+  const [selectedCardForReview, setSelectedCardForReview] = useState<{
+    cardType: string;
+    data: any;
+  } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -193,21 +194,21 @@ export default function UserDetail() {
     "Username & Password": "Jan 19, 2025 02:45 PM",
     "SMS OTP": "Jan 18, 2025 10:15 AM",
     "Email OTP": "Jan 17, 2025 05:30 PM",
-    "TOTP": "Jan 16, 2025 03:20 PM",
+    TOTP: "Jan 16, 2025 03:20 PM",
     "QR code Enrollment": "Jan 15, 2025 11:10 AM",
     "Magic link authentication": "Jan 14, 2025 08:45 AM",
     "Push MFA": "Jan 13, 2025 04:15 PM",
-    "Google": "Jan 15, 2025 09:30 AM",
-    "Facebook": "Jan 12, 2025 02:15 PM",
-    "Apple": "Jan 10, 2025 11:45 AM",
-    "DigiD": "Jan 08, 2025 04:20 PM",
-    "eHerkenning": "Jan 05, 2025 10:10 AM",
+    Google: "Jan 15, 2025 09:30 AM",
+    Facebook: "Jan 12, 2025 02:15 PM",
+    Apple: "Jan 10, 2025 11:45 AM",
+    DigiD: "Jan 08, 2025 04:20 PM",
+    eHerkenning: "Jan 05, 2025 10:10 AM",
     "Microsoft EntraID": "Jan 02, 2025 03:50 PM",
     "Microsoft AD": "Dec 28, 2024 08:25 AM",
     "iCloud Keychain": "Jan 18, 2025 05:40 PM",
     "Safenet FIDO Key": "Jan 16, 2025 01:15 PM",
     "Chrome Passkey": "Jan 14, 2025 07:30 AM",
-    "Yubikey": "Jan 11, 2025 09:45 AM",
+    Yubikey: "Jan 11, 2025 09:45 AM",
   };
 
   // Generate deterministic authenticators for each user based on email
@@ -247,7 +248,9 @@ export default function UserDetail() {
     const additionalCount = Math.floor(seededRandom(1) * 4) + 3; // 3 to 6
 
     const shuffled = [...allOptions].sort(
-      (a, b) => seededRandom(allOptions.indexOf(a)) - seededRandom(allOptions.indexOf(b))
+      (a, b) =>
+        seededRandom(allOptions.indexOf(a)) -
+        seededRandom(allOptions.indexOf(b)),
     );
 
     selected.push(...shuffled.slice(0, additionalCount));
@@ -262,21 +265,23 @@ export default function UserDetail() {
     "Username & Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
     "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
     "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
-    "TOTP": <Clock className="h-5 w-5 text-bluegrey-600" />,
+    TOTP: <Clock className="h-5 w-5 text-bluegrey-600" />,
     "QR code Enrollment": <QrCode className="h-5 w-5 text-bluegrey-600" />,
-    "Magic link authentication": <Link2 className="h-5 w-5 text-bluegrey-600" />,
+    "Magic link authentication": (
+      <Link2 className="h-5 w-5 text-bluegrey-600" />
+    ),
     "Push MFA": <Bell className="h-5 w-5 text-bluegrey-600" />,
-    "Google": <Globe className="h-5 w-5 text-bluegrey-600" />,
-    "Facebook": <Globe className="h-5 w-5 text-bluegrey-600" />,
-    "Apple": <Globe className="h-5 w-5 text-bluegrey-600" />,
-    "DigiD": <Globe className="h-5 w-5 text-bluegrey-600" />,
-    "eHerkenning": <Globe className="h-5 w-5 text-bluegrey-600" />,
+    Google: <Globe className="h-5 w-5 text-bluegrey-600" />,
+    Facebook: <Globe className="h-5 w-5 text-bluegrey-600" />,
+    Apple: <Globe className="h-5 w-5 text-bluegrey-600" />,
+    DigiD: <Globe className="h-5 w-5 text-bluegrey-600" />,
+    eHerkenning: <Globe className="h-5 w-5 text-bluegrey-600" />,
     "Microsoft EntraID": <Globe className="h-5 w-5 text-bluegrey-600" />,
     "Microsoft AD": <Globe className="h-5 w-5 text-bluegrey-600" />,
     "iCloud Keychain": <Key className="h-5 w-5 text-bluegrey-600" />,
     "Safenet FIDO Key": <Key className="h-5 w-5 text-bluegrey-600" />,
     "Chrome Passkey": <Chrome className="h-5 w-5 text-bluegrey-600" />,
-    "Yubikey": <Smartphone className="h-5 w-5 text-bluegrey-600" />,
+    Yubikey: <Smartphone className="h-5 w-5 text-bluegrey-600" />,
   };
 
   const getAuthenticatorIcon = (name: string | null) => {
@@ -286,9 +291,9 @@ export default function UserDetail() {
   const getAuthenticatorStatus = (authName: string): "healthy" | "alert" => {
     // Count failed authentication attempts for this authenticator
     const failedAttempts = events.filter(
-      event =>
+      (event) =>
         event.description.toLowerCase().includes("failed") &&
-        event.description.toLowerCase().includes(authName.toLowerCase())
+        event.description.toLowerCase().includes(authName.toLowerCase()),
     ).length;
 
     // Determine status based on failed attempts (both error and warning use alert state)
@@ -301,7 +306,7 @@ export default function UserDetail() {
   const getSecurityTabStatus = (): "healthy" | "alert" => {
     // Check all user authenticators for any issues
     const hasAlert = userAuthenticators.some(
-      auth => getAuthenticatorStatus(auth) === "alert"
+      (auth) => getAuthenticatorStatus(auth) === "alert",
     );
 
     return hasAlert ? "alert" : "healthy";
@@ -353,13 +358,25 @@ export default function UserDetail() {
             {status === "alert" && (
               <div className="flex items-center gap-1">
                 <AlertTriangle className="h-4 w-4 text-orange-600 flex-shrink-0" />
-                <span className="text-xs font-semibold text-orange-600">Alert</span>
+                <span className="text-xs font-semibold text-orange-600">
+                  Alert
+                </span>
               </div>
             )}
           </div>
           <div className="flex items-center gap-4 text-xs leading-6">
-            <span><span className="font-semibold text-bluegrey-700">Last used:</span> <span className="text-bluegrey-600">{getAuthenticatorTimestamp(authName)}</span></span>
-            <span><span className="font-semibold text-bluegrey-700">Location:</span> <span className="text-bluegrey-600">Ottawa, ON, Canada</span></span>
+            <span>
+              <span className="font-semibold text-bluegrey-700">
+                Last used:
+              </span>{" "}
+              <span className="text-bluegrey-600">
+                {getAuthenticatorTimestamp(authName)}
+              </span>
+            </span>
+            <span>
+              <span className="font-semibold text-bluegrey-700">Location:</span>{" "}
+              <span className="text-bluegrey-600">Ottawa, ON, Canada</span>
+            </span>
           </div>
         </div>
         <ChevronRight className="h-5 w-5 text-bluegrey-600 flex-shrink-0" />
@@ -369,13 +386,11 @@ export default function UserDetail() {
 
   const authenticatorLocation = "Ottawa, ON, Canada";
 
-
   const handleCloseSideSheet = () => {
     setOpenSideSheet(null);
     setUsernameEmail("");
     setTemporaryPassword("");
   };
-
 
   // Fetch user data based on username (email)
   const decodedId = id ? decodeURIComponent(id) : null;
@@ -882,43 +897,55 @@ export default function UserDetail() {
                   </div>
 
                   {/* Render Authenticators */}
-                  {userAuthenticators.some(auth => allAuthenticators.authenticators.includes(auth)) && (
+                  {userAuthenticators.some((auth) =>
+                    allAuthenticators.authenticators.includes(auth),
+                  ) && (
                     <div className="mt-10">
                       <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         Authenticators
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
                         {userAuthenticators
-                          .filter(auth => allAuthenticators.authenticators.includes(auth))
-                          .map(auth => renderAuthenticatorCard(auth))}
+                          .filter((auth) =>
+                            allAuthenticators.authenticators.includes(auth),
+                          )
+                          .map((auth) => renderAuthenticatorCard(auth))}
                       </div>
                     </div>
                   )}
 
                   {/* Render Linked accounts */}
-                  {userAuthenticators.some(auth => allAuthenticators.externalProviders.includes(auth)) && (
+                  {userAuthenticators.some((auth) =>
+                    allAuthenticators.externalProviders.includes(auth),
+                  ) && (
                     <div className="mt-10">
                       <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         Linked accounts
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
                         {userAuthenticators
-                          .filter(auth => allAuthenticators.externalProviders.includes(auth))
-                          .map(auth => renderAuthenticatorCard(auth))}
+                          .filter((auth) =>
+                            allAuthenticators.externalProviders.includes(auth),
+                          )
+                          .map((auth) => renderAuthenticatorCard(auth))}
                       </div>
                     </div>
                   )}
 
                   {/* Render Passkeys */}
-                  {userAuthenticators.some(auth => allAuthenticators.passkeys.includes(auth)) && (
+                  {userAuthenticators.some((auth) =>
+                    allAuthenticators.passkeys.includes(auth),
+                  ) && (
                     <div className="mt-10">
                       <h2 className="text-xl font-semibold text-blue-500 mb-4">
                         Passkeys
                       </h2>
                       <div className="flex flex-col gap-4 max-w-3xl">
                         {userAuthenticators
-                          .filter(auth => allAuthenticators.passkeys.includes(auth))
-                          .map(auth => renderAuthenticatorCard(auth))}
+                          .filter((auth) =>
+                            allAuthenticators.passkeys.includes(auth),
+                          )
+                          .map((auth) => renderAuthenticatorCard(auth))}
                       </div>
                     </div>
                   )}
@@ -1096,7 +1123,10 @@ export default function UserDetail() {
                     { value: "requestId", label: "Trace ID" },
                     { value: "userAgent", label: "User agent" },
                     { value: "identityApp", label: "Identity app" },
-                    { value: "identityAppInstanceId", label: "Identity app instance ID" },
+                    {
+                      value: "identityAppInstanceId",
+                      label: "Identity app instance ID",
+                    },
                     { value: "subject", label: "Subject" },
                   ]}
                   filters={eventFilters}
@@ -1119,8 +1149,14 @@ export default function UserDetail() {
           </Tabs>
 
           {/* Side Sheet for Section Details */}
-          <Sheet open={!!openSideSheet} onOpenChange={(open) => !open && handleCloseSideSheet()}>
-            <SheetContent side="right" className="w-full sm:w-[402px] p-0 flex flex-col gap-0">
+          <Sheet
+            open={!!openSideSheet}
+            onOpenChange={(open) => !open && handleCloseSideSheet()}
+          >
+            <SheetContent
+              side="right"
+              className="w-full sm:w-[402px] p-0 flex flex-col gap-0"
+            >
               <div className="relative flex items-center justify-start px-6 py-4">
                 <div className="flex items-center gap-3 flex-1">
                   <div className="flex-shrink-0">
@@ -1145,118 +1181,56 @@ export default function UserDetail() {
               </div>
 
               <div className="flex-1 overflow-y-auto px-6 py-6">
-              {/* Last Access Section */}
-              <div className="flex flex-col gap-3 mb-6 p-4 border border-bluegrey-100 rounded bg-bluegrey-25">
-                <h3 className="text-sm font-semibold text-bluegrey-900">Last Access</h3>
-                <div className="flex flex-col gap-2 text-xs text-bluegrey-700">
-                  <div className="flex items-center gap-2">
-                    <span className="text-bluegrey-600 min-w-fit">Location:</span>
-                    <span>{authenticatorLocation}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-bluegrey-600 min-w-fit">Date & Time:</span>
-                    <span>{openSideSheet ? getAuthenticatorTimestamp(openSideSheet) : "Never used"}</span>
+                {/* Last Access Section */}
+                <div className="flex flex-col gap-3 mb-6 p-4 border border-bluegrey-100 rounded bg-bluegrey-25">
+                  <h3 className="text-sm font-semibold text-bluegrey-900">
+                    Last Access
+                  </h3>
+                  <div className="flex flex-col gap-2 text-xs text-bluegrey-700">
+                    <div className="flex items-center gap-2">
+                      <span className="text-bluegrey-600 min-w-fit">
+                        Location:
+                      </span>
+                      <span>{authenticatorLocation}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-bluegrey-600 min-w-fit">
+                        Date & Time:
+                      </span>
+                      <span>
+                        {openSideSheet
+                          ? getAuthenticatorTimestamp(openSideSheet)
+                          : "Never used"}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Username & Password Section */}
-              {openSideSheet === "Username & Password" && (
-                <div className="flex flex-col gap-6">
-                  {/* Update Username Section */}
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-xl font-semibold text-blue-500">User name</h3>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Label htmlFor="usernameEmail">Email address</Label>
-                      <input
-                        id="usernameEmail"
-                        type="email"
-                        value={usernameEmail || user?.email}
-                        onChange={(e) => {
-                          setUsernameEmail(e.target.value);
-                          setUsernameSuccess(false);
-                        }}
-                        disabled={isSavingUsername}
-                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                      />
-                    </div>
-                    {usernameSuccess && (
-                      <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                        <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                          <div className="flex items-start gap-2 flex-1 py-2">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm text-bluegrey-900 leading-5">
-                                Username updated successfully
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex justify-end items-center">
-                            <button
-                              onClick={() => setUsernameSuccess(false)}
-                              className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                              aria-label="Close alert"
-                            >
-                              <X className="w-6 h-6 text-bluegrey-700" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <Button
-                      onClick={() => {
-                        setIsSavingUsername(true);
-                        setUsernameSuccess(false);
-                        setTimeout(() => {
-                          setIsSavingUsername(false);
-                          setUsernameSuccess(true);
-                        }, 1500);
-                      }}
-                      disabled={isSavingUsername}
-                      variant="outline"
-                      className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
-                    >
-                      {isSavingUsername ? "Updating..." : "Update"}
-                    </Button>
-                  </div>
-
-                  {/* Password Section */}
-                  <div className="flex flex-col gap-4 pt-6 border-t border-bluegrey-200">
-                    <h2 className="text-xl font-semibold text-blue-500">Password</h2>
-
-                    {/* Set Temporary Password */}
+                {/* Username & Password Section */}
+                {openSideSheet === "Username & Password" && (
+                  <div className="flex flex-col gap-6">
+                    {/* Update Username Section */}
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-1">
-                        <h3 className="text-base font-semibold text-bluegrey-900">Set temporary password</h3>
-                        <p className="text-xs text-bluegrey-700">
-                          User will be required to change password on next login
-                        </p>
+                        <h3 className="text-xl font-semibold text-blue-500">
+                          User name
+                        </h3>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <Label htmlFor="temporaryPassword">Password</Label>
+                        <Label htmlFor="usernameEmail">Email address</Label>
                         <input
-                          id="temporaryPassword"
-                          type="text"
-                          value={temporaryPassword}
+                          id="usernameEmail"
+                          type="email"
+                          value={usernameEmail || user?.email}
                           onChange={(e) => {
-                            setTemporaryPassword(e.target.value);
-                            setTempPasswordSuccess(false);
-                            setTempPasswordError("");
+                            setUsernameEmail(e.target.value);
+                            setUsernameSuccess(false);
                           }}
-                          disabled={isSavingTempPassword}
-                          placeholder="Enter temporary password"
+                          disabled={isSavingUsername}
                           className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                         />
-                        {tempPasswordError && (
-                          <p className="text-xs text-red-500 mt-1">
-                            {tempPasswordError}
-                          </p>
-                        )}
                       </div>
-                      {tempPasswordSuccess && (
+                      {usernameSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
                           <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
                           <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
@@ -1264,13 +1238,13 @@ export default function UserDetail() {
                               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-bluegrey-900 leading-5">
-                                  Temporary password set successfully
+                                  Username updated successfully
                                 </p>
                               </div>
                             </div>
                             <div className="flex justify-end items-center">
                               <button
-                                onClick={() => setTempPasswordSuccess(false)}
+                                onClick={() => setUsernameSuccess(false)}
                                 className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
                                 aria-label="Close alert"
                               >
@@ -1282,81 +1256,60 @@ export default function UserDetail() {
                       )}
                       <Button
                         onClick={() => {
-                          setTempPasswordError("");
-                          if (!temporaryPassword || temporaryPassword.trim() === "") {
-                            setTempPasswordError("Password is required");
-                            return;
-                          }
-                          setIsSavingTempPassword(true);
-                          setTempPasswordSuccess(false);
+                          setIsSavingUsername(true);
+                          setUsernameSuccess(false);
                           setTimeout(() => {
-                            setIsSavingTempPassword(false);
-                            setTempPasswordSuccess(true);
-                            setTemporaryPassword("");
+                            setIsSavingUsername(false);
+                            setUsernameSuccess(true);
                           }, 1500);
                         }}
-                        disabled={isSavingTempPassword}
+                        disabled={isSavingUsername}
                         variant="outline"
                         className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                       >
-                        {isSavingTempPassword ? "Setting..." : "Set temporary password"}
+                        {isSavingUsername ? "Updating..." : "Update"}
                       </Button>
                     </div>
 
-                    {/* Reset Password */}
-                    <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="text-base font-semibold text-bluegrey-900">Reset password</h3>
-                        <p className="text-xs text-bluegrey-700">
-                          Send a password reset link to the user's email address.
-                        </p>
-                      </div>
-                      {resetPasswordSuccess && (
-                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                            <div className="flex items-start gap-2 flex-1 py-2">
-                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-bluegrey-900 leading-5">
-                                  Password reset link sent to user's email
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex justify-end items-center">
-                              <button
-                                onClick={() => setResetPasswordSuccess(false)}
-                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                                aria-label="Close alert"
-                              >
-                                <X className="w-6 h-6 text-bluegrey-700" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      <Button
-                        onClick={() => {
-                          setResetPasswordSuccess(true);
-                        }}
-                        variant="outline"
-                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
-                      >
-                        Reset password
-                      </Button>
-                    </div>
+                    {/* Password Section */}
+                    <div className="flex flex-col gap-4 pt-6 border-t border-bluegrey-200">
+                      <h2 className="text-xl font-semibold text-blue-500">
+                        Password
+                      </h2>
 
-                    {/* Danger Zone */}
-                    <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
-                      <h2 className="text-xl font-semibold text-red-600">Danger zone</h2>
+                      {/* Set Temporary Password */}
                       <div className="flex flex-col gap-3">
                         <div className="flex flex-col gap-1">
-                          <h3 className="text-base font-semibold text-bluegrey-900">Remove password</h3>
+                          <h3 className="text-base font-semibold text-bluegrey-900">
+                            Set temporary password
+                          </h3>
                           <p className="text-xs text-bluegrey-700">
-                            The current password for this user will be removed. The user will be required to set a new password upon their next login attempt.
+                            User will be required to change password on next
+                            login
                           </p>
                         </div>
-                        {removePasswordSuccess && (
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="temporaryPassword">Password</Label>
+                          <input
+                            id="temporaryPassword"
+                            type="text"
+                            value={temporaryPassword}
+                            onChange={(e) => {
+                              setTemporaryPassword(e.target.value);
+                              setTempPasswordSuccess(false);
+                              setTempPasswordError("");
+                            }}
+                            disabled={isSavingTempPassword}
+                            placeholder="Enter temporary password"
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                          {tempPasswordError && (
+                            <p className="text-xs text-red-500 mt-1">
+                              {tempPasswordError}
+                            </p>
+                          )}
+                        </div>
+                        {tempPasswordSuccess && (
                           <div className="flex items-start rounded-[2px] bg-green-50 relative">
                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
                             <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
@@ -1364,13 +1317,13 @@ export default function UserDetail() {
                                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                                 <div className="flex-1 min-w-0">
                                   <p className="text-sm text-bluegrey-900 leading-5">
-                                    Password removed successfully
+                                    Temporary password set successfully
                                   </p>
                                 </div>
                               </div>
                               <div className="flex justify-end items-center">
                                 <button
-                                  onClick={() => setRemovePasswordSuccess(false)}
+                                  onClick={() => setTempPasswordSuccess(false)}
                                   className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
                                   aria-label="Close alert"
                                 >
@@ -1382,86 +1335,158 @@ export default function UserDetail() {
                         )}
                         <Button
                           onClick={() => {
-                            setRemovePasswordSuccess(true);
+                            setTempPasswordError("");
+                            if (
+                              !temporaryPassword ||
+                              temporaryPassword.trim() === ""
+                            ) {
+                              setTempPasswordError("Password is required");
+                              return;
+                            }
+                            setIsSavingTempPassword(true);
+                            setTempPasswordSuccess(false);
+                            setTimeout(() => {
+                              setIsSavingTempPassword(false);
+                              setTempPasswordSuccess(true);
+                              setTemporaryPassword("");
+                            }, 1500);
                           }}
+                          disabled={isSavingTempPassword}
                           variant="outline"
-                          className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
+                          className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
                         >
-                          Remove password
+                          {isSavingTempPassword
+                            ? "Setting..."
+                            : "Set temporary password"}
                         </Button>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              )}
 
-              {/* SMS OTP Section */}
-              {openSideSheet === "SMS OTP" && (
-                <div className="flex flex-col gap-6">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-1">
-                      <h2 className="text-xl font-semibold text-blue-500">Phone number</h2>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Label htmlFor="phoneNumber">Phone number</Label>
-                      <input
-                        id="phoneNumber"
-                        type="tel"
-                        value={newPhoneNumber || user?.phone || ""}
-                        onChange={(e) => {
-                          setNewPhoneNumber(e.target.value);
-                          setPhoneUpdateSuccess(false);
-                        }}
-                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
-                      />
-                    </div>
-                    {phoneUpdateSuccess && (
-                      <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                        <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                          <div className="flex items-start gap-2 flex-1 py-2">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm text-bluegrey-900 leading-5">
-                                Phone number updated successfully
-                              </p>
+                      {/* Reset Password */}
+                      <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-1">
+                          <h3 className="text-base font-semibold text-bluegrey-900">
+                            Reset password
+                          </h3>
+                          <p className="text-xs text-bluegrey-700">
+                            Send a password reset link to the user's email
+                            address.
+                          </p>
+                        </div>
+                        {resetPasswordSuccess && (
+                          <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                            <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                              <div className="flex items-start gap-2 flex-1 py-2">
+                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm text-bluegrey-900 leading-5">
+                                    Password reset link sent to user's email
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex justify-end items-center">
+                                <button
+                                  onClick={() => setResetPasswordSuccess(false)}
+                                  className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                  aria-label="Close alert"
+                                >
+                                  <X className="w-6 h-6 text-bluegrey-700" />
+                                </button>
+                              </div>
                             </div>
                           </div>
-                          <div className="flex justify-end items-center">
-                            <button
-                              onClick={() => setPhoneUpdateSuccess(false)}
-                              className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                              aria-label="Close alert"
-                            >
-                              <X className="w-6 h-6 text-bluegrey-700" />
-                            </button>
+                        )}
+                        <Button
+                          onClick={() => {
+                            setResetPasswordSuccess(true);
+                          }}
+                          variant="outline"
+                          className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                        >
+                          Reset password
+                        </Button>
+                      </div>
+
+                      {/* Danger Zone */}
+                      <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
+                        <h2 className="text-xl font-semibold text-red-600">
+                          Danger zone
+                        </h2>
+                        <div className="flex flex-col gap-3">
+                          <div className="flex flex-col gap-1">
+                            <h3 className="text-base font-semibold text-bluegrey-900">
+                              Remove password
+                            </h3>
+                            <p className="text-xs text-bluegrey-700">
+                              The current password for this user will be
+                              removed. The user will be required to set a new
+                              password upon their next login attempt.
+                            </p>
                           </div>
+                          {removePasswordSuccess && (
+                            <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                              <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                                <div className="flex items-start gap-2 flex-1 py-2">
+                                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-bluegrey-900 leading-5">
+                                      Password removed successfully
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex justify-end items-center">
+                                  <button
+                                    onClick={() =>
+                                      setRemovePasswordSuccess(false)
+                                    }
+                                    className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                    aria-label="Close alert"
+                                  >
+                                    <X className="w-6 h-6 text-bluegrey-700" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          <Button
+                            onClick={() => {
+                              setRemovePasswordSuccess(true);
+                            }}
+                            variant="outline"
+                            className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
+                          >
+                            Remove password
+                          </Button>
                         </div>
                       </div>
-                    )}
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setPhoneOtpError("");
-                        setPhoneOtp("");
-                        setIsPhoneOtpDialogOpen(true);
-                      }}
-                      className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
-                    >
-                      Update
-                    </Button>
+                    </div>
                   </div>
+                )}
 
-                  <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
-                    <h2 className="text-xl font-semibold text-red-600">Danger zone</h2>
+                {/* SMS OTP Section */}
+                {openSideSheet === "SMS OTP" && (
+                  <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-1">
-                        <h3 className="text-base font-semibold text-bluegrey-900">Remove phone number</h3>
-                        <p className="text-xs text-bluegrey-700">
-                          Remove the phone number for this user account.
-                        </p>
+                        <h2 className="text-xl font-semibold text-blue-500">
+                          Phone number
+                        </h2>
                       </div>
-                      {removePhoneSuccess && (
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="phoneNumber">Phone number</Label>
+                        <input
+                          id="phoneNumber"
+                          type="tel"
+                          value={newPhoneNumber || user?.phone || ""}
+                          onChange={(e) => {
+                            setNewPhoneNumber(e.target.value);
+                            setPhoneUpdateSuccess(false);
+                          }}
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                        />
+                      </div>
+                      {phoneUpdateSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
                           <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
                           <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
@@ -1469,13 +1494,13 @@ export default function UserDetail() {
                               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-bluegrey-900 leading-5">
-                                  Phone number removed successfully
+                                  Phone number updated successfully
                                 </p>
                               </div>
                             </div>
                             <div className="flex justify-end items-center">
                               <button
-                                onClick={() => setRemovePhoneSuccess(false)}
+                                onClick={() => setPhoneUpdateSuccess(false)}
                                 className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
                                 aria-label="Close alert"
                               >
@@ -1488,43 +1513,103 @@ export default function UserDetail() {
                       <Button
                         variant="outline"
                         onClick={() => {
-                          setRemovePhoneSuccess(true);
+                          setPhoneOtpError("");
+                          setPhoneOtp("");
+                          setIsPhoneOtpDialogOpen(true);
                         }}
-                        className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
                       >
-                        Remove phone number
+                        Update
                       </Button>
                     </div>
-                  </div>
-                </div>
-              )}
 
-              {/* Danger Zone Section - Only for non-Username & Password and non-SMS OTP authenticators */}
-              {openSideSheet && openSideSheet !== "Username & Password" && openSideSheet !== "SMS OTP" && (
-                <div className="flex flex-col gap-4">
-                  <h2 className="text-xl font-semibold text-red-600">Danger zone</h2>
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-base font-semibold text-bluegrey-900">Delete authenticator</h3>
-                      <p className="text-xs text-bluegrey-700">
-                        Permanently delete this authenticator. This action cannot be undone.
-                      </p>
+                    <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
+                      <h2 className="text-xl font-semibold text-red-600">
+                        Danger zone
+                      </h2>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-1">
+                          <h3 className="text-base font-semibold text-bluegrey-900">
+                            Remove phone number
+                          </h3>
+                          <p className="text-xs text-bluegrey-700">
+                            Remove the phone number for this user account.
+                          </p>
+                        </div>
+                        {removePhoneSuccess && (
+                          <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                            <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                              <div className="flex items-start gap-2 flex-1 py-2">
+                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm text-bluegrey-900 leading-5">
+                                    Phone number removed successfully
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex justify-end items-center">
+                                <button
+                                  onClick={() => setRemovePhoneSuccess(false)}
+                                  className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                  aria-label="Close alert"
+                                >
+                                  <X className="w-6 h-6 text-bluegrey-700" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setRemovePhoneSuccess(true);
+                          }}
+                          className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
+                        >
+                          Remove phone number
+                        </Button>
+                      </div>
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        showAlert(`${openSideSheet} authenticator has been deleted.`, "success");
-                        handleCloseSideSheet();
-                      }}
-                      className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 gap-2 w-fit"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Delete authenticator
-                    </Button>
                   </div>
-                </div>
-              )}
+                )}
+
+                {/* Danger Zone Section - Only for non-Username & Password and non-SMS OTP authenticators */}
+                {openSideSheet &&
+                  openSideSheet !== "Username & Password" &&
+                  openSideSheet !== "SMS OTP" && (
+                    <div className="flex flex-col gap-4">
+                      <h2 className="text-xl font-semibold text-red-600">
+                        Danger zone
+                      </h2>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-1">
+                          <h3 className="text-base font-semibold text-bluegrey-900">
+                            Delete authenticator
+                          </h3>
+                          <p className="text-xs text-bluegrey-700">
+                            Permanently delete this authenticator. This action
+                            cannot be undone.
+                          </p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            showAlert(
+                              `${openSideSheet} authenticator has been deleted.`,
+                              "success",
+                            );
+                            handleCloseSideSheet();
+                          }}
+                          className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 gap-2 w-fit"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Delete authenticator
+                        </Button>
+                      </div>
+                    </div>
+                  )}
               </div>
 
               {/* Footer Section */}
@@ -1674,7 +1759,10 @@ export default function UserDetail() {
       </Dialog>
 
       {/* Phone Number OTP Verification Dialog */}
-      <Dialog open={isPhoneOtpDialogOpen} onOpenChange={setIsPhoneOtpDialogOpen}>
+      <Dialog
+        open={isPhoneOtpDialogOpen}
+        onOpenChange={setIsPhoneOtpDialogOpen}
+      >
         <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
           <VisuallyHidden.Root>
             <DialogTitle>Verify Phone Number</DialogTitle>
@@ -1703,10 +1791,14 @@ export default function UserDetail() {
           <div className="px-6">
             <div className="flex flex-col gap-4">
               <p className="text-sm text-bluegrey-600">
-                Enter the OTP sent to {newPhoneNumber || user?.phone} to confirm the phone number update.
+                Enter the OTP sent to {newPhoneNumber || user?.phone} to confirm
+                the phone number update.
               </p>
               <div className="flex flex-col gap-1">
-                <Label htmlFor="phoneOtp" className="text-sm font-normal text-[#131319]">
+                <Label
+                  htmlFor="phoneOtp"
+                  className="text-sm font-normal text-[#131319]"
+                >
                   OTP Code
                 </Label>
                 <input
@@ -1771,7 +1863,9 @@ export default function UserDetail() {
                 disabled={isVerifyingPhoneOtp}
                 className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isVerifyingPhoneOtp && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isVerifyingPhoneOtp && (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
                 {isVerifyingPhoneOtp ? "Verifying..." : "Confirm"}
               </Button>
             </div>
