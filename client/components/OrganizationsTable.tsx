@@ -326,7 +326,7 @@ function OrganizationActionsMenu({ organization }: { organization: Organization 
   } | null>(null);
 
   const handleAction = (item: { label: string; action: string }) => {
-    if (item.action === "View details") {
+    if (item.action === "View organization") {
       navigate(`/organizations/${organization.id}`);
       return;
     }
@@ -356,16 +356,15 @@ function OrganizationActionsMenu({ organization }: { organization: Organization 
     switch (organization.status) {
       case "active":
         return [
-          { label: "View details", action: "View details" },
-          { label: "Edit organization", action: "Edit organization" },
-          { label: "Deactivate organization", action: "Deactivate organization" },
-          { label: "Delete organization", action: "Delete organization" },
+          { label: "View organization", action: "View organization" },
+          { label: "Switch organization", action: "Switch organization" },
+          { label: "Set to inactive", action: "Set to inactive" },
         ];
       case "inactive":
         return [
-          { label: "View details", action: "View details" },
-          { label: "Activate organization", action: "Activate organization" },
-          { label: "Delete organization", action: "Delete organization" },
+          { label: "View organization", action: "View organization" },
+          { label: "Switch organization", action: "Switch organization" },
+          { label: "Set to active", action: "Set to active" },
         ];
       default:
         return [];
