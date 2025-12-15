@@ -331,12 +331,14 @@ export default function OrganizationDetail() {
                                           {defaultIdp.name}
                                         </h3>
                                         {defaultIdp.status === "active" && (
-                                          <span className="text-sm font-semibold text-green-600">
+                                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600">
+                                            <span className="w-2 h-2 rounded-full bg-green-600"></span>
                                             Active
                                           </span>
                                         )}
                                         {defaultIdp.status === "inactive" && (
-                                          <span className="text-sm font-semibold text-gray-500">
+                                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500">
+                                            <span className="w-2 h-2 rounded-full bg-gray-500"></span>
                                             Inactive
                                           </span>
                                         )}
@@ -482,12 +484,14 @@ export default function OrganizationDetail() {
                                                 {customIdp.name}
                                               </h3>
                                               {customIdp.status === "active" && (
-                                                <span className="text-sm font-semibold text-green-600">
+                                                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600">
+                                                  <span className="w-2 h-2 rounded-full bg-green-600"></span>
                                                   Active
                                                 </span>
                                               )}
                                               {customIdp.status === "inactive" && (
-                                                <span className="text-sm font-semibold text-gray-500">
+                                                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500">
+                                                  <span className="w-2 h-2 rounded-full bg-gray-500"></span>
                                                   Inactive
                                                 </span>
                                               )}
