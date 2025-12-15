@@ -305,8 +305,8 @@ export default function OrganizationDetail() {
                       </p>
                     </div>
 
-                    {/* Default IDP View */}
-                    {!overrideDefault && defaultIdp && (
+                    {/* Default IDP Display */}
+                    {defaultIdp && (
                       <div className="space-y-6">
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100 shadow-sm">
                           <div className="flex items-start gap-6">
