@@ -300,7 +300,7 @@ export default function OrganizationDetail() {
                       Map {organization.name} to external IDP
                     </h2>
 
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 mt-6">
                       <div className="flex flex-col gap-1">
                         <Label>Default IDP</Label>
                         <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-[2px] px-3 py-3">
