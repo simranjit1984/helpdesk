@@ -46,12 +46,12 @@ export default function OrganizationDetail() {
   const availableIdps = [
     {
       id: "1",
-      name: "Access Opaque E2E",
-      logoUrl: "https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2F3abed568f5664b59afd4da03e6ce6521",
+      name: "OneWelcome IDP",
+      logoUrl: "https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2Fea4ff95507ee4758a7eb2f5d5f5aca8c",
       protocol: "OpenID Connect",
       status: "active",
-      authentication: "urn:onewelcome:broker:v1:accessopaquee2e:authentication",
-      domainAliases: ["google.ca", "google.com", "google.uk", "apple.com"],
+      authentication: "urn:onewelcome:broker:v1:authentication",
+      domainAliases: ["onewelcome.com"],
     },
     {
       id: "2",
