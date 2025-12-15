@@ -318,7 +318,7 @@ export default function OrganizationDetail() {
                               <div className="mt-3">
                                 <div className="bg-bluegrey-50 rounded py-4 px-6 border border-bluegrey-100">
                                   <div className="flex items-start gap-6">
-                                    <div className="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-md flex-shrink-0 p-3">
+                                    <div className="flex items-center justify-center w-20 h-20 flex-shrink-0">
                                       <img
                                         src={defaultIdp.logoUrl}
                                         alt={defaultIdp.name}
@@ -471,7 +471,7 @@ export default function OrganizationDetail() {
                                     <>
                                       <div className="bg-bluegrey-50 rounded py-4 px-6 border border-bluegrey-100">
                                         <div className="flex items-start gap-6">
-                                          <div className="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-md flex-shrink-0 p-3">
+                                          <div className="flex items-center justify-center w-20 h-20 flex-shrink-0">
                                             <img
                                               src={customIdp.logoUrl}
                                               alt={customIdp.name}
