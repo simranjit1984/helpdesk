@@ -287,179 +287,153 @@ export default function OrganizationDetail() {
                   }}
                   className="flex flex-col gap-10"
                 >
-                  <div className="flex w-full max-w-2xl flex-col gap-6">
-                    <div className="flex items-start gap-2 p-4 bg-blue-50 border border-blue-100 rounded-[2px]">
-                      <Checkbox
-                        id="applyByDefault"
-                        checked={idpConfig.applyByDefault}
-                        onCheckedChange={(checked) =>
-                          setIdpConfig((prev) => ({ ...prev, applyByDefault: checked === true }))
-                        }
-                        disabled={isSaving}
-                      />
-                      <div className="flex flex-col gap-1">
-                        <Label
-                          htmlFor="applyByDefault"
-                          className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5"
-                        >
-                          Apply IDP by default to all organizations
-                        </Label>
-                        <p className="text-xs text-[#6F6F76] leading-4">
-                          When enabled, this IDP configuration will be automatically applied to all organizations,
-                          allowing quick system usage without mandatory initial federation configuration.
-                        </p>
-                      </div>
-                    </div>
+                  <div className="flex w-full max-w-3xl flex-col gap-6">
+                    <h2 className="text-xl font-semibold text-bluegrey-900">
+                      Map {organization.name} to external IDP
+                    </h2>
 
                     <div className="flex flex-col gap-1">
-                      <Label htmlFor="idpProvider" className="flex gap-1">
-                        IDP Provider Name
+                      <Label htmlFor="externalIdp" className="flex gap-1">
+                        External IDP
                         <span className="text-red-500">*</span>
                       </Label>
-                      <input
-                        id="idpProvider"
-                        type="text"
-                        value={idpConfig.idpProvider}
-                        onChange={handleIdpConfigChange}
-                        disabled={isSaving}
-                        placeholder="e.g., Okta, Azure AD, Auth0"
-                        className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <Label htmlFor="protocol">Authentication Protocol</Label>
                       <select
-                        id="protocol"
-                        value={idpConfig.protocol}
-                        onChange={handleIdpConfigChange}
+                        id="externalIdp"
+                        value={selectedIdpId}
+                        onChange={(e) => setSelectedIdpId(e.target.value)}
                         disabled={isSaving}
                         className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <option value="saml">SAML 2.0</option>
-                        <option value="oauth">OAuth 2.0 / OIDC</option>
+                        {availableIdps.map((idp) => (
+                          <option key={idp.id} value={idp.id}>
+                            {idp.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
-                    {idpConfig.protocol === "saml" && (
-                      <>
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor="metadataUrl">Metadata URL</Label>
-                          <input
-                            id="metadataUrl"
-                            type="url"
-                            value={idpConfig.metadataUrl}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            placeholder="https://idp.example.com/metadata"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            URL to the SAML metadata XML file provided by your IDP
-                          </p>
-                        </div>
+                    {selectedIdp && (
+                      <div className="bg-bluegrey-50 border border-bluegrey-100 rounded-[2px] p-6">
+                        <div className="flex items-start gap-3 mb-6">
+                          <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full">
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12 2L2 7L12 12L22 7L12 2Z"
+                                stroke="#F97316"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M2 17L12 22L22 17"
+                                stroke="#F97316"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M2 12L12 17L22 12"
+                                stroke="#F97316"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-base font-semibold text-bluegrey-900">
+                                {selectedIdp.protocol}
+                              </h3>
+                              {selectedIdp.status === "active" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                  Active
+                                </span>
+                              )}
+                              {selectedIdp.status === "inactive" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                                  Inactive
+                                </span>
+                              )}
+                            </div>
 
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor="entityId">Entity ID</Label>
-                          <input
-                            id="entityId"
-                            type="text"
-                            value={idpConfig.entityId}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            placeholder="https://idp.example.com/entityid"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            Unique identifier for the IDP
-                          </p>
-                        </div>
+                            <div className="mt-4">
+                              <p className="text-sm font-medium text-bluegrey-900 mb-2">
+                                Authentication
+                              </p>
+                              <div className="flex items-center gap-2 bg-white border border-bluegrey-200 rounded-[2px] px-3 py-2">
+                                <code className="flex-1 text-sm text-bluegrey-700 font-mono break-all">
+                                  {selectedIdp.authentication}
+                                </code>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(selectedIdp.authentication);
+                                    toast({
+                                      title: "Copied",
+                                      description: "Authentication URN copied to clipboard",
+                                    });
+                                  }}
+                                  className="flex-shrink-0 p-1.5 hover:bg-bluegrey-100 rounded transition-colors"
+                                  title="Copy to clipboard"
+                                >
+                                  <Copy className="w-4 h-4 text-bluegrey-600" />
+                                </button>
+                              </div>
+                            </div>
 
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor="ssoUrl">Single Sign-On URL</Label>
-                          <input
-                            id="ssoUrl"
-                            type="url"
-                            value={idpConfig.ssoUrl}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            placeholder="https://idp.example.com/sso"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            URL where authentication requests will be sent
-                          </p>
+                            <div className="mt-4">
+                              <p className="text-sm font-medium text-bluegrey-900 mb-2">
+                                Domain alias
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                {selectedIdp.domainAliases.map((domain, index) => (
+                                  <span
+                                    key={index}
+                                    className="inline-flex items-center px-3 py-1 rounded-[2px] text-sm bg-blue-100 text-bluegrey-900"
+                                  >
+                                    {domain}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor="certificate">X.509 Certificate</Label>
-                          <textarea
-                            id="certificate"
-                            value={idpConfig.certificate}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            rows={6}
-                            placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50 resize-none font-mono"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            Public certificate used to verify SAML assertions
-                          </p>
-                        </div>
-                      </>
+                      </div>
                     )}
 
-                    {idpConfig.protocol === "oauth" && (
-                      <>
+                    <div className="border-t border-bluegrey-200 pt-6">
+                      <h3 className="text-lg font-semibold text-bluegrey-900 mb-4">
+                        Preferences
+                      </h3>
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="applyToSubOrgs"
+                          checked={applyToSubOrgs}
+                          onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
+                          disabled={isSaving}
+                        />
                         <div className="flex flex-col gap-1">
-                          <Label htmlFor="metadataUrl">Discovery URL</Label>
-                          <input
-                            id="metadataUrl"
-                            type="url"
-                            value={idpConfig.metadataUrl}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            placeholder="https://idp.example.com/.well-known/openid-configuration"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            OpenID Connect discovery endpoint URL
+                          <Label
+                            htmlFor="applyToSubOrgs"
+                            className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
+                          >
+                            Apply to all sub organizations by default
+                          </Label>
+                          <p className="text-xs text-[#6F6F76] leading-4">
+                            This same mapping will be applied to all the sub organizations
                           </p>
                         </div>
-
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor="entityId">Client ID</Label>
-                          <input
-                            id="entityId"
-                            type="text"
-                            value={idpConfig.entityId}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            placeholder="client_id_from_idp"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            OAuth 2.0 client identifier
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor="certificate">Client Secret</Label>
-                          <input
-                            id="certificate"
-                            type="password"
-                            value={idpConfig.certificate}
-                            onChange={handleIdpConfigChange}
-                            disabled={isSaving}
-                            placeholder="••••••••••••••••"
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-400 disabled:cursor-not-allowed disabled:opacity-50"
-                          />
-                          <p className="text-xs text-[#6F6F76] mt-1">
-                            OAuth 2.0 client secret (keep this secure)
-                          </p>
-                        </div>
-                      </>
-                    )}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -468,7 +442,7 @@ export default function OrganizationDetail() {
                       disabled={isSaving}
                       className="bg-blue-500 hover:bg-blue-600 text-white h-10 px-4 rounded-[2px]"
                     >
-                      {isSaving ? "Saving..." : "Save IDP Configuration"}
+                      {isSaving ? "Saving..." : "Save"}
                     </Button>
                     <Button
                       type="button"
