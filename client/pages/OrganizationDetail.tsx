@@ -388,27 +388,27 @@ export default function OrganizationDetail() {
                           </div>
                         </div>
 
-                        <div className="bg-white rounded-xl p-6 border border-bluegrey-200 shadow-sm">
-                          <h3 className="text-lg font-bold text-bluegrey-900 mb-4">
-                            Preferences
-                          </h3>
+                        <div className="bg-amber-50 border-l-4 border-amber-400 rounded-lg p-5">
                           <div className="flex items-start gap-3">
                             <Checkbox
-                              id="applyToSubOrgs"
-                              checked={applyToSubOrgs}
-                              onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
+                              id="overrideDefault"
+                              checked={overrideDefault}
+                              onCheckedChange={(checked) => {
+                                setOverrideDefault(checked === true);
+                                if (!checked) setCustomIdpId("");
+                              }}
                               disabled={isSaving}
                               className="mt-0.5"
                             />
                             <div className="flex flex-col gap-1">
                               <Label
-                                htmlFor="applyToSubOrgs"
-                                className="cursor-pointer text-sm font-medium text-bluegrey-900"
+                                htmlFor="overrideDefault"
+                                className="cursor-pointer text-sm font-semibold text-bluegrey-900"
                               >
-                                Apply to all sub-organizations
+                                Override default configuration
                               </Label>
-                              <p className="text-xs text-bluegrey-600">
-                                This mapping will be inherited by all child organizations
+                              <p className="text-xs text-bluegrey-700">
+                                Select a different identity provider for this organization instead of using the system default
                               </p>
                             </div>
                           </div>
