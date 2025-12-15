@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import PageHeader from "@/components/PageHeader";
 import FilterBar from "@/components/FilterBar";
@@ -12,6 +13,7 @@ const STATUS_OPTIONS = [
 ];
 
 export default function Organizations() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
 
@@ -56,7 +58,7 @@ export default function Organizations() {
               </div>
 
               <button
-                onClick={() => window.location.href = "/organizations/new"}
+                onClick={() => navigate("/organizations/new")}
                 className="flex items-center gap-2 h-10 px-3 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors whitespace-nowrap"
               >
                 <Plus className="w-5 h-5" />
