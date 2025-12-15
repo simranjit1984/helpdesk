@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import Layout from "@/components/Layout";
+import OrganizationDetailHeader from "@/components/OrganizationDetailHeader";
 import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -81,24 +81,11 @@ export default function AddOrganization() {
   return (
     <>
       <Layout>
-        <div className="border-b border-bluegrey-100">
-          <div className="px-4 sm:px-6 lg:px-8 py-6">
-            <button
-              onClick={() => navigate("/organizations")}
-              className="inline-flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600 mb-4 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Organizations
-            </button>
-            <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-bluegrey-900">
-                  Add organization
-                </h1>
-              </div>
-            </div>
-          </div>
-        </div>
+        <OrganizationDetailHeader
+          organizationName="Add organization"
+          isNew={true}
+          showActions={false}
+        />
 
         <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="bg-white">
