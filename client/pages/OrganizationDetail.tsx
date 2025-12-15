@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 
@@ -300,61 +301,66 @@ export default function OrganizationDetail() {
                       Map {organization.name} to external IDP
                     </h2>
 
-                    <div className="flex flex-col gap-4">
-                      <div className="flex flex-col gap-1">
-                        <Label>Default IDP</Label>
-                        <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-[2px] px-3 py-3">
-                          <span className="text-sm text-bluegrey-900 font-medium">
-                            {defaultIdp?.name}
-                          </span>
-                          <span className="text-xs text-bluegrey-600 ml-auto">
-                            (Applied by default from admin panel)
-                          </span>
+                    <RadioGroup
+                      value={overrideDefault ? "custom" : "default"}
+                      onValueChange={(value) => setOverrideDefault(value === "custom")}
+                      disabled={isSaving}
+                      className="flex flex-col gap-4"
+                    >
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-start gap-3">
+                          <RadioGroupItem value="default" id="default-idp" className="mt-0.5" />
+                          <div className="flex-1">
+                            <Label htmlFor="default-idp" className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5">
+                              Use default IDP
+                            </Label>
+                            <div className="mt-2 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-[2px] px-3 py-3">
+                              <span className="text-sm text-bluegrey-900 font-medium">
+                                {defaultIdp?.name}
+                              </span>
+                              <span className="text-xs text-bluegrey-600 ml-auto">
+                                (Applied by default from admin panel)
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id="overrideDefault"
-                          checked={overrideDefault}
-                          onCheckedChange={(checked) => setOverrideDefault(checked === true)}
-                          disabled={isSaving}
-                        />
-                        <div className="flex flex-col gap-1">
-                          <Label
-                            htmlFor="overrideDefault"
-                            className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
-                          >
-                            Override default IDP for this organization
-                          </Label>
-                          <p className="text-xs text-[#6F6F76] leading-4">
-                            Select a different IDP specifically for this organization
-                          </p>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-start gap-3">
+                          <RadioGroupItem value="custom" id="custom-idp" className="mt-0.5" />
+                          <div className="flex-1">
+                            <Label htmlFor="custom-idp" className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5">
+                              Use custom IDP
+                            </Label>
+                            <p className="text-xs text-[#6F6F76] leading-4 mt-1">
+                              Override the default IDP for this organization
+                            </p>
+                            {overrideDefault && (
+                              <div className="flex flex-col gap-1 mt-3">
+                                <Label htmlFor="customIdp" className="flex gap-1">
+                                  Select IDP
+                                  <span className="text-red-500">*</span>
+                                </Label>
+                                <select
+                                  id="customIdp"
+                                  value={customIdpId}
+                                  onChange={(e) => setCustomIdpId(e.target.value)}
+                                  disabled={isSaving}
+                                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                  {availableIdps.map((idp) => (
+                                    <option key={idp.id} value={idp.id}>
+                                      {idp.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-
-                      {overrideDefault && (
-                        <div className="flex flex-col gap-1 pl-7">
-                          <Label htmlFor="customIdp" className="flex gap-1">
-                            Select IDP
-                            <span className="text-red-500">*</span>
-                          </Label>
-                          <select
-                            id="customIdp"
-                            value={customIdpId}
-                            onChange={(e) => setCustomIdpId(e.target.value)}
-                            disabled={isSaving}
-                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            {availableIdps.map((idp) => (
-                              <option key={idp.id} value={idp.id}>
-                                {idp.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-                    </div>
+                    </RadioGroup>
 
                     {selectedIdp && (
                       <div className="flex flex-col gap-2">
