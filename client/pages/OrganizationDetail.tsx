@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Copy } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Layout from "@/components/Layout";
 import OrganizationDetailHeader from "@/components/OrganizationDetailHeader";
 import StatusBadge from "@/components/StatusBadge";
