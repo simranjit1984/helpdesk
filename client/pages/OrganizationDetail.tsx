@@ -313,9 +313,9 @@ export default function OrganizationDetail() {
                     </div>
 
                     {selectedIdp && (
-                      <div className="bg-bluegrey-50 border border-bluegrey-100 rounded-[2px] p-6">
-                        <div className="flex items-start gap-3 mb-6">
-                          <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full">
+                      <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
+                        <div className="flex items-start gap-3">
+                          <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full flex-shrink-0">
                             <svg
                               width="24"
                               height="24"
@@ -346,9 +346,9 @@ export default function OrganizationDetail() {
                               />
                             </svg>
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-base font-semibold text-bluegrey-900">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-4">
+                              <h3 className="text-base font-medium text-black leading-6">
                                 {selectedIdp.protocol}
                               </h3>
                               {selectedIdp.status === "active" && (
@@ -365,12 +365,12 @@ export default function OrganizationDetail() {
                               )}
                             </div>
 
-                            <div className="mt-4">
-                              <p className="text-sm font-medium text-bluegrey-900 mb-2">
+                            <div className="mb-4">
+                              <p className="text-sm font-semibold text-bluegrey-700 mb-2">
                                 Authentication
                               </p>
-                              <div className="flex items-center gap-2 bg-white border border-bluegrey-200 rounded-[2px] px-3 py-2">
-                                <code className="flex-1 text-sm text-bluegrey-700 font-mono break-all">
+                              <div className="flex items-center gap-2 bg-bluegrey-50 border border-bluegrey-200 rounded px-3 py-2">
+                                <code className="flex-1 text-xs text-bluegrey-600 font-mono break-all leading-6">
                                   {selectedIdp.authentication}
                                 </code>
                                 <button
@@ -390,15 +390,15 @@ export default function OrganizationDetail() {
                               </div>
                             </div>
 
-                            <div className="mt-4">
-                              <p className="text-sm font-medium text-bluegrey-900 mb-2">
+                            <div>
+                              <p className="text-sm font-semibold text-bluegrey-700 mb-2">
                                 Domain alias
                               </p>
                               <div className="flex flex-wrap gap-2">
                                 {selectedIdp.domainAliases.map((domain, index) => (
                                   <span
                                     key={index}
-                                    className="inline-flex items-center px-3 py-1 rounded-[2px] text-sm bg-blue-100 text-bluegrey-900"
+                                    className="inline-flex items-center px-3 py-1 rounded text-sm bg-blue-100 text-bluegrey-900"
                                   >
                                     {domain}
                                   </span>
