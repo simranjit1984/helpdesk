@@ -314,7 +314,8 @@ export default function OrganizationDetail() {
                                 type="text"
                                 value={defaultIdp?.name || ""}
                                 readOnly
-                                className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm font-normal text-bluegrey-900 leading-5 cursor-not-allowed"
+                                style={{ width: '384px' }}
+                                className="flex rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm font-normal text-bluegrey-900 leading-5 cursor-not-allowed"
                               />
                             </div>
 
@@ -443,7 +444,8 @@ export default function OrganizationDetail() {
                                     value={customIdpId}
                                     onChange={(e) => setCustomIdpId(e.target.value)}
                                     disabled={isSaving}
-                                    className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                    style={{ width: '384px' }}
+                                    className="flex rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                                   >
                                     <option value="">Select an IDP...</option>
                                     {availableIdps.map((idp) => (
