@@ -40,23 +40,10 @@ export default function OrganizationDetailHeader({
 
   const getMenuItems = () => {
     if (isNew) return [];
-    
-    switch (status) {
-      case "active":
-        return [
-          { label: "Edit organization", action: "Edit organization" },
-          { label: "Set to inactive", action: "Set to inactive" },
-          { label: "Delete organization", action: "Delete organization" },
-        ];
-      case "inactive":
-        return [
-          { label: "Edit organization", action: "Edit organization" },
-          { label: "Set to active", action: "Set to active" },
-          { label: "Delete organization", action: "Delete organization" },
-        ];
-      default:
-        return [];
-    }
+
+    return [
+      { label: "Delete organization", action: "Delete organization" },
+    ];
   };
 
   const handleActionClick = (item: { label: string; action: string }) => {
