@@ -1,4 +1,4 @@
-import { MoreVertical, ChevronUp, ChevronDown } from "lucide-react";
+import { MoreVertical, ChevronUp, ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
@@ -34,6 +34,8 @@ interface Organization {
   name: string;
   referenceId: string;
   status: StatusType;
+  parentId?: string;
+  children?: Organization[];
 }
 
 export const baseOrganizations: Organization[] = [
@@ -60,18 +62,171 @@ export const baseOrganizations: Organization[] = [
     name: "Beta Industries",
     referenceId: "ORG-2024-004",
     status: "active",
+    children: [
+      {
+        id: "4-1",
+        name: "Beta Manufacturing",
+        referenceId: "ORG-2024-004-001",
+        status: "active",
+        parentId: "4",
+      },
+      {
+        id: "4-2",
+        name: "Beta Research & Development",
+        referenceId: "ORG-2024-004-002",
+        status: "active",
+        parentId: "4",
+      },
+      {
+        id: "4-3",
+        name: "Beta Logistics",
+        referenceId: "ORG-2024-004-003",
+        status: "active",
+        parentId: "4",
+      },
+      {
+        id: "4-4",
+        name: "Beta Sales Division",
+        referenceId: "ORG-2024-004-004",
+        status: "active",
+        parentId: "4",
+      },
+      {
+        id: "4-5",
+        name: "Beta Customer Support",
+        referenceId: "ORG-2024-004-005",
+        status: "active",
+        parentId: "4",
+      },
+      {
+        id: "4-6",
+        name: "Beta IT Services",
+        referenceId: "ORG-2024-004-006",
+        status: "active",
+        parentId: "4",
+      },
+      {
+        id: "4-7",
+        name: "Beta Finance",
+        referenceId: "ORG-2024-004-007",
+        status: "active",
+        parentId: "4",
+      },
+    ],
   },
   {
     id: "5",
     name: "Gamma Ltd",
     referenceId: "ORG-2024-005",
     status: "inactive",
+    children: [
+      {
+        id: "5-1",
+        name: "Gamma North America",
+        referenceId: "ORG-2024-005-001",
+        status: "active",
+        parentId: "5",
+      },
+      {
+        id: "5-2",
+        name: "Gamma Europe",
+        referenceId: "ORG-2024-005-002",
+        status: "active",
+        parentId: "5",
+      },
+      {
+        id: "5-3",
+        name: "Gamma Asia Pacific",
+        referenceId: "ORG-2024-005-003",
+        status: "inactive",
+        parentId: "5",
+      },
+      {
+        id: "5-4",
+        name: "Gamma Latin America",
+        referenceId: "ORG-2024-005-004",
+        status: "suspended",
+        parentId: "5",
+      },
+      {
+        id: "5-5",
+        name: "Gamma Middle East",
+        referenceId: "ORG-2024-005-005",
+        status: "active",
+        parentId: "5",
+      },
+      {
+        id: "5-6",
+        name: "Gamma Africa",
+        referenceId: "ORG-2024-005-006",
+        status: "pending",
+        parentId: "5",
+      },
+    ],
   },
   {
     id: "6",
     name: "Delta Partners",
     referenceId: "ORG-2024-006",
     status: "active",
+    children: [
+      {
+        id: "6-1",
+        name: "Delta Ventures Capital",
+        referenceId: "ORG-2024-006-001",
+        status: "active",
+        parentId: "6",
+      },
+      {
+        id: "6-2",
+        name: "Delta Asset Management",
+        referenceId: "ORG-2024-006-002",
+        status: "active",
+        parentId: "6",
+      },
+      {
+        id: "6-3",
+        name: "Delta Private Equity",
+        referenceId: "ORG-2024-006-003",
+        status: "active",
+        parentId: "6",
+      },
+      {
+        id: "6-4",
+        name: "Delta Wealth Management",
+        referenceId: "ORG-2024-006-004",
+        status: "active",
+        parentId: "6",
+      },
+      {
+        id: "6-5",
+        name: "Delta Investment Banking",
+        referenceId: "ORG-2024-006-005",
+        status: "active",
+        parentId: "6",
+      },
+      {
+        id: "6-6",
+        name: "Delta Securities",
+        referenceId: "ORG-2024-006-006",
+        status: "suspended",
+        parentId: "6",
+      },
+      {
+        id: "6-7",
+        name: "Delta Trading",
+        referenceId: "ORG-2024-006-007",
+        status: "active",
+        parentId: "6",
+      },
+      {
+        id: "6-8",
+        name: "Delta Real Estate",
+        referenceId: "ORG-2024-006-008",
+        status: "active",
+        parentId: "6",
+      },
+    ],
   },
   {
     id: "7",
@@ -298,6 +453,7 @@ export default function OrganizationsTable({
   const navigate = useNavigate();
   const [sortColumn, setSortColumn] = useState<SortColumn>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [expandedOrgs, setExpandedOrgs] = useState<Set<string>>(new Set());
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -308,49 +464,67 @@ export default function OrganizationsTable({
     }
   };
 
-  const getFilteredOrganizations = () => {
-    let filtered = baseOrganizations;
+  const toggleExpand = (orgId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newExpanded = new Set(expandedOrgs);
+    if (newExpanded.has(orgId)) {
+      newExpanded.delete(orgId);
+    } else {
+      newExpanded.add(orgId);
+    }
+    setExpandedOrgs(newExpanded);
+  };
 
+  const matchesFilter = (org: Organization): boolean => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (org) =>
-          org.name?.toLowerCase().includes(query) ||
-          org.referenceId?.toLowerCase().includes(query) ||
-          org.status?.toLowerCase().includes(query)
-      );
+      const matchesSearch =
+        org.name?.toLowerCase().includes(query) ||
+        org.referenceId?.toLowerCase().includes(query) ||
+        org.status?.toLowerCase().includes(query);
+      
+      if (!matchesSearch) return false;
     }
 
-    filters.forEach((filter) => {
-      filtered = filtered.filter((org) => {
-        const fieldValue = (org[filter.column as keyof typeof org] || "")
-          .toString()
-          .toLowerCase();
+    for (const filter of filters) {
+      const fieldValue = (org[filter.column as keyof typeof org] || "")
+        .toString()
+        .toLowerCase();
 
-        switch (filter.operator) {
-          case "is": {
-            const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
-            return selectedValues.includes(fieldValue);
-          }
-          case "isNot": {
-            const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
-            return !selectedValues.includes(fieldValue);
-          }
-          case "contains":
-            return fieldValue.includes(filter.value.toLowerCase());
-          case "equals":
-            return fieldValue === filter.value.toLowerCase();
-          case "startsWith":
-            return fieldValue.startsWith(filter.value.toLowerCase());
-          case "endsWith":
-            return fieldValue.endsWith(filter.value.toLowerCase());
-          default:
-            return true;
+      let matches = true;
+      switch (filter.operator) {
+        case "is": {
+          const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
+          matches = selectedValues.includes(fieldValue);
+          break;
         }
-      });
-    });
+        case "isNot": {
+          const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
+          matches = !selectedValues.includes(fieldValue);
+          break;
+        }
+        case "contains":
+          matches = fieldValue.includes(filter.value.toLowerCase());
+          break;
+        case "equals":
+          matches = fieldValue === filter.value.toLowerCase();
+          break;
+        case "startsWith":
+          matches = fieldValue.startsWith(filter.value.toLowerCase());
+          break;
+        case "endsWith":
+          matches = fieldValue.endsWith(filter.value.toLowerCase());
+          break;
+      }
+      
+      if (!matches) return false;
+    }
 
-    return filtered;
+    return true;
+  };
+
+  const getFilteredOrganizations = () => {
+    return baseOrganizations.filter(matchesFilter);
   };
 
   const getSortedOrganizations = () => {
@@ -369,6 +543,24 @@ export default function OrganizationsTable({
       return 0;
     });
     return sorted;
+  };
+
+  const getFlattenedOrganizations = () => {
+    const sorted = getSortedOrganizations();
+    const flattened: Array<Organization & { level: number }> = [];
+
+    sorted.forEach((org) => {
+      flattened.push({ ...org, level: 0 });
+      
+      if (org.children && expandedOrgs.has(org.id)) {
+        const filteredChildren = org.children.filter(matchesFilter);
+        filteredChildren.forEach((child) => {
+          flattened.push({ ...child, level: 1 });
+        });
+      }
+    });
+
+    return flattened;
   };
 
   const SortHeader = ({
@@ -416,16 +608,32 @@ export default function OrganizationsTable({
             </TableHeadRow>
           </TableHeader>
           <TableBody>
-            {getSortedOrganizations().map((org) => (
+            {getFlattenedOrganizations().map((org) => (
               <TableRow key={org.id}>
                 <TableCell sticky className="w-56">
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/organizations/${org.id}`)}
-                    className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left w-full"
-                  >
-                    {org.name}
-                  </button>
+                  <div className="flex items-center gap-2" style={{ paddingLeft: `${org.level * 24}px` }}>
+                    {org.level === 0 && org.children && org.children.length > 0 ? (
+                      <button
+                        onClick={(e) => toggleExpand(org.id, e)}
+                        className="w-5 h-5 flex items-center justify-center hover:bg-bluegrey-100 rounded transition-colors flex-shrink-0"
+                      >
+                        {expandedOrgs.has(org.id) ? (
+                          <ChevronDown className="w-4 h-4 text-bluegrey-900" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-bluegrey-900" />
+                        )}
+                      </button>
+                    ) : (
+                      <div className="w-5 h-5 flex-shrink-0" />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/organizations/${org.id}`)}
+                      className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left"
+                    >
+                      {org.name}
+                    </button>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-bluegrey-900 truncate">
