@@ -396,6 +396,31 @@ export default function OrganizationDetail() {
                                     </div>
                                   </div>
                                 </div>
+
+                                <div className="mt-6">
+                                  <h3 className="text-xl font-bold text-blue-500 mb-4">
+                                    Preferences
+                                  </h3>
+                                  <div className="flex items-start gap-2">
+                                    <Checkbox
+                                      id="applyToSubOrgs"
+                                      checked={applyToSubOrgs}
+                                      onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
+                                      disabled={isSaving}
+                                    />
+                                    <div className="flex flex-col gap-1">
+                                      <Label
+                                        htmlFor="applyToSubOrgs"
+                                        className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
+                                      >
+                                        Apply to all sub organizations by default
+                                      </Label>
+                                      <p className="text-xs text-[#6F6F76] leading-4">
+                                        This same mapping will be applied to all the sub organizations
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -529,6 +554,31 @@ export default function OrganizationDetail() {
                                           </div>
                                         </div>
                                       </div>
+
+                                      <div className="mt-6">
+                                        <h3 className="text-xl font-bold text-blue-500 mb-4">
+                                          Preferences
+                                        </h3>
+                                        <div className="flex items-start gap-2">
+                                          <Checkbox
+                                            id="applyToSubOrgsCustom"
+                                            checked={applyToSubOrgs}
+                                            onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
+                                            disabled={isSaving}
+                                          />
+                                          <div className="flex flex-col gap-1">
+                                            <Label
+                                              htmlFor="applyToSubOrgsCustom"
+                                              className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
+                                            >
+                                              Apply to all sub organizations by default
+                                            </Label>
+                                            <p className="text-xs text-[#6F6F76] leading-4">
+                                              This same mapping will be applied to all the sub organizations
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                                   );
                                 })()}
@@ -538,31 +588,6 @@ export default function OrganizationDetail() {
                         </div>
                       </div>
                     </RadioGroup>
-
-                    <div>
-                      <h3 className="text-xl font-bold text-blue-500 mb-4">
-                        Preferences
-                      </h3>
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id="applyToSubOrgs"
-                          checked={applyToSubOrgs}
-                          onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
-                          disabled={isSaving}
-                        />
-                        <div className="flex flex-col gap-1">
-                          <Label
-                            htmlFor="applyToSubOrgs"
-                            className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
-                          >
-                            Apply to all sub organizations by default
-                          </Label>
-                          <p className="text-xs text-[#6F6F76] leading-4">
-                            This same mapping will be applied to all the sub organizations
-                          </p>
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
                   <div className="flex items-center gap-3">
