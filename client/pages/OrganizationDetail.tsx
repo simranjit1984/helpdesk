@@ -296,7 +296,7 @@ export default function OrganizationDetail() {
                   className="flex flex-col gap-10"
                 >
                   <div className="flex w-full max-w-3xl flex-col gap-6">
-                    <h2 className="text-xl font-semibold text-blue-500 mb-6">
+                    <h2 className="text-xl font-semibold text-blue-500">
                       Map {organization.name} to external IDP
                     </h2>
 
