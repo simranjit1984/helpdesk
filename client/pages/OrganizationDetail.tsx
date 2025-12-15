@@ -439,21 +439,39 @@ export default function OrganizationDetail() {
                                     Select IDP
                                     <span className="text-red-500">*</span>
                                   </Label>
-                                  <select
-                                    id="customIdp"
-                                    value={customIdpId}
-                                    onChange={(e) => setCustomIdpId(e.target.value)}
-                                    disabled={isSaving}
-                                    style={{ width: '384px' }}
-                                    className="rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg width=%2712%27 height=%278%27 viewBox=%270 0 12 8%27 fill=%27none%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3cpath d=%27M1 1.5L6 6.5L11 1.5%27 stroke=%27%23131319%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3e%3c/svg%3e')] bg-[length:12px_8px] bg-[position:right_8px_center] bg-no-repeat pr-8"
-                                  >
-                                    <option value="">Select an IDP...</option>
-                                    {availableIdps.map((idp) => (
-                                      <option key={idp.id} value={idp.id}>
-                                        {idp.name}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative" style={{ width: '384px' }}>
+                                    <select
+                                      id="customIdp"
+                                      value={customIdpId}
+                                      onChange={(e) => setCustomIdpId(e.target.value)}
+                                      disabled={isSaving}
+                                      className="w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 pr-8 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
+                                    >
+                                      <option value="">Select an IDP...</option>
+                                      {availableIdps.map((idp) => (
+                                        <option key={idp.id} value={idp.id}>
+                                          {idp.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                                      <svg
+                                        width="12"
+                                        height="8"
+                                        viewBox="0 0 12 8"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          d="M1 1.5L6 6.5L11 1.5"
+                                          stroke="#131319"
+                                          strokeWidth="1.5"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
                                 </div>
 
                                 {customIdpId && (() => {
