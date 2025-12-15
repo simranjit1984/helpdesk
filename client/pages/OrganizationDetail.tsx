@@ -313,15 +313,6 @@ export default function OrganizationDetail() {
                             <Label htmlFor="default-idp" className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5">
                               Use default IDP
                             </Label>
-                            <div className="mt-1">
-                              <input
-                                type="text"
-                                value={defaultIdp?.name || ""}
-                                readOnly
-                                style={{ width: '384px' }}
-                                className="flex rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm font-normal text-bluegrey-900 leading-5 cursor-not-allowed"
-                              />
-                            </div>
 
                             {!overrideDefault && defaultIdp && (
                               <div className="mt-3">
@@ -336,8 +327,8 @@ export default function OrganizationDetail() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-3 mb-3">
-                                        <h3 className="text-xl font-semibold text-bluegrey-900">
-                                          {defaultIdp.protocol}
+                                        <h3 className="text-2xl font-bold text-bluegrey-900">
+                                          {defaultIdp.name}
                                         </h3>
                                         {defaultIdp.status === "active" && (
                                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white shadow-sm">
@@ -352,6 +343,9 @@ export default function OrganizationDetail() {
                                           </span>
                                         )}
                                       </div>
+                                      <p className="text-sm text-bluegrey-600 mb-4">
+                                        <span className="font-semibold">Protocol:</span> {defaultIdp.protocol}
+                                      </p>
 
                                       <div className="mb-4">
                                         <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
