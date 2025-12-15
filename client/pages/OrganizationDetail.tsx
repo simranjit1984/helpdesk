@@ -83,7 +83,7 @@ export default function OrganizationDetail() {
   const defaultIdp = availableIdps.find((idp) => idp.id === defaultIdpId);
 
   const [overrideDefault, setOverrideDefault] = useState(false);
-  const [customIdpId, setCustomIdpId] = useState(availableIdps[0].id);
+  const [customIdpId, setCustomIdpId] = useState("");
   const [applyToSubOrgs, setApplyToSubOrgs] = useState(false);
 
   // Use custom IDP if override is enabled, otherwise use default
