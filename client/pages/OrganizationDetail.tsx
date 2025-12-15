@@ -327,36 +327,12 @@ export default function OrganizationDetail() {
                               <div className="mt-3">
                                 <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
                                   <div className="flex items-start gap-3">
-                                    <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full flex-shrink-0">
-                                      <svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M12 2L2 7L12 12L22 7L12 2Z"
-                                          stroke="#F97316"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                        <path
-                                          d="M2 17L12 22L22 17"
-                                          stroke="#F97316"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                        <path
-                                          d="M2 12L12 17L22 12"
-                                          stroke="#F97316"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
+                                    <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
+                                      <img
+                                        src={defaultIdp.logoUrl}
+                                        alt={defaultIdp.name}
+                                        className="w-10 h-10 object-contain"
+                                      />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2 mb-4">
@@ -485,36 +461,12 @@ export default function OrganizationDetail() {
                                   return (
                                     <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
                                       <div className="flex items-start gap-3">
-                                        <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full flex-shrink-0">
-                                          <svg
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                          >
-                                            <path
-                                              d="M12 2L2 7L12 12L22 7L12 2Z"
-                                              stroke="#F97316"
-                                              strokeWidth="2"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                            />
-                                            <path
-                                              d="M2 17L12 22L22 17"
-                                              stroke="#F97316"
-                                              strokeWidth="2"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                            />
-                                            <path
-                                              d="M2 12L12 17L22 12"
-                                              stroke="#F97316"
-                                              strokeWidth="2"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                            />
-                                          </svg>
+                                        <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
+                                          <img
+                                            src={customIdp.logoUrl}
+                                            alt={customIdp.name}
+                                            className="w-10 h-10 object-contain"
+                                          />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                           <div className="flex items-center gap-2 mb-4">
