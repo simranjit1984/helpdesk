@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import ConfirmationModal from "./ConfirmationModal";
+import StatusBadge from "./StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 
 interface OrganizationDetailHeaderProps {
@@ -150,6 +151,11 @@ export default function OrganizationDetailHeader({
             >
               {organizationName}
             </h1>
+            {status && !isNew && (
+              <div className="flex-shrink-0">
+                <StatusBadge status={status} />
+              </div>
+            )}
           </div>
 
           {showActions && !isNew && menuItems.length > 0 && (
