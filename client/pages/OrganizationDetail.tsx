@@ -8,6 +8,7 @@ import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 
@@ -38,6 +39,7 @@ export default function OrganizationDetail() {
     organizationName: organization?.name || "",
     description: "",
   });
+  const [isActive, setIsActive] = useState(organization?.status === "active");
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -170,6 +172,23 @@ export default function OrganizationDetail() {
                       <Label>Reference ID</Label>
                       <p className="text-sm text-bluegrey-900">
                         {organization.referenceId}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="active"
+                          checked={isActive}
+                          onCheckedChange={(checked) => setIsActive(checked === true)}
+                          disabled={isSaving}
+                        />
+                        <Label htmlFor="active" className="cursor-pointer">
+                          Active
+                        </Label>
+                      </div>
+                      <p className="text-sm text-bluegrey-500">
+                        When inactive, this organization cannot access resources or perform any action.
                       </p>
                     </div>
                   </div>
