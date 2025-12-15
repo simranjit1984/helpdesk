@@ -6,7 +6,6 @@ import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AddOrganization() {
@@ -17,7 +16,6 @@ export default function AddOrganization() {
     organizationName: "",
     description: "",
   });
-  const [isActive, setIsActive] = useState(true);
   const [errors, setErrors] = useState({
     organizationName: "",
   });
@@ -167,23 +165,6 @@ export default function AddOrganization() {
                         rows={4}
                         className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                       />
-                    </div>
-
-                    <div className="flex items-start gap-2">
-                      <Checkbox
-                        id="active"
-                        checked={isActive}
-                        onCheckedChange={(checked) => setIsActive(checked === true)}
-                        disabled={isSaving}
-                      />
-                      <div className="flex flex-col gap-1">
-                        <Label htmlFor="active" className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5">
-                          Active
-                        </Label>
-                        <p className="text-xs text-[#6F6F76] leading-4">
-                          When inactive, this organization cannot access resources or perform any action.
-                        </p>
-                      </div>
                     </div>
                   </div>
 
