@@ -173,15 +173,15 @@ export default function AddOrganization() {
                       type="button"
                       onClick={() => handleSave(true)}
                       disabled={isSaving}
-                      className="bg-blue-500 hover:bg-blue-600 text-white h-10 px-4 rounded-sm"
+                      className="bg-blue-500 hover:bg-blue-600 text-white h-10 px-4 rounded-[2px]"
                     >
                       {isSaving ? "Saving..." : "Save and continue"}
                     </Button>
                     <Button
                       type="submit"
                       disabled={isSaving}
-                      variant="secondary"
-                      className="h-10 px-4 rounded-sm"
+                      variant="outline"
+                      className="h-10 px-4 rounded-[2px] border-2 border-blue-500 text-blue-500 hover:bg-blue-50"
                     >
                       Save
                     </Button>
@@ -190,7 +190,7 @@ export default function AddOrganization() {
                       onClick={handleCancel}
                       disabled={isSaving}
                       variant="ghost"
-                      className="h-10 px-4 rounded-sm"
+                      className="h-10 px-4 rounded-[2px] text-bluegrey-900"
                     >
                       Cancel
                     </Button>
