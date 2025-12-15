@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, Ban, Timer } from "lucide-react";
+import { CheckCircle, Clock, Ban, Timer, AlertCircle } from "lucide-react";
 
 type StatusType =
   | "active"
@@ -7,7 +7,9 @@ type StatusType =
   | "invitation-expired"
   | "blocked"
   | "grace"
-  | "inactive";
+  | "inactive"
+  | "suspended"
+  | "pending";
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -62,6 +64,18 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
       text: "text-orange-900",
       icon: <Ban className="w-5 h-5" />,
       label: "Inactive",
+    },
+    suspended: {
+      bg: "bg-bluegrey-100",
+      text: "text-bluegrey-900",
+      icon: <Ban className="w-5 h-5" />,
+      label: "Suspended",
+    },
+    pending: {
+      bg: "bg-orange-100",
+      text: "text-orange-900",
+      icon: <Clock className="w-5 h-5" />,
+      label: "Pending",
     },
     "invitation-withdrawn": {
       bg: "bg-bluegrey-100",
