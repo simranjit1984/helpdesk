@@ -92,16 +92,6 @@ export default function OrganizationDetail() {
     }));
   };
 
-  const handleIdpConfigChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { id, value } = e.target;
-    setIdpConfig((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-
   const handleSave = async () => {
     setIsSaving(true);
 
@@ -121,7 +111,7 @@ export default function OrganizationDetail() {
       setIsSaving(false);
       toast({
         title: "Success",
-        description: "IDP configuration saved successfully",
+        description: "IDP mapping saved successfully",
       });
     }, 1000);
   };
