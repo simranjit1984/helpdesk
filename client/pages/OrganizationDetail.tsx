@@ -86,11 +86,6 @@ export default function OrganizationDetail() {
   const [customIdpId, setCustomIdpId] = useState("");
   const [applyToSubOrgs, setApplyToSubOrgs] = useState(false);
 
-  // Use custom IDP if override is enabled, otherwise use default
-  const selectedIdp = overrideDefault
-    ? availableIdps.find((idp) => idp.id === customIdpId)
-    : defaultIdp;
-
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
