@@ -9,8 +9,6 @@ import { Plus } from "lucide-react";
 const STATUS_OPTIONS = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
-  { value: "suspended", label: "Suspended" },
-  { value: "pending", label: "Pending" },
 ];
 
 export default function Organizations() {

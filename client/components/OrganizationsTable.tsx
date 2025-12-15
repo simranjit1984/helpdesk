@@ -25,9 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 
 type StatusType =
   | "active"
-  | "inactive"
-  | "suspended"
-  | "pending";
+  | "inactive";
 
 interface Organization {
   id: string;
@@ -145,7 +143,7 @@ export const baseOrganizations: Organization[] = [
         id: "5-4",
         name: "Gamma Latin America",
         referenceId: "ORG-2024-005-004",
-        status: "suspended",
+        status: "inactive",
         parentId: "5",
       },
       {
@@ -159,7 +157,7 @@ export const baseOrganizations: Organization[] = [
         id: "5-6",
         name: "Gamma Africa",
         referenceId: "ORG-2024-005-006",
-        status: "pending",
+        status: "active",
         parentId: "5",
       },
     ],
@@ -209,7 +207,7 @@ export const baseOrganizations: Organization[] = [
         id: "6-6",
         name: "Delta Securities",
         referenceId: "ORG-2024-006-006",
-        status: "suspended",
+        status: "inactive",
         parentId: "6",
       },
       {
@@ -244,7 +242,7 @@ export const baseOrganizations: Organization[] = [
     id: "9",
     name: "Theta Systems",
     referenceId: "ORG-2024-009",
-    status: "suspended",
+    status: "inactive",
   },
   {
     id: "10",
@@ -262,7 +260,7 @@ export const baseOrganizations: Organization[] = [
     id: "12",
     name: "Lambda Consulting",
     referenceId: "ORG-2024-012",
-    status: "pending",
+    status: "active",
   },
   {
     id: "13",
@@ -310,7 +308,7 @@ export const baseOrganizations: Organization[] = [
     id: "20",
     name: "Tau Logistics",
     referenceId: "ORG-2024-020",
-    status: "suspended",
+    status: "inactive",
   },
 ];
 
@@ -360,7 +358,7 @@ function OrganizationActionsMenu({ organization }: { organization: Organization 
         return [
           { label: "View details", action: "View details" },
           { label: "Edit organization", action: "Edit organization" },
-          { label: "Suspend organization", action: "Suspend organization" },
+          { label: "Deactivate organization", action: "Deactivate organization" },
           { label: "Delete organization", action: "Delete organization" },
         ];
       case "inactive":
@@ -368,18 +366,6 @@ function OrganizationActionsMenu({ organization }: { organization: Organization 
           { label: "View details", action: "View details" },
           { label: "Activate organization", action: "Activate organization" },
           { label: "Delete organization", action: "Delete organization" },
-        ];
-      case "suspended":
-        return [
-          { label: "View details", action: "View details" },
-          { label: "Reactivate organization", action: "Reactivate organization" },
-          { label: "Delete organization", action: "Delete organization" },
-        ];
-      case "pending":
-        return [
-          { label: "View details", action: "View details" },
-          { label: "Approve organization", action: "Approve organization" },
-          { label: "Reject organization", action: "Reject organization" },
         ];
       default:
         return [];
