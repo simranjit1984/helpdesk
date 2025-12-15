@@ -47,6 +47,7 @@ export default function OrganizationDetail() {
     {
       id: "1",
       name: "Access Opaque E2E",
+      logoUrl: "https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2F3abed568f5664b59afd4da03e6ce6521",
       protocol: "OpenID Connect",
       status: "active",
       authentication: "urn:onewelcome:broker:v1:accessopaquee2e:authentication",
@@ -55,6 +56,7 @@ export default function OrganizationDetail() {
     {
       id: "2",
       name: "Okta Production",
+      logoUrl: "https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2F9e6c6b52eef84b868cf3c1e0f6aa1bd5",
       protocol: "SAML 2.0",
       status: "active",
       authentication: "urn:okta:prod:v1:authentication",
@@ -63,6 +65,7 @@ export default function OrganizationDetail() {
     {
       id: "3",
       name: "Azure AD Enterprise",
+      logoUrl: "https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2F6b176d18888a4a0ca09e9d2439b2b9c8",
       protocol: "OpenID Connect",
       status: "active",
       authentication: "urn:azure:ad:enterprise:v1:authentication",
@@ -71,6 +74,7 @@ export default function OrganizationDetail() {
     {
       id: "4",
       name: "Auth0 Development",
+      logoUrl: "https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2F56dd16156c1a4a3b9afc85d093466733",
       protocol: "OAuth 2.0",
       status: "inactive",
       authentication: "urn:auth0:dev:v1:authentication",
