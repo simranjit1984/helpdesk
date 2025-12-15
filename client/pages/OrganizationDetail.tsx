@@ -296,7 +296,7 @@ export default function OrganizationDetail() {
                   className="flex flex-col gap-10"
                 >
                   <div className="flex w-full max-w-3xl flex-col gap-6">
-                    <h2 className="text-xl font-semibold text-bluegrey-900">
+                    <h2 className="text-xl font-semibold text-blue-500 mb-4">
                       Map {organization.name} to external IDP
                     </h2>
 
@@ -459,8 +459,8 @@ export default function OrganizationDetail() {
                       </div>
                     )}
 
-                    <div className="border-t border-bluegrey-200 pt-6">
-                      <h3 className="text-lg font-semibold text-bluegrey-900 mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-blue-500 mb-4">
                         Preferences
                       </h3>
                       <div className="flex items-start gap-2">
