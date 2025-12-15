@@ -13,6 +13,7 @@ import DataGridDemo from "./pages/DataGridDemo";
 import NotFound from "./pages/NotFound";
 import Organizations from "./pages/Organizations";
 import OrganizationDetail from "./pages/OrganizationDetail";
+import AddOrganization from "./pages/AddOrganization";
 import Applications from "./pages/Applications";
 import AccessRoles from "./pages/AccessRoles";
 import Administrators from "./pages/Administrators";
@@ -31,6 +32,7 @@ export const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/organizations" element={<Organizations />} />
+          <Route path="/organizations/new" element={<AddOrganization />} />
           <Route path="/organizations/:id" element={<OrganizationDetail />} />
           <Route path="/applications" element={<Applications />} />
           <Route path="/access-roles" element={<AccessRoles />} />

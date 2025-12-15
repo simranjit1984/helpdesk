@@ -55,7 +55,10 @@ export default function Organizations() {
                 />
               </div>
 
-              <button className="flex items-center gap-2 h-10 px-3 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors whitespace-nowrap">
+              <button
+                onClick={() => window.location.href = "/organizations/new"}
+                className="flex items-center gap-2 h-10 px-3 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors whitespace-nowrap"
+              >
                 <Plus className="w-5 h-5" />
                 <span className="text-sm font-medium">Add organization</span>
               </button>
