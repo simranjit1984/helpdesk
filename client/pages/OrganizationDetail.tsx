@@ -357,7 +357,11 @@ export default function OrganizationDetail() {
                     </div>
 
                     {selectedIdp && (
-                      <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
+                      <div className="flex flex-col gap-2">
+                        <Label>
+                          {overrideDefault ? "Custom IDP Configuration" : "Default IDP Configuration"}
+                        </Label>
+                        <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
                         <div className="flex items-start gap-3">
                           <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full flex-shrink-0">
                             <svg
@@ -450,6 +454,7 @@ export default function OrganizationDetail() {
                               </div>
                             </div>
                           </div>
+                        </div>
                         </div>
                       </div>
                     )}
