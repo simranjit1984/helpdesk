@@ -484,72 +484,74 @@ export default function OrganizationDetail() {
                                   if (!customIdp) return null;
 
                                   return (
-                                    <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
-                                      <div className="flex items-start gap-3">
-                                        <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
-                                          <img
-                                            src={customIdp.logoUrl}
-                                            alt={customIdp.name}
-                                            className="w-10 h-10 object-contain"
-                                          />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                          <div className="flex items-center gap-2 mb-4">
-                                            <h3 className="text-base font-medium text-black leading-6">
-                                              {customIdp.protocol}
-                                            </h3>
-                                            {customIdp.status === "active" && (
-                                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                                                Active
-                                              </span>
-                                            )}
-                                            {customIdp.status === "inactive" && (
-                                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
-                                                Inactive
-                                              </span>
-                                            )}
+                                    <>
+                                      <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
+                                        <div className="flex items-start gap-3">
+                                          <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
+                                            <img
+                                              src={customIdp.logoUrl}
+                                              alt={customIdp.name}
+                                              className="w-10 h-10 object-contain"
+                                            />
                                           </div>
-
-                                          <div className="mb-4">
-                                            <p className="text-sm font-semibold text-bluegrey-700 mb-2">
-                                              Authentication
-                                            </p>
-                                            <div className="flex items-center gap-2 bg-bluegrey-50 border border-bluegrey-200 rounded px-3 py-2">
-                                              <code className="flex-1 text-xs text-bluegrey-600 font-mono break-all leading-6">
-                                                {customIdp.authentication}
-                                              </code>
-                                              <button
-                                                type="button"
-                                                onClick={() => {
-                                                  navigator.clipboard.writeText(customIdp.authentication);
-                                                  toast({
-                                                    title: "Copied",
-                                                    description: "Authentication URN copied to clipboard",
-                                                  });
-                                                }}
-                                                className="flex-shrink-0 p-1.5 hover:bg-bluegrey-100 rounded transition-colors"
-                                                title="Copy to clipboard"
-                                              >
-                                                <Copy className="w-4 h-4 text-bluegrey-600" />
-                                              </button>
-                                            </div>
-                                          </div>
-
-                                          <div>
-                                            <p className="text-sm font-semibold text-bluegrey-700 mb-2">
-                                              Domain alias
-                                            </p>
-                                            <div className="flex flex-wrap gap-2">
-                                              {customIdp.domainAliases.map((domain, index) => (
-                                                <span
-                                                  key={index}
-                                                  className="inline-flex items-center px-3 py-1 rounded text-sm bg-blue-100 text-bluegrey-900"
-                                                >
-                                                  {domain}
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 mb-4">
+                                              <h3 className="text-base font-medium text-black leading-6">
+                                                {customIdp.protocol}
+                                              </h3>
+                                              {customIdp.status === "active" && (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                  <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                                  Active
                                                 </span>
-                                              ))}
+                                              )}
+                                              {customIdp.status === "inactive" && (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                                                  Inactive
+                                                </span>
+                                              )}
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <p className="text-sm font-semibold text-bluegrey-700 mb-2">
+                                                Authentication
+                                              </p>
+                                              <div className="flex items-center gap-2 bg-bluegrey-50 border border-bluegrey-200 rounded px-3 py-2">
+                                                <code className="flex-1 text-xs text-bluegrey-600 font-mono break-all leading-6">
+                                                  {customIdp.authentication}
+                                                </code>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    navigator.clipboard.writeText(customIdp.authentication);
+                                                    toast({
+                                                      title: "Copied",
+                                                      description: "Authentication URN copied to clipboard",
+                                                    });
+                                                  }}
+                                                  className="flex-shrink-0 p-1.5 hover:bg-bluegrey-100 rounded transition-colors"
+                                                  title="Copy to clipboard"
+                                                >
+                                                  <Copy className="w-4 h-4 text-bluegrey-600" />
+                                                </button>
+                                              </div>
+                                            </div>
+
+                                            <div>
+                                              <p className="text-sm font-semibold text-bluegrey-700 mb-2">
+                                                Domain alias
+                                              </p>
+                                              <div className="flex flex-wrap gap-2">
+                                                {customIdp.domainAliases.map((domain, index) => (
+                                                  <span
+                                                    key={index}
+                                                    className="inline-flex items-center px-3 py-1 rounded text-sm bg-blue-100 text-bluegrey-900"
+                                                  >
+                                                    {domain}
+                                                  </span>
+                                                ))}
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -579,7 +581,7 @@ export default function OrganizationDetail() {
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
+                                    </>
                                   );
                                 })()}
                               </div>
