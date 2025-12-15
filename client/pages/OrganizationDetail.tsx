@@ -298,76 +298,11 @@ export default function OrganizationDetail() {
                   <div className="flex w-full max-w-5xl flex-col gap-8">
                     <div>
                       <h2 className="text-2xl font-bold text-bluegrey-900 mb-2">
-                        Identity Provider Mapping
+                        Identity Provider Configuration
                       </h2>
                       <p className="text-sm text-bluegrey-600">
                         Configure how {organization.name} authenticates with external identity providers
                       </p>
-                    </div>
-
-                    {/* Configuration Choice Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <button
-                        type="button"
-                        onClick={() => setOverrideDefault(false)}
-                        disabled={isSaving}
-                        className={`relative p-6 rounded-xl border-2 transition-all text-left ${
-                          !overrideDefault
-                            ? "border-blue-500 bg-blue-50 shadow-md"
-                            : "border-bluegrey-200 bg-white hover:border-blue-300 hover:shadow-sm"
-                        }`}
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                            !overrideDefault
-                              ? "border-blue-500 bg-blue-500"
-                              : "border-bluegrey-300 bg-white"
-                          }`}>
-                            {!overrideDefault && (
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-bluegrey-900 mb-1">
-                              Use Default IDP
-                            </h3>
-                            <p className="text-sm text-bluegrey-600">
-                              Use the system-wide default identity provider configured by administrators
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setOverrideDefault(true)}
-                        disabled={isSaving}
-                        className={`relative p-6 rounded-xl border-2 transition-all text-left ${
-                          overrideDefault
-                            ? "border-blue-500 bg-blue-50 shadow-md"
-                            : "border-bluegrey-200 bg-white hover:border-blue-300 hover:shadow-sm"
-                        }`}
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                            overrideDefault
-                              ? "border-blue-500 bg-blue-500"
-                              : "border-bluegrey-300 bg-white"
-                          }`}>
-                            {overrideDefault && (
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-bluegrey-900 mb-1">
-                              Use Custom IDP
-                            </h3>
-                            <p className="text-sm text-bluegrey-600">
-                              Override the default and select a specific identity provider for this organization
-                            </p>
-                          </div>
-                        </div>
-                      </button>
                     </div>
 
                     {/* Default IDP View */}
