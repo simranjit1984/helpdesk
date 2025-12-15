@@ -493,8 +493,8 @@ export default function OrganizationDetail() {
                                           </div>
                                           <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-3 mb-3">
-                                              <h3 className="text-xl font-semibold text-bluegrey-900">
-                                                {customIdp.protocol}
+                                              <h3 className="text-2xl font-bold text-bluegrey-900">
+                                                {customIdp.name}
                                               </h3>
                                               {customIdp.status === "active" && (
                                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white shadow-sm">
@@ -509,6 +509,9 @@ export default function OrganizationDetail() {
                                                 </span>
                                               )}
                                             </div>
+                                            <p className="text-sm text-bluegrey-600 mb-4">
+                                              <span className="font-semibold">Protocol:</span> {customIdp.protocol}
+                                            </p>
 
                                             <div className="mb-4">
                                               <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
