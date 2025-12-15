@@ -349,27 +349,14 @@ export default function OrganizationDetail() {
 
                                       <div className="mb-4">
                                         <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
-                                          Authentication URN
+                                          Authentication URL
                                         </p>
-                                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
-                                          <code className="flex-1 text-xs text-bluegrey-800 font-mono break-all">
-                                            {defaultIdp.authentication}
-                                          </code>
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              navigator.clipboard.writeText(defaultIdp.authentication);
-                                              toast({
-                                                title: "Copied",
-                                                description: "Authentication URN copied to clipboard",
-                                              });
-                                            }}
-                                            className="flex-shrink-0 p-2 hover:bg-blue-100 rounded-lg transition-colors"
-                                            title="Copy to clipboard"
-                                          >
-                                            <Copy className="w-4 h-4 text-blue-600" />
-                                          </button>
-                                        </div>
+                                        <input
+                                          type="text"
+                                          value={defaultIdp.authentication}
+                                          readOnly
+                                          className="w-full rounded border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-not-allowed"
+                                        />
                                       </div>
 
                                       <div>
@@ -515,27 +502,14 @@ export default function OrganizationDetail() {
 
                                             <div className="mb-4">
                                               <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
-                                                Authentication URN
+                                                Authentication URL
                                               </p>
-                                              <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
-                                                <code className="flex-1 text-xs text-bluegrey-800 font-mono break-all">
-                                                  {customIdp.authentication}
-                                                </code>
-                                                <button
-                                                  type="button"
-                                                  onClick={() => {
-                                                    navigator.clipboard.writeText(customIdp.authentication);
-                                                    toast({
-                                                      title: "Copied",
-                                                      description: "Authentication URN copied to clipboard",
-                                                    });
-                                                  }}
-                                                  className="flex-shrink-0 p-2 hover:bg-blue-100 rounded-lg transition-colors"
-                                                  title="Copy to clipboard"
-                                                >
-                                                  <Copy className="w-4 h-4 text-blue-600" />
-                                                </button>
-                                              </div>
+                                              <input
+                                                type="text"
+                                                value={customIdp.authentication}
+                                                readOnly
+                                                className="w-full rounded border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-not-allowed"
+                                              />
                                             </div>
 
                                             <div>
