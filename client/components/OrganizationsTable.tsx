@@ -596,7 +596,10 @@ export default function OrganizationsTable({
           <TableHeader>
             <TableHeadRow>
               <TableHeadCell sticky className="w-64">
-                <SortHeader column="name" label="Organization name" />
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 flex-shrink-0" />
+                  <SortHeader column="name" label="Organization name" />
+                </div>
               </TableHeadCell>
               <TableHeadCell>
                 <SortHeader column="referenceId" label="Reference ID" />
