@@ -41,6 +41,16 @@ export default function OrganizationDetail() {
   });
   const [isActive, setIsActive] = useState(organization?.status === "active");
 
+  const [idpConfig, setIdpConfig] = useState({
+    applyByDefault: false,
+    idpProvider: "",
+    protocol: "saml",
+    metadataUrl: "",
+    entityId: "",
+    ssoUrl: "",
+    certificate: "",
+  });
+
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
