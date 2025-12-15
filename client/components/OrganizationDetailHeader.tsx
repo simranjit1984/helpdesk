@@ -155,7 +155,7 @@ export default function OrganizationDetailHeader({
                     <MoreVertical className="h-6 w-6 text-bluegrey-700" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="min-w-[280px]">
+                <DropdownMenuContent align="end" className="min-w-[200px]">
                   {menuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.action}
