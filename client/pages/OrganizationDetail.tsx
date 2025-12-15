@@ -316,7 +316,7 @@ export default function OrganizationDetail() {
 
                             {!overrideDefault && defaultIdp && (
                               <div className="mt-3">
-                                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100 shadow-sm">
+                                <div className="bg-bluegrey-50 rounded py-4 px-6 border border-bluegrey-100">
                                   <div className="flex items-start gap-6">
                                     <div className="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-md flex-shrink-0 p-3">
                                       <img
@@ -482,7 +482,7 @@ export default function OrganizationDetail() {
 
                                   return (
                                     <>
-                                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100 shadow-sm">
+                                      <div className="bg-bluegrey-50 rounded py-4 px-6 border border-bluegrey-100">
                                         <div className="flex items-start gap-6">
                                           <div className="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-md flex-shrink-0 p-3">
                                             <img
