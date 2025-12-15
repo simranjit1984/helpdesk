@@ -293,319 +293,348 @@ export default function OrganizationDetail() {
                     e.preventDefault();
                     handleIdpSave();
                   }}
-                  className="flex flex-col gap-10"
+                  className="flex flex-col gap-8"
                 >
-                  <div className="flex w-full max-w-3xl flex-col gap-6">
-                    <h2 className="text-xl font-semibold text-blue-500">
-                      Map {organization.name} to external IDP
-                    </h2>
+                  <div className="flex w-full max-w-5xl flex-col gap-8">
+                    <div>
+                      <h2 className="text-2xl font-bold text-bluegrey-900 mb-2">
+                        Identity Provider Mapping
+                      </h2>
+                      <p className="text-sm text-bluegrey-600">
+                        Configure how {organization.name} authenticates with external identity providers
+                      </p>
+                    </div>
 
-                    <RadioGroup
-                      value={overrideDefault ? "custom" : "default"}
-                      onValueChange={(value) => setOverrideDefault(value === "custom")}
-                      disabled={isSaving}
-                      className="flex flex-col gap-4"
-                    >
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-start gap-3">
-                          <RadioGroupItem value="default" id="default-idp" className="mt-0.5" />
-                          <div className="flex-1">
-                            <Label htmlFor="default-idp" className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5">
-                              Use default IDP
-                            </Label>
-                            <div className="mt-1">
-                              <input
-                                type="text"
-                                value={defaultIdp?.name || ""}
-                                readOnly
-                                style={{ width: '384px' }}
-                                className="flex rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm font-normal text-bluegrey-900 leading-5 cursor-not-allowed"
+                    {/* Segmented Control */}
+                    <div className="inline-flex p-1 bg-bluegrey-50 rounded-lg w-fit">
+                      <button
+                        type="button"
+                        onClick={() => setOverrideDefault(false)}
+                        disabled={isSaving}
+                        className={`px-6 py-2.5 rounded-md text-sm font-medium transition-all ${
+                          !overrideDefault
+                            ? "bg-white text-blue-600 shadow-sm"
+                            : "text-bluegrey-600 hover:text-bluegrey-900"
+                        }`}
+                      >
+                        Default IDP
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOverrideDefault(true)}
+                        disabled={isSaving}
+                        className={`px-6 py-2.5 rounded-md text-sm font-medium transition-all ${
+                          overrideDefault
+                            ? "bg-white text-blue-600 shadow-sm"
+                            : "text-bluegrey-600 hover:text-bluegrey-900"
+                        }`}
+                      >
+                        Custom IDP
+                      </button>
+                    </div>
+
+                    {/* Default IDP View */}
+                    {!overrideDefault && defaultIdp && (
+                      <div className="space-y-6">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100 shadow-sm">
+                          <div className="flex items-start gap-6">
+                            <div className="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-md flex-shrink-0 p-3">
+                              <img
+                                src={defaultIdp.logoUrl}
+                                alt={defaultIdp.name}
+                                className="w-full h-full object-contain"
                               />
                             </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-3 mb-3">
+                                <h3 className="text-2xl font-bold text-bluegrey-900">
+                                  {defaultIdp.name}
+                                </h3>
+                                {defaultIdp.status === "active" && (
+                                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white shadow-sm">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    Active
+                                  </span>
+                                )}
+                                {defaultIdp.status === "inactive" && (
+                                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-400 text-white shadow-sm">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    Inactive
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-bluegrey-600 mb-1">
+                                <span className="font-semibold">Protocol:</span> {defaultIdp.protocol}
+                              </p>
+                              <p className="text-xs text-blue-600 font-medium">
+                                System Default Configuration
+                              </p>
+                            </div>
+                          </div>
 
-                            {!overrideDefault && defaultIdp && (
-                              <div className="mt-3">
-                                <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
-                                  <div className="flex items-start gap-3">
-                                    <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
-                                      <img
-                                        src={defaultIdp.logoUrl}
-                                        alt={defaultIdp.name}
-                                        className="w-10 h-10 object-contain"
-                                      />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2 mb-4">
-                                        <h3 className="text-base font-medium text-black leading-6">
-                                          {defaultIdp.protocol}
-                                        </h3>
-                                        {defaultIdp.status === "active" && (
-                                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                                            Active
-                                          </span>
-                                        )}
-                                        {defaultIdp.status === "inactive" && (
-                                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
-                                            Inactive
-                                          </span>
-                                        )}
-                                      </div>
+                          <div className="mt-6 space-y-4">
+                            <div>
+                              <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
+                                Authentication URN
+                              </p>
+                              <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
+                                <code className="flex-1 text-xs text-bluegrey-800 font-mono break-all">
+                                  {defaultIdp.authentication}
+                                </code>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(defaultIdp.authentication);
+                                    toast({
+                                      title: "Copied",
+                                      description: "Authentication URN copied to clipboard",
+                                    });
+                                  }}
+                                  className="flex-shrink-0 p-2 hover:bg-blue-100 rounded-lg transition-colors"
+                                  title="Copy to clipboard"
+                                >
+                                  <Copy className="w-4 h-4 text-blue-600" />
+                                </button>
+                              </div>
+                            </div>
 
-                                      <div className="mb-4">
-                                        <p className="text-sm font-semibold text-bluegrey-700 mb-2">
-                                          Authentication
-                                        </p>
-                                        <div className="flex items-center gap-2 bg-bluegrey-50 border border-bluegrey-200 rounded px-3 py-2">
-                                          <code className="flex-1 text-xs text-bluegrey-600 font-mono break-all leading-6">
-                                            {defaultIdp.authentication}
-                                          </code>
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              navigator.clipboard.writeText(defaultIdp.authentication);
-                                              toast({
-                                                title: "Copied",
-                                                description: "Authentication URN copied to clipboard",
-                                              });
-                                            }}
-                                            className="flex-shrink-0 p-1.5 hover:bg-bluegrey-100 rounded transition-colors"
-                                            title="Copy to clipboard"
-                                          >
-                                            <Copy className="w-4 h-4 text-bluegrey-600" />
-                                          </button>
-                                        </div>
-                                      </div>
+                            <div>
+                              <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
+                                Domain Aliases
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                {defaultIdp.domainAliases.map((domain, index) => (
+                                  <span
+                                    key={index}
+                                    className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-white/80 backdrop-blur-sm text-bluegrey-800 border border-blue-200 shadow-sm"
+                                  >
+                                    {domain}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-                                      <div>
-                                        <p className="text-sm font-semibold text-bluegrey-700 mb-2">
-                                          Domain alias
-                                        </p>
-                                        <div className="flex flex-wrap gap-2">
-                                          {defaultIdp.domainAliases.map((domain, index) => (
-                                            <span
-                                              key={index}
-                                              className="inline-flex items-center px-3 py-1 rounded text-sm bg-blue-100 text-bluegrey-900"
-                                            >
-                                              {domain}
-                                            </span>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                        <div className="bg-white rounded-xl p-6 border border-bluegrey-200 shadow-sm">
+                          <h3 className="text-lg font-bold text-bluegrey-900 mb-4">
+                            Preferences
+                          </h3>
+                          <div className="flex items-start gap-3">
+                            <Checkbox
+                              id="applyToSubOrgs"
+                              checked={applyToSubOrgs}
+                              onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
+                              disabled={isSaving}
+                              className="mt-0.5"
+                            />
+                            <div className="flex flex-col gap-1">
+                              <Label
+                                htmlFor="applyToSubOrgs"
+                                className="cursor-pointer text-sm font-medium text-bluegrey-900"
+                              >
+                                Apply to all sub-organizations
+                              </Label>
+                              <p className="text-xs text-bluegrey-600">
+                                This mapping will be inherited by all child organizations
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Custom IDP View */}
+                    {overrideDefault && (
+                      <div className="space-y-6">
+                        <div>
+                          <Label className="text-sm font-semibold text-bluegrey-900 mb-3 block">
+                            Select Identity Provider
+                          </Label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {availableIdps.map((idp) => (
+                              <button
+                                key={idp.id}
+                                type="button"
+                                onClick={() => setCustomIdpId(idp.id)}
+                                disabled={isSaving}
+                                className={`relative flex items-center gap-4 p-5 rounded-xl border-2 transition-all ${
+                                  customIdpId === idp.id
+                                    ? "border-blue-500 bg-blue-50 shadow-md"
+                                    : "border-bluegrey-200 bg-white hover:border-blue-300 hover:shadow-sm"
+                                }`}
+                              >
+                                <div className="flex items-center justify-center w-14 h-14 bg-white rounded-xl shadow-sm flex-shrink-0 p-2 border border-bluegrey-100">
+                                  <img
+                                    src={idp.logoUrl}
+                                    alt={idp.name}
+                                    className="w-full h-full object-contain"
+                                  />
                                 </div>
+                                <div className="flex-1 text-left">
+                                  <h4 className="text-base font-semibold text-bluegrey-900 mb-0.5">
+                                    {idp.name}
+                                  </h4>
+                                  <p className="text-xs text-bluegrey-600">
+                                    {idp.protocol}
+                                  </p>
+                                </div>
+                                {customIdpId === idp.id && (
+                                  <div className="absolute top-3 right-3 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  </div>
+                                )}
+                                {idp.status === "active" && (
+                                  <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    Active
+                                  </span>
+                                )}
+                                {idp.status === "inactive" && (
+                                  <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                                    Inactive
+                                  </span>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-                                <div className="mt-6">
-                                  <h3 className="text-xl font-bold text-blue-500 mb-4">
-                                    Preferences
-                                  </h3>
-                                  <div className="flex items-start gap-2">
-                                    <Checkbox
-                                      id="applyToSubOrgs"
-                                      checked={applyToSubOrgs}
-                                      onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
-                                      disabled={isSaving}
+                        {customIdpId && (() => {
+                          const customIdp = availableIdps.find((idp) => idp.id === customIdpId);
+                          if (!customIdp) return null;
+
+                          return (
+                            <>
+                              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8 border border-purple-100 shadow-sm">
+                                <div className="flex items-start gap-6">
+                                  <div className="flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-md flex-shrink-0 p-3">
+                                    <img
+                                      src={customIdp.logoUrl}
+                                      alt={customIdp.name}
+                                      className="w-full h-full object-contain"
                                     />
-                                    <div className="flex flex-col gap-1">
-                                      <Label
-                                        htmlFor="applyToSubOrgs"
-                                        className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
-                                      >
-                                        Apply to all sub organizations by default
-                                      </Label>
-                                      <p className="text-xs text-[#6F6F76] leading-4">
-                                        This same mapping will be applied to all the sub organizations
-                                      </p>
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-3 mb-3">
+                                      <h3 className="text-2xl font-bold text-bluegrey-900">
+                                        {customIdp.name}
+                                      </h3>
+                                      {customIdp.status === "active" && (
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white shadow-sm">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                          Active
+                                        </span>
+                                      )}
+                                      {customIdp.status === "inactive" && (
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-400 text-white shadow-sm">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                          Inactive
+                                        </span>
+                                      )}
                                     </div>
+                                    <p className="text-sm text-bluegrey-600 mb-1">
+                                      <span className="font-semibold">Protocol:</span> {customIdp.protocol}
+                                    </p>
+                                    <p className="text-xs text-purple-600 font-medium">
+                                      Custom Override Configuration
+                                    </p>
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-start gap-3">
-                          <RadioGroupItem value="custom" id="custom-idp" className="mt-0.5" />
-                          <div className="flex-1">
-                            <Label htmlFor="custom-idp" className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5">
-                              Use custom IDP
-                            </Label>
-                            <p className="text-xs text-[#6F6F76] leading-4 mt-1">
-                              Override the default IDP for this organization
-                            </p>
-                            {overrideDefault && (
-                              <div className="flex flex-col gap-3 mt-3">
-                                <div className="flex flex-col gap-1">
-                                  <Label htmlFor="customIdp" className="flex gap-1">
-                                    Select IDP
-                                    <span className="text-red-500">*</span>
-                                  </Label>
-                                  <div className="relative" style={{ width: '384px' }}>
-                                    <select
-                                      id="customIdp"
-                                      value={customIdpId}
-                                      onChange={(e) => setCustomIdpId(e.target.value)}
-                                      disabled={isSaving}
-                                      className="w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 pr-8 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
-                                    >
-                                      <option value="">Select an IDP...</option>
-                                      {availableIdps.map((idp) => (
-                                        <option key={idp.id} value={idp.id}>
-                                          {idp.name}
-                                        </option>
+                                <div className="mt-6 space-y-4">
+                                  <div>
+                                    <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
+                                      Authentication URN
+                                    </p>
+                                    <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-lg px-4 py-3 shadow-sm">
+                                      <code className="flex-1 text-xs text-bluegrey-800 font-mono break-all">
+                                        {customIdp.authentication}
+                                      </code>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(customIdp.authentication);
+                                          toast({
+                                            title: "Copied",
+                                            description: "Authentication URN copied to clipboard",
+                                          });
+                                        }}
+                                        className="flex-shrink-0 p-2 hover:bg-purple-100 rounded-lg transition-colors"
+                                        title="Copy to clipboard"
+                                      >
+                                        <Copy className="w-4 h-4 text-purple-600" />
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <p className="text-xs font-bold text-bluegrey-700 uppercase tracking-wider mb-2">
+                                      Domain Aliases
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                      {customIdp.domainAliases.map((domain, index) => (
+                                        <span
+                                          key={index}
+                                          className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-white/80 backdrop-blur-sm text-bluegrey-800 border border-purple-200 shadow-sm"
+                                        >
+                                          {domain}
+                                        </span>
                                       ))}
-                                    </select>
-                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                                      <svg
-                                        width="12"
-                                        height="8"
-                                        viewBox="0 0 12 8"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M1 1.5L6 6.5L11 1.5"
-                                          stroke="#131319"
-                                          strokeWidth="1.5"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
                                     </div>
                                   </div>
                                 </div>
-
-                                {customIdpId && (() => {
-                                  const customIdp = availableIdps.find((idp) => idp.id === customIdpId);
-                                  if (!customIdp) return null;
-
-                                  return (
-                                    <>
-                                      <div className="border border-bluegrey-100 bg-white rounded py-4 px-6">
-                                        <div className="flex items-start gap-3">
-                                          <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
-                                            <img
-                                              src={customIdp.logoUrl}
-                                              alt={customIdp.name}
-                                              className="w-10 h-10 object-contain"
-                                            />
-                                          </div>
-                                          <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-4">
-                                              <h3 className="text-base font-medium text-black leading-6">
-                                                {customIdp.protocol}
-                                              </h3>
-                                              {customIdp.status === "active" && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                  <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                                                  Active
-                                                </span>
-                                              )}
-                                              {customIdp.status === "inactive" && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
-                                                  Inactive
-                                                </span>
-                                              )}
-                                            </div>
-
-                                            <div className="mb-4">
-                                              <p className="text-sm font-semibold text-bluegrey-700 mb-2">
-                                                Authentication
-                                              </p>
-                                              <div className="flex items-center gap-2 bg-bluegrey-50 border border-bluegrey-200 rounded px-3 py-2">
-                                                <code className="flex-1 text-xs text-bluegrey-600 font-mono break-all leading-6">
-                                                  {customIdp.authentication}
-                                                </code>
-                                                <button
-                                                  type="button"
-                                                  onClick={() => {
-                                                    navigator.clipboard.writeText(customIdp.authentication);
-                                                    toast({
-                                                      title: "Copied",
-                                                      description: "Authentication URN copied to clipboard",
-                                                    });
-                                                  }}
-                                                  className="flex-shrink-0 p-1.5 hover:bg-bluegrey-100 rounded transition-colors"
-                                                  title="Copy to clipboard"
-                                                >
-                                                  <Copy className="w-4 h-4 text-bluegrey-600" />
-                                                </button>
-                                              </div>
-                                            </div>
-
-                                            <div>
-                                              <p className="text-sm font-semibold text-bluegrey-700 mb-2">
-                                                Domain alias
-                                              </p>
-                                              <div className="flex flex-wrap gap-2">
-                                                {customIdp.domainAliases.map((domain, index) => (
-                                                  <span
-                                                    key={index}
-                                                    className="inline-flex items-center px-3 py-1 rounded text-sm bg-blue-100 text-bluegrey-900"
-                                                  >
-                                                    {domain}
-                                                  </span>
-                                                ))}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div className="mt-6">
-                                        <h3 className="text-xl font-bold text-blue-500 mb-4">
-                                          Preferences
-                                        </h3>
-                                        <div className="flex items-start gap-2">
-                                          <Checkbox
-                                            id="applyToSubOrgsCustom"
-                                            checked={applyToSubOrgs}
-                                            onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
-                                            disabled={isSaving}
-                                          />
-                                          <div className="flex flex-col gap-1">
-                                            <Label
-                                              htmlFor="applyToSubOrgsCustom"
-                                              className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5"
-                                            >
-                                              Apply to all sub organizations by default
-                                            </Label>
-                                            <p className="text-xs text-[#6F6F76] leading-4">
-                                              This same mapping will be applied to all the sub organizations
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </>
-                                  );
-                                })()}
                               </div>
-                            )}
-                          </div>
-                        </div>
+
+                              <div className="bg-white rounded-xl p-6 border border-bluegrey-200 shadow-sm">
+                                <h3 className="text-lg font-bold text-bluegrey-900 mb-4">
+                                  Preferences
+                                </h3>
+                                <div className="flex items-start gap-3">
+                                  <Checkbox
+                                    id="applyToSubOrgsCustom"
+                                    checked={applyToSubOrgs}
+                                    onCheckedChange={(checked) => setApplyToSubOrgs(checked === true)}
+                                    disabled={isSaving}
+                                    className="mt-0.5"
+                                  />
+                                  <div className="flex flex-col gap-1">
+                                    <Label
+                                      htmlFor="applyToSubOrgsCustom"
+                                      className="cursor-pointer text-sm font-medium text-bluegrey-900"
+                                    >
+                                      Apply to all sub-organizations
+                                    </Label>
+                                    <p className="text-xs text-bluegrey-600">
+                                      This mapping will be inherited by all child organizations
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })()}
                       </div>
-                    </RadioGroup>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3">
                     <Button
                       type="submit"
                       disabled={isSaving}
-                      className="bg-blue-500 hover:bg-blue-600 text-white h-10 px-4 rounded-[2px]"
+                      className="bg-blue-500 hover:bg-blue-600 text-white h-11 px-6 rounded-lg shadow-sm font-medium"
                     >
-                      {isSaving ? "Saving..." : "Save"}
+                      {isSaving ? "Saving..." : "Save Configuration"}
                     </Button>
                     <Button
                       type="button"
                       onClick={handleCancel}
                       disabled={isSaving}
                       variant="ghost"
-                      className="h-10 px-4 rounded-[2px] text-bluegrey-900"
+                      className="h-11 px-6 rounded-lg text-bluegrey-700 hover:bg-bluegrey-50 font-medium"
                     >
                       Cancel
                     </Button>
