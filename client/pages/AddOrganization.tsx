@@ -169,21 +169,21 @@ export default function AddOrganization() {
                       />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="active"
-                          checked={isActive}
-                          onCheckedChange={(checked) => setIsActive(checked === true)}
-                          disabled={isSaving}
-                        />
-                        <Label htmlFor="active" className="cursor-pointer">
+                    <div className="flex items-start gap-2">
+                      <Checkbox
+                        id="active"
+                        checked={isActive}
+                        onCheckedChange={(checked) => setIsActive(checked === true)}
+                        disabled={isSaving}
+                      />
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="active" className="cursor-pointer text-sm font-normal text-bluegrey-900 leading-5">
                           Active
                         </Label>
+                        <p className="text-xs text-[#6F6F76] leading-4">
+                          When inactive, this organization cannot access resources or perform any action.
+                        </p>
                       </div>
-                      <p className="text-sm text-bluegrey-500">
-                        When inactive, this organization cannot access resources or perform any action.
-                      </p>
                     </div>
                   </div>
 
