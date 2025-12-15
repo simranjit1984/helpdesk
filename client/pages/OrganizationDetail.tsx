@@ -392,7 +392,7 @@ export default function OrganizationDetail() {
                                 </div>
 
                                 <div className="mt-6">
-                                  <div className="bg-white rounded py-4 px-6 border border-bluegrey-200">
+                                  <div className="bg-white rounded py-4 px-6 border border-bluegrey-100">
                                     <h3 className="text-lg font-bold text-bluegrey-900 mb-4">
                                       Preferences
                                     </h3>
@@ -558,7 +558,7 @@ export default function OrganizationDetail() {
                                       </div>
 
                                       <div className="mt-6">
-                                        <div className="bg-white rounded py-4 px-6 border border-bluegrey-200">
+                                        <div className="bg-white rounded py-4 px-6 border border-bluegrey-100">
                                           <h3 className="text-lg font-bold text-bluegrey-900 mb-4">
                                             Preferences
                                           </h3>
