@@ -94,7 +94,6 @@ export default function OrganizationDetail() {
       <Layout>
         <OrganizationDetailHeader
           organizationName={organization.name}
-          description={organization.referenceId}
           status={organization.status}
           showActions={true}
         />
@@ -172,13 +171,6 @@ export default function OrganizationDetail() {
                       <p className="text-sm text-bluegrey-900">
                         {organization.referenceId}
                       </p>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <Label>Status</Label>
-                      <div className="mt-1">
-                        <StatusBadge status={organization.status} />
-                      </div>
                     </div>
                   </div>
 
