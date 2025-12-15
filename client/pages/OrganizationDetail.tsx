@@ -77,10 +77,18 @@ export default function OrganizationDetail() {
     },
   ];
 
-  const [selectedIdpId, setSelectedIdpId] = useState(availableIdps[0].id);
+  // Default IDP (simulating what comes from the system/admin panel)
+  const defaultIdpId = availableIdps[0].id;
+  const defaultIdp = availableIdps.find((idp) => idp.id === defaultIdpId);
+
+  const [overrideDefault, setOverrideDefault] = useState(false);
+  const [customIdpId, setCustomIdpId] = useState(availableIdps[0].id);
   const [applyToSubOrgs, setApplyToSubOrgs] = useState(false);
 
-  const selectedIdp = availableIdps.find((idp) => idp.id === selectedIdpId);
+  // Use custom IDP if override is enabled, otherwise use default
+  const selectedIdp = overrideDefault
+    ? availableIdps.find((idp) => idp.id === customIdpId)
+    : defaultIdp;
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
