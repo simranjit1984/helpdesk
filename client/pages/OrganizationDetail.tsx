@@ -41,15 +41,46 @@ export default function OrganizationDetail() {
   });
   const [isActive, setIsActive] = useState(organization?.status === "active");
 
-  const [idpConfig, setIdpConfig] = useState({
-    applyByDefault: false,
-    idpProvider: "",
-    protocol: "saml",
-    metadataUrl: "",
-    entityId: "",
-    ssoUrl: "",
-    certificate: "",
-  });
+  // Mock list of available IDPs from admin panel
+  const availableIdps = [
+    {
+      id: "1",
+      name: "Access Opaque E2E",
+      protocol: "OpenID Connect",
+      status: "active",
+      authentication: "urn:onewelcome:broker:v1:accessopaquee2e:authentication",
+      domainAliases: ["google.ca", "google.com", "google.uk", "apple.com"],
+    },
+    {
+      id: "2",
+      name: "Okta Production",
+      protocol: "SAML 2.0",
+      status: "active",
+      authentication: "urn:okta:prod:v1:authentication",
+      domainAliases: ["okta.com", "oktapreview.com"],
+    },
+    {
+      id: "3",
+      name: "Azure AD Enterprise",
+      protocol: "OpenID Connect",
+      status: "active",
+      authentication: "urn:azure:ad:enterprise:v1:authentication",
+      domainAliases: ["microsoft.com", "azure.com", "office365.com"],
+    },
+    {
+      id: "4",
+      name: "Auth0 Development",
+      protocol: "OAuth 2.0",
+      status: "inactive",
+      authentication: "urn:auth0:dev:v1:authentication",
+      domainAliases: ["auth0.com"],
+    },
+  ];
+
+  const [selectedIdpId, setSelectedIdpId] = useState(availableIdps[0].id);
+  const [applyToSubOrgs, setApplyToSubOrgs] = useState(false);
+
+  const selectedIdp = availableIdps.find((idp) => idp.id === selectedIdpId);
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
