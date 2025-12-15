@@ -309,13 +309,16 @@ export default function OrganizationDetail() {
                             <Label htmlFor="default-idp" className="cursor-pointer text-sm font-medium text-bluegrey-900 leading-5">
                               Use default IDP
                             </Label>
-                            <div className="mt-2 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-[2px] px-3 py-3">
-                              <span className="text-sm text-bluegrey-900 font-medium">
-                                {defaultIdp?.name}
-                              </span>
-                              <span className="text-xs text-bluegrey-600 ml-auto">
-                                (Applied by default from admin panel)
-                              </span>
+                            <div className="mt-2 flex flex-col gap-1">
+                              <input
+                                type="text"
+                                value={defaultIdp?.name || ""}
+                                readOnly
+                                className="flex w-full rounded-[2px] border border-bluegrey-500 bg-bluegrey-50 px-2 py-3 text-sm text-bluegrey-900 cursor-not-allowed"
+                              />
+                              <p className="text-xs text-bluegrey-600">
+                                Applied by default from admin panel
+                              </p>
                             </div>
 
                             {!overrideDefault && defaultIdp && (
