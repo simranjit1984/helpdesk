@@ -166,6 +166,12 @@ export default function UserDetail() {
   const [emailOtpSuccess, setEmailOtpSuccess] = useState(false);
   const [isSendingSmsOtp, setIsSendingSmsOtp] = useState(false);
   const [smsOtpSuccess, setSmsOtpSuccess] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [isEmailOtpDialogOpen, setIsEmailOtpDialogOpen] = useState(false);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [isVerifyingEmailOtp, setIsVerifyingEmailOtp] = useState(false);
+  const [emailOtpError, setEmailOtpError] = useState("");
+  const [emailUpdateSuccess, setEmailUpdateSuccess] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1448,7 +1454,65 @@ export default function UserDetail() {
                 {/* Email OTP Section */}
                 {openSideSheet === "Email OTP" && (
                   <div className="flex flex-col gap-6">
+                    {/* Update Email Address Section */}
                     <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl font-semibold text-blue-500">
+                          Email address
+                        </h2>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="emailAddress">Email address</Label>
+                        <input
+                          id="emailAddress"
+                          type="email"
+                          value={newEmail || user?.workEmail || ""}
+                          onChange={(e) => {
+                            setNewEmail(e.target.value);
+                            setEmailUpdateSuccess(false);
+                          }}
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                        />
+                      </div>
+                      {emailUpdateSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  Email address updated successfully
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setEmailUpdateSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setEmailOtpError("");
+                          setEmailOtp("");
+                          setIsEmailOtpDialogOpen(true);
+                        }}
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        Update
+                      </Button>
+                    </div>
+
+                    {/* Send OTP Section */}
+                    <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
                       <p className="text-sm text-bluegrey-700">
                         Send a one-time password to user's primary email address, {user?.workEmail}
                       </p>
