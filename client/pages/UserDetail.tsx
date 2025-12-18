@@ -164,6 +164,8 @@ export default function UserDetail() {
   const [removePhoneSuccess, setRemovePhoneSuccess] = useState(false);
   const [isSendingEmailOtp, setIsSendingEmailOtp] = useState(false);
   const [emailOtpSuccess, setEmailOtpSuccess] = useState(false);
+  const [isSendingSmsOtp, setIsSendingSmsOtp] = useState(false);
+  const [smsOtpSuccess, setSmsOtpSuccess] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1504,25 +1506,10 @@ export default function UserDetail() {
                 {openSideSheet === "SMS OTP" && (
                   <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-1">
-                        <h2 className="text-xl font-semibold text-blue-500">
-                          Phone number
-                        </h2>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <Label htmlFor="phoneNumber">Phone number</Label>
-                        <input
-                          id="phoneNumber"
-                          type="tel"
-                          value={newPhoneNumber || user?.phone || ""}
-                          onChange={(e) => {
-                            setNewPhoneNumber(e.target.value);
-                            setPhoneUpdateSuccess(false);
-                          }}
-                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
-                        />
-                      </div>
-                      {phoneUpdateSuccess && (
+                      <p className="text-sm text-bluegrey-700">
+                        Send a one-time password to user's primary phone number, {user?.workPhone}
+                      </p>
+                      {smsOtpSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
                           <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
                           <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
@@ -1530,13 +1517,13 @@ export default function UserDetail() {
                               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-bluegrey-900 leading-5">
-                                  Phone number updated successfully
+                                  OTP sent successfully to {user?.workPhone}
                                 </p>
                               </div>
                             </div>
                             <div className="flex justify-end items-center">
                               <button
-                                onClick={() => setPhoneUpdateSuccess(false)}
+                                onClick={() => setSmsOtpSuccess(false)}
                                 className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
                                 aria-label="Close alert"
                               >
@@ -1549,13 +1536,24 @@ export default function UserDetail() {
                       <Button
                         variant="outline"
                         onClick={() => {
-                          setPhoneOtpError("");
-                          setPhoneOtp("");
-                          setIsPhoneOtpDialogOpen(true);
+                          setIsSendingSmsOtp(true);
+                          setSmsOtpSuccess(false);
+                          setTimeout(() => {
+                            setIsSendingSmsOtp(false);
+                            setSmsOtpSuccess(true);
+                          }, 1500);
                         }}
-                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                        disabled={isSendingSmsOtp}
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 w-fit gap-2"
                       >
-                        Update
+                        {isSendingSmsOtp ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send OTP"
+                        )}
                       </Button>
                     </div>
 
