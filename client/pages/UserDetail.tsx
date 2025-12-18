@@ -1441,6 +1441,35 @@ export default function UserDetail() {
                   </div>
                 )}
 
+                {/* Email OTP Section */}
+                {openSideSheet === "Email OTP" && (
+                  <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl font-semibold text-blue-500">
+                          Email OTP
+                        </h2>
+                        <p className="text-sm text-bluegrey-700">
+                          Send a one-time password to the user's email address
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          showAlert(
+                            "OTP sent successfully to user's email.",
+                            "success",
+                          );
+                        }}
+                        className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        <Mail className="h-4 w-4" />
+                        Send OTP
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {/* SMS OTP Section */}
                 {openSideSheet === "SMS OTP" && (
                   <div className="flex flex-col gap-6">
@@ -1551,10 +1580,11 @@ export default function UserDetail() {
                   </div>
                 )}
 
-                {/* Danger Zone Section - Only for non-Password and non-SMS OTP authenticators */}
+                {/* Danger Zone Section - Only for non-Password, non-SMS OTP, and non-Email OTP authenticators */}
                 {openSideSheet &&
                   openSideSheet !== "Password" &&
-                  openSideSheet !== "SMS OTP" && (
+                  openSideSheet !== "SMS OTP" &&
+                  openSideSheet !== "Email OTP" && (
                     <div className="flex flex-col gap-4">
                       <h2 className="text-xl font-semibold text-red-600">
                         Danger zone
