@@ -239,9 +239,9 @@ export default function UserDetail() {
       return x - Math.floor(x);
     };
 
-    const selected: string[] = ["Username & Password"];
+    const selected: string[] = ["Username & Password", "Email OTP"];
     const allOptions = [
-      ...allAuthenticators.authenticators.slice(1),
+      ...allAuthenticators.authenticators.slice(1).filter(auth => auth !== "Email OTP"),
       ...allAuthenticators.externalProviders,
       ...allAuthenticators.passkeys,
     ];
