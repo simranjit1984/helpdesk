@@ -167,7 +167,7 @@ export default function UserDetail() {
   // Static timestamps for authenticators
   const allAuthenticators = {
     authenticators: [
-      "Username & Password",
+      "Password",
       "SMS OTP",
       "Email OTP",
       "TOTP",
@@ -193,7 +193,7 @@ export default function UserDetail() {
   };
 
   const authenticatorTimestamps: Record<string, string> = {
-    "Username & Password": "Jan 19, 2025 02:45 PM",
+    "Password": "Jan 19, 2025 02:45 PM",
     "SMS OTP": "Jan 18, 2025 10:15 AM",
     "Email OTP": "Jan 17, 2025 05:30 PM",
     TOTP: "Jan 16, 2025 03:20 PM",
@@ -218,7 +218,7 @@ export default function UserDetail() {
     // For Alice Anderson, return specific authenticators
     if (email === "alice.anderson@example.com") {
       return [
-        "Username & Password",
+        "Password",
         "Email OTP",
         "SMS OTP",
         "Chrome Passkey",
@@ -249,7 +249,7 @@ export default function UserDetail() {
       return x - Math.floor(x);
     };
 
-    const selected: string[] = ["Username & Password", "Email OTP"];
+    const selected: string[] = ["Password", "Email OTP"];
     const allOptions = [
       ...allAuthenticators.authenticators.slice(1).filter(auth => auth !== "Email OTP"),
       ...allAuthenticators.externalProviders,
@@ -274,7 +274,7 @@ export default function UserDetail() {
   };
 
   const iconMap: Record<string, React.ReactNode> = {
-    "Username & Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
+    "Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
     "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
     "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
     TOTP: <Clock className="h-5 w-5 text-bluegrey-600" />,
@@ -326,7 +326,7 @@ export default function UserDetail() {
 
   const handleAuthenticatorCardClick = (authName: string) => {
     setOpenSideSheet(authName);
-    if (authName === "Username & Password") {
+    if (authName === "Password") {
       setUsernameEmail(user?.email || "");
     }
   };
@@ -1245,8 +1245,8 @@ export default function UserDetail() {
                   </div>
                 </div>
 
-                {/* Username & Password Section */}
-                {openSideSheet === "Username & Password" && (
+                {/* Password Section */}
+                {openSideSheet === "Password" && (
                   <div className="flex flex-col gap-6">
                     {/* Update Username Section */}
                     <div className="flex flex-col gap-3">
@@ -1613,9 +1613,9 @@ export default function UserDetail() {
                   </div>
                 )}
 
-                {/* Danger Zone Section - Only for non-Username & Password and non-SMS OTP authenticators */}
+                {/* Danger Zone Section - Only for non-Password and non-SMS OTP authenticators */}
                 {openSideSheet &&
-                  openSideSheet !== "Username & Password" &&
+                  openSideSheet !== "Password" &&
                   openSideSheet !== "SMS OTP" && (
                     <div className="flex flex-col gap-4">
                       <h2 className="text-xl font-semibold text-red-600">
