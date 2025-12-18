@@ -162,6 +162,8 @@ export default function UserDetail() {
   const [phoneOtpError, setPhoneOtpError] = useState("");
   const [phoneUpdateSuccess, setPhoneUpdateSuccess] = useState(false);
   const [removePhoneSuccess, setRemovePhoneSuccess] = useState(false);
+  const [isSendingEmailOtp, setIsSendingEmailOtp] = useState(false);
+  const [emailOtpSuccess, setEmailOtpSuccess] = useState(false);
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1448,17 +1450,51 @@ export default function UserDetail() {
                       <p className="text-sm text-bluegrey-700">
                         Send a one-time password to user's primary email address, {user?.workEmail}
                       </p>
+                      {emailOtpSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  OTP sent successfully to user's email
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setEmailOtpSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                       <Button
                         variant="outline"
                         onClick={() => {
-                          showAlert(
-                            "OTP sent successfully to user's email.",
-                            "success",
-                          );
+                          setIsSendingEmailOtp(true);
+                          setEmailOtpSuccess(false);
+                          setTimeout(() => {
+                            setIsSendingEmailOtp(false);
+                            setEmailOtpSuccess(true);
+                          }, 1500);
                         }}
-                        className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                        disabled={isSendingEmailOtp}
+                        className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 w-fit gap-2"
                       >
-                        Send OTP
+                        {isSendingEmailOtp ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send OTP"
+                        )}
                       </Button>
                     </div>
                   </div>
