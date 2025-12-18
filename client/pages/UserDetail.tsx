@@ -407,7 +407,7 @@ export default function UserDetail() {
             email: foundUser.username,
             workEmail: foundUser.firstName.toLowerCase() + "." + foundUser.lastName.toLowerCase() + "@insurcar.com",
             phone: foundUser.phoneNumber,
-            workPhone: "+1 (613) 555-1234",
+            workPhone: "+16135551234",
             displayPhone: foundUser.phoneNumber,
             address1: "1223, Fancy Street",
             address2: "",
