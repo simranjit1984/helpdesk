@@ -227,6 +227,11 @@ export default function UserDetail() {
 
   // Generate deterministic authenticators for each user based on email
   const generateUserAuthenticators = (email: string): string[] => {
+    // For Benjamin Brown, return no authenticators
+    if (email === "benjamin.brown@example.com") {
+      return [];
+    }
+
     // For Alice Anderson, return specific authenticators
     if (email === "alice.anderson@example.com") {
       return [
@@ -928,6 +933,17 @@ export default function UserDetail() {
                     </p>
                     <p className="text-bluegrey-500 text-sm mt-2">
                       No authenticators linked to this user's account.
+                    </p>
+                  </div>
+                </div>
+              ) : userAuthenticators.length === 0 ? (
+                <div className="flex items-center justify-center min-h-96">
+                  <div className="text-center">
+                    <p className="text-bluegrey-600 text-lg font-medium">
+                      No authenticator enrolled
+                    </p>
+                    <p className="text-bluegrey-500 text-sm mt-2">
+                      There is no active authenticator associated with this user's account
                     </p>
                   </div>
                 </div>
