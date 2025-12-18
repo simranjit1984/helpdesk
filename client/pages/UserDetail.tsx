@@ -673,7 +673,7 @@ export default function UserDetail() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="email">Email ID</Label>
+                    <Label htmlFor="email">Personal email</Label>
                     <input
                       id="email"
                       type="email"
