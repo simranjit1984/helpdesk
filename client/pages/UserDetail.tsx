@@ -205,7 +205,7 @@ export default function UserDetail() {
   };
 
   const authenticatorTimestamps: Record<string, string> = {
-    "Password": "Jan 19, 2025 02:45 PM",
+    Password: "Jan 19, 2025 02:45 PM",
     "SMS OTP": "Jan 18, 2025 10:15 AM",
     "Email OTP": "Jan 17, 2025 05:30 PM",
     TOTP: "Jan 16, 2025 03:20 PM",
@@ -234,12 +234,7 @@ export default function UserDetail() {
 
     // For Alice Anderson, return specific authenticators
     if (email === "alice.anderson@example.com") {
-      return [
-        "Password",
-        "Email OTP",
-        "SMS OTP",
-        "Chrome Passkey",
-      ];
+      return ["Password", "Email OTP", "SMS OTP", "Chrome Passkey"];
     }
 
     // For Alison Adams, return all available authenticators
@@ -268,7 +263,9 @@ export default function UserDetail() {
 
     const selected: string[] = ["Password", "Email OTP"];
     const allOptions = [
-      ...allAuthenticators.authenticators.slice(1).filter(auth => auth !== "Email OTP"),
+      ...allAuthenticators.authenticators
+        .slice(1)
+        .filter((auth) => auth !== "Email OTP"),
       ...allAuthenticators.externalProviders,
       ...allAuthenticators.passkeys,
     ];
@@ -291,7 +288,7 @@ export default function UserDetail() {
   };
 
   const iconMap: Record<string, React.ReactNode> = {
-    "Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
+    Password: <Lock className="h-5 w-5 text-bluegrey-600" />,
     "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
     "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
     TOTP: <Clock className="h-5 w-5 text-bluegrey-600" />,
@@ -432,7 +429,11 @@ export default function UserDetail() {
             firstName: foundUser.firstName,
             lastName: foundUser.lastName,
             email: foundUser.username,
-            workEmail: foundUser.firstName.toLowerCase() + "." + foundUser.lastName.toLowerCase() + "@insurcar.com",
+            workEmail:
+              foundUser.firstName.toLowerCase() +
+              "." +
+              foundUser.lastName.toLowerCase() +
+              "@insurcar.com",
             phone: foundUser.phoneNumber,
             workPhone: "+16135551234",
             displayPhone: foundUser.phoneNumber,
@@ -943,7 +944,8 @@ export default function UserDetail() {
                       No authenticator enrolled
                     </h2>
                     <p className="text-[#383A4B] text-xs font-normal leading-4 mt-1">
-                      There is no active authenticator associated with this user's account
+                      There is no active authenticator associated with this
+                      user's account
                     </p>
                   </div>
                 </div>
@@ -1480,7 +1482,9 @@ export default function UserDetail() {
                         </h2>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <Label htmlFor="emailAddress">Work email (Primary)</Label>
+                        <Label htmlFor="emailAddress">
+                          Work email (Primary)
+                        </Label>
                         <input
                           id="emailAddress"
                           type="email"
@@ -1525,13 +1529,16 @@ export default function UserDetail() {
                       <Button
                         variant="outline"
                         onClick={() => {
-                          const currentEmail = newEmail || user?.workEmail || "";
+                          const currentEmail =
+                            newEmail || user?.workEmail || "";
                           if (!currentEmail || currentEmail.trim() === "") {
                             setEmailUpdateError("Email address is required");
                             return;
                           }
                           if (currentEmail === user?.workEmail) {
-                            setEmailUpdateError("Please modify the email address to update");
+                            setEmailUpdateError(
+                              "Please modify the email address to update",
+                            );
                             return;
                           }
                           setEmailUpdateError("");
@@ -1551,7 +1558,8 @@ export default function UserDetail() {
                         Send a one-time password
                       </h2>
                       <p className="text-sm text-bluegrey-700">
-                        Send a one-time password to user's primary email address, {user?.workEmail}
+                        Send a one-time password to user's primary email
+                        address, {user?.workEmail}
                       </p>
                       {emailOtpSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
@@ -1614,7 +1622,9 @@ export default function UserDetail() {
                         </h2>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <Label htmlFor="phoneNumber">Work phone (Primary)</Label>
+                        <Label htmlFor="phoneNumber">
+                          Work phone (Primary)
+                        </Label>
                         <input
                           id="phoneNumber"
                           type="tel"
@@ -1659,13 +1669,16 @@ export default function UserDetail() {
                       <Button
                         variant="outline"
                         onClick={() => {
-                          const currentPhone = newPhoneNumber || user?.workPhone || "";
+                          const currentPhone =
+                            newPhoneNumber || user?.workPhone || "";
                           if (!currentPhone || currentPhone.trim() === "") {
                             setPhoneUpdateError("Phone number is required");
                             return;
                           }
                           if (currentPhone === user?.workPhone) {
-                            setPhoneUpdateError("Please modify the phone number to update");
+                            setPhoneUpdateError(
+                              "Please modify the phone number to update",
+                            );
                             return;
                           }
                           setPhoneUpdateError("");
@@ -1685,7 +1698,8 @@ export default function UserDetail() {
                         Send a one-time password
                       </h2>
                       <p className="text-sm text-bluegrey-700">
-                        Send a one-time password to user's primary phone number, {user?.workPhone}
+                        Send a one-time password to user's primary phone number,{" "}
+                        {user?.workPhone}
                       </p>
                       {smsOtpSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
