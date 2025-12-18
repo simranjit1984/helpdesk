@@ -215,6 +215,16 @@ export default function UserDetail() {
 
   // Generate deterministic authenticators for each user based on email
   const generateUserAuthenticators = (email: string): string[] => {
+    // For Alice Anderson, return specific authenticators
+    if (email === "alice.anderson@example.com") {
+      return [
+        "Username & Password",
+        "Email OTP",
+        "SMS OTP",
+        "Chrome Passkey",
+      ];
+    }
+
     // For Alison Adams, return all available authenticators
     if (email === "alison.adams@example.com") {
       return [
