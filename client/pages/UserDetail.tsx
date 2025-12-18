@@ -1460,11 +1460,11 @@ export default function UserDetail() {
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-1">
                         <h2 className="text-xl font-semibold text-blue-500">
-                          Email address
+                          Update Email address
                         </h2>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <Label htmlFor="emailAddress">Email address</Label>
+                        <Label htmlFor="emailAddress">Work email (Primary)</Label>
                         <input
                           id="emailAddress"
                           type="email"
