@@ -681,20 +681,20 @@ export default function UserDetail() {
                       id="email"
                       type="email"
                       value={formData.email}
-                      readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
+                      onChange={handleFormChange}
+                      disabled={isSaving}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="workEmail">Work email</Label>
+                    <Label htmlFor="workEmail">Work email (Primary)</Label>
                     <input
                       id="workEmail"
                       type="email"
                       value={formData.workEmail}
-                      onChange={handleFormChange}
-                      disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                      readOnly
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
                     />
                   </div>
 
