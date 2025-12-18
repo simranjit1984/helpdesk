@@ -1476,8 +1476,7 @@ export default function UserDetail() {
                           className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
                         />
                         {emailUpdateError && (
-                          <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
-                            <AlertTriangle className="h-3 w-3" />
+                          <p className="text-xs text-red-500 mt-0.5">
                             {emailUpdateError}
                           </p>
                         )}
