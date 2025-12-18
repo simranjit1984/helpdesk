@@ -136,6 +136,7 @@ export default function UserDetail() {
     email: "",
     workEmail: "",
     phone: "",
+    workPhone: "",
     address1: "",
     address2: "",
     city: "",
@@ -406,6 +407,7 @@ export default function UserDetail() {
             email: foundUser.username,
             workEmail: foundUser.firstName.toLowerCase() + "." + foundUser.lastName.toLowerCase() + "@insurcar.com",
             phone: foundUser.phoneNumber,
+            workPhone: "+1 (613) 555-1234",
             displayPhone: foundUser.phoneNumber,
             address1: "1223, Fancy Street",
             address2: "",
@@ -439,6 +441,7 @@ export default function UserDetail() {
         email: user.email,
         workEmail: user.workEmail,
         phone: user.phone,
+        workPhone: user.workPhone,
         address1: user.address1,
         address2: user.address2,
         city: user.city,
@@ -699,7 +702,7 @@ export default function UserDetail() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="phone">Phone number</Label>
+                    <Label htmlFor="phone">Personal phone</Label>
                     <input
                       id="phone"
                       type="text"
@@ -707,6 +710,17 @@ export default function UserDetail() {
                       onChange={handleFormChange}
                       disabled={isSaving}
                       className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="workPhone">Work phone (Primary)</Label>
+                    <input
+                      id="workPhone"
+                      type="text"
+                      value={formData.workPhone}
+                      readOnly
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
                     />
                   </div>
 
