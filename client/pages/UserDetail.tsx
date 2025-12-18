@@ -172,6 +172,7 @@ export default function UserDetail() {
   const [isVerifyingEmailOtp, setIsVerifyingEmailOtp] = useState(false);
   const [emailOtpError, setEmailOtpError] = useState("");
   const [emailUpdateSuccess, setEmailUpdateSuccess] = useState(false);
+  const [emailUpdateError, setEmailUpdateError] = useState("");
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
@@ -1470,9 +1471,16 @@ export default function UserDetail() {
                           onChange={(e) => {
                             setNewEmail(e.target.value);
                             setEmailUpdateSuccess(false);
+                            setEmailUpdateError("");
                           }}
                           className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
                         />
+                        {emailUpdateError && (
+                          <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
+                            <AlertTriangle className="h-3 w-3" />
+                            {emailUpdateError}
+                          </p>
+                        )}
                       </div>
                       {emailUpdateSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
@@ -1501,6 +1509,16 @@ export default function UserDetail() {
                       <Button
                         variant="outline"
                         onClick={() => {
+                          const currentEmail = newEmail || user?.workEmail || "";
+                          if (!currentEmail || currentEmail.trim() === "") {
+                            setEmailUpdateError("Email address is required");
+                            return;
+                          }
+                          if (currentEmail === user?.workEmail) {
+                            setEmailUpdateError("Please modify the email address to update");
+                            return;
+                          }
+                          setEmailUpdateError("");
                           setEmailOtpError("");
                           setEmailOtp("");
                           setIsEmailOtpDialogOpen(true);
