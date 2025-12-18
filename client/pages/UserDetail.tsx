@@ -1453,6 +1453,16 @@ export default function UserDetail() {
                           Send a one-time password to the user's email address
                         </p>
                       </div>
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="emailAddress">Email address</Label>
+                        <input
+                          id="emailAddress"
+                          type="email"
+                          value={user?.workEmail || ""}
+                          readOnly
+                          className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
+                        />
+                      </div>
                       <Button
                         variant="outline"
                         onClick={() => {
