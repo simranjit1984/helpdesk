@@ -1573,6 +1573,9 @@ export default function UserDetail() {
                 {openSideSheet === "SMS OTP" && (
                   <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-3">
+                      <h2 className="text-xl font-semibold text-blue-500">
+                        Send a one-time password
+                      </h2>
                       <p className="text-sm text-bluegrey-700">
                         Send a one-time password to user's primary phone number, {user?.workPhone}
                       </p>
