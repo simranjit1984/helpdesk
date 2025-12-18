@@ -1445,14 +1445,9 @@ export default function UserDetail() {
                 {openSideSheet === "Email OTP" && (
                   <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-1">
-                        <h2 className="text-xl font-semibold text-blue-500">
-                          Email OTP
-                        </h2>
-                        <p className="text-sm text-bluegrey-700">
-                          Send a one-time password to user's primary email address, {user?.workEmail}
-                        </p>
-                      </div>
+                      <p className="text-sm text-bluegrey-700">
+                        Send a one-time password to user's primary email address, {user?.workEmail}
+                      </p>
                       <Button
                         variant="outline"
                         onClick={() => {
