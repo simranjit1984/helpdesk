@@ -1556,55 +1556,6 @@ export default function UserDetail() {
                         )}
                       </Button>
                     </div>
-
-                    <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
-                      <h2 className="text-xl font-semibold text-red-600">
-                        Danger zone
-                      </h2>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-1">
-                          <h3 className="text-base font-semibold text-bluegrey-900">
-                            Remove phone number
-                          </h3>
-                          <p className="text-xs text-bluegrey-700">
-                            Remove the phone number for this user account.
-                          </p>
-                        </div>
-                        {removePhoneSuccess && (
-                          <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                            <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                              <div className="flex items-start gap-2 flex-1 py-2">
-                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm text-bluegrey-900 leading-5">
-                                    Phone number removed successfully
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex justify-end items-center">
-                                <button
-                                  onClick={() => setRemovePhoneSuccess(false)}
-                                  className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                                  aria-label="Close alert"
-                                >
-                                  <X className="w-6 h-6 text-bluegrey-700" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setRemovePhoneSuccess(true);
-                          }}
-                          className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
-                        >
-                          Remove phone number
-                        </Button>
-                      </div>
-                    </div>
                   </div>
                 )}
 
