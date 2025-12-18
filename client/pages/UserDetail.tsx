@@ -1458,7 +1458,7 @@ export default function UserDetail() {
                               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-bluegrey-900 leading-5">
-                                  OTP sent successfully to user's email
+                                  OTP sent successfully to {user?.workEmail}
                                 </p>
                               </div>
                             </div>
