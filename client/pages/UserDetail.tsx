@@ -939,10 +939,10 @@ export default function UserDetail() {
               ) : userAuthenticators.length === 0 ? (
                 <div className="flex items-center justify-center min-h-96">
                   <div className="text-center">
-                    <p className="text-bluegrey-600 text-lg font-medium">
+                    <p className="text-[#131D4E] text-base font-semibold">
                       No authenticator enrolled
                     </p>
-                    <p className="text-bluegrey-500 text-sm mt-2">
+                    <p className="text-bluegrey-600 text-sm mt-1">
                       There is no active authenticator associated with this user's account
                     </p>
                   </div>
