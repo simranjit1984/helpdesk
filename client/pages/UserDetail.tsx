@@ -1513,6 +1513,9 @@ export default function UserDetail() {
 
                     {/* Send OTP Section */}
                     <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
+                      <h2 className="text-xl font-semibold text-blue-500">
+                        Send a one-time password
+                      </h2>
                       <p className="text-sm text-bluegrey-700">
                         Send a one-time password to user's primary email address, {user?.workEmail}
                       </p>
