@@ -292,8 +292,8 @@ export default function UserDetail() {
     "Microsoft AD": <Globe className="h-5 w-5 text-bluegrey-600" />,
     "iCloud Keychain": <Key className="h-5 w-5 text-bluegrey-600" />,
     "Safenet FIDO Key": <Key className="h-5 w-5 text-bluegrey-600" />,
-    "Chrome Passkey": <Chrome className="h-5 w-5 text-bluegrey-600" />,
-    Yubikey: <Smartphone className="h-5 w-5 text-bluegrey-600" />,
+    "Chrome Passkey": <Key className="h-5 w-5 text-bluegrey-600" />,
+    Yubikey: <Key className="h-5 w-5 text-bluegrey-600" />,
   };
 
   const getAuthenticatorIcon = (name: string | null) => {
