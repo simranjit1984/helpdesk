@@ -1458,7 +1458,6 @@ export default function UserDetail() {
                         }}
                         className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
                       >
-                        <Mail className="h-4 w-4" />
                         Send OTP
                       </Button>
                     </div>
