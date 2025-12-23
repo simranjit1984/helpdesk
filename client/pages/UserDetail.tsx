@@ -2048,8 +2048,7 @@ export default function UserDetail() {
                     setPhoneOtpError("");
                   }}
                   disabled={isVerifyingPhoneOtp}
-                  placeholder="Enter 6-digit OTP"
-                  maxLength={6}
+                  placeholder="Enter OTP"
                   className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                 />
                 {phoneOtpError && (
@@ -2083,10 +2082,6 @@ export default function UserDetail() {
                 onClick={() => {
                   if (!phoneOtp || phoneOtp.trim() === "") {
                     setPhoneOtpError("OTP is required");
-                    return;
-                  }
-                  if (phoneOtp.length !== 6) {
-                    setPhoneOtpError("Please enter a valid 6-digit OTP");
                     return;
                   }
                   setIsVerifyingPhoneOtp(true);
