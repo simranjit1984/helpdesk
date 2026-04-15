@@ -52,10 +52,6 @@ export default function Index() {
               <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 <FilterBar
                   columns={[
-                    { value: "email", label: "Email" },
-                    { value: "firstName", label: "First name" },
-                    { value: "lastName", label: "Last name" },
-                    { value: "phoneNumber", label: "Phone number" },
                     { value: "organizations", label: "Organization" },
                     { value: "status", label: "Status" },
                   ]}
