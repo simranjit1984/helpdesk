@@ -423,6 +423,7 @@ function OrganizationActionsMenu({ organization }: { organization: Organization 
 
 interface OrganizationsTableProps {
   searchQuery?: string;
+  searchField?: string;
   filters?: Array<{
     id: string;
     column: string;
@@ -433,6 +434,7 @@ interface OrganizationsTableProps {
 
 export default function OrganizationsTable({
   searchQuery = "",
+  searchField = "all",
   filters = [],
 }: OrganizationsTableProps) {
   const navigate = useNavigate();
@@ -463,11 +465,19 @@ export default function OrganizationsTable({
   const matchesFilter = (org: Organization): boolean => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      const matchesSearch =
-        org.name?.toLowerCase().includes(query) ||
-        org.referenceId?.toLowerCase().includes(query) ||
-        org.status?.toLowerCase().includes(query);
-      
+      let matchesSearch = false;
+      if (searchField === "name") {
+        matchesSearch = org.name?.toLowerCase().includes(query) ?? false;
+      } else if (searchField === "referenceId") {
+        matchesSearch = org.referenceId?.toLowerCase().includes(query) ?? false;
+      } else {
+        // "all" — search across all text fields
+        matchesSearch =
+          org.name?.toLowerCase().includes(query) ||
+          org.referenceId?.toLowerCase().includes(query) ||
+          org.status?.toLowerCase().includes(query);
+      }
+
       if (!matchesSearch) return false;
     }
 

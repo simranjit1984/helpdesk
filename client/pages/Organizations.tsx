@@ -15,7 +15,14 @@ const STATUS_OPTIONS = [
 export default function Organizations() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchField, setSearchField] = useState("all");
   const [filters, setFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
+
+  const SEARCH_FIELDS = [
+    { value: "all", label: "All fields" },
+    { value: "name", label: "Organization name" },
+    { value: "referenceId", label: "Reference ID" },
+  ];
 
   const handleAddFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
     setFilters([...filters, filter]);
@@ -40,8 +47,6 @@ export default function Organizations() {
               <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 <FilterBar
                   columns={[
-                    { value: "name", label: "Organization name" },
-                    { value: "referenceId", label: "Reference ID" },
                     { value: "status", label: "Status" },
                   ]}
                   columnOptions={{
@@ -54,6 +59,9 @@ export default function Organizations() {
                   searchValue={searchQuery}
                   onSearchChange={setSearchQuery}
                   searchPlaceholder="Search organizations"
+                  searchFields={SEARCH_FIELDS}
+                  searchField={searchField}
+                  onSearchFieldChange={setSearchField}
                 />
               </div>
 
@@ -66,7 +74,7 @@ export default function Organizations() {
               </button>
             </div>
 
-            <OrganizationsTable searchQuery={searchQuery} filters={filters} />
+            <OrganizationsTable searchQuery={searchQuery} searchField={searchField} filters={filters} />
           </div>
         </div>
       </Layout>
