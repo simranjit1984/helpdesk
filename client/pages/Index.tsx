@@ -16,10 +16,18 @@ const STATUS_OPTIONS = [
   { value: "invited", label: "Invited" },
 ];
 
+const SEARCH_FIELDS = [
+  { value: "all", label: "All fields" },
+  { value: "email", label: "Email" },
+  { value: "firstName", label: "First name" },
+  { value: "lastName", label: "Last name" },
+  { value: "phoneNumber", label: "Phone number" },
+];
+
 export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
-
+  const [searchField, setSearchField] = useState("all");
 
   const handleAddFilter = (filter: { id: string; column: string; operator: string; value: string }) => {
     setFilters([...filters, filter]);
@@ -44,7 +52,7 @@ export default function Index() {
               <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 <FilterBar
                   columns={[
-                    { value: "username", label: "Username" },
+                    { value: "email", label: "Email" },
                     { value: "firstName", label: "First name" },
                     { value: "lastName", label: "Last name" },
                     { value: "phoneNumber", label: "Phone number" },
@@ -61,6 +69,9 @@ export default function Index() {
                   searchValue={searchQuery}
                   onSearchChange={setSearchQuery}
                   searchPlaceholder="Search users"
+                  searchFields={SEARCH_FIELDS}
+                  searchField={searchField}
+                  onSearchFieldChange={setSearchField}
                 />
               </div>
 
@@ -70,7 +81,7 @@ export default function Index() {
               </button>
             </div>
 
-            <UsersTable searchQuery={searchQuery} filters={filters} />
+            <UsersTable searchQuery={searchQuery} filters={filters} searchField={searchField} />
           </div>
         </div>
       </Layout>

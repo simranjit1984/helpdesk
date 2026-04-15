@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
   value?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
   width?: string;
+  className?: string;
 }
 
 export default function SearchBar({
@@ -13,6 +15,7 @@ export default function SearchBar({
   onChange,
   placeholder = "Search",
   width = "w-full sm:w-[280px]",
+  className,
 }: SearchBarProps) {
   const [internalValue, setInternalValue] = useState("");
 
@@ -31,7 +34,12 @@ export default function SearchBar({
   return (
     <div className={width}>
       <div className="relative" data-search-container>
-        <div className="flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white transition-all">
+        <div
+          className={cn(
+            "flex items-center gap-2 px-2 py-3 border border-bluegrey-500 rounded-sm bg-white transition-all",
+            className
+          )}
+        >
           <Search className="w-5 h-5 text-bluegrey-500 flex-shrink-0" />
           <input
             type="text"

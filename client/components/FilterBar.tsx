@@ -44,6 +44,9 @@ interface FilterBarProps {
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
   columnOptions?: ColumnOptions;
+  searchFields?: Array<{ value: string; label: string }>;
+  searchField?: string;
+  onSearchFieldChange?: (field: string) => void;
 }
 
 const DEFAULT_OPERATORS: FilterOperator[] = [
@@ -64,6 +67,9 @@ export default function FilterBar({
   onSearchChange,
   searchPlaceholder = "Search",
   columnOptions = {},
+  searchFields,
+  searchField = "all",
+  onSearchFieldChange,
 }: FilterBarProps) {
   const isDateField = (column: string) => {
     return column === "date" || column === "dateCreated";
@@ -219,12 +225,29 @@ export default function FilterBar({
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {onSearchChange && (
-        <SearchBar
-          value={searchValue}
-          onChange={onSearchChange}
-          placeholder={searchPlaceholder}
-          width="w-60"
-        />
+        <div className="flex items-center gap-0">
+          {searchFields && searchFields.length > 0 && onSearchFieldChange && (
+            <Select value={searchField} onValueChange={onSearchFieldChange}>
+              <SelectTrigger className="h-10 w-36 rounded-r-none border-r-0 border-bluegrey-300 rounded-sm text-sm font-normal text-bluegrey-900 bg-white focus:ring-0 focus:ring-offset-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {searchFields.map((field) => (
+                  <SelectItem key={field.value} value={field.value}>
+                    {field.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <SearchBar
+            value={searchValue}
+            onChange={onSearchChange}
+            placeholder={searchPlaceholder}
+            width="w-60"
+            className={searchFields && searchFields.length > 0 && onSearchFieldChange ? "rounded-l-none" : ""}
+          />
+        </div>
       )}
 
       {/* Applied Filter Chips */}

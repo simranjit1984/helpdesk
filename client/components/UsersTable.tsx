@@ -1,5 +1,5 @@
-import { MoreVertical, ChevronUp, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { MoreVertical, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 import ConfirmationModal from "./ConfirmationModal";
@@ -30,6 +30,8 @@ import {
   TableActionCell,
 } from "./ui/table";
 import { useToast } from "@/hooks/use-toast";
+
+const PAGE_SIZE = 20;
 
 type StatusType =
   | "active"
@@ -541,12 +543,7 @@ export function getUserByUsername(username: string): User | undefined {
     | undefined;
 }
 
-type SortColumn =
-  | "username"
-  | "firstName"
-  | "lastName"
-  | "phoneNumber"
-  | "status";
+type SortColumn = "email" | "firstName" | "lastName" | "phoneNumber" | "status";
 type SortDirection = "asc" | "desc";
 
 function UserActionsMenu({ user }: { user: User }) {
@@ -561,20 +558,17 @@ function UserActionsMenu({ user }: { user: User }) {
   } | null>(null);
 
   const handleAction = (item: { label: string; action: string }) => {
-    // Navigate to user detail page
     if (item.action === "View details" || item.action === "View invitation") {
       navigate(`/users/${encodeURIComponent(user.username)}`);
       return;
     }
 
-    // Special case: Reset password when authentication is blocked
     if (item.action === "Reset password" && user.status === "blocked") {
       setIsBlockedModal(true);
       setIsOpen(false);
       return;
     }
 
-    // All other actions need confirmation
     setPendingAction(item);
     setIsModalOpen(true);
     setIsOpen(false);
@@ -707,6 +701,7 @@ function UserActionsMenu({ user }: { user: User }) {
 
 interface UsersTableProps {
   searchQuery?: string;
+  searchField?: string;
   filters?: Array<{
     id: string;
     column: string;
@@ -717,15 +712,22 @@ interface UsersTableProps {
 
 export default function UsersTable({
   searchQuery = "",
+  searchField = "all",
   filters = [],
 }: UsersTableProps) {
   const navigate = useNavigate();
-  const [sortColumn, setSortColumn] = useState<SortColumn>("username");
+  const [sortColumn, setSortColumn] = useState<SortColumn>("email");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedUserForOrganization, setSelectedUserForOrganization] =
     useState<User | null>(null);
   const [selectedOrganization, setSelectedOrganization] = useState<string>("");
   const [organizationError, setOrganizationError] = useState<string>("");
+
+  // Reset to page 1 whenever search/filter/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, searchField, filters, sortColumn, sortDirection]);
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -739,38 +741,57 @@ export default function UsersTable({
   const getFilteredUsers = () => {
     let filtered = baseUsers;
 
-    // Apply search query
+    // Apply search query filtered by searchField
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (user) =>
-          user.username?.toLowerCase().includes(query) ||
-          user.firstName?.toLowerCase().includes(query) ||
-          user.lastName?.toLowerCase().includes(query) ||
-          user.phoneNumber?.toLowerCase().includes(query) ||
-          user.status?.toLowerCase().includes(query) ||
-          user.organizations?.some((org) => org.toLowerCase().includes(query)),
-      );
+      filtered = filtered.filter((user) => {
+        if (searchField === "all" || searchField === "") {
+          return (
+            user.username?.toLowerCase().includes(query) ||
+            user.firstName?.toLowerCase().includes(query) ||
+            user.lastName?.toLowerCase().includes(query) ||
+            user.phoneNumber?.toLowerCase().includes(query) ||
+            user.status?.toLowerCase().includes(query) ||
+            user.organizations?.some((org) => org.toLowerCase().includes(query))
+          );
+        }
+        if (searchField === "email") {
+          return user.username?.toLowerCase().includes(query);
+        }
+        if (searchField === "firstName") {
+          return user.firstName?.toLowerCase().includes(query);
+        }
+        if (searchField === "lastName") {
+          return user.lastName?.toLowerCase().includes(query);
+        }
+        if (searchField === "phoneNumber") {
+          return user.phoneNumber?.toLowerCase().includes(query);
+        }
+        return true;
+      });
     }
 
     // Apply filters
     filters.forEach((filter) => {
       filtered = filtered.filter((user) => {
-        // Special handling for organizations array
-        if (filter.column === "organizations") {
+        // Map "email" filter column to "username" field
+        const columnKey = filter.column === "email" ? "username" : filter.column;
+
+        if (columnKey === "organizations") {
           const searchTerm = filter.value.toLowerCase();
-          return user.organizations?.some((org) =>
-            org.toLowerCase().includes(searchTerm)
-          ) || false;
+          return (
+            user.organizations?.some((org) =>
+              org.toLowerCase().includes(searchTerm)
+            ) || false
+          );
         }
 
-        const fieldValue = (user[filter.column as keyof typeof user] || "")
+        const fieldValue = (user[columnKey as keyof typeof user] || "")
           .toString()
           .toLowerCase();
 
         switch (filter.operator) {
           case "between": {
-            // Handle date range filter
             const [startStr, endStr] = filter.value.split("|");
             const startDate = new Date(startStr).getTime();
             const endDate = new Date(endStr).getTime();
@@ -778,12 +799,10 @@ export default function UsersTable({
             return fieldDate >= startDate && fieldDate <= endDate;
           }
           case "is": {
-            // Handle multi-select "is" operator
             const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
             return selectedValues.includes(fieldValue);
           }
           case "isNot": {
-            // Handle multi-select "is not" operator
             const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
             return !selectedValues.includes(fieldValue);
           }
@@ -806,9 +825,11 @@ export default function UsersTable({
 
   const getSortedUsers = () => {
     const filteredUsers = getFilteredUsers();
-    const sorted = [...filteredUsers].sort((a, b) => {
-      let aVal: any = a[sortColumn];
-      let bVal: any = b[sortColumn];
+    return [...filteredUsers].sort((a, b) => {
+      // Map "email" sort column to "username" field
+      const fieldKey = sortColumn === "email" ? "username" : sortColumn;
+      let aVal: any = a[fieldKey as keyof typeof a];
+      let bVal: any = b[fieldKey as keyof typeof b];
 
       if (typeof aVal === "string") {
         aVal = aVal.toLowerCase();
@@ -819,7 +840,6 @@ export default function UsersTable({
       if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
-    return sorted;
   };
 
   const SortHeader = ({
@@ -848,6 +868,14 @@ export default function UsersTable({
     );
   };
 
+  const sortedUsers = getSortedUsers();
+  const totalCount = sortedUsers.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const pagedUsers = sortedUsers.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
   return (
     <>
       <Table variant="flat">
@@ -856,7 +884,7 @@ export default function UsersTable({
             <TableHeader>
               <TableHeadRow>
                 <TableHeadCell sticky className="w-64">
-                  <SortHeader column="username" label="Username" />
+                  <SortHeader column="email" label="Email" />
                 </TableHeadCell>
                 <TableHeadCell>
                   <SortHeader column="firstName" label="First name" />
@@ -865,7 +893,7 @@ export default function UsersTable({
                   <SortHeader column="lastName" label="Last name" />
                 </TableHeadCell>
                 <TableHeadCell>
-                  <SortHeader column="phoneNumber" label="Phone number" />
+                  <span className="text-sm font-bold text-bluegrey-900">Phone number</span>
                 </TableHeadCell>
                 <TableHeadCell>
                   <span className="text-sm font-bold text-bluegrey-900">Organization</span>
@@ -877,7 +905,7 @@ export default function UsersTable({
               </TableHeadRow>
             </TableHeader>
             <TableBody>
-              {getSortedUsers().map((user, index) => (
+              {pagedUsers.map((user, index) => (
                 <TableRow key={index}>
                   <TableCell sticky className="w-56">
                     <button
@@ -920,8 +948,8 @@ export default function UsersTable({
                   ) : (
                     <td className="px-4 py-1">
                       <div className="flex flex-col gap-2">
-                        {user.organizations.map((org, index) => (
-                          <span key={index} className="text-sm text-bluegrey-900">
+                        {user.organizations.map((org, orgIndex) => (
+                          <span key={orgIndex} className="text-sm text-bluegrey-900">
                             {org}
                           </span>
                         ))}
@@ -940,6 +968,35 @@ export default function UsersTable({
           </TableContent>
         </TableScroll>
       </Table>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between px-2 py-3">
+        <span className="text-sm text-bluegrey-500">
+          {totalCount} {totalCount === 1 ? "user" : "users"}
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="h-8 w-8 flex items-center justify-center rounded border border-bluegrey-200 hover:bg-bluegrey-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="w-4 h-4 text-bluegrey-900" />
+          </button>
+          <span className="text-sm text-bluegrey-900 min-w-[80px] text-center">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="h-8 w-8 flex items-center justify-center rounded border border-bluegrey-200 hover:bg-bluegrey-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            aria-label="Next page"
+          >
+            <ChevronRight className="w-4 h-4 text-bluegrey-900" />
+          </button>
+        </div>
+      </div>
+
       <ConfirmationModal
         open={selectedUserForOrganization !== null}
         onOpenChange={(open) => {
