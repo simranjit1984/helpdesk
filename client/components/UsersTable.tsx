@@ -708,12 +708,14 @@ interface UsersTableProps {
     operator: string;
     value: string;
   }>;
+  allowedStatuses?: StatusType[];
 }
 
 export default function UsersTable({
   searchQuery = "",
   searchField = "all",
   filters = [],
+  allowedStatuses,
 }: UsersTableProps) {
   const navigate = useNavigate();
   const [sortColumn, setSortColumn] = useState<SortColumn>("email");
@@ -740,6 +742,11 @@ export default function UsersTable({
 
   const getFilteredUsers = () => {
     let filtered = baseUsers;
+
+    // Scope to allowed statuses first
+    if (allowedStatuses && allowedStatuses.length > 0) {
+      filtered = filtered.filter((u) => allowedStatuses.includes(u.status as StatusType));
+    }
 
     // Apply search query filtered by searchField
     if (searchQuery.trim()) {

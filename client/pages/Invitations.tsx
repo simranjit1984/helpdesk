@@ -7,10 +7,9 @@ import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Send } from "lucide-react";
 
 const STATUS_OPTIONS = [
-  { value: "active", label: "Active" },
-  { value: "blocked", label: "Authentication blocked" },
-  { value: "grace", label: "Grace" },
-  { value: "inactive", label: "Inactive" },
+  { value: "invited", label: "Invited" },
+  { value: "invitation-expired", label: "Invitation expired" },
+  { value: "invitation-withdrawn", label: "Invitation withdrawn" },
 ];
 
 const SEARCH_FIELDS = [
@@ -21,7 +20,7 @@ const SEARCH_FIELDS = [
   { value: "phoneNumber", label: "Phone number" },
 ];
 
-export default function Index() {
+export default function Invitations() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Array<{ id: string; column: string; operator: string; value: string }>>([]);
   const [searchField, setSearchField] = useState("all");
@@ -41,7 +40,7 @@ export default function Index() {
   return (
     <>
       <Layout>
-        <PageHeader title="Users" />
+        <PageHeader title="Invitations" />
 
         <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="space-y-6 lg:space-y-8">
@@ -61,7 +60,7 @@ export default function Index() {
                   onClearFilters={handleClearFilters}
                   searchValue={searchQuery}
                   onSearchChange={setSearchQuery}
-                  searchPlaceholder="Search users"
+                  searchPlaceholder="Search invitations"
                   searchFields={SEARCH_FIELDS}
                   searchField={searchField}
                   onSearchFieldChange={setSearchField}
@@ -78,7 +77,7 @@ export default function Index() {
               searchQuery={searchQuery}
               filters={filters}
               searchField={searchField}
-              allowedStatuses={["active", "blocked", "grace", "inactive"]}
+              allowedStatuses={["invited", "invitation-expired", "invitation-withdrawn"]}
             />
           </div>
         </div>

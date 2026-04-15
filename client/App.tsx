@@ -20,6 +20,7 @@ import Administrators from "./pages/Administrators";
 import AllAdministrators from "./pages/AllAdministrators";
 import AdministratorsRoles from "./pages/AdministratorsRoles";
 import Scopes from "./pages/Scopes";
+import Invitations from "./pages/Invitations";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ export const App = () => (
           <Route path="/administrators/all" element={<AllAdministrators />} />
           <Route path="/administrators/roles" element={<AdministratorsRoles />} />
           <Route path="/administrators/scopes" element={<Scopes />} />
+          <Route path="/invitations" element={<Invitations />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
           <Route path="/data-grid-demo" element={<DataGridDemo />} />
