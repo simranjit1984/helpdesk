@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Layout from "@/components/Layout";
 import OrganizationDetailHeader from "@/components/OrganizationDetailHeader";
@@ -12,11 +12,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { baseOrganizations } from "@/components/OrganizationsTable";
+import OrgAccessRolesTab from "@/components/organizations/OrgAccessRolesTab";
 
 export default function OrganizationDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const defaultTab = searchParams.get("tab") ?? "basic";
   const [isSaving, setIsSaving] = useState(false);
 
   const findOrganization = (orgId: string) => {
@@ -163,7 +166,7 @@ export default function OrganizationDetail() {
 
         <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="bg-white">
-            <Tabs defaultValue="basic" className="w-full">
+            <Tabs defaultValue={defaultTab} className="w-full">
               <div className="border-b border-bluegrey-100">
                 <TabsList className="h-auto bg-transparent p-0">
                   <TabsTrigger
@@ -276,9 +279,7 @@ export default function OrganizationDetail() {
               </TabsContent>
 
               <TabsContent value="access-roles" className="pt-6">
-                <div className="text-bluegrey-500">
-                  Access roles configuration for this organization.
-                </div>
+                <OrgAccessRolesTab orgId={id ?? ""} orgName={organization.name} />
               </TabsContent>
 
               <TabsContent value="users" className="pt-6">

@@ -21,6 +21,7 @@ import AllAdministrators from "./pages/AllAdministrators";
 import AdministratorsRoles from "./pages/AdministratorsRoles";
 import Scopes from "./pages/Scopes";
 import AddAdminRole from "./pages/AddAdminRole";
+import AddAccessRolesToOrg from "./pages/AddAccessRolesToOrg";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ export const App = () => (
           <Route path="/organizations" element={<Organizations />} />
           <Route path="/organizations/new" element={<AddOrganization />} />
           <Route path="/organizations/:id" element={<OrganizationDetail />} />
+          <Route path="/organizations/:id/access-roles/add" element={<AddAccessRolesToOrg />} />
           <Route path="/applications" element={<Applications />} />
           <Route path="/access-roles" element={<AccessRoles />} />
           <Route path="/event-log" element={<EventLog />} />
