@@ -31,14 +31,6 @@ const SEARCH_FIELDS = [
 
 type Filter = { id: string; column: string; operator: string; value: string };
 
-const tabTriggerClass =
-  "relative h-auto pb-3 pt-0 px-0 rounded-none bg-transparent text-sm font-medium " +
-  "text-bluegrey-500 shadow-none border-0 " +
-  "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-transparent " +
-  "data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none " +
-  "data-[state=active]:after:bg-blue-600 " +
-  "hover:text-bluegrey-900 transition-colors";
-
 export default function Index() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "users";
@@ -60,23 +52,40 @@ export default function Index() {
   return (
     <>
       <Layout>
+        {/* Grey header — title only */}
+        <PageHeader title="Users" />
+
+        {/* White area — tab bar + content */}
         <Tabs value={activeTab} onValueChange={handleTabChange}>
-          {/* Grey header area: title + tab bar — matches design */}
-          <div className="bg-bluegrey-25 sticky top-16 z-30">
-            <PageHeader title="Users" />
-            <div className="border-b border-bluegrey-200 px-4 sm:px-6 lg:px-8">
-              <TabsList className="h-auto bg-transparent p-0 gap-6">
-                <TabsTrigger value="users" className={tabTriggerClass}>
-                  Users
-                </TabsTrigger>
-                <TabsTrigger value="invitations" className={tabTriggerClass}>
-                  Invitations
-                </TabsTrigger>
-              </TabsList>
-            </div>
+          {/* Tab bar: white background, full-width bottom border */}
+          <div className="bg-white border-b border-bluegrey-200 px-4 sm:px-6 lg:px-8">
+            <TabsList className="h-auto bg-transparent p-0 gap-6 -mb-px">
+              <TabsTrigger
+                value="users"
+                className="h-auto py-3 px-0 rounded-none bg-transparent text-sm font-medium
+                           border-b-2 border-transparent shadow-none
+                           text-bluegrey-500
+                           data-[state=active]:border-blue-600 data-[state=active]:text-blue-600
+                           data-[state=active]:bg-transparent data-[state=active]:shadow-none
+                           hover:text-bluegrey-900 transition-colors"
+              >
+                Users
+              </TabsTrigger>
+              <TabsTrigger
+                value="invitations"
+                className="h-auto py-3 px-0 rounded-none bg-transparent text-sm font-medium
+                           border-b-2 border-transparent shadow-none
+                           text-bluegrey-500
+                           data-[state=active]:border-blue-600 data-[state=active]:text-blue-600
+                           data-[state=active]:bg-transparent data-[state=active]:shadow-none
+                           hover:text-bluegrey-900 transition-colors"
+              >
+                Invitations
+              </TabsTrigger>
+            </TabsList>
           </div>
 
-          {/* White content area */}
+          {/* Tab content — white background */}
           <TabsContent value="users" className="mt-0 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
             <div className="space-y-6 lg:space-y-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
