@@ -19,13 +19,13 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
   const statusConfig = {
     active: {
       bg: "bg-green-100",
-      text: "text-green-900",
+      text: "text-green-700",      // UCL --color-success → green500/700 range
       icon: <CheckCircle className="w-5 h-5" />,
       label: "Active",
     },
     invited: {
       bg: "bg-orange-100",
-      text: "text-orange-900",
+      text: "text-orange-700",    // UCL --color-warning → orange500/700
       icon: (
         <svg
           className="w-5 h-5"
@@ -55,43 +55,43 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
     },
     grace: {
       bg: "bg-orange-100",
-      text: "text-orange-900",
+      text: "text-orange-700",    // UCL --color-warning
       icon: <Timer className="w-5 h-5" />,
       label: "Grace",
     },
     inactive: {
-      bg: "bg-orange-100",
-      text: "text-orange-900",
+      bg: "bg-bluegrey-100",
+      text: "text-bluegrey-700",  // UCL --greyed-out / disabled
       icon: <Ban className="w-5 h-5" />,
       label: "Inactive",
     },
     suspended: {
       bg: "bg-bluegrey-100",
-      text: "text-bluegrey-900",
+      text: "text-bluegrey-700",
       icon: <Ban className="w-5 h-5" />,
       label: "Suspended",
     },
     pending: {
       bg: "bg-orange-100",
-      text: "text-orange-900",
+      text: "text-orange-700",    // UCL --color-warning
       icon: <Clock className="w-5 h-5" />,
       label: "Pending",
     },
     "invitation-withdrawn": {
       bg: "bg-bluegrey-100",
-      text: "text-bluegrey-900",
+      text: "text-bluegrey-700",
       icon: <Ban className="w-5 h-5" />,
       label: "Invitation withdrawn",
     },
     "invitation-expired": {
       bg: "bg-bluegrey-100",
-      text: "text-bluegrey-900",
+      text: "text-bluegrey-700",
       icon: <Ban className="w-5 h-5" />,
       label: "Invitation expired",
     },
     blocked: {
-      bg: "bg-bluegrey-100",
-      text: "text-bluegrey-900",
+      bg: "bg-red-100",
+      text: "text-red-700",       // UCL --color-danger → red
       icon: <Ban className="w-5 h-5" />,
       label: "Authentication blocked",
     },

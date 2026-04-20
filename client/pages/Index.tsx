@@ -6,6 +6,7 @@ import FilterBar from "@/components/FilterBar";
 import UsersTable from "@/components/UsersTable";
 import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 
 const USERS_STATUS_OPTIONS = [
@@ -108,10 +109,10 @@ export default function Index() {
                     onSearchFieldChange={setUsersSearchField}
                   />
                 </div>
-                <button className="flex items-center gap-2 h-10 px-3 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors whitespace-nowrap">
-                  <Send className="w-5 h-5" />
-                  <span className="text-sm font-medium">Invite user</span>
-                </button>
+                <Button className="gap-2">
+                  <Send className="w-4 h-4" />
+                  Invite user
+                </Button>
               </div>
 
               <UsersTable
@@ -145,10 +146,10 @@ export default function Index() {
                     onSearchFieldChange={setInvSearchField}
                   />
                 </div>
-                <button className="flex items-center gap-2 h-10 px-3 bg-blue-500 hover:bg-blue-600 text-bluegrey-25 rounded-sm transition-colors whitespace-nowrap">
-                  <Send className="w-5 h-5" />
-                  <span className="text-sm font-medium">Invite user</span>
-                </button>
+                <Button className="gap-2">
+                  <Send className="w-4 h-4" />
+                  Invite user
+                </Button>
               </div>
 
               <UsersTable

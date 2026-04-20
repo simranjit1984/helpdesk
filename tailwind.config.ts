@@ -57,79 +57,102 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+
+        // UCL v11 — Blue-grey palette (--color-blue-grey*)
         bluegrey: {
-          25: "#F7F7F9",
-          50: "#EEEFF3",
+          25:  "#F7F7F9",
+          50:  "#EEEFF3",
           100: "#DEDEE6",
+          200: "#BCBECE",
+          300: "#9A9DB5",
+          400: "#797D9C",
           500: "#5D607E",
-          600: "#4A4D65",
           700: "#383A4B",
-          750: "#334",
+          800: "#252733",
           900: "#131319",
         },
+
+        // UCL v11 — Primary palette (--color-primary*)
+        // Mapped to "blue" so existing `blue-500` usage keeps working
         blue: {
-          50: "#E6E7F4",
-          500: "#041295",
+          50:  "#E6E7F4",   // primary50
+          100: "#CDD0EA",   // primary100
+          300: "#6871BF",   // primary300  (focus colour)
+          500: "#041295",   // primary500  (brand primary)
+          600: "#030F77",   // primary600  (hover)
+          700: "#020B59",   // primary700  (pressed)
+          900: "#01041E",   // primary900
         },
+
+        // UCL v11 — Green palette (--color-green*)
         green: {
-          50: "#E8F3ED",
+          50:  "#E8F3ED",
           100: "#D1E6DA",
+          200: "#A2CDB4",
           500: "#178244",
+          600: "#126836",
+          700: "#0E4E29",
           900: "#051A0E",
         },
+
+        // UCL v11 — Orange palette (--color-orange*)
         orange: {
-          100: "#F9E4CC",
+          50:  "#FCF2E6",
+          100: "#FFE0B2",
+          500: "#E07900",
+          600: "#B36100",
+          700: "#864900",
           900: "#2D1800",
         },
+
+        // UCL v11 — Red palette (--color-red*)
+        red: {
+          50:  "#FCE9E6",
+          100: "#FFCDD2",
+          200: "#F3A599",
+          500: "#E01E00",
+          600: "#B31800",
+          700: "#861200",
+          900: "#2D0600",
+        },
       },
+
+      // UCL v11 border-radius tokens
+      // --button-border-radius / --input-border-radius: 0.125rem (2px)
+      // --default-border-radius: 0.25rem (4px)
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        none: "0",
+        sm:   "0.125rem",   // 2px — UCL buttons, inputs, chips
+        DEFAULT: "0.125rem",
+        md:   "0.125rem",   // 2px — same as sm for UCL compliance
+        lg:   "0.25rem",    // 4px — cards, panels
+        xl:   "0.5rem",     // 8px — modals
+        full: "9999px",     // pills / status badges
       },
+
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to:   { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to:   { height: "0" },
         },
         "slide-up-in": {
-          from: {
-            opacity: "0",
-            transform: "translateY(100px)",
-          },
-          to: {
-            opacity: "1",
-            transform: "translateY(0)",
-          },
+          from: { opacity: "0", transform: "translateY(100px)" },
+          to:   { opacity: "1", transform: "translateY(0)" },
         },
         "slide-down-out": {
-          from: {
-            opacity: "1",
-            transform: "translateY(0)",
-          },
-          to: {
-            opacity: "0",
-            transform: "translateY(100px)",
-          },
+          from: { opacity: "1", transform: "translateY(0)" },
+          to:   { opacity: "0", transform: "translateY(100px)" },
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "slide-up-in": "slide-up-in 0.3s ease-out forwards",
-        "slide-down-out": "slide-down-out 0.3s ease-in forwards",
+        "accordion-down":  "accordion-down 0.2s ease-out",
+        "accordion-up":    "accordion-up 0.2s ease-out",
+        "slide-up-in":     "slide-up-in 0.3s ease-out forwards",
+        "slide-down-out":  "slide-down-out 0.3s ease-in forwards",
       },
     },
   },

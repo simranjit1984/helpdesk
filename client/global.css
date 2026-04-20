@@ -1,5 +1,5 @@
 /** @import must precede all other statements */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -25,8 +25,10 @@ html {
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 8%;
 
-    --primary: 235 96% 30%;
-    --primary-foreground: 240 5% 97%;
+    --primary: 235 96% 30%;           /* UCL primary500 #041295 */
+    --primary-foreground: 0 0% 100%;   /* white */
+    --primary-hover: 234 95% 25%;      /* UCL primary600 #030F77 */
+    --primary-pressed: 233 94% 19%;    /* UCL primary700 #020B59 */
 
     --secondary: 240 5% 96%;
     --secondary-foreground: 240 10% 8%;
@@ -37,14 +39,14 @@ html {
     --accent: 240 5% 96%;
     --accent-foreground: 240 10% 8%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 8 100% 44%;        /* UCL red500 #E01E00 */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 252 25% 89%;
-    --input: 238 11% 43%;
-    --ring: 235 96% 30%;
+    --border: 252 25% 89%;            /* UCL --color-blue-grey100 */
+    --input: 238 11% 43%;              /* UCL --input-border-color blue-grey500 */
+    --ring: 238 30% 57%;              /* UCL --color-focus / primary300 #6871BF */
 
-    --radius: 0.125rem;
+    --radius: 0.125rem;               /* UCL --button-border-radius / --input-border-radius */
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 10% 8%;
@@ -102,6 +104,8 @@ html {
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+    font-size: 0.875rem;  /* UCL --font-size base */
   }
 
   :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
