@@ -61,12 +61,20 @@ export const PERMISSION_GROUPS: { group: string; permissions: string[] }[] = [
 
 // ─── Scopes ──────────────────────────────────────────────────────────────────
 
+export type ScopeInclusionMode =
+  | "only"
+  | "direct-children"
+  | "all-children"
+  | "direct-children-excluding"
+  | "all-children-excluding";
+
 export interface Scope {
   id: string;
   name: string;
-  type: "Global" | "Organization" | "Group";
+  type: "Global" | "Organization";
   description: string;
-  entities: string[];
+  organization?: string;       // label of the selected org (only when type=Organization)
+  inclusionMode?: ScopeInclusionMode;
 }
 
 export const MOCK_SCOPES: Scope[] = [
@@ -74,40 +82,32 @@ export const MOCK_SCOPES: Scope[] = [
     id: "scope-1",
     name: "Global Scope",
     type: "Global",
-    description: "Applies to all organizations and groups",
-    entities: [],
+    description: "Applies to all organizations",
   },
   {
     id: "scope-2",
     name: "Acme Corp Scope",
     type: "Organization",
     description: "Restricted to the Acme Corp organization",
-    entities: ["Acme Corp"],
+    organization: "Acme Corp",
+    inclusionMode: "only",
   },
   {
     id: "scope-3",
     name: "Beta Ltd Scope",
     type: "Organization",
     description: "Restricted to the Beta Ltd organization",
-    entities: ["Beta Ltd"],
-  },
-  {
-    id: "scope-4",
-    name: "Finance Group Scope",
-    type: "Group",
-    description: "Scoped to the Finance department group",
-    entities: ["Finance Group"],
+    organization: "Beta Ltd",
+    inclusionMode: "all-children",
   },
 ];
 
-export const SCOPE_ENTITY_OPTIONS = [
+export const SCOPE_ORG_OPTIONS = [
   { value: "acme-corp", label: "Acme Corp" },
   { value: "beta-ltd", label: "Beta Ltd" },
   { value: "gamma-inc", label: "Gamma Inc" },
-  { value: "delta-group", label: "Delta Group" },
-  { value: "finance-group", label: "Finance Group" },
-  { value: "engineering-group", label: "Engineering Group" },
-  { value: "sales-group", label: "Sales Group" },
+  { value: "partner2", label: "Partner2" },
+  { value: "delta-org", label: "Delta Organization" },
 ];
 
 // ─── Assignable Policies ─────────────────────────────────────────────────────

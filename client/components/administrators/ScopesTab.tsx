@@ -26,13 +26,9 @@ import ConfirmationModal from "@/components/ConfirmationModal";
 import ScopeDrawer from "./ScopeDrawer";
 import { type Scope, MOCK_SCOPES } from "./mockData";
 
-const SCOPE_TYPE_STYLES: Record<
-  Scope["type"],
-  { bg: string; text: string }
-> = {
+const SCOPE_TYPE_STYLES: Record<Scope["type"], { bg: string; text: string }> = {
   Global: { bg: "bg-blue-50", text: "text-blue-600" },
   Organization: { bg: "bg-green-50", text: "text-green-700" },
-  Group: { bg: "bg-orange-50", text: "text-orange-700" },
 };
 
 export default function ScopesTab() {
@@ -46,6 +42,7 @@ export default function ScopesTab() {
     (s) =>
       s.name.toLowerCase().includes(search.toLowerCase()) ||
       s.description.toLowerCase().includes(search.toLowerCase()) ||
+      (s.organization ?? "").toLowerCase().includes(search.toLowerCase()) ||
       s.type.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -65,11 +62,7 @@ export default function ScopesTab() {
         prev.map((s) => (s.id === editingScope.id ? { ...s, ...data } : s)),
       );
     } else {
-      const newScope: Scope = {
-        id: `scope-${Date.now()}`,
-        ...data,
-      };
-      setScopes((prev) => [...prev, newScope]);
+      setScopes((prev) => [...prev, { id: `scope-${Date.now()}`, ...data }]);
     }
   };
 
@@ -103,8 +96,8 @@ export default function ScopesTab() {
               <TableHeadRow>
                 <TableHeadCell>Scope Name</TableHeadCell>
                 <TableHeadCell>Type</TableHeadCell>
+                <TableHeadCell>Organization</TableHeadCell>
                 <TableHeadCell>Description</TableHeadCell>
-                <TableHeadCell>Included Entities</TableHeadCell>
                 <TableHeadCell />
               </TableHeadRow>
             </TableHeader>
@@ -134,33 +127,18 @@ export default function ScopesTab() {
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        {scope.organization ? (
+                          <span className="text-sm text-bluegrey-700">
+                            {scope.organization}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-bluegrey-400">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
                         <span className="text-sm text-bluegrey-500 max-w-[200px] truncate block">
                           {scope.description || "—"}
                         </span>
-                      </TableCell>
-                      <TableCell>
-                        {scope.entities.length === 0 ? (
-                          <span className="text-sm text-bluegrey-400">All</span>
-                        ) : (
-                          <div className="flex flex-wrap gap-1">
-                            {scope.entities.slice(0, 2).map((e) => (
-                              <Badge
-                                key={e}
-                                className="bg-bluegrey-50 text-bluegrey-700 border-0 text-xs font-normal"
-                              >
-                                {e}
-                              </Badge>
-                            ))}
-                            {scope.entities.length > 2 && (
-                              <Badge
-                                variant="outline"
-                                className="text-xs font-normal text-bluegrey-500"
-                              >
-                                +{scope.entities.length - 2} more
-                              </Badge>
-                            )}
-                          </div>
-                        )}
                       </TableCell>
                       <TableActionCell>
                         <DropdownMenu>
@@ -196,7 +174,6 @@ export default function ScopesTab() {
         </TableScroll>
       </Table>
 
-      {/* Drawer */}
       <ScopeDrawer
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
@@ -204,7 +181,6 @@ export default function ScopesTab() {
         onSave={handleSave}
       />
 
-      {/* Delete confirmation */}
       <ConfirmationModal
         open={deleteTarget !== null}
         onOpenChange={(open) => !open && setDeleteTarget(null)}

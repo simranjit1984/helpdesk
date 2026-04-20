@@ -18,8 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MultiSelect } from "@/components/ui/multi-select";
-import { type Scope, SCOPE_ENTITY_OPTIONS } from "./mockData";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { type Scope, type ScopeInclusionMode, SCOPE_ORG_OPTIONS } from "./mockData";
 
 interface ScopeDrawerProps {
   open: boolean;
@@ -27,6 +27,29 @@ interface ScopeDrawerProps {
   scope: Scope | null;
   onSave: (scope: Omit<Scope, "id">) => void;
 }
+
+function inclusionLabel(mode: ScopeInclusionMode, org: string): string {
+  switch (mode) {
+    case "only":
+      return `${org} only`;
+    case "direct-children":
+      return `${org} and organizations directly under it`;
+    case "all-children":
+      return `${org} and all organizations under it`;
+    case "direct-children-excluding":
+      return `Organizations directly under ${org}, excluding ${org}`;
+    case "all-children-excluding":
+      return `All organizations under ${org}, excluding ${org}`;
+  }
+}
+
+const INCLUSION_MODES: ScopeInclusionMode[] = [
+  "only",
+  "direct-children",
+  "all-children",
+  "direct-children-excluding",
+  "all-children-excluding",
+];
 
 export default function ScopeDrawer({
   open,
@@ -39,43 +62,47 @@ export default function ScopeDrawer({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<Scope["type"]>("Global");
-  const [selectedEntities, setSelectedEntities] = useState<string[]>([]);
+  const [selectedOrg, setSelectedOrg] = useState("");
+  const [inclusionMode, setInclusionMode] = useState<ScopeInclusionMode>("only");
 
   useEffect(() => {
     if (open) {
       setName(scope?.name ?? "");
       setDescription(scope?.description ?? "");
       setType(scope?.type ?? "Global");
-      // Map entity labels back to option values
-      const entityValues = (scope?.entities ?? []).map((label) => {
-        const opt = SCOPE_ENTITY_OPTIONS.find(
-          (o) => o.label === label || o.value === label,
-        );
-        return opt ? opt.value : label;
-      });
-      setSelectedEntities(entityValues);
+      setSelectedOrg(
+        scope?.organization
+          ? (SCOPE_ORG_OPTIONS.find((o) => o.label === scope.organization)?.value ?? "")
+          : "",
+      );
+      setInclusionMode(scope?.inclusionMode ?? "only");
     }
   }, [open, scope]);
 
   const handleTypeChange = (val: string) => {
     setType(val as Scope["type"]);
-    if (val === "Global") setSelectedEntities([]);
+    if (val === "Global") {
+      setSelectedOrg("");
+      setInclusionMode("only");
+    }
   };
+
+  const selectedOrgLabel =
+    SCOPE_ORG_OPTIONS.find((o) => o.value === selectedOrg)?.label ?? "";
 
   const handleSave = () => {
     if (!name.trim()) return;
-    const entityLabels = selectedEntities.map(
-      (val) =>
-        SCOPE_ENTITY_OPTIONS.find((o) => o.value === val)?.label ?? val,
-    );
     onSave({
       name: name.trim(),
       description: description.trim(),
       type,
-      entities: type === "Global" ? [] : entityLabels,
+      organization: type === "Organization" ? selectedOrgLabel : undefined,
+      inclusionMode: type === "Organization" ? inclusionMode : undefined,
     });
     onOpenChange(false);
   };
+
+  const canSave = name.trim() && (type === "Global" || (type === "Organization" && selectedOrg));
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -98,7 +125,7 @@ export default function ScopeDrawer({
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-          {/* Name */}
+          {/* Scope Name */}
           <div className="space-y-1.5">
             <Label htmlFor="scope-name" className="text-sm font-medium text-bluegrey-900">
               Scope Name <span className="text-red-500">*</span>
@@ -111,7 +138,7 @@ export default function ScopeDrawer({
             />
           </div>
 
-          {/* Type */}
+          {/* Scope Type */}
           <div className="space-y-1.5">
             <Label htmlFor="scope-type" className="text-sm font-medium text-bluegrey-900">
               Scope Type
@@ -123,22 +150,58 @@ export default function ScopeDrawer({
               <SelectContent>
                 <SelectItem value="Global">Global</SelectItem>
                 <SelectItem value="Organization">Organization</SelectItem>
-                <SelectItem value="Group">Group</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Entities — only when not Global */}
-          {type !== "Global" && (
-            <div className="space-y-1.5">
-              <MultiSelect
-                label={type === "Organization" ? "Organizations" : "Groups"}
-                options={SCOPE_ENTITY_OPTIONS}
-                selectedValues={selectedEntities}
-                onChange={setSelectedEntities}
-                placeholder={`Select ${type === "Organization" ? "organizations" : "groups"}...`}
-              />
-            </div>
+          {/* Organization-specific fields */}
+          {type === "Organization" && (
+            <>
+              {/* Organization picker */}
+              <div className="space-y-1.5">
+                <Label htmlFor="scope-org" className="text-sm font-medium text-bluegrey-900">
+                  Organization
+                </Label>
+                <Select value={selectedOrg} onValueChange={setSelectedOrg}>
+                  <SelectTrigger id="scope-org">
+                    <SelectValue placeholder="Select organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SCOPE_ORG_OPTIONS.map((org) => (
+                      <SelectItem key={org.value} value={org.value}>
+                        {org.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Inclusion mode — shown once an org is picked */}
+              {selectedOrg && (
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-bluegrey-900">
+                    Select organizations to include
+                  </p>
+                  <RadioGroup
+                    value={inclusionMode}
+                    onValueChange={(v) => setInclusionMode(v as ScopeInclusionMode)}
+                    className="space-y-3"
+                  >
+                    {INCLUSION_MODES.map((mode) => (
+                      <div key={mode} className="flex items-center gap-3">
+                        <RadioGroupItem value={mode} id={`inclusion-${mode}`} />
+                        <Label
+                          htmlFor={`inclusion-${mode}`}
+                          className="text-sm font-normal text-bluegrey-900 cursor-pointer leading-snug"
+                        >
+                          {inclusionLabel(mode, selectedOrgLabel)}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
+            </>
           )}
 
           {/* Description */}
@@ -161,7 +224,7 @@ export default function ScopeDrawer({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!name.trim()}>
+          <Button onClick={handleSave} disabled={!canSave}>
             {isEditing ? "Save changes" : "Create Scope"}
           </Button>
         </SheetFooter>
