@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import EventLog from "./pages/EventLog";
 import UserDetail from "./pages/UserDetail";
@@ -20,7 +20,6 @@ import Administrators from "./pages/Administrators";
 import AllAdministrators from "./pages/AllAdministrators";
 import AdministratorsRoles from "./pages/AdministratorsRoles";
 import Scopes from "./pages/Scopes";
-import Invitations from "./pages/Invitations";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +41,7 @@ export const App = () => (
           <Route path="/administrators/all" element={<AllAdministrators />} />
           <Route path="/administrators/roles" element={<AdministratorsRoles />} />
           <Route path="/administrators/scopes" element={<Scopes />} />
-          <Route path="/invitations" element={<Invitations />} />
+          <Route path="/invitations" element={<Navigate to="/?tab=invitations" replace />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
           <Route path="/data-grid-demo" element={<DataGridDemo />} />
