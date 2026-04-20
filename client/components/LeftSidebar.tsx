@@ -280,11 +280,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
                 href: "/administrators/roles",
                 active: location.pathname === "/administrators/roles",
               },
-              {
-                label: "Scopes",
-                href: "/administrators/scopes",
-                active: location.pathname === "/administrators/scopes",
-              },
             ]}
           />
         </nav>
