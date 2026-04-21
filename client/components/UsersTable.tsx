@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Send, MoreVertical } from "lucide-react";
+import { Send, MoreVertical, PlusCircle, X } from "lucide-react";
 import {
   DataGrid,
   DataGridRow,
@@ -9,7 +9,9 @@ import {
 import type { HeaderCell, PageSize } from "@onewelcome/react-lib-components";
 import StatusBadge from "./StatusBadge";
 import ConfirmationModal from "./ConfirmationModal";
-import FilterBar from "./FilterBar";
+import DateRangePicker from "./DateRangePicker";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -28,6 +30,13 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const PAGE_SIZE: PageSize = 25;
+
+const DEFAULT_OPERATORS = [
+  { value: "contains", label: "Contains" },
+  { value: "equals", label: "Equals" },
+  { value: "startsWith", label: "Starts with" },
+  { value: "endsWith", label: "Ends with" },
+];
 
 type StatusType =
   | "active"
@@ -57,6 +66,438 @@ interface User {
   organizations: string[];
   accessRoles?: AccessRole[];
 }
+
+export type Filter = {
+  id: string;
+  column: string;
+  operator: string;
+  value: string;
+};
+
+// ─── Add Filter Popover ───────────────────────────────────────────────────────
+
+interface AddFilterPopoverProps {
+  columns: Array<{ value: string; label: string }>;
+  columnOptions: Record<string, Array<{ value: string; label: string }>>;
+  onFilterAdd: (filter: Filter) => void;
+}
+
+function AddFilterPopover({
+  columns,
+  columnOptions,
+  onFilterAdd,
+}: AddFilterPopoverProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const multiSelectOpenRef = useRef(false);
+
+  const [pendingFilter, setPendingFilter] = useState({
+    column: columns[0]?.value || "",
+    operator: "contains",
+    value: "",
+  });
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState({ start: "", end: "" });
+
+  const isDateField = (col: string) =>
+    col === "date" || col === "dateCreated";
+
+  const hasColumnOptions = (col: string) =>
+    !!(columnOptions[col]?.length);
+
+  const getOperatorsForColumn = (col: string) =>
+    hasColumnOptions(col)
+      ? [
+          { value: "is", label: "is" },
+          { value: "isNot", label: "is not" },
+        ]
+      : DEFAULT_OPERATORS;
+
+  const initializeDateRange = () => {
+    const now = new Date();
+    const endIso = now.toISOString().slice(0, 16);
+    setDateRange({ start: "", end: endIso });
+  };
+
+  const resetState = () => {
+    setPendingFilter({
+      column: columns[0]?.value || "",
+      operator: "contains",
+      value: "",
+    });
+    setSelectedValues([]);
+    initializeDateRange();
+  };
+
+  const handleStartDateChange = useCallback(
+    (date: string) => setDateRange((prev) => ({ ...prev, start: date })),
+    [],
+  );
+
+  const handleEndDateChange = useCallback(
+    (date: string) => setDateRange((prev) => ({ ...prev, end: date })),
+    [],
+  );
+
+  const applyFilter = () => {
+    const isDate = isDateField(pendingFilter.column);
+    const hasOptions = hasColumnOptions(pendingFilter.column);
+
+    if (isDate) {
+      if (dateRange.start && dateRange.end) {
+        onFilterAdd({
+          id: Math.random().toString(36).substr(2, 9),
+          column: pendingFilter.column,
+          operator: "between",
+          value: `${dateRange.start}|${dateRange.end}`,
+        });
+        resetState();
+        setIsOpen(false);
+      }
+    } else if (hasOptions) {
+      if (selectedValues.length > 0) {
+        onFilterAdd({
+          id: Math.random().toString(36).substr(2, 9),
+          column: pendingFilter.column,
+          operator: pendingFilter.operator,
+          value: selectedValues.join(","),
+        });
+        resetState();
+        setIsOpen(false);
+      }
+    } else {
+      if (pendingFilter.value.trim()) {
+        onFilterAdd({
+          id: Math.random().toString(36).substr(2, 9),
+          column: pendingFilter.column,
+          operator: pendingFilter.operator,
+          value: pendingFilter.value,
+        });
+        resetState();
+        setIsOpen(false);
+      }
+    }
+  };
+
+  const currentColumnHasOptions = hasColumnOptions(pendingFilter.column);
+  const currentColumnIsDate = isDateField(pendingFilter.column);
+
+  return (
+    <Popover
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && multiSelectOpenRef.current) return;
+        setIsOpen(open);
+        if (open) resetState();
+        else setDateRange({ start: "", end: "" });
+      }}
+    >
+      <PopoverTrigger asChild>
+        <button className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer">
+          <PlusCircle className="w-5 h-5 text-bluegrey-900" />
+          <span className="text-base text-bluegrey-900">Add filter</span>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="w-auto p-0 rounded-sm"
+        style={{
+          boxShadow:
+            "0 8px 10px 0 rgba(1,5,50,0.14), 0 3px 14px 0 rgba(1,5,50,0.12), 0 4px 5px 0 rgba(1,5,50,0.20)",
+        }}
+      >
+        <div className="flex flex-col gap-4 p-4">
+          {currentColumnHasOptions ? (
+            <>
+              <div className="flex items-start gap-4">
+                {/* Filter by */}
+                <div className="flex flex-col gap-1 w-60">
+                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                    Filter by
+                  </label>
+                  <Select
+                    value={pendingFilter.column}
+                    onValueChange={(value) => {
+                      const firstOp =
+                        getOperatorsForColumn(value)[0]?.value || "contains";
+                      setPendingFilter((prev) => ({
+                        ...prev,
+                        column: value,
+                        operator: firstOp,
+                      }));
+                      setSelectedValues([]);
+                      setDateRange({ start: "", end: "" });
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {columns.map((col) => (
+                        <SelectItem key={col.value} value={col.value}>
+                          {col.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Operator */}
+                <div className="flex flex-col gap-1 w-[130px]">
+                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                    Operator
+                  </label>
+                  <Select
+                    value={pendingFilter.operator || "is"}
+                    onValueChange={(value) =>
+                      setPendingFilter((prev) => ({ ...prev, operator: value }))
+                    }
+                  >
+                    <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getOperatorsForColumn(pendingFilter.column).map((op) => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Multi-select values */}
+                <div className="flex flex-col gap-1 w-60">
+                  <MultiSelect
+                    label="Values"
+                    options={columnOptions[pendingFilter.column] || []}
+                    selectedValues={selectedValues}
+                    onChange={setSelectedValues}
+                    placeholder=" "
+                    isOpenRef={multiSelectOpenRef}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end items-start gap-4">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="h-10 px-3 py-2 text-sm font-medium text-[#383A4B] hover:bg-bluegrey-50 rounded-sm transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={applyFilter}
+                  disabled={selectedValues.length === 0}
+                  className="h-10 px-3 py-2 bg-[#041295] hover:bg-[#041295]/90 text-[#F7F7F9] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                >
+                  Apply
+                </button>
+              </div>
+            </>
+          ) : currentColumnIsDate ? (
+            <>
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col gap-1 w-60">
+                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                    Filter by
+                  </label>
+                  <Select
+                    value={pendingFilter.column}
+                    onValueChange={(value) => {
+                      const firstOp =
+                        getOperatorsForColumn(value)[0]?.value || "between";
+                      setPendingFilter((prev) => ({
+                        ...prev,
+                        column: value,
+                        operator: firstOp,
+                      }));
+                      setDateRange({ start: "", end: "" });
+                      if (isDateField(value)) initializeDateRange();
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {columns.map((col) => (
+                        <SelectItem key={col.value} value={col.value}>
+                          {col.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DateRangePicker
+                startDate={dateRange.start}
+                endDate={dateRange.end}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={handleEndDateChange}
+                onApply={applyFilter}
+                onCancel={() => setIsOpen(false)}
+              />
+            </>
+          ) : (
+            <>
+              <div className="flex items-start gap-4">
+                {/* Filter by */}
+                <div className="flex flex-col gap-1 w-60">
+                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                    Filter by
+                  </label>
+                  <Select
+                    value={pendingFilter.column}
+                    onValueChange={(value) => {
+                      const firstOp =
+                        getOperatorsForColumn(value)[0]?.value || "contains";
+                      setPendingFilter((prev) => ({
+                        ...prev,
+                        column: value,
+                        operator: firstOp,
+                      }));
+                      setDateRange({ start: "", end: "" });
+                      if (isDateField(value)) initializeDateRange();
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {columns.map((col) => (
+                        <SelectItem key={col.value} value={col.value}>
+                          {col.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Operator */}
+                <div className="flex flex-col gap-1 w-[130px]">
+                  <label className="text-sm text-bluegrey-900 leading-5 font-normal">
+                    Operator
+                  </label>
+                  <Select
+                    value={pendingFilter.operator || "contains"}
+                    onValueChange={(value) =>
+                      setPendingFilter((prev) => ({ ...prev, operator: value }))
+                    }
+                  >
+                    <SelectTrigger className="w-full h-11 px-2 py-3 border-[#5D607E] rounded-sm text-sm font-normal">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DEFAULT_OPERATORS.map((op) => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Value */}
+                <div className="flex flex-col gap-1 w-60">
+                  <label
+                    htmlFor="filter-value"
+                    className="text-sm text-bluegrey-900 leading-5 font-normal"
+                  >
+                    Value
+                  </label>
+                  <input
+                    id="filter-value"
+                    name="filter-value"
+                    type="text"
+                    placeholder=" "
+                    value={pendingFilter.value}
+                    onChange={(e) =>
+                      setPendingFilter((prev) => ({
+                        ...prev,
+                        value: e.target.value,
+                      }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") applyFilter();
+                    }}
+                    className="w-full h-11 px-2 py-3 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 border border-[#5D607E] rounded-sm bg-white font-normal"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end items-start gap-4">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="h-10 px-3 py-2 text-sm font-medium text-[#383A4B] hover:bg-bluegrey-50 rounded-sm transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={applyFilter}
+                  disabled={!pendingFilter.value.trim()}
+                  className="h-10 px-3 py-2 bg-[#041295] hover:bg-[#041295]/90 text-[#F7F7F9] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                >
+                  Apply
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// ─── Format filter chip label ─────────────────────────────────────────────────
+
+function formatFilterDisplay(
+  filter: Filter,
+  columnOptions: Record<string, Array<{ value: string; label: string }>>,
+  columns: Array<{ value: string; label: string }>,
+) {
+  const getColumnLabel = (v: string) =>
+    columns.find((c) => c.value === v)?.label ?? v;
+  const getOperatorLabel = (v: string) =>
+    DEFAULT_OPERATORS.find((o) => o.value === v)?.label ?? v;
+
+  if (filter.operator === "between") {
+    const [startStr, endStr] = filter.value.split("|");
+    const parseDate = (s: string) => {
+      const clean = s.trim().includes("T") ? s.trim() : s.trim().replace(" ", "T");
+      return new Date(clean).toLocaleDateString();
+    };
+    return (
+      <>
+        {getColumnLabel(filter.column)} between{" "}
+        <strong className="font-bold">{parseDate(startStr)}</strong> and{" "}
+        <strong className="font-bold">{parseDate(endStr)}</strong>
+      </>
+    );
+  }
+
+  if (filter.operator === "is" || filter.operator === "isNot") {
+    const opLabel = filter.operator === "is" ? "is" : "is not";
+    const valueLabels = filter.value
+      .split(",")
+      .map((v) => columnOptions[filter.column]?.find((o) => o.value === v)?.label ?? v)
+      .join(", ");
+    return (
+      <>
+        {getColumnLabel(filter.column)} {opLabel}{" "}
+        <strong className="font-bold">{valueLabels}</strong>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {getColumnLabel(filter.column)} {getOperatorLabel(filter.operator)}{" "}
+      <strong className="font-bold">{filter.value}</strong>
+    </>
+  );
+}
+
+// ─── User data ────────────────────────────────────────────────────────────────
 
 export const baseUsers: Partial<User>[] = [
   {
@@ -561,6 +1002,11 @@ const SEARCH_FIELDS = [
   { value: "phoneNumber", label: "Phone number" },
 ];
 
+const FILTER_COLUMNS = [
+  { value: "organizations", label: "Organization" },
+  { value: "status", label: "Status" },
+];
+
 // ─── User actions dropdown ────────────────────────────────────────────────────
 
 function UserActionsMenu({ user }: { user: User }) {
@@ -716,18 +1162,7 @@ function UserActionsMenu({ user }: { user: User }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
-type Filter = {
-  id: string;
-  column: string;
-  operator: string;
-  value: string;
-};
-
-interface UsersTableProps {
-  allowedStatuses?: StatusType[];
-}
+// ─── Status options builder ───────────────────────────────────────────────────
 
 function deriveStatusOptions(allowedStatuses?: StatusType[]) {
   const allOptions = [
@@ -746,6 +1181,12 @@ function deriveStatusOptions(allowedStatuses?: StatusType[]) {
   );
 }
 
+// ─── Main component ───────────────────────────────────────────────────────────
+
+interface UsersTableProps {
+  allowedStatuses?: StatusType[];
+}
+
 export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   const navigate = useNavigate();
 
@@ -754,7 +1195,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   const [searchField, setSearchField] = useState("all");
   const [filters, setFilters] = useState<Filter[]>([]);
 
-  // ── Sort state (UCL uses uppercase direction) ─────────────────────────────
+  // ── Sort state ────────────────────────────────────────────────────────────
   const [sortColumn, setSortColumn] = useState("username");
   const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
 
@@ -772,6 +1213,14 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, searchField, filters, sortColumn, sortDir]);
+
+  const statusOptions = deriveStatusOptions(allowedStatuses);
+  const columnOptions = { status: statusOptions };
+
+  const isInvitationsTab =
+    allowedStatuses?.every(
+      (s) => s.startsWith("invitation") || s === "invited",
+    ) ?? false;
 
   // ── Filtering ─────────────────────────────────────────────────────────────
   const getFilteredUsers = (): User[] => {
@@ -796,23 +1245,30 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
             user.organizations?.some((org) => org.toLowerCase().includes(query))
           );
         }
-        if (searchField === "email") return user.username?.toLowerCase().includes(query);
-        if (searchField === "firstName") return user.firstName?.toLowerCase().includes(query);
-        if (searchField === "lastName") return user.lastName?.toLowerCase().includes(query);
-        if (searchField === "phoneNumber") return user.phoneNumber?.toLowerCase().includes(query);
+        if (searchField === "email")
+          return user.username?.toLowerCase().includes(query);
+        if (searchField === "firstName")
+          return user.firstName?.toLowerCase().includes(query);
+        if (searchField === "lastName")
+          return user.lastName?.toLowerCase().includes(query);
+        if (searchField === "phoneNumber")
+          return user.phoneNumber?.toLowerCase().includes(query);
         return true;
       });
     }
 
     filters.forEach((filter) => {
       filtered = filtered.filter((user) => {
-        const columnKey = filter.column === "email" ? "username" : filter.column;
+        const columnKey =
+          filter.column === "email" ? "username" : filter.column;
 
         if (columnKey === "organizations") {
           const searchTerm = filter.value.toLowerCase();
-          return user.organizations?.some((org) =>
-            org.toLowerCase().includes(searchTerm),
-          ) || false;
+          return (
+            user.organizations?.some((org) =>
+              org.toLowerCase().includes(searchTerm),
+            ) || false
+          );
         }
 
         const fieldValue = (user[columnKey as keyof typeof user] || "")
@@ -828,12 +1284,12 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
             return fieldDate >= startDate && fieldDate <= endDate;
           }
           case "is": {
-            const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
-            return selectedValues.includes(fieldValue);
+            const vals = filter.value.split(",").map((v) => v.toLowerCase());
+            return vals.includes(fieldValue);
           }
           case "isNot": {
-            const selectedValues = filter.value.split(",").map((v) => v.toLowerCase());
-            return !selectedValues.includes(fieldValue);
+            const vals = filter.value.split(",").map((v) => v.toLowerCase());
+            return !vals.includes(fieldValue);
           }
           case "contains":
             return fieldValue.includes(filter.value.toLowerCase());
@@ -857,8 +1313,12 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
     const filteredUsers = getFilteredUsers();
     return [...filteredUsers].sort((a, b) => {
       const fieldKey = sortColumn === "username" ? "username" : sortColumn;
-      let aVal: string = ((a[fieldKey as keyof User] as string) || "").toLowerCase();
-      let bVal: string = ((b[fieldKey as keyof User] as string) || "").toLowerCase();
+      const aVal: string = (
+        (a[fieldKey as keyof User] as string) || ""
+      ).toLowerCase();
+      const bVal: string = (
+        (b[fieldKey as keyof User] as string) || ""
+      ).toLowerCase();
 
       if (aVal < bVal) return sortDir === "ASC" ? -1 : 1;
       if (aVal > bVal) return sortDir === "ASC" ? 1 : -1;
@@ -874,10 +1334,6 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
     currentPage * pageSize,
   );
 
-  const statusOptions = deriveStatusOptions(allowedStatuses);
-  const isInvitationsTab =
-    allowedStatuses?.every((s) => s.startsWith("invitation") || s === "invited") ?? false;
-
   // ── Handlers ──────────────────────────────────────────────────────────────
   const handleRowClick = (user: User) => {
     if (user.organizations.length > 1) {
@@ -891,7 +1347,9 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
 
   const handleOrgContinue = () => {
     if (!selectedOrganization) {
-      setOrganizationError("Please select organization name before continue");
+      setOrganizationError(
+        "Please select organization name before continue",
+      );
       return;
     }
     if (selectedUserForOrganization) {
@@ -909,36 +1367,77 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
     setSelectedOrganization("");
   };
 
-  return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6">
-      {/* Toolbar: FilterBar + Invite button */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-          <FilterBar
-            columns={[
-              { value: "organizations", label: "Organization" },
-              { value: "status", label: "Status" },
-            ]}
-            columnOptions={{ status: statusOptions }}
-            filters={filters}
-            onFilterAdd={(f) => setFilters([...filters, f])}
-            onFilterRemove={(id) => setFilters(filters.filter((f) => f.id !== id))}
-            onClearFilters={() => setFilters([])}
-            searchValue={searchQuery}
-            onSearchChange={setSearchQuery}
-            searchPlaceholder={isInvitationsTab ? "Search invitations" : "Search users"}
-            searchFields={SEARCH_FIELDS}
-            searchField={searchField}
-            onSearchFieldChange={setSearchField}
-          />
-        </div>
-        <Button className="gap-2 shrink-0">
-          <Send className="w-4 h-4" />
-          Invite user
-        </Button>
-      </div>
+  // ── Toolbar buttons (rendered next to UCL search) ─────────────────────────
+  const toolbarContent = (
+    <div className="flex items-center gap-2 flex-wrap">
+      {/* Field selector */}
+      <Select
+        value={searchField}
+        onValueChange={(v) => {
+          setSearchField(v);
+          setCurrentPage(1);
+        }}
+      >
+        <SelectTrigger className="h-10 w-36 rounded-sm border-bluegrey-300 text-sm font-normal text-bluegrey-900 bg-white focus:ring-0">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {SEARCH_FIELDS.map((f) => (
+            <SelectItem key={f.value} value={f.value}>
+              {f.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      {/* UCL DataGrid */}
+      {/* Add filter popover */}
+      <AddFilterPopover
+        columns={FILTER_COLUMNS}
+        columnOptions={columnOptions}
+        onFilterAdd={(f) => setFilters((prev) => [...prev, f])}
+      />
+
+      {/* Invite user */}
+      <Button className="gap-2 shrink-0">
+        <Send className="w-4 h-4" />
+        Invite user
+      </Button>
+    </div>
+  ) as any; // bypass UCL's ButtonProps restriction on toolbarButtons
+
+  return (
+    <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-4">
+      {/* Active filter chips */}
+      {filters.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {filters.map((filter) => (
+            <div
+              key={filter.id}
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-bluegrey-100 rounded-full"
+            >
+              <span className="text-base text-bluegrey-900">
+                {formatFilterDisplay(filter, columnOptions, FILTER_COLUMNS)}
+              </span>
+              <button
+                onClick={() =>
+                  setFilters(filters.filter((f) => f.id !== filter.id))
+                }
+                className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-bluegrey-500/10 transition-colors"
+              >
+                <X className="w-4 h-4 text-bluegrey-900" />
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() => setFilters([])}
+            className="text-base text-blue-500 hover:text-blue-600 underline transition-colors"
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
+
+      {/* UCL DataGrid with built-in search */}
       <DataGrid
         headers={HEADERS}
         data={pagedUsers}
@@ -961,6 +1460,13 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
         }}
         disableContextMenuColumn={true}
         emptyLabel="No users found"
+        search={{
+          onSearch: setSearchQuery,
+          placeholder: isInvitationsTab
+            ? "Search invitations"
+            : "Search users",
+        }}
+        toolbarButtons={toolbarContent}
       >
         {({ item: user }) => (
           <DataGridRow
@@ -982,23 +1488,31 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
 
             {/* First name */}
             <DataGridCell>
-              <span className="text-sm text-bluegrey-900">{user.firstName}</span>
+              <span className="text-sm text-bluegrey-900">
+                {user.firstName}
+              </span>
             </DataGridCell>
 
             {/* Last name */}
             <DataGridCell>
-              <span className="text-sm text-bluegrey-900">{user.lastName}</span>
+              <span className="text-sm text-bluegrey-900">
+                {user.lastName}
+              </span>
             </DataGridCell>
 
             {/* Phone */}
             <DataGridCell>
-              <span className="text-sm text-bluegrey-900">{user.phoneNumber}</span>
+              <span className="text-sm text-bluegrey-900">
+                {user.phoneNumber}
+              </span>
             </DataGridCell>
 
             {/* Organization */}
             <DataGridCell>
               {user.organizations.length === 1 ? (
-                <span className="text-sm text-bluegrey-900">{user.organizations[0]}</span>
+                <span className="text-sm text-bluegrey-900">
+                  {user.organizations[0]}
+                </span>
               ) : (
                 <div className="flex flex-col gap-1">
                   {user.organizations.map((org) => (
@@ -1047,7 +1561,8 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
         {selectedUserForOrganization && (
           <div className="flex flex-col gap-1">
             <Label className="text-sm font-normal text-[#131319] flex gap-1">
-              Please select the organization context for viewing user&apos;s details.
+              Please select the organization context for viewing user&apos;s
+              details.
               <span className="font-medium text-red-500">*</span>
             </Label>
             <Select
