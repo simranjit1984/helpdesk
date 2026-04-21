@@ -9,6 +9,16 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Make UCL Tabs bottom border span the full container width.
+   The UCL tablist uses margin:-5px for focus-ring overflow;
+   we cancel the horizontal margin so the border reaches edge-to-edge. */
+[class*="Tabs_tablist"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 @layer base {
   /**
    * Tailwind CSS theme
