@@ -1,8 +1,15 @@
-import { MoreVertical, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Send, MoreVertical } from "lucide-react";
+import {
+  DataGrid,
+  DataGridRow,
+  DataGridCell,
+} from "@onewelcome/react-lib-components";
+import type { HeaderCell, PageSize } from "@onewelcome/react-lib-components";
 import StatusBadge from "./StatusBadge";
 import ConfirmationModal from "./ConfirmationModal";
+import FilterBar from "./FilterBar";
 import {
   Select,
   SelectContent,
@@ -11,27 +18,16 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Label } from "./ui/label";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import {
-  Table,
-  TableScroll,
-  TableContent,
-  TableHeader,
-  TableHeadRow,
-  TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableActionCell,
-} from "./ui/table";
 import { useToast } from "@/hooks/use-toast";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE: PageSize = 25;
 
 type StatusType =
   | "active"
@@ -543,8 +539,29 @@ export function getUserByUsername(username: string): User | undefined {
     | undefined;
 }
 
-type SortColumn = "email" | "firstName" | "lastName" | "phoneNumber" | "status";
-type SortDirection = "asc" | "desc";
+// ─── Column definitions ───────────────────────────────────────────────────────
+
+const HEADERS: HeaderCell[] = [
+  { name: "username", headline: "Email" },
+  { name: "firstName", headline: "First name" },
+  { name: "lastName", headline: "Last name" },
+  { name: "phoneNumber", headline: "Phone number", disableSorting: true },
+  { name: "organizations", headline: "Organization", disableSorting: true },
+  { name: "status", headline: "Status" },
+  { name: "actions", headline: "", disableSorting: true },
+];
+
+// ─── Search field options ─────────────────────────────────────────────────────
+
+const SEARCH_FIELDS = [
+  { value: "all", label: "All fields" },
+  { value: "email", label: "Email" },
+  { value: "firstName", label: "First name" },
+  { value: "lastName", label: "Last name" },
+  { value: "phoneNumber", label: "Phone number" },
+];
+
+// ─── User actions dropdown ────────────────────────────────────────────────────
 
 function UserActionsMenu({ user }: { user: User }) {
   const { toast } = useToast();
@@ -699,28 +716,53 @@ function UserActionsMenu({ user }: { user: User }) {
   );
 }
 
+// ─── Main component ───────────────────────────────────────────────────────────
+
+type Filter = {
+  id: string;
+  column: string;
+  operator: string;
+  value: string;
+};
+
 interface UsersTableProps {
-  searchQuery?: string;
-  searchField?: string;
-  filters?: Array<{
-    id: string;
-    column: string;
-    operator: string;
-    value: string;
-  }>;
   allowedStatuses?: StatusType[];
 }
 
-export default function UsersTable({
-  searchQuery = "",
-  searchField = "all",
-  filters = [],
-  allowedStatuses,
-}: UsersTableProps) {
+function deriveStatusOptions(allowedStatuses?: StatusType[]) {
+  const allOptions = [
+    { value: "active", label: "Active" },
+    { value: "blocked", label: "Authentication blocked" },
+    { value: "grace", label: "Grace" },
+    { value: "inactive", label: "Inactive" },
+    { value: "invited", label: "Invited" },
+    { value: "invitation-expired", label: "Invitation expired" },
+    { value: "invitation-withdrawn", label: "Invitation withdrawn" },
+  ];
+
+  if (!allowedStatuses || allowedStatuses.length === 0) return allOptions;
+  return allOptions.filter((opt) =>
+    allowedStatuses.includes(opt.value as StatusType),
+  );
+}
+
+export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   const navigate = useNavigate();
-  const [sortColumn, setSortColumn] = useState<SortColumn>("email");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+  // ── Internal toolbar state ────────────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchField, setSearchField] = useState("all");
+  const [filters, setFilters] = useState<Filter[]>([]);
+
+  // ── Sort state (UCL uses uppercase direction) ─────────────────────────────
+  const [sortColumn, setSortColumn] = useState("username");
+  const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
+
+  // ── Pagination state ──────────────────────────────────────────────────────
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<PageSize>(PAGE_SIZE);
+
+  // ── Org picker modal state ────────────────────────────────────────────────
   const [selectedUserForOrganization, setSelectedUserForOrganization] =
     useState<User | null>(null);
   const [selectedOrganization, setSelectedOrganization] = useState<string>("");
@@ -729,26 +771,18 @@ export default function UsersTable({
   // Reset to page 1 whenever search/filter/sort changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, searchField, filters, sortColumn, sortDirection]);
+  }, [searchQuery, searchField, filters, sortColumn, sortDir]);
 
-  const handleSort = (column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
+  // ── Filtering ─────────────────────────────────────────────────────────────
+  const getFilteredUsers = (): User[] => {
+    let filtered = baseUsers as User[];
 
-  const getFilteredUsers = () => {
-    let filtered = baseUsers;
-
-    // Scope to allowed statuses first
     if (allowedStatuses && allowedStatuses.length > 0) {
-      filtered = filtered.filter((u) => allowedStatuses.includes(u.status as StatusType));
+      filtered = filtered.filter((u) =>
+        allowedStatuses.includes(u.status as StatusType),
+      );
     }
 
-    // Apply search query filtered by searchField
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((user) => {
@@ -762,35 +796,23 @@ export default function UsersTable({
             user.organizations?.some((org) => org.toLowerCase().includes(query))
           );
         }
-        if (searchField === "email") {
-          return user.username?.toLowerCase().includes(query);
-        }
-        if (searchField === "firstName") {
-          return user.firstName?.toLowerCase().includes(query);
-        }
-        if (searchField === "lastName") {
-          return user.lastName?.toLowerCase().includes(query);
-        }
-        if (searchField === "phoneNumber") {
-          return user.phoneNumber?.toLowerCase().includes(query);
-        }
+        if (searchField === "email") return user.username?.toLowerCase().includes(query);
+        if (searchField === "firstName") return user.firstName?.toLowerCase().includes(query);
+        if (searchField === "lastName") return user.lastName?.toLowerCase().includes(query);
+        if (searchField === "phoneNumber") return user.phoneNumber?.toLowerCase().includes(query);
         return true;
       });
     }
 
-    // Apply filters
     filters.forEach((filter) => {
       filtered = filtered.filter((user) => {
-        // Map "email" filter column to "username" field
         const columnKey = filter.column === "email" ? "username" : filter.column;
 
         if (columnKey === "organizations") {
           const searchTerm = filter.value.toLowerCase();
-          return (
-            user.organizations?.some((org) =>
-              org.toLowerCase().includes(searchTerm)
-            ) || false
-          );
+          return user.organizations?.some((org) =>
+            org.toLowerCase().includes(searchTerm),
+          ) || false;
         }
 
         const fieldValue = (user[columnKey as keyof typeof user] || "")
@@ -830,180 +852,178 @@ export default function UsersTable({
     return filtered;
   };
 
-  const getSortedUsers = () => {
+  // ── Sorting ───────────────────────────────────────────────────────────────
+  const getSortedUsers = (): User[] => {
     const filteredUsers = getFilteredUsers();
     return [...filteredUsers].sort((a, b) => {
-      // Map "email" sort column to "username" field
-      const fieldKey = sortColumn === "email" ? "username" : sortColumn;
-      let aVal: any = a[fieldKey as keyof typeof a];
-      let bVal: any = b[fieldKey as keyof typeof b];
+      const fieldKey = sortColumn === "username" ? "username" : sortColumn;
+      let aVal: string = ((a[fieldKey as keyof User] as string) || "").toLowerCase();
+      let bVal: string = ((b[fieldKey as keyof User] as string) || "").toLowerCase();
 
-      if (typeof aVal === "string") {
-        aVal = aVal.toLowerCase();
-        bVal = (bVal as string).toLowerCase();
-      }
-
-      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      if (aVal < bVal) return sortDir === "ASC" ? -1 : 1;
+      if (aVal > bVal) return sortDir === "ASC" ? 1 : -1;
       return 0;
     });
   };
 
-  const SortHeader = ({
-    column,
-    label,
-  }: {
-    column: SortColumn;
-    label: string;
-  }) => {
-    const isActive = sortColumn === column;
-    return (
-      <button
-        onClick={() => handleSort(column)}
-        className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer"
-      >
-        <span className="text-sm font-bold text-bluegrey-900">{label}</span>
-        <div className="w-4 h-4">
-          {isActive &&
-            (sortDirection === "asc" ? (
-              <ChevronUp className="w-4 h-4 text-blue-500" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-blue-500" />
-            ))}
-        </div>
-      </button>
-    );
-  };
-
+  // ── Derived data ──────────────────────────────────────────────────────────
   const sortedUsers = getSortedUsers();
   const totalCount = sortedUsers.length;
-  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const pagedUsers = sortedUsers.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
   );
 
-  return (
-    <>
-      <Table variant="flat">
-        <TableScroll>
-          <TableContent>
-            <TableHeader>
-              <TableHeadRow>
-                <TableHeadCell sticky className="w-64">
-                  <SortHeader column="email" label="Email" />
-                </TableHeadCell>
-                <TableHeadCell>
-                  <SortHeader column="firstName" label="First name" />
-                </TableHeadCell>
-                <TableHeadCell>
-                  <SortHeader column="lastName" label="Last name" />
-                </TableHeadCell>
-                <TableHeadCell>
-                  <span className="text-sm font-bold text-bluegrey-900">Phone number</span>
-                </TableHeadCell>
-                <TableHeadCell>
-                  <span className="text-sm font-bold text-bluegrey-900">Organization</span>
-                </TableHeadCell>
-                <TableHeadCell>
-                  <SortHeader column="status" label="Status" />
-                </TableHeadCell>
-                <TableHeadCell></TableHeadCell>
-              </TableHeadRow>
-            </TableHeader>
-            <TableBody>
-              {pagedUsers.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell sticky className="w-56">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (user.organizations.length > 1) {
-                          setSelectedUserForOrganization(user);
-                        } else {
-                          navigate(
-                            `/users/${encodeURIComponent(user.username)}?organization=${encodeURIComponent(user.organizations[0])}`
-                          );
-                        }
-                      }}
-                      className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left w-full"
-                    >
-                      {user.username}
-                    </button>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.firstName}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.lastName}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {user.phoneNumber}
-                    </span>
-                  </TableCell>
-                  {user.organizations.length === 1 ? (
-                    <TableCell>
-                      <span className="text-sm text-bluegrey-900 truncate">
-                        {user.organizations[0]}
-                      </span>
-                    </TableCell>
-                  ) : (
-                    <td className="px-4 py-1">
-                      <div className="flex flex-col gap-2">
-                        {user.organizations.map((org, orgIndex) => (
-                          <span key={orgIndex} className="text-sm text-bluegrey-900">
-                            {org}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                  )}
-                  <TableCell>
-                    <StatusBadge status={user.status} />
-                  </TableCell>
-                  <TableActionCell>
-                    <UserActionsMenu user={user} />
-                  </TableActionCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </TableContent>
-        </TableScroll>
-      </Table>
+  const statusOptions = deriveStatusOptions(allowedStatuses);
+  const isInvitationsTab =
+    allowedStatuses?.every((s) => s.startsWith("invitation") || s === "invited") ?? false;
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between px-2 py-3">
-        <span className="text-sm text-bluegrey-500">
-          {totalCount} {totalCount === 1 ? "user" : "users"}
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="h-8 w-8 flex items-center justify-center rounded border border-bluegrey-200 hover:bg-bluegrey-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            aria-label="Previous page"
-          >
-            <ChevronLeft className="w-4 h-4 text-bluegrey-900" />
-          </button>
-          <span className="text-sm text-bluegrey-900 min-w-[80px] text-center">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className="h-8 w-8 flex items-center justify-center rounded border border-bluegrey-200 hover:bg-bluegrey-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            aria-label="Next page"
-          >
-            <ChevronRight className="w-4 h-4 text-bluegrey-900" />
-          </button>
+  // ── Handlers ──────────────────────────────────────────────────────────────
+  const handleRowClick = (user: User) => {
+    if (user.organizations.length > 1) {
+      setSelectedUserForOrganization(user);
+    } else {
+      navigate(
+        `/users/${encodeURIComponent(user.username)}?organization=${encodeURIComponent(user.organizations[0])}`,
+      );
+    }
+  };
+
+  const handleOrgContinue = () => {
+    if (!selectedOrganization) {
+      setOrganizationError("Please select organization name before continue");
+      return;
+    }
+    if (selectedUserForOrganization) {
+      navigate(
+        `/users/${encodeURIComponent(selectedUserForOrganization.username)}?organization=${encodeURIComponent(selectedOrganization)}`,
+      );
+      setSelectedUserForOrganization(null);
+      setSelectedOrganization("");
+      setOrganizationError("");
+    }
+  };
+
+  const handleOrgCancel = () => {
+    setSelectedUserForOrganization(null);
+    setSelectedOrganization("");
+  };
+
+  return (
+    <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6">
+      {/* Toolbar: FilterBar + Invite button */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+          <FilterBar
+            columns={[
+              { value: "organizations", label: "Organization" },
+              { value: "status", label: "Status" },
+            ]}
+            columnOptions={{ status: statusOptions }}
+            filters={filters}
+            onFilterAdd={(f) => setFilters([...filters, f])}
+            onFilterRemove={(id) => setFilters(filters.filter((f) => f.id !== id))}
+            onClearFilters={() => setFilters([])}
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={isInvitationsTab ? "Search invitations" : "Search users"}
+            searchFields={SEARCH_FIELDS}
+            searchField={searchField}
+            onSearchFieldChange={setSearchField}
+          />
         </div>
+        <Button className="gap-2 shrink-0">
+          <Send className="w-4 h-4" />
+          Invite user
+        </Button>
       </div>
 
+      {/* UCL DataGrid */}
+      <DataGrid
+        headers={HEADERS}
+        data={pagedUsers}
+        initialSort={[{ name: "username", direction: "ASC" }]}
+        onSort={(sorts) => {
+          if (sorts && sorts.length > 0) {
+            setSortColumn(sorts[0].name);
+            setSortDir(sorts[0].direction as "ASC" | "DESC");
+          }
+        }}
+        paginationProps={{
+          currentPage,
+          totalElements: totalCount,
+          pageSize,
+          onPageChange: (page) => setCurrentPage(page),
+          onPageSizeChange: (size) => {
+            setPageSize(size as PageSize);
+            setCurrentPage(1);
+          },
+        }}
+        disableContextMenuColumn={true}
+        emptyLabel="No users found"
+      >
+        {({ item: user }) => (
+          <DataGridRow
+            item={user}
+            headers={HEADERS}
+            disableContextMenuColumn={true}
+            searchValue={searchQuery}
+          >
+            {/* Email */}
+            <DataGridCell>
+              <button
+                type="button"
+                onClick={() => handleRowClick(user)}
+                className="text-sm text-bluegrey-900 hover:text-blue-500 truncate transition-colors text-left"
+              >
+                {user.username}
+              </button>
+            </DataGridCell>
+
+            {/* First name */}
+            <DataGridCell>
+              <span className="text-sm text-bluegrey-900">{user.firstName}</span>
+            </DataGridCell>
+
+            {/* Last name */}
+            <DataGridCell>
+              <span className="text-sm text-bluegrey-900">{user.lastName}</span>
+            </DataGridCell>
+
+            {/* Phone */}
+            <DataGridCell>
+              <span className="text-sm text-bluegrey-900">{user.phoneNumber}</span>
+            </DataGridCell>
+
+            {/* Organization */}
+            <DataGridCell>
+              {user.organizations.length === 1 ? (
+                <span className="text-sm text-bluegrey-900">{user.organizations[0]}</span>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  {user.organizations.map((org) => (
+                    <span key={org} className="text-sm text-bluegrey-900">
+                      {org}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </DataGridCell>
+
+            {/* Status */}
+            <DataGridCell>
+              <StatusBadge status={user.status} />
+            </DataGridCell>
+
+            {/* Actions */}
+            <DataGridCell>
+              <UserActionsMenu user={user} />
+            </DataGridCell>
+          </DataGridRow>
+        )}
+      </DataGrid>
+
+      {/* Org picker modal */}
       <ConfirmationModal
         open={selectedUserForOrganization !== null}
         onOpenChange={(open) => {
@@ -1017,27 +1037,11 @@ export default function UsersTable({
         description=""
         primaryAction={{
           label: "Continue",
-          onClick: () => {
-            if (!selectedOrganization) {
-              setOrganizationError("Please select organization name before continue");
-              return false;
-            }
-            if (selectedUserForOrganization) {
-              navigate(
-                `/users/${encodeURIComponent(selectedUserForOrganization.username)}?organization=${encodeURIComponent(selectedOrganization)}`
-              );
-              setSelectedUserForOrganization(null);
-              setSelectedOrganization("");
-              setOrganizationError("");
-            }
-          },
+          onClick: handleOrgContinue,
         }}
         tertiaryAction={{
           label: "Cancel",
-          onClick: () => {
-            setSelectedUserForOrganization(null);
-            setSelectedOrganization("");
-          },
+          onClick: handleOrgCancel,
         }}
       >
         {selectedUserForOrganization && (
@@ -1070,6 +1074,6 @@ export default function UsersTable({
           </div>
         )}
       </ConfirmationModal>
-    </>
+    </div>
   );
 }
