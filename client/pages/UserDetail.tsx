@@ -134,7 +134,9 @@ export default function UserDetail() {
     firstName: "",
     lastName: "",
     email: "",
+    workEmail: "",
     phone: "",
+    workPhone: "",
     address1: "",
     address2: "",
     city: "",
@@ -160,12 +162,24 @@ export default function UserDetail() {
   const [phoneOtpError, setPhoneOtpError] = useState("");
   const [phoneUpdateSuccess, setPhoneUpdateSuccess] = useState(false);
   const [removePhoneSuccess, setRemovePhoneSuccess] = useState(false);
+  const [phoneUpdateError, setPhoneUpdateError] = useState("");
+  const [isSendingEmailOtp, setIsSendingEmailOtp] = useState(false);
+  const [emailOtpSuccess, setEmailOtpSuccess] = useState(false);
+  const [isSendingSmsOtp, setIsSendingSmsOtp] = useState(false);
+  const [smsOtpSuccess, setSmsOtpSuccess] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [isEmailOtpDialogOpen, setIsEmailOtpDialogOpen] = useState(false);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [isVerifyingEmailOtp, setIsVerifyingEmailOtp] = useState(false);
+  const [emailOtpError, setEmailOtpError] = useState("");
+  const [emailUpdateSuccess, setEmailUpdateSuccess] = useState(false);
+  const [emailUpdateError, setEmailUpdateError] = useState("");
 
   // Generate random past timestamp for "Last used"
   // Static timestamps for authenticators
   const allAuthenticators = {
     authenticators: [
-      "Username & Password",
+      "Password",
       "SMS OTP",
       "Email OTP",
       "TOTP",
@@ -191,7 +205,7 @@ export default function UserDetail() {
   };
 
   const authenticatorTimestamps: Record<string, string> = {
-    "Username & Password": "Jan 19, 2025 02:45 PM",
+    Password: "Jan 19, 2025 02:45 PM",
     "SMS OTP": "Jan 18, 2025 10:15 AM",
     "Email OTP": "Jan 17, 2025 05:30 PM",
     TOTP: "Jan 16, 2025 03:20 PM",
@@ -213,6 +227,16 @@ export default function UserDetail() {
 
   // Generate deterministic authenticators for each user based on email
   const generateUserAuthenticators = (email: string): string[] => {
+    // For Benjamin Brown, return no authenticators
+    if (email === "benjamin.brown@example.com") {
+      return [];
+    }
+
+    // For Alice Anderson, return specific authenticators
+    if (email === "alice.anderson@example.com") {
+      return ["Password", "Email OTP", "SMS OTP", "Chrome Passkey"];
+    }
+
     // For Alison Adams, return all available authenticators
     if (email === "alison.adams@example.com") {
       return [
@@ -237,9 +261,11 @@ export default function UserDetail() {
       return x - Math.floor(x);
     };
 
-    const selected: string[] = ["Username & Password"];
+    const selected: string[] = ["Password", "Email OTP"];
     const allOptions = [
-      ...allAuthenticators.authenticators.slice(1),
+      ...allAuthenticators.authenticators
+        .slice(1)
+        .filter((auth) => auth !== "Email OTP"),
       ...allAuthenticators.externalProviders,
       ...allAuthenticators.passkeys,
     ];
@@ -262,7 +288,7 @@ export default function UserDetail() {
   };
 
   const iconMap: Record<string, React.ReactNode> = {
-    "Username & Password": <Lock className="h-5 w-5 text-bluegrey-600" />,
+    Password: <Lock className="h-5 w-5 text-bluegrey-600" />,
     "SMS OTP": <MessageSquare className="h-5 w-5 text-bluegrey-600" />,
     "Email OTP": <Mail className="h-5 w-5 text-bluegrey-600" />,
     TOTP: <Clock className="h-5 w-5 text-bluegrey-600" />,
@@ -280,8 +306,8 @@ export default function UserDetail() {
     "Microsoft AD": <Globe className="h-5 w-5 text-bluegrey-600" />,
     "iCloud Keychain": <Key className="h-5 w-5 text-bluegrey-600" />,
     "Safenet FIDO Key": <Key className="h-5 w-5 text-bluegrey-600" />,
-    "Chrome Passkey": <Chrome className="h-5 w-5 text-bluegrey-600" />,
-    Yubikey: <Smartphone className="h-5 w-5 text-bluegrey-600" />,
+    "Chrome Passkey": <Key className="h-5 w-5 text-bluegrey-600" />,
+    Yubikey: <Key className="h-5 w-5 text-bluegrey-600" />,
   };
 
   const getAuthenticatorIcon = (name: string | null) => {
@@ -314,7 +340,7 @@ export default function UserDetail() {
 
   const handleAuthenticatorCardClick = (authName: string) => {
     setOpenSideSheet(authName);
-    if (authName === "Username & Password") {
+    if (authName === "Password") {
       setUsernameEmail(user?.email || "");
     }
   };
@@ -403,7 +429,13 @@ export default function UserDetail() {
             firstName: foundUser.firstName,
             lastName: foundUser.lastName,
             email: foundUser.username,
+            workEmail:
+              foundUser.firstName.toLowerCase() +
+              "." +
+              foundUser.lastName.toLowerCase() +
+              "@insurcar.com",
             phone: foundUser.phoneNumber,
+            workPhone: "+16135551234",
             displayPhone: foundUser.phoneNumber,
             address1: "1223, Fancy Street",
             address2: "",
@@ -435,7 +467,9 @@ export default function UserDetail() {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        workEmail: user.workEmail,
         phone: user.phone,
+        workPhone: user.workPhone,
         address1: user.address1,
         address2: user.address2,
         city: user.city,
@@ -673,18 +707,30 @@ export default function UserDetail() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="email">Email ID</Label>
+                    <Label htmlFor="email">Personal email</Label>
                     <input
                       id="email"
                       type="email"
                       value={formData.email}
+                      onChange={handleFormChange}
+                      disabled={isSaving}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="workEmail">Work email (Primary)</Label>
+                    <input
+                      id="workEmail"
+                      type="email"
+                      value={formData.workEmail}
                       readOnly
                       className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="phone">Phone number</Label>
+                    <Label htmlFor="phone">Personal phone</Label>
                     <input
                       id="phone"
                       type="text"
@@ -692,6 +738,17 @@ export default function UserDetail() {
                       onChange={handleFormChange}
                       disabled={isSaving}
                       className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="workPhone">Work phone (Primary)</Label>
+                    <input
+                      id="workPhone"
+                      type="text"
+                      value={formData.workPhone}
+                      readOnly
+                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
                     />
                   </div>
 
@@ -877,6 +934,18 @@ export default function UserDetail() {
                     </p>
                     <p className="text-bluegrey-500 text-sm mt-2">
                       No authenticators linked to this user's account.
+                    </p>
+                  </div>
+                </div>
+              ) : userAuthenticators.length === 0 ? (
+                <div className="flex items-center justify-center min-h-96">
+                  <div className="text-center">
+                    <h2 className="text-[#041295] text-[28px] font-semibold leading-9">
+                      No authenticator enrolled
+                    </h2>
+                    <p className="text-[#383A4B] text-xs font-normal leading-4 mt-1">
+                      There is no active authenticator associated with this
+                      user's account
                     </p>
                   </div>
                 </div>
@@ -1206,73 +1275,11 @@ export default function UserDetail() {
                   </div>
                 </div>
 
-                {/* Username & Password Section */}
-                {openSideSheet === "Username & Password" && (
+                {/* Password Section */}
+                {openSideSheet === "Password" && (
                   <div className="flex flex-col gap-6">
-                    {/* Update Username Section */}
-                    <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="text-xl font-semibold text-blue-500">
-                          User name
-                        </h3>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <Label htmlFor="usernameEmail">Email address</Label>
-                        <input
-                          id="usernameEmail"
-                          type="email"
-                          value={usernameEmail || user?.email}
-                          onChange={(e) => {
-                            setUsernameEmail(e.target.value);
-                            setUsernameSuccess(false);
-                          }}
-                          disabled={isSavingUsername}
-                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                      </div>
-                      {usernameSuccess && (
-                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                            <div className="flex items-start gap-2 flex-1 py-2">
-                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-bluegrey-900 leading-5">
-                                  Username updated successfully
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex justify-end items-center">
-                              <button
-                                onClick={() => setUsernameSuccess(false)}
-                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                                aria-label="Close alert"
-                              >
-                                <X className="w-6 h-6 text-bluegrey-700" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      <Button
-                        onClick={() => {
-                          setIsSavingUsername(true);
-                          setUsernameSuccess(false);
-                          setTimeout(() => {
-                            setIsSavingUsername(false);
-                            setUsernameSuccess(true);
-                          }, 1500);
-                        }}
-                        disabled={isSavingUsername}
-                        variant="outline"
-                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 gap-2 w-fit"
-                      >
-                        {isSavingUsername ? "Updating..." : "Update"}
-                      </Button>
-                    </div>
-
                     {/* Password Section */}
-                    <div className="flex flex-col gap-4 pt-6 border-t border-bluegrey-200">
+                    <div className="flex flex-col gap-4">
                       <h2 className="text-xl font-semibold text-blue-500">
                         Password
                       </h2>
@@ -1406,60 +1413,147 @@ export default function UserDetail() {
                           Reset password
                         </Button>
                       </div>
+                    </div>
+                  </div>
+                )}
 
-                      {/* Danger Zone */}
-                      <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
-                        <h2 className="text-xl font-semibold text-red-600">
-                          Danger zone
+                {/* Email OTP Section */}
+                {openSideSheet === "Email OTP" && (
+                  <div className="flex flex-col gap-6">
+                    {/* Update Email Address Section */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h2 className="text-xl font-semibold text-blue-500">
+                          Update Email address
                         </h2>
-                        <div className="flex flex-col gap-3">
-                          <div className="flex flex-col gap-1">
-                            <h3 className="text-base font-semibold text-bluegrey-900">
-                              Remove password
-                            </h3>
-                            <p className="text-xs text-bluegrey-700">
-                              The current password for this user will be
-                              removed. The user will be required to set a new
-                              password upon their next login attempt.
-                            </p>
-                          </div>
-                          {removePasswordSuccess && (
-                            <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                              <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                                <div className="flex items-start gap-2 flex-1 py-2">
-                                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-bluegrey-900 leading-5">
-                                      Password removed successfully
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex justify-end items-center">
-                                  <button
-                                    onClick={() =>
-                                      setRemovePasswordSuccess(false)
-                                    }
-                                    className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                                    aria-label="Close alert"
-                                  >
-                                    <X className="w-6 h-6 text-bluegrey-700" />
-                                  </button>
-                                </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label htmlFor="emailAddress">
+                          Work email (Primary)
+                        </Label>
+                        <input
+                          id="emailAddress"
+                          type="email"
+                          value={newEmail || user?.workEmail || ""}
+                          onChange={(e) => {
+                            setNewEmail(e.target.value);
+                            setEmailUpdateSuccess(false);
+                            setEmailUpdateError("");
+                          }}
+                          className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                        />
+                        {emailUpdateError && (
+                          <p className="text-xs text-red-500 mt-0.5">
+                            {emailUpdateError}
+                          </p>
+                        )}
+                      </div>
+                      {emailUpdateSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  A confirmation link has been sent to the new
+                                  email address. The user must follow the
+                                  instructions in the email to complete the
+                                  update.
+                                </p>
                               </div>
                             </div>
-                          )}
-                          <Button
-                            onClick={() => {
-                              setRemovePasswordSuccess(true);
-                            }}
-                            variant="outline"
-                            className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
-                          >
-                            Remove password
-                          </Button>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setEmailUpdateSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      )}
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          const currentEmail =
+                            newEmail || user?.workEmail || "";
+                          if (!currentEmail || currentEmail.trim() === "") {
+                            setEmailUpdateError("Email address is required");
+                            return;
+                          }
+                          if (currentEmail === user?.workEmail) {
+                            setEmailUpdateError(
+                              "Please modify the email address to update",
+                            );
+                            return;
+                          }
+                          setEmailUpdateError("");
+                          setEmailUpdateSuccess(true);
+                        }}
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        Update
+                      </Button>
+                    </div>
+
+                    {/* Send OTP Section */}
+                    <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
+                      <h2 className="text-xl font-semibold text-blue-500">
+                        Send a one-time password
+                      </h2>
+                      <p className="text-sm text-bluegrey-700">
+                        Send a one-time password to user's primary email
+                        address, {user?.workEmail}
+                      </p>
+                      {emailOtpSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  OTP sent successfully to {user?.workEmail}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setEmailOtpSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsSendingEmailOtp(true);
+                          setEmailOtpSuccess(false);
+                          setTimeout(() => {
+                            setIsSendingEmailOtp(false);
+                            setEmailOtpSuccess(true);
+                          }, 1500);
+                        }}
+                        disabled={isSendingEmailOtp}
+                        className="mt-3 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        {isSendingEmailOtp ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send OTP"
+                        )}
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -1467,24 +1561,33 @@ export default function UserDetail() {
                 {/* SMS OTP Section */}
                 {openSideSheet === "SMS OTP" && (
                   <div className="flex flex-col gap-6">
+                    {/* Update Phone Number Section */}
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-1">
                         <h2 className="text-xl font-semibold text-blue-500">
-                          Phone number
+                          Update Phone number
                         </h2>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <Label htmlFor="phoneNumber">Phone number</Label>
+                        <Label htmlFor="phoneNumber">
+                          Work phone (Primary)
+                        </Label>
                         <input
                           id="phoneNumber"
                           type="tel"
-                          value={newPhoneNumber || user?.phone || ""}
+                          value={newPhoneNumber || user?.workPhone || ""}
                           onChange={(e) => {
                             setNewPhoneNumber(e.target.value);
                             setPhoneUpdateSuccess(false);
+                            setPhoneUpdateError("");
                           }}
                           className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
                         />
+                        {phoneUpdateError && (
+                          <p className="text-xs text-red-500 mt-0.5">
+                            {phoneUpdateError}
+                          </p>
+                        )}
                       </div>
                       {phoneUpdateSuccess && (
                         <div className="flex items-start rounded-[2px] bg-green-50 relative">
@@ -1513,6 +1616,19 @@ export default function UserDetail() {
                       <Button
                         variant="outline"
                         onClick={() => {
+                          const currentPhone =
+                            newPhoneNumber || user?.workPhone || "";
+                          if (!currentPhone || currentPhone.trim() === "") {
+                            setPhoneUpdateError("Phone number is required");
+                            return;
+                          }
+                          if (currentPhone === user?.workPhone) {
+                            setPhoneUpdateError(
+                              "Please modify the phone number to update",
+                            );
+                            return;
+                          }
+                          setPhoneUpdateError("");
                           setPhoneOtpError("");
                           setPhoneOtp("");
                           setIsPhoneOtpDialogOpen(true);
@@ -1523,61 +1639,70 @@ export default function UserDetail() {
                       </Button>
                     </div>
 
-                    <div className="flex flex-col gap-4 pt-6 border-t-2 border-red-200">
-                      <h2 className="text-xl font-semibold text-red-600">
-                        Danger zone
+                    {/* Send OTP Section */}
+                    <div className="flex flex-col gap-3 pt-6 border-t border-bluegrey-200">
+                      <h2 className="text-xl font-semibold text-blue-500">
+                        Send a one-time password
                       </h2>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-1">
-                          <h3 className="text-base font-semibold text-bluegrey-900">
-                            Remove phone number
-                          </h3>
-                          <p className="text-xs text-bluegrey-700">
-                            Remove the phone number for this user account.
-                          </p>
-                        </div>
-                        {removePhoneSuccess && (
-                          <div className="flex items-start rounded-[2px] bg-green-50 relative">
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
-                            <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
-                              <div className="flex items-start gap-2 flex-1 py-2">
-                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm text-bluegrey-900 leading-5">
-                                    Phone number removed successfully
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex justify-end items-center">
-                                <button
-                                  onClick={() => setRemovePhoneSuccess(false)}
-                                  className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
-                                  aria-label="Close alert"
-                                >
-                                  <X className="w-6 h-6 text-bluegrey-700" />
-                                </button>
+                      <p className="text-sm text-bluegrey-700">
+                        Send a one-time password to user's primary phone number,{" "}
+                        {user?.workPhone}
+                      </p>
+                      {smsOtpSuccess && (
+                        <div className="flex items-start rounded-[2px] bg-green-50 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-[2px]"></div>
+                          <div className="flex items-center gap-3 flex-1 pl-6 pr-3 py-2">
+                            <div className="flex items-start gap-2 flex-1 py-2">
+                              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-bluegrey-900 leading-5">
+                                  OTP sent successfully to {user?.workPhone}
+                                </p>
                               </div>
                             </div>
+                            <div className="flex justify-end items-center">
+                              <button
+                                onClick={() => setSmsOtpSuccess(false)}
+                                className="flex w-10 h-10 items-center justify-center rounded-[2px] hover:bg-bluegrey-100 transition-colors flex-shrink-0"
+                                aria-label="Close alert"
+                              >
+                                <X className="w-6 h-6 text-bluegrey-700" />
+                              </button>
+                            </div>
                           </div>
+                        </div>
+                      )}
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsSendingSmsOtp(true);
+                          setSmsOtpSuccess(false);
+                          setTimeout(() => {
+                            setIsSendingSmsOtp(false);
+                            setSmsOtpSuccess(true);
+                          }, 1500);
+                        }}
+                        disabled={isSendingSmsOtp}
+                        className="mt-3 mb-6 rounded-[2px] border-2 border-[#041295] text-[#041295] hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed h-auto px-3 py-2 w-fit gap-2"
+                      >
+                        {isSendingSmsOtp ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send OTP"
                         )}
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setRemovePhoneSuccess(true);
-                          }}
-                          className="mt-3 mb-6 rounded-[2px] border-2 border-red-600 text-red-600 hover:bg-red-50 h-auto px-3 py-2 w-fit gap-2"
-                        >
-                          Remove phone number
-                        </Button>
-                      </div>
+                      </Button>
                     </div>
                   </div>
                 )}
 
-                {/* Danger Zone Section - Only for non-Username & Password and non-SMS OTP authenticators */}
+                {/* Danger Zone Section - Only for non-Password, non-SMS OTP, and non-Email OTP authenticators */}
                 {openSideSheet &&
-                  openSideSheet !== "Username & Password" &&
-                  openSideSheet !== "SMS OTP" && (
+                  openSideSheet !== "Password" &&
+                  openSideSheet !== "SMS OTP" &&
+                  openSideSheet !== "Email OTP" && (
                     <div className="flex flex-col gap-4">
                       <h2 className="text-xl font-semibold text-red-600">
                         Danger zone
@@ -1759,6 +1884,122 @@ export default function UserDetail() {
       </Dialog>
 
       {/* Phone Number OTP Verification Dialog */}
+      {/* Email OTP Verification Dialog */}
+      <Dialog
+        open={isEmailOtpDialogOpen}
+        onOpenChange={setIsEmailOtpDialogOpen}
+      >
+        <DialogContent className="max-w-[480px] border-0 bg-white p-0 rounded-sm gap-6 shadow-[0_24px_38px_0_rgba(1,5,50,0.04),4px_9px_46px_0_rgba(1,5,50,0.04),0_11px_15px_0_rgba(1,5,50,0.08)]">
+          <VisuallyHidden.Root>
+            <DialogTitle>Verify Email Address</DialogTitle>
+          </VisuallyHidden.Root>
+          <div className="flex items-start justify-between px-6 py-4">
+            <DialogHeader className="text-left">
+              <div className="text-xl font-medium leading-8 text-[#131319]">
+                Verify Email Address
+              </div>
+            </DialogHeader>
+            <DialogClose className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[2px] hover:bg-bluegrey-50 transition-colors text-[#383A4B]">
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </DialogClose>
+          </div>
+
+          <div className="px-6">
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-bluegrey-600">
+                Enter the OTP sent to {newEmail || user?.workEmail} to confirm
+                the email address update.
+              </p>
+              <div className="flex flex-col gap-1">
+                <Label
+                  htmlFor="emailOtp"
+                  className="text-sm font-normal text-[#131319]"
+                >
+                  OTP Code
+                </Label>
+                <input
+                  id="emailOtp"
+                  type="text"
+                  value={emailOtp}
+                  onChange={(e) => {
+                    setEmailOtp(e.target.value);
+                    setEmailOtpError("");
+                  }}
+                  disabled={isVerifyingEmailOtp}
+                  placeholder="Enter 6-digit OTP"
+                  maxLength={6}
+                  className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+                {emailOtpError && (
+                  <p className="text-xs text-red-500 mt-0.5 flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {emailOtpError}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setIsEmailOtpDialogOpen(false);
+                  setEmailOtp("");
+                  setEmailOtpError("");
+                  setNewEmail("");
+                }}
+                disabled={isVerifyingEmailOtp}
+                className="rounded-[2px] text-[#383A4B] h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  if (!emailOtp || emailOtp.trim() === "") {
+                    setEmailOtpError("OTP is required");
+                    return;
+                  }
+                  if (emailOtp.length !== 6) {
+                    setEmailOtpError("Please enter a valid 6-digit OTP");
+                    return;
+                  }
+                  setIsVerifyingEmailOtp(true);
+                  setEmailOtpError("");
+                  setTimeout(() => {
+                    setIsVerifyingEmailOtp(false);
+                    setIsEmailOtpDialogOpen(false);
+                    setEmailUpdateSuccess(true);
+                    setEmailOtp("");
+                  }, 1500);
+                }}
+                disabled={isVerifyingEmailOtp}
+                className="gap-2 rounded-[2px] bg-[#041295] text-[#F7F7F9] hover:bg-[#041295]/90 h-10 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isVerifyingEmailOtp && (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
+                {isVerifyingEmailOtp ? "Verifying..." : "Confirm"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Phone OTP Verification Dialog */}
       <Dialog
         open={isPhoneOtpDialogOpen}
         onOpenChange={setIsPhoneOtpDialogOpen}
@@ -1810,8 +2051,7 @@ export default function UserDetail() {
                     setPhoneOtpError("");
                   }}
                   disabled={isVerifyingPhoneOtp}
-                  placeholder="Enter 6-digit OTP"
-                  maxLength={6}
+                  placeholder="Enter OTP"
                   className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                 />
                 {phoneOtpError && (
@@ -1845,10 +2085,6 @@ export default function UserDetail() {
                 onClick={() => {
                   if (!phoneOtp || phoneOtp.trim() === "") {
                     setPhoneOtpError("OTP is required");
-                    return;
-                  }
-                  if (phoneOtp.length !== 6) {
-                    setPhoneOtpError("Please enter a valid 6-digit OTP");
                     return;
                   }
                   setIsVerifyingPhoneOtp(true);
