@@ -60,7 +60,7 @@ export default function Index() {
         <PageHeader title="Users" />
 
         {/* UCL Tabs */}
-        <Tabs selected={selectedIndex} onTabChange={handleTabChange}>
+        <Tabs selected={selectedIndex} onTabChange={handleTabChange} className="w-full" tabListClassName="w-full">
           <Tab title="Users">
             <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:space-y-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
