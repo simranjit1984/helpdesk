@@ -19,6 +19,13 @@ html {
   padding-right: 0 !important;
 }
 
+/* Remove UCL Tabs wrapper horizontal padding so the bottom-border divider
+   spans the full container width. Vertical padding and gap are kept intact. */
+[class*="Tabs_tabs"] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 @layer base {
   /**
    * Tailwind CSS theme
