@@ -5,7 +5,7 @@ import PageHeader from "@/components/PageHeader";
 import FilterBar from "@/components/FilterBar";
 import UsersTable from "@/components/UsersTable";
 import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, Tab } from "@onewelcome/react-lib-components";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 
@@ -34,7 +34,10 @@ type Filter = { id: string; column: string; operator: string; value: string };
 
 export default function Index() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") ?? "users";
+  const TAB_NAMES = ["users", "invitations"] as const;
+  const activeTabName = searchParams.get("tab") ?? "users";
+  const activeTabIndex = TAB_NAMES.indexOf(activeTabName as typeof TAB_NAMES[number]);
+  const selectedIndex = activeTabIndex >= 0 ? activeTabIndex : 0;
 
   // Users tab state
   const [usersSearchQuery, setUsersSearchQuery] = useState("");
@@ -46,8 +49,8 @@ export default function Index() {
   const [invFilters, setInvFilters] = useState<Filter[]>([]);
   const [invSearchField, setInvSearchField] = useState("all");
 
-  const handleTabChange = (val: string) => {
-    setSearchParams({ tab: val });
+  const handleTabChange = (index: number) => {
+    setSearchParams({ tab: TAB_NAMES[index] ?? "users" });
   };
 
   return (
@@ -56,39 +59,10 @@ export default function Index() {
         {/* Grey header — title only */}
         <PageHeader title="Users" />
 
-        {/* White area — tab bar + content */}
-        <Tabs value={activeTab} onValueChange={handleTabChange}>
-          {/* Tab bar: white background, full-width bottom border */}
-          <div className="bg-white border-b border-bluegrey-200 px-4 sm:px-6 lg:px-8">
-            <TabsList className="h-auto bg-transparent p-0 gap-6 -mb-px">
-              <TabsTrigger
-                value="users"
-                className="h-auto py-3 px-0 rounded-none bg-transparent text-sm font-medium
-                           border-b-2 border-transparent shadow-none
-                           text-bluegrey-500
-                           data-[state=active]:border-blue-600 data-[state=active]:text-blue-600
-                           data-[state=active]:bg-transparent data-[state=active]:shadow-none
-                           hover:text-bluegrey-900 transition-colors"
-              >
-                Users
-              </TabsTrigger>
-              <TabsTrigger
-                value="invitations"
-                className="h-auto py-3 px-0 rounded-none bg-transparent text-sm font-medium
-                           border-b-2 border-transparent shadow-none
-                           text-bluegrey-500
-                           data-[state=active]:border-blue-600 data-[state=active]:text-blue-600
-                           data-[state=active]:bg-transparent data-[state=active]:shadow-none
-                           hover:text-bluegrey-900 transition-colors"
-              >
-                Invitations
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          {/* Tab content — white background */}
-          <TabsContent value="users" className="mt-0 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-            <div className="space-y-6 lg:space-y-8">
+        {/* UCL Tabs */}
+        <Tabs selected={selectedIndex} onTabChange={handleTabChange}>
+          <Tab title="Users">
+            <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:space-y-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                   <FilterBar
@@ -122,10 +96,10 @@ export default function Index() {
                 allowedStatuses={["active", "blocked", "grace", "inactive"]}
               />
             </div>
-          </TabsContent>
+          </Tab>
 
-          <TabsContent value="invitations" className="mt-0 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-            <div className="space-y-6 lg:space-y-8">
+          <Tab title="Invitations">
+            <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:space-y-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                   <FilterBar
@@ -159,7 +133,7 @@ export default function Index() {
                 allowedStatuses={["invited", "invitation-expired", "invitation-withdrawn"]}
               />
             </div>
-          </TabsContent>
+          </Tab>
         </Tabs>
       </Layout>
       <AIAssistant userData={{}} isOpen={false} />
