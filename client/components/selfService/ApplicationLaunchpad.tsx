@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, MoreHorizontal, ChevronDown, X, Check, ExternalLink } from "lucide-react";
+import { Search, MoreHorizontal, ChevronDown, X, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -112,23 +112,13 @@ function AppIcon({ app }: { app: Application }) {
   );
 }
 
-// ─── Org chip ─────────────────────────────────────────────────────────────────
+// ─── Org chip (display only) ─────────────────────────────────────────────────
 
-function OrgChip({
-  name,
-  onClick,
-}: {
-  name: string;
-  onClick: () => void;
-}) {
+function OrgChip({ name }: { name: string }) {
   return (
-    <button
-      onClick={onClick}
-      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 hover:border-blue-300 transition-colors whitespace-nowrap"
-    >
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 whitespace-nowrap">
       {name}
-      <ExternalLink className="w-3 h-3 opacity-60" />
-    </button>
+    </span>
   );
 }
 
@@ -192,44 +182,50 @@ function AppCard({ app }: { app: Application }) {
   const visibleOrgs = app.orgAccess.slice(0, MAX_CHIPS);
   const hiddenCount = app.orgAccess.length - MAX_CHIPS;
 
-  const handleLaunch = (org: OrgAccess) => {
+  const handleLaunch = () => {
+    const orgList = app.orgAccess.map((o) => o.orgName).join(", ");
     toast({
       title: `Launching ${app.name}`,
-      description: `Opening in ${org.orgName} as ${org.role}`,
+      description: `Available in: ${orgList}`,
     });
   };
 
   return (
-    <div className="bg-white rounded-xl border border-bluegrey-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-200 p-5 flex flex-col gap-4">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleLaunch}
+      onKeyDown={(e) => e.key === "Enter" && handleLaunch()}
+      className="bg-white rounded-xl border border-bluegrey-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-200 p-5 flex flex-col gap-4 cursor-pointer group"
+    >
       {/* Card header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <AppIcon app={app} />
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-bluegrey-900 truncate">
+            <h3 className="text-sm font-semibold text-bluegrey-900 truncate group-hover:text-blue-600 transition-colors">
               {app.name}
             </h3>
             <p className="text-xs text-bluegrey-500 mt-0.5">{app.category}</p>
           </div>
         </div>
-        <AppMenu app={app} />
+        {/* Stop propagation so menu click doesn't trigger card launch */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <AppMenu app={app} />
+        </div>
       </div>
 
       {/* Divider */}
       <div className="h-px bg-bluegrey-100" />
 
-      {/* Org chips */}
+      {/* Org chips — display only */}
       <div>
         <p className="text-xs text-bluegrey-500 mb-2 font-medium">
           Available in
         </p>
         <div className="flex flex-wrap gap-1.5">
           {visibleOrgs.map((oa) => (
-            <OrgChip
-              key={oa.orgId}
-              name={oa.orgName}
-              onClick={() => handleLaunch(oa)}
-            />
+            <OrgChip key={oa.orgId} name={oa.orgName} />
           ))}
           {hiddenCount > 0 && (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-600 border border-bluegrey-200">
