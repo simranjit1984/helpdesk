@@ -1224,7 +1224,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
 
   // ── Filtering ─────────────────────────────────────────────────────────────
   const getFilteredUsers = (): User[] => {
-    let filtered = baseUsers as User[];
+    let filtered = users;
 
     if (allowedStatuses && allowedStatuses.length > 0) {
       filtered = filtered.filter((u) =>
@@ -1470,6 +1470,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
       >
         {({ item: user }) => (
           <DataGridRow
+            key={user.id}
             item={user}
             headers={HEADERS}
             disableContextMenuColumn={true}
