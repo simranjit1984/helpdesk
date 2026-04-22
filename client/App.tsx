@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PersonaSelection from "./pages/PersonaSelection";
 import Index from "./pages/Index";
 import EventLog from "./pages/EventLog";
 import UserDetail from "./pages/UserDetail";
@@ -23,6 +24,8 @@ import Scopes from "./pages/Scopes";
 import AddAdminRole from "./pages/AddAdminRole";
 import AddAccessRolesToOrg from "./pages/AddAccessRolesToOrg";
 import Settings from "./pages/Settings";
+import OWAdminConsole from "./pages/OWAdminConsole";
+import SelfService from "./pages/SelfService";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +36,17 @@ export const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          {/* ── Persona selection landing ────────────────────────────── */}
+          <Route path="/" element={<PersonaSelection />} />
+
+          {/* ── OW Admin Console (placeholder) ──────────────────────── */}
+          <Route path="/ow-admin" element={<OWAdminConsole />} />
+
+          {/* ── Self Service (placeholder) ──────────────────────────── */}
+          <Route path="/self-service" element={<SelfService />} />
+
+          {/* ── DMv2 Management Console ──────────────────────────────── */}
+          <Route path="/users" element={<Index />} />
           <Route path="/organizations" element={<Organizations />} />
           <Route path="/organizations/new" element={<AddOrganization />} />
           <Route path="/organizations/:id" element={<OrganizationDetail />} />
@@ -47,7 +60,7 @@ export const App = () => (
           <Route path="/administrators/roles/create" element={<AddAdminRole />} />
           <Route path="/administrators/scopes" element={<Scopes />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/invitations" element={<Navigate to="/?tab=invitations" replace />} />
+          <Route path="/invitations" element={<Navigate to="/users?tab=invitations" replace />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
           <Route path="/data-grid-demo" element={<DataGridDemo />} />

@@ -145,7 +145,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const isDelegatedActive = location.pathname.startsWith("/settings");
   const [isDelegatedExpanded, setIsDelegatedExpanded] = useState(isDelegatedActive);
 
-  const isUsersActive = location.pathname === "/" || location.pathname.startsWith("/users/");
+  const isUsersActive = location.pathname === "/users" || location.pathname.startsWith("/users/");
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -227,7 +227,7 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
               </svg>
             }
             label="Users"
-            href="/"
+            href="/users"
             active={isUsersActive}
           />
           <MenuItem
