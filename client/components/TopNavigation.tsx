@@ -1,6 +1,6 @@
-import { Menu, LogOut, User, ChevronDown } from "lucide-react";
+import { Menu, LogOut, User, ChevronDown, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import NotificationPanel from "./NotificationPanel";
-import GlobalSearch from "./GlobalSearch";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +14,8 @@ interface TopNavigationProps {
 }
 
 export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="fixed top-0 left-0 right-0 h-16 bg-white shadow-[0_2px_4px_0_rgba(1,5,50,0.04),0_4px_5px_0_rgba(1,5,50,0.04),0_1px_10px_0_rgba(1,5,50,0.08)] z-50">
       <div className="flex items-center h-full px-3 gap-4">
@@ -41,7 +43,13 @@ export default function TopNavigation({ onMenuClick }: TopNavigationProps) {
         </div>
 
         <div className="flex-1 flex items-center justify-center h-10 px-2">
-          <GlobalSearch />
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 h-10 px-4 rounded-sm border border-bluegrey-200 bg-white hover:bg-bluegrey-25 hover:border-bluegrey-400 transition-all text-sm font-medium text-bluegrey-700"
+          >
+            <Home className="w-4 h-4 text-bluegrey-600" />
+            Main page
+          </button>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4 h-10">
