@@ -225,8 +225,6 @@ export default function PersonaSelection() {
             title="Self Service"
             description="Allow end users to manage their own profile, consents, and account settings."
             href="/self-service"
-            disabled
-            badge="Coming soon"
           />
         </div>
       </main>
