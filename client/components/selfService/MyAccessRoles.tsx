@@ -279,7 +279,7 @@ function RoleRow({
   role: Role;
   searchQuery: string;
 }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [expandedApps, setExpandedApps] = useState<Set<string>>(new Set());
 
   const toggleApp = (appId: string) => {
@@ -349,13 +349,15 @@ function RoleRow({
 
 function OrgSection({
   org,
+  expanded,
+  onToggle,
   searchQuery,
 }: {
   org: Organization;
+  expanded: boolean;
+  onToggle: () => void;
   searchQuery: string;
 }) {
-  const [expanded, setExpanded] = useState(true);
-
   const hasResults = org.roles.some(
     (r) =>
       !searchQuery ||
@@ -371,7 +373,7 @@ function OrgSection({
     <div className="bg-white rounded-xl border border-bluegrey-100 shadow-sm overflow-hidden">
       {/* Org header */}
       <button
-        onClick={() => setExpanded((v) => !v)}
+        onClick={onToggle}
         className="w-full flex items-center gap-3 px-5 py-4 bg-bluegrey-25 hover:bg-bluegrey-50 transition-colors border-b border-bluegrey-100 text-left"
       >
         {expanded ? (
@@ -489,6 +491,10 @@ function OrgFilterDropdown({
 export default function MyAccessRoles() {
   const [search, setSearch] = useState("");
   const [selectedOrgs, setSelectedOrgs] = useState<string[]>([]);
+  // Accordion: only one org expanded at a time; first org open by default
+  const [expandedOrgId, setExpandedOrgId] = useState<string | null>(
+    DATA[0]?.id ?? null,
+  );
 
   const filteredData = DATA.filter(
     (org) =>
@@ -558,7 +564,17 @@ export default function MyAccessRoles() {
           </div>
         ) : (
           filteredData.map((org) => (
-            <OrgSection key={org.id} org={org} searchQuery={search} />
+            <OrgSection
+              key={org.id}
+              org={org}
+              expanded={expandedOrgId === org.id}
+              onToggle={() =>
+                setExpandedOrgId((prev) =>
+                  prev === org.id ? null : org.id,
+                )
+              }
+              searchQuery={search}
+            />
           ))
         )}
       </div>
