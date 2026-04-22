@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, Home, LogOut, User, Rocket, Shield } from "lucide-react";
+import { ChevronDown, Home, LogOut, User, Rocket, ShieldCheck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import ApplicationLaunchpad from "@/components/selfService/ApplicationLaunchpad";
+import MyAccessRoles from "@/components/selfService/MyAccessRoles";
 
 // ─── Sidebar nav items ────────────────────────────────────────────────────────
 
@@ -27,54 +29,10 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     key: "access-roles",
-    label: "Access roles",
-    icon: <Shield className="w-5 h-5" />,
+    label: "My access roles",
+    icon: <ShieldCheck className="w-5 h-5" />,
   },
 ];
-
-// ─── Empty section placeholder ────────────────────────────────────────────────
-
-function EmptySection({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex flex-col items-center justify-center flex-1 py-24 px-8 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-5 text-blue-400">
-        {icon}
-      </div>
-      <h2 className="text-lg font-semibold text-bluegrey-900 mb-2">{title}</h2>
-      <p className="text-sm text-bluegrey-500 max-w-xs">{description}</p>
-    </div>
-  );
-}
-
-// ─── Section content ──────────────────────────────────────────────────────────
-
-function ApplicationLaunchpad() {
-  return (
-    <EmptySection
-      icon={<Rocket className="w-8 h-8" />}
-      title="Application launchpad"
-      description="Your assigned applications will appear here. Contact your administrator to get access to applications."
-    />
-  );
-}
-
-function AccessRolesSection() {
-  return (
-    <EmptySection
-      icon={<Shield className="w-8 h-8" />}
-      title="Access roles"
-      description="Your current access roles will be listed here. Reach out to your administrator to request additional roles."
-    />
-  );
-}
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
@@ -232,7 +190,7 @@ export default function SelfService() {
           {/* Section content */}
           <div className="flex flex-col flex-1">
             {activeSection === "launchpad" && <ApplicationLaunchpad />}
-            {activeSection === "access-roles" && <AccessRolesSection />}
+            {activeSection === "access-roles" && <MyAccessRoles />}
           </div>
         </main>
       </div>
