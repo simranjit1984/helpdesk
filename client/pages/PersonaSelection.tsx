@@ -146,12 +146,10 @@ export default function PersonaSelection() {
       <header className="h-16 bg-white shadow-[0_2px_4px_0_rgba(1,5,50,0.04),0_4px_5px_0_rgba(1,5,50,0.04),0_1px_10px_0_rgba(1,5,50,0.08)] flex items-center px-6 justify-between">
         <div className="flex items-center gap-6">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2F82e2f8ec35ab46749ef52edc2f137b7b%2Fbdd4b384c28d4324be102c97f6f95202"
-            alt="InsurCar Inc."
-            className="h-10 w-auto"
+            src="https://cdn.cookielaw.org/logos/467a8616-fd17-4578-b473-813e8a67f9f6/0199b9ad-7fd9-79d5-afb8-5b5726f4bbc8/22ee737d-6777-4142-b416-eadb243496af/Thales_Logo.160px.png"
+            alt="Thales"
+            className="h-8 w-auto"
           />
-          <div className="h-6 w-px bg-bluegrey-100" />
-          <span className="text-sm font-medium text-bluegrey-700">InsurCar</span>
         </div>
 
         <div className="flex items-center gap-4">
