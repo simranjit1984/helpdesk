@@ -1370,7 +1370,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
 
   // ── Toolbar buttons (replaces UCL's built-in search) ───────────────────────
   const toolbarContent = (
-    <div className="flex items-center gap-3 flex-wrap">
+    <div className="flex items-center gap-3 flex-wrap w-full">
 
       {/* ── Grouped compound: field-selector + search input ───────────────── */}
       <div
