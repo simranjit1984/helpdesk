@@ -11,12 +11,25 @@ html {
 
 /* Make UCL Tabs bottom border span the full container width.
    The UCL tablist uses margin:-5px for focus-ring overflow;
-   we cancel the horizontal margin so the border reaches edge-to-edge. */
+   we cancel the horizontal margin so the border reaches edge-to-edge.
+   Padding matches the page content: px-4 / sm:px-6 / lg:px-8 */
 [class*="Tabs_tablist"] {
   margin-left: 0 !important;
   margin-right: 0 !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+@media (min-width: 640px) {
+  [class*="Tabs_tablist"] {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+@media (min-width: 1024px) {
+  [class*="Tabs_tablist"] {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
 }
 
 /* Remove UCL Tabs wrapper horizontal padding so the bottom-border divider
