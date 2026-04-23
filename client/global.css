@@ -190,3 +190,38 @@ html {
     outline: none;
   }
 }
+
+/* ── UsersTable: sticky first column with horizontal scroll ─────────────── */
+
+/* Allow horizontal scroll inside the DataGrid */
+.users-datagrid-wrapper [class*="DataGrid_table-wrapper"] {
+  overflow-x: auto;
+}
+
+/* Give the table a minimum width so horizontal scroll is triggered */
+.users-datagrid-wrapper [class*="DataGrid_table"] {
+  min-width: 750px;
+}
+
+/* Sticky first header cell */
+.users-datagrid-wrapper [class*="DataGrid_table"] thead th:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 3 !important;
+  background-color: #F7F7F9 !important;
+  box-shadow: 2px 0 5px -1px rgba(0, 0, 0, 0.08);
+}
+
+/* Sticky first body cell */
+.users-datagrid-wrapper [class*="DataGrid_table"] tbody td:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 2 !important;
+  background-color: #ffffff !important;
+  box-shadow: 2px 0 5px -1px rgba(0, 0, 0, 0.08);
+}
+
+/* Match row hover colour on the sticky cell */
+.users-datagrid-wrapper [class*="DataGrid_table"] tbody tr:hover td:first-child {
+  background-color: #F7F7F9 !important;
+}

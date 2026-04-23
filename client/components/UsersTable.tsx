@@ -1470,6 +1470,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
       </div>
 
       {/* UCL DataGrid */}
+      <div className="users-datagrid-wrapper">
       <DataGrid
         headers={HEADERS}
         data={pagedUsers}
@@ -1562,6 +1563,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
           </DataGridRow>
         )}
       </DataGrid>
+      </div>
 
       {/* Org picker modal */}
       <ConfirmationModal

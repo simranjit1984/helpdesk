@@ -656,7 +656,7 @@ export default function UserDetail() {
                   value="security"
                   className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none flex items-center gap-2"
                 >
-                  Security
+                  Consent &amp; preferences
                   {getSecurityTabStatus() === "alert" && (
                     <AlertTriangle className="h-4 w-4 text-orange-600" />
                   )}
