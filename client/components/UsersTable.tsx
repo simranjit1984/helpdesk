@@ -1425,8 +1425,8 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
         onFilterAdd={(f) => setFilters((prev) => [...prev, f])}
       />
 
-      {/* ── Invite user ───────────────────────────────────────────────────── */}
-      <Button className="gap-2 shrink-0">
+      {/* ── Invite user ───────────────────────────────────────────────── */}
+      <Button className="gap-2 shrink-0 ml-auto">
         <Send className="w-4 h-4" />
         Invite user
       </Button>
