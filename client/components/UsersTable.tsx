@@ -193,8 +193,8 @@ function AddFilterPopover({
     >
       <PopoverTrigger asChild>
         <button className="inline-flex items-center gap-1 px-3 py-1 bg-bluegrey-100 rounded-full hover:bg-bluegrey-200 transition-colors cursor-pointer">
-          <PlusCircle className="w-5 h-5 text-bluegrey-900" />
-          <span className="text-base text-bluegrey-900">Add filter</span>
+          <PlusCircle className="w-4 h-4 text-bluegrey-900" />
+          <span className="text-sm font-normal text-bluegrey-900">Add filter</span>
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -1437,7 +1437,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 placeholder={isInvitationsTab ? "Search invitations" : "Search users"}
-                className="w-44 text-sm text-bluegrey-900 placeholder:text-bluegrey-500 outline-none bg-transparent"
+                className="w-44 text-sm font-normal leading-5 text-bluegrey-900 placeholder:text-bluegrey-400 outline-none bg-transparent font-[inherit]"
                 autoComplete="off"
               />
               {searchQuery && (
