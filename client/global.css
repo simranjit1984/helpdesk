@@ -205,11 +205,14 @@ html {
   min-width: 900px;
 }
 
-/* Sticky first header cell — no background/shadow overrides so the look is unchanged */
+/* Sticky first header cell.
+   background-color matches the DataGrid library's own header background
+   so the look is unchanged; it just ensures scrolled columns don't bleed through. */
 .users-datagrid-wrapper table[class*="DataGrid_table"] thead th:first-child {
   position: sticky !important;
   left: 0 !important;
   z-index: 3 !important;
+  background-color: #F7F7F9 !important;
 }
 
 /* Sticky first body cell */
@@ -217,4 +220,10 @@ html {
   position: sticky !important;
   left: 0 !important;
   z-index: 2 !important;
+  background-color: #ffffff !important;
+}
+
+/* Keep row-hover background consistent on the sticky cell */
+.users-datagrid-wrapper table[class*="DataGrid_table"] tbody tr:hover td:first-child {
+  background-color: #F7F7F9 !important;
 }
