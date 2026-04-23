@@ -206,13 +206,15 @@ html {
 }
 
 /* Sticky first header cell.
-   background-color matches the DataGrid library's own header background
-   so the look is unchanged; it just ensures scrolled columns don't bleed through. */
+   --sticky-header-bg / --sticky-body-bg / --sticky-hover-bg are set at runtime
+   (via useEffect in UsersTable.tsx) to the DataGrid's actual computed background
+   colours, so the look is pixel-identical to the non-sticky columns.
+   The fallback hex values are only used before JS runs. */
 .users-datagrid-wrapper table[class*="DataGrid_table"] thead th:first-child {
   position: sticky !important;
   left: 0 !important;
   z-index: 3 !important;
-  background-color: #F7F7F9 !important;
+  background-color: var(--sticky-header-bg, #F7F7F9) !important;
 }
 
 /* Sticky first body cell */
@@ -220,10 +222,10 @@ html {
   position: sticky !important;
   left: 0 !important;
   z-index: 2 !important;
-  background-color: #ffffff !important;
+  background-color: var(--sticky-body-bg, #ffffff) !important;
 }
 
 /* Keep row-hover background consistent on the sticky cell */
 .users-datagrid-wrapper table[class*="DataGrid_table"] tbody tr:hover td:first-child {
-  background-color: #F7F7F9 !important;
+  background-color: var(--sticky-hover-bg, #F7F7F9) !important;
 }

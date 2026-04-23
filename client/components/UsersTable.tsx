@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
 import { Send, MoreVertical, PlusCircle, X, Search } from "lucide-react";
 import {
   DataGrid,
@@ -1210,6 +1211,39 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   const [selectedOrganization, setSelectedOrganization] = useState<string>("");
   const [organizationError, setOrganizationError] = useState<string>("");
 
+  // Ref for the sticky-column wrapper — used to read and mirror the DataGrid's
+  // actual cell background colours so the sticky cells look identical at rest and on hover.
+  const dgWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const wrapper = dgWrapperRef.current;
+    if (!wrapper) return;
+
+    // Wait one tick for the DataGrid to finish painting
+    const id = setTimeout(() => {
+      const table = wrapper.querySelector("table");
+      if (!table) return;
+
+      const headerCell = table.querySelector<HTMLElement>("thead th:first-child");
+      const bodyCell   = table.querySelector<HTMLElement>("tbody td:first-child");
+
+      // Rows may not exist yet (loading state) — fall back to white / bluegrey-25
+      const headerBg = headerCell ? getComputedStyle(headerCell).backgroundColor : "";
+      const bodyBg   = bodyCell   ? getComputedStyle(bodyCell).backgroundColor   : "";
+
+      // Derive hover by reading the first body row's hover via a sibling row trick:
+      // we temporarily force a :hover on the row, read the bg, then restore.
+      // In practice the library's hover is the same light grey as the header background,
+      // so we reuse headerBg as the hover colour.
+      if (headerBg) wrapper.style.setProperty("--sticky-header-bg", headerBg);
+      if (bodyBg)   wrapper.style.setProperty("--sticky-body-bg",   bodyBg);
+      // Hover: use header bg as the row-hover tint (matches DataGrid behaviour)
+      if (headerBg) wrapper.style.setProperty("--sticky-hover-bg",  headerBg);
+    }, 50);
+
+    return () => clearTimeout(id);
+  }, []);
+
   // Reset to page 1 whenever search/filter/sort changes
   useEffect(() => {
     setCurrentPage(1);
@@ -1470,7 +1504,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
       </div>
 
       {/* UCL DataGrid */}
-      <div className="users-datagrid-wrapper">
+      <div className="users-datagrid-wrapper" ref={dgWrapperRef}>
       <DataGrid
         headers={HEADERS}
         data={pagedUsers}
