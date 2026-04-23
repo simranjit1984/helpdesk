@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Send, MoreVertical, PlusCircle, X } from "lucide-react";
+import { Send, MoreVertical, PlusCircle, X, Search } from "lucide-react";
 import {
   DataGrid,
   DataGridRow,
@@ -1194,6 +1194,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchField, setSearchField] = useState("all");
   const [filters, setFilters] = useState<Filter[]>([]);
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   // ── Sort state ────────────────────────────────────────────────────────────
   const [sortColumn, setSortColumn] = useState("username");
@@ -1367,41 +1368,69 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
     setSelectedOrganization("");
   };
 
-  // ── Toolbar buttons (rendered next to UCL search) ─────────────────────────
+  // ── Toolbar buttons (replaces UCL's built-in search) ───────────────────────
   const toolbarContent = (
-    <div className="flex items-center gap-2 flex-wrap">
-      {/* Field selector */}
-      <Select
-        value={searchField}
-        onValueChange={(v) => {
-          setSearchField(v);
-          setCurrentPage(1);
-        }}
-      >
-        <SelectTrigger className="h-10 w-36 rounded-sm border-bluegrey-300 text-sm font-normal text-bluegrey-900 bg-white focus:ring-0">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {SEARCH_FIELDS.map((f) => (
-            <SelectItem key={f.value} value={f.value}>
-              {f.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="flex items-center gap-3 flex-wrap">
 
-      {/* Add filter popover */}
+      {/* ── Grouped compound: field-selector + search input ───────────────── */}
+      <div
+        className={`flex items-center h-10 border rounded-sm bg-white transition-all ${
+          isSelectOpen
+            ? "border-blue-500 ring-1 ring-blue-500"
+            : "border-bluegrey-300 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
+        }`}
+      >
+        {/* Left: field dropdown */}
+        <Select
+          value={searchField}
+          onValueChange={(v) => { setSearchField(v); setCurrentPage(1); }}
+          onOpenChange={setIsSelectOpen}
+        >
+          <SelectTrigger className="h-full w-36 border-0 border-r border-bluegrey-300 rounded-none rounded-l-sm text-sm font-normal text-bluegrey-900 bg-transparent focus:ring-0 focus:outline-none px-2">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SEARCH_FIELDS.map((f) => (
+              <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Right: search text input */}
+        <div className="flex items-center gap-1.5 px-2 flex-1">
+          <Search className="w-4 h-4 text-bluegrey-400 flex-shrink-0" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            placeholder={isInvitationsTab ? "Search invitations" : "Search users"}
+            className="flex-1 min-w-[160px] text-sm text-bluegrey-900 placeholder:text-bluegrey-500 outline-none bg-transparent"
+            autoComplete="off"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => { setSearchQuery(""); setCurrentPage(1); }}
+              className="text-bluegrey-400 hover:text-bluegrey-600 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Add filter ────────────────────────────────────────────────────── */}
       <AddFilterPopover
         columns={FILTER_COLUMNS}
         columnOptions={columnOptions}
         onFilterAdd={(f) => setFilters((prev) => [...prev, f])}
       />
 
-      {/* Invite user */}
+      {/* ── Invite user ───────────────────────────────────────────────────── */}
       <Button className="gap-2 shrink-0">
         <Send className="w-4 h-4" />
         Invite user
       </Button>
+
     </div>
   ) as any; // bypass UCL's ButtonProps restriction on toolbarButtons
 
@@ -1460,12 +1489,6 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
         }}
         disableContextMenuColumn={true}
         emptyLabel="No users found"
-        search={{
-          onSearch: setSearchQuery,
-          placeholder: isInvitationsTab
-            ? "Search invitations"
-            : "Search users",
-        }}
         toolbarButtons={toolbarContent}
       >
         {({ item: user }) => (
