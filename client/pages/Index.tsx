@@ -27,7 +27,7 @@ export default function Index() {
           selected={selectedIndex}
           onTabChange={handleTabChange}
           className="w-full"
-          tabListClassName="w-full"
+          tabListClassName="w-full px-4 sm:px-6 lg:px-8"
         >
           <Tab title="Users">
             <UsersTable allowedStatuses={["active", "blocked", "grace", "inactive"]} />
