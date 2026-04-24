@@ -233,3 +233,37 @@ html {
 .users-datagrid-wrapper table[class*="DataGrid_table"] tbody tr:hover td:first-child {
   background-color: var(--data-grid-row-hover-background-color) !important;
 }
+
+/* ── OrganizationsTable: sticky first column with horizontal scroll ──────── */
+
+.orgs-datagrid-wrapper [class*="DataGrid_table-wrapper"] {
+  overflow-x: auto !important;
+}
+
+.orgs-datagrid-wrapper table[class*="DataGrid_table"] {
+  min-width: 700px;
+}
+
+/* Sticky first header cell */
+.orgs-datagrid-wrapper table[class*="DataGrid_table"] thead th:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 3 !important;
+  background-color: var(--color-blue-grey25) !important;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05), inset 0 -2px 0 0 #DEDEE6 !important;
+}
+
+/* Sticky first body cell */
+.orgs-datagrid-wrapper table[class*="DataGrid_table"] tbody td:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 2 !important;
+  background-color: var(--data-grid-row-background-color) !important;
+  border-right: 1px solid #DEDEE6 !important;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Row hover — keep sticky cell in sync */
+.orgs-datagrid-wrapper table[class*="DataGrid_table"] tbody tr:hover td:first-child {
+  background-color: var(--data-grid-row-hover-background-color) !important;
+}

@@ -1,4 +1,4 @@
-import { MoreVertical, ChevronUp, ChevronDown, ChevronRight, Plus, PlusCircle, X, Search } from "lucide-react";
+import { MoreVertical, ChevronDown, ChevronRight, Plus, PlusCircle, X, Search } from "lucide-react";
 import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
@@ -20,17 +20,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import {
-  Table,
-  TableScroll,
-  TableContent,
-  TableHeader,
-  TableHeadRow,
-  TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableActionCell,
-} from "./ui/table";
+  DataGrid,
+  DataGridRow,
+  DataGridCell,
+} from "@onewelcome/react-lib-components";
+import type { HeaderCell } from "@onewelcome/react-lib-components";
 import { useToast } from "@/hooks/use-toast";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -852,10 +846,18 @@ function OrganizationActionsMenu({ organization }: { organization: Organization 
   );
 }
 
-// ─── Sort types ───────────────────────────────────────────────────────────────
+// ─── Column definitions ───────────────────────────────────────────────────────
 
-type SortColumn = "name" | "referenceId" | "status";
-type SortDirection = "asc" | "desc";
+const HEADERS: HeaderCell[] = [
+  { name: "name",        headline: "Organization name" },
+  { name: "referenceId", headline: "Reference ID" },
+  { name: "status",      headline: "Status" },
+  { name: "actions",     headline: "", disableSorting: true },
+];
+
+const INITIAL_SORT: Array<{ name: string; direction: "ASC" | "DESC" }> = [
+  { name: "name", direction: "ASC" },
+];
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -869,20 +871,11 @@ export default function OrganizationsTable() {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   // ── Sort + expand state ───────────────────────────────────────────────────
-  const [sortColumn, setSortColumn] = useState<SortColumn>("name");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sortColumn, setSortColumn] = useState("name");
+  const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
   const [expandedOrgs, setExpandedOrgs] = useState<Set<string>>(new Set());
 
   const columnOptions = { status: STATUS_OPTIONS };
-
-  const handleSort = (column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
 
   const toggleExpand = (orgId: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -954,16 +947,16 @@ export default function OrganizationsTable() {
   const getSortedOrganizations = () => {
     const filteredOrganizations = getFilteredOrganizations();
     return [...filteredOrganizations].sort((a, b) => {
-      let aVal: any = a[sortColumn];
-      let bVal: any = b[sortColumn];
+      let aVal: any = a[sortColumn as keyof Organization];
+      let bVal: any = b[sortColumn as keyof Organization];
 
       if (typeof aVal === "string") {
         aVal = aVal.toLowerCase();
         bVal = (bVal as string).toLowerCase();
       }
 
-      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      if (aVal < bVal) return sortDir === "ASC" ? -1 : 1;
+      if (aVal > bVal) return sortDir === "ASC" ? 1 : -1;
       return 0;
     });
   };
@@ -983,26 +976,6 @@ export default function OrganizationsTable() {
     });
 
     return flattened;
-  };
-
-  const SortHeader = ({ column, label }: { column: SortColumn; label: string }) => {
-    const isActive = sortColumn === column;
-    return (
-      <button
-        onClick={() => handleSort(column)}
-        className="flex items-center gap-2 hover:text-blue-500 transition-colors cursor-pointer"
-      >
-        <span className="text-sm font-bold text-bluegrey-900">{label}</span>
-        <div className="w-4 h-4">
-          {isActive &&
-            (sortDirection === "asc" ? (
-              <ChevronUp className="w-4 h-4 text-blue-500" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-blue-500" />
-            ))}
-        </div>
-      </button>
-    );
   };
 
   return (
@@ -1101,74 +1074,76 @@ export default function OrganizationsTable() {
       </div>
 
       {/* Table */}
-      <Table variant="flat">
-        <TableScroll>
-          <TableContent>
-            <TableHeader>
-              <TableHeadRow>
-                <TableHeadCell sticky className="w-64">
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 flex-shrink-0" />
-                    <SortHeader column="name" label="Organization name" />
-                  </div>
-                </TableHeadCell>
-                <TableHeadCell>
-                  <SortHeader column="referenceId" label="Reference ID" />
-                </TableHeadCell>
-                <TableHeadCell>
-                  <SortHeader column="status" label="Status" />
-                </TableHeadCell>
-                <TableHeadCell></TableHeadCell>
-              </TableHeadRow>
-            </TableHeader>
-            <TableBody>
-              {getFlattenedOrganizations().map((org) => (
-                <TableRow key={org.id}>
-                  <TableCell sticky className="w-56">
-                    <div
-                      className="flex items-center gap-2"
-                      style={{ paddingLeft: `${org.level * 24}px` }}
+      <div className="orgs-datagrid-wrapper">
+        <DataGrid
+          headers={HEADERS}
+          data={getFlattenedOrganizations()}
+          initialSort={INITIAL_SORT}
+          onSort={(sorts) => {
+            if (sorts && sorts.length > 0) {
+              setSortColumn(sorts[0].name);
+              setSortDir(sorts[0].direction as "ASC" | "DESC");
+            } else {
+              setSortColumn("name");
+              setSortDir("ASC");
+            }
+          }}
+          disableContextMenuColumn={true}
+          emptyLabel="No organizations found"
+        >
+          {({ item: org }) => (
+            <DataGridRow
+              key={org.id}
+              item={org}
+              headers={HEADERS}
+              disableContextMenuColumn={true}
+            >
+              {/* Organization name — expand/collapse + indent */}
+              <DataGridCell>
+                <div
+                  className="flex items-center gap-2"
+                  style={{ paddingLeft: `${org.level * 24}px` }}
+                >
+                  {org.level === 0 && org.children && org.children.length > 0 ? (
+                    <button
+                      onClick={(e) => toggleExpand(org.id, e)}
+                      className="w-5 h-5 flex items-center justify-center hover:bg-bluegrey-100 rounded transition-colors flex-shrink-0"
                     >
-                      {org.level === 0 && org.children && org.children.length > 0 ? (
-                        <button
-                          onClick={(e) => toggleExpand(org.id, e)}
-                          className="w-5 h-5 flex items-center justify-center hover:bg-bluegrey-100 rounded transition-colors flex-shrink-0"
-                        >
-                          {expandedOrgs.has(org.id) ? (
-                            <ChevronDown className="w-4 h-4 text-bluegrey-900" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4 text-bluegrey-900" />
-                          )}
-                        </button>
-                      ) : (
-                        <div className="w-5 h-5 flex-shrink-0" />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/organizations/${org.id}`)}
-                        className="text-sm text-bluegrey-900 group-hover:text-blue-500 truncate transition-colors text-left"
-                      >
-                        {org.name}
-                      </button>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-bluegrey-900 truncate">
-                      {org.referenceId}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={org.status} />
-                  </TableCell>
-                  <TableActionCell>
-                    <OrganizationActionsMenu organization={org} />
-                  </TableActionCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </TableContent>
-        </TableScroll>
-      </Table>
+                      {expandedOrgs.has(org.id)
+                        ? <ChevronDown className="w-4 h-4 text-bluegrey-900" />
+                        : <ChevronRight className="w-4 h-4 text-bluegrey-900" />}
+                    </button>
+                  ) : (
+                    <div className="w-5 h-5 flex-shrink-0" />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/organizations/${org.id}`)}
+                    className="text-sm text-bluegrey-900 hover:text-blue-500 truncate transition-colors text-left"
+                  >
+                    {org.name}
+                  </button>
+                </div>
+              </DataGridCell>
+
+              {/* Reference ID */}
+              <DataGridCell>
+                <span className="text-sm text-bluegrey-900">{org.referenceId}</span>
+              </DataGridCell>
+
+              {/* Status */}
+              <DataGridCell>
+                <StatusBadge status={org.status} />
+              </DataGridCell>
+
+              {/* Actions */}
+              <DataGridCell>
+                <OrganizationActionsMenu organization={org} />
+              </DataGridCell>
+            </DataGridRow>
+          )}
+        </DataGrid>
+      </div>
     </div>
   );
 }
