@@ -207,12 +207,14 @@ html {
 
 /* Sticky first header cell.
    Uses the same UCL CSS variables that DataGridHeader_row applies to the <tr>,
-   so the background is pixel-identical to the rest of the header. */
+   so the background is pixel-identical to the rest of the header.
+   Shadow matches the Organizations table sticky column style. */
 .users-datagrid-wrapper table[class*="DataGrid_table"] thead th:first-child {
   position: sticky !important;
   left: 0 !important;
   z-index: 3 !important;
   background-color: var(--color-blue-grey25) !important;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Sticky first body cell — mirrors DataGridRow_row background */
@@ -221,6 +223,8 @@ html {
   left: 0 !important;
   z-index: 2 !important;
   background-color: var(--data-grid-row-background-color) !important;
+  border-right: 1px solid #DEDEE6 !important;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Row hover — mirrors DataGridRow_row:hover background */
