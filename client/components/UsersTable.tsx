@@ -982,6 +982,13 @@ export function getUserByUsername(username: string): User | undefined {
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 
+// Defined outside the component so the array reference is stable across renders.
+// If defined inline in JSX, a new array is created each render and the DataGrid's
+// useEffect([initialSort]) fires every time, resetting the sort indicators.
+const INITIAL_SORT: Array<{ name: string; direction: "ASC" | "DESC" }> = [
+  { name: "username", direction: "ASC" },
+];
+
 const HEADERS: HeaderCell[] = [
   { name: "username", headline: "Email" },
   { name: "firstName", headline: "First name" },
@@ -1474,11 +1481,15 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
       <DataGrid
         headers={HEADERS}
         data={pagedUsers}
-        initialSort={[{ name: "username", direction: "ASC" }]}
+        initialSort={INITIAL_SORT}
         onSort={(sorts) => {
           if (sorts && sorts.length > 0) {
             setSortColumn(sorts[0].name);
             setSortDir(sorts[0].direction as "ASC" | "DESC");
+          } else {
+            // Sort removed (3rd click cycles back to no sort) — reset to default
+            setSortColumn("username");
+            setSortDir("ASC");
           }
         }}
         paginationProps={{
