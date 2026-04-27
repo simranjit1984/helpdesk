@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronDown, LogOut, User, ArrowLeft, Settings, LayoutDashboard, Sliders } from "lucide-react";
+import { ChevronDown, LogOut, User, ArrowLeft, Settings, Rocket, Sliders } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import UIConfigurationTab from "@/components/owAdmin/UIConfigurationTab";
+import DMv2DeployTab from "@/components/owAdmin/DMv2DeployTab";
 
 // ─── Top bar ─────────────────────────────────────────────────────────────────
 
@@ -78,20 +79,40 @@ function AdminTopBar() {
 
 // ─── Left sidebar ─────────────────────────────────────────────────────────────
 
-const NAV_ITEMS = [
-  { key: "dashboard", label: "Dashboard", icon: LayoutDashboard, disabled: true },
-  { key: "ui-config", label: "UI Configuration", icon: Sliders, disabled: false },
-  { key: "settings", label: "System Settings", icon: Settings, disabled: true },
-];
+interface NavItem {
+  key: string;
+  label: string;
+  icon: React.ElementType;
+  disabled: boolean;
+  badge?: string;
+}
 
-function AdminSidebar({ active, onSelect }: { active: string; onSelect: (key: string) => void }) {
+function buildNavItems(uiConfigEnabled: boolean): NavItem[] {
+  return [
+    { key: "dashboard", label: "DMv2 Deploy", icon: Rocket, disabled: false },
+    { key: "ui-config", label: "UI Configuration", icon: Sliders, disabled: !uiConfigEnabled, badge: !uiConfigEnabled ? "Locked" : undefined },
+    { key: "settings", label: "System Settings", icon: Settings, disabled: true, badge: "Soon" },
+  ];
+}
+
+function AdminSidebar({
+  active,
+  onSelect,
+  uiConfigEnabled,
+}: {
+  active: string;
+  onSelect: (key: string) => void;
+  uiConfigEnabled: boolean;
+}) {
+  const navItems = buildNavItems(uiConfigEnabled);
+
   return (
     <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-bluegrey-100 bg-white min-h-[calc(100vh-64px)] sticky top-16">
       <nav className="py-4 px-3 flex-1">
         <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-bluegrey-400 mb-1">
           Admin
         </p>
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = active === item.key;
           return (
@@ -109,9 +130,15 @@ function AdminSidebar({ active, onSelect }: { active: string; onSelect: (key: st
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span>{item.label}</span>
-              {item.disabled && (
-                <span className="ml-auto text-[10px] bg-bluegrey-100 text-bluegrey-400 px-1.5 py-0.5 rounded-full font-medium">
-                  Soon
+              {item.badge && (
+                <span
+                  className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                    item.badge === "Locked"
+                      ? "bg-amber-50 text-amber-500 border border-amber-200"
+                      : "bg-bluegrey-100 text-bluegrey-400"
+                  }`}
+                >
+                  {item.badge}
                 </span>
               )}
             </button>
@@ -122,46 +149,43 @@ function AdminSidebar({ active, onSelect }: { active: string; onSelect: (key: st
   );
 }
 
-// ─── Placeholder panel ────────────────────────────────────────────────────────
-
-function ComingSoonPanel({ label }: { label: string }) {
-  return (
-    <div className="flex-1 flex items-center justify-center min-h-[400px]">
-      <div className="text-center max-w-xs">
-        <div className="w-14 h-14 rounded-2xl bg-bluegrey-50 flex items-center justify-center mx-auto mb-4">
-          <Settings className="w-7 h-7 text-bluegrey-300" />
-        </div>
-        <h2 className="text-base font-semibold text-bluegrey-700 mb-2">{label}</h2>
-        <p className="text-sm text-bluegrey-400">This section is coming soon.</p>
-      </div>
-    </div>
-  );
-}
-
 // ─── Page header ─────────────────────────────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
-  "dashboard": "Dashboard",
+  dashboard: "DMv2 Deploy",
   "ui-config": "UI Configuration",
-  "settings": "System Settings",
+  settings: "System Settings",
 };
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
 export default function OWAdminConsole() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeSection = searchParams.get("section") ?? "ui-config";
+  const activeSection = searchParams.get("section") ?? "dashboard";
+
+  // Deployment state — once deployed, UI Configuration unlocks
+  const [isDeployed, setIsDeployed] = useState(false);
+  const [deployedOrgName, setDeployedOrgName] = useState<string>("");
 
   const setSection = (key: string) => {
     setSearchParams({ section: key });
   };
+
+  function handleDeployed(orgName: string) {
+    setIsDeployed(true);
+    setDeployedOrgName(orgName);
+  }
 
   return (
     <div className="min-h-screen bg-[#F7F7F9] flex flex-col">
       <AdminTopBar />
 
       <div className="flex flex-1">
-        <AdminSidebar active={activeSection} onSelect={setSection} />
+        <AdminSidebar
+          active={activeSection}
+          onSelect={setSection}
+          uiConfigEnabled={isDeployed}
+        />
 
         {/* Main content */}
         <main className="flex-1 min-w-0">
@@ -170,13 +194,35 @@ export default function OWAdminConsole() {
             <h1 className="text-2xl font-semibold text-bluegrey-900">
               {PAGE_TITLES[activeSection] ?? "Admin"}
             </h1>
+            {activeSection === "dashboard" && isDeployed && (
+              <p className="text-sm text-green-600 font-medium mt-0.5 flex items-center gap-1.5">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                Tenant deployed · {deployedOrgName}
+              </p>
+            )}
           </div>
 
           {/* Content */}
           <div className="bg-white mx-6 my-6 rounded-lg border border-bluegrey-100 overflow-hidden">
+            {activeSection === "dashboard" && (
+              <DMv2DeployTab
+                isDeployed={isDeployed}
+                deployedOrgName={deployedOrgName}
+                onDeployed={(orgName) => handleDeployed(orgName)}
+              />
+            )}
             {activeSection === "ui-config" && <UIConfigurationTab />}
-            {activeSection === "dashboard" && <ComingSoonPanel label="Dashboard" />}
-            {activeSection === "settings" && <ComingSoonPanel label="System Settings" />}
+            {activeSection === "settings" && (
+              <div className="flex-1 flex items-center justify-center min-h-[400px]">
+                <div className="text-center max-w-xs">
+                  <div className="w-14 h-14 rounded-2xl bg-bluegrey-50 flex items-center justify-center mx-auto mb-4">
+                    <Settings className="w-7 h-7 text-bluegrey-300" />
+                  </div>
+                  <h2 className="text-base font-semibold text-bluegrey-700 mb-2">System Settings</h2>
+                  <p className="text-sm text-bluegrey-400">This section is coming soon.</p>
+                </div>
+              </div>
+            )}
           </div>
         </main>
       </div>
