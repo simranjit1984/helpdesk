@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { GripVertical, RotateCcw, Save, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 export interface DetailAttribute {
   id: string;
   label: string;
   category: string;
+  visible: boolean;
 }
 
 // Colour map for category badges — matches AttributeGlobalConfig
@@ -30,10 +32,10 @@ interface DetailViewConfigProps {
 // ─── Live preview ─────────────────────────────────────────────────────────────
 
 function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
-  // Group by category, preserving encounter order
+  // Group by category, preserving encounter order — only visible attributes
   const groups: { category: string; attrs: DetailAttribute[] }[] = [];
   const seen = new Set<string>();
-  for (const attr of attributes) {
+  for (const attr of attributes.filter((a) => a.visible)) {
     if (!seen.has(attr.category)) {
       seen.add(attr.category);
       groups.push({ category: attr.category, attrs: [] });
@@ -68,8 +70,8 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
             </div>
           </div>
         ))}
-        {attributes.length === 0 && (
-          <div className="px-5 py-8 text-center text-sm text-bluegrey-400">No attributes configured.</div>
+        {groups.length === 0 && (
+          <div className="px-5 py-8 text-center text-sm text-bluegrey-400">No visible attributes configured.</div>
         )}
       </div>
     </div>
@@ -80,6 +82,11 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
 export default function DetailViewConfig({ attributes, onSave, onReset }: DetailViewConfigProps) {
   const [rows, setRows] = useState<DetailAttribute[]>(attributes);
+
+  const toggleVisible = (id: string) => {
+    setRows((prev) => prev.map((r) => r.id === id ? { ...r, visible: !r.visible } : r));
+    setIsDirty(true);
+  };
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -154,13 +161,16 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
         {/* Attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden">
           {/* Header */}
-          <div className="grid grid-cols-[40px_1fr_130px] bg-bluegrey-50 border-b border-bluegrey-200">
+          <div className="grid grid-cols-[40px_1fr_150px_100px] bg-bluegrey-50 border-b border-bluegrey-200">
             <div className="px-3 py-3" />
             <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
               Attribute
             </div>
             <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
               Category
+            </div>
+            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
+              Visible
             </div>
           </div>
 
@@ -176,7 +186,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
                 onDragOver={(e) => handleDragOver(e, row.id)}
                 onDrop={(e) => handleDrop(e, row.id)}
                 onDragEnd={handleDragEnd}
-                className={`grid grid-cols-[40px_1fr_130px] border-b border-bluegrey-100 last:border-b-0 transition-colors ${
+                className={`grid grid-cols-[40px_1fr_150px_100px] border-b border-bluegrey-100 last:border-b-0 transition-colors ${
                   isDragging
                     ? "opacity-40 bg-bluegrey-50"
                     : isOver
@@ -199,6 +209,15 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
                   <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${categoryColor(row.category)}`}>
                     {row.category}
                   </span>
+                </div>
+
+                {/* Visible toggle */}
+                <div className="px-4 py-3 flex items-center justify-center">
+                  <Switch
+                    checked={row.visible}
+                    onCheckedChange={() => toggleVisible(row.id)}
+                    aria-label={`${row.label} visible`}
+                  />
                 </div>
               </div>
             );
