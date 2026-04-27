@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Plus, Trash2, RotateCcw, Globe, AlertCircle,
-  Lock, Check, X, Code,
+  Lock, Check, X, Code, ToggleLeft, Hash, Type,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -25,10 +25,13 @@ interface ValidationTranslation {
   formatMessage: string;
 }
 
+export type AttributeType = "string" | "number" | "boolean";
+
 export interface OrgAttribute {
   id: string;
   defaultLabel: string;
   isSystem: boolean;
+  type: AttributeType;
   required: boolean;
   unique: boolean;
   minLength: number | "";
@@ -38,17 +41,23 @@ export interface OrgAttribute {
   validationTranslations: ValidationTranslation[];
 }
 
+const ATTRIBUTE_TYPES: { value: AttributeType; label: string; icon: React.ElementType; description: string }[] = [
+  { value: "string",  label: "String",  icon: Type,        description: "Text value" },
+  { value: "number",  label: "Number",  icon: Hash,        description: "Numeric value" },
+  { value: "boolean", label: "Boolean", icon: ToggleLeft,  description: "True / false toggle" },
+];
+
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
   {
     id: "orgName", defaultLabel: "Organization Name", isSystem: true,
-    required: true, unique: true, minLength: 2, maxLength: 100, regex: "",
+    type: "string", required: true, unique: true, minLength: 2, maxLength: 100, regex: "",
     translations: [], validationTranslations: [],
   },
   {
     id: "description", defaultLabel: "Description", isSystem: true,
-    required: false, unique: false, minLength: "", maxLength: 500, regex: "",
+    type: "string", required: false, unique: false, minLength: "", maxLength: 500, regex: "",
     translations: [], validationTranslations: [],
   },
 ];
@@ -75,12 +84,13 @@ const ENGLISH_DEFAULTS = {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function activeRules(attr: OrgAttribute) {
+  const isString = attr.type === "string";
   return {
     required:  attr.required,
     unique:    attr.unique,
-    minLength: attr.minLength !== "",
-    maxLength: attr.maxLength !== "",
-    format:    !!attr.regex,
+    minLength: isString && attr.minLength !== "",
+    maxLength: isString && attr.maxLength !== "",
+    format:    isString && !!attr.regex,
   };
 }
 
@@ -268,6 +278,38 @@ function AttributePanel({ attr, onChange, onDelete }: {
         <div className="space-y-3">
           <p className="text-xs font-semibold text-bluegrey-500 uppercase tracking-wide">Validation constraints</p>
 
+          {/* Type selector */}
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium text-bluegrey-900">Attribute type</p>
+            <p className="text-xs text-bluegrey-500">Determines what kind of value this attribute holds.</p>
+            <div className="flex gap-2">
+              {ATTRIBUTE_TYPES.map(({ value, label, icon: Icon, description }) => {
+                const isActive = attr.type === value;
+                const isDisabled = attr.isSystem;
+                return (
+                  <button
+                    key={value} type="button"
+                    disabled={isDisabled}
+                    onClick={() => onChange({ ...attr, type: value, minLength: "", maxLength: "", regex: "" })}
+                    className={`flex-1 flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-md border-2 text-xs font-medium transition-colors ${
+                      isDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                    } ${
+                      isActive
+                        ? "border-blue-500 bg-blue-50 text-blue-700"
+                        : "border-bluegrey-200 bg-white text-bluegrey-600 hover:border-bluegrey-400"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{label}</span>
+                    <span className={`text-[10px] font-normal ${isActive ? "text-blue-500" : "text-bluegrey-400"}`}>{description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="border-t border-bluegrey-100" />
+
           {/* Required */}
           <div className="flex items-center justify-between">
             <div>
@@ -289,26 +331,30 @@ function AttributePanel({ attr, onChange, onDelete }: {
             <Switch checked={attr.unique} onCheckedChange={(v) => onChange({ ...attr, unique: v })} />
           </div>
 
-          {/* Min / Max length */}
-          <div className="space-y-2 pt-1">
-            <NumInput label="Minimum length" value={attr.minLength}
-              onChange={(v) => onChange({ ...attr, minLength: v })} min={0} />
-            <NumInput label="Maximum length" value={attr.maxLength}
-              onChange={(v) => onChange({ ...attr, maxLength: v })} min={0} />
-          </div>
-
-          {/* Regex */}
-          <div className="space-y-1.5 pt-1">
-            <div className="flex items-center gap-1.5">
-              <Code className="w-3.5 h-3.5 text-bluegrey-500" />
-              <p className="text-sm font-medium text-bluegrey-900">Regex pattern</p>
+          {/* Min / Max length — string only */}
+          {attr.type === "string" && (
+            <div className="space-y-2 pt-1">
+              <NumInput label="Minimum length" value={attr.minLength}
+                onChange={(v) => onChange({ ...attr, minLength: v })} min={0} />
+              <NumInput label="Maximum length" value={attr.maxLength}
+                onChange={(v) => onChange({ ...attr, maxLength: v })} min={0} />
             </div>
-            <input type="text" value={attr.regex}
-              onChange={(e) => onChange({ ...attr, regex: e.target.value })}
-              placeholder="e.g. ^[A-Za-z0-9 ]{2,100}$  (optional)"
-              className="w-full h-9 px-3 text-sm font-mono border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          )}
+
+          {/* Regex — string only */}
+          {attr.type === "string" && (
+            <div className="space-y-1.5 pt-1">
+              <div className="flex items-center gap-1.5">
+                <Code className="w-3.5 h-3.5 text-bluegrey-500" />
+                <p className="text-sm font-medium text-bluegrey-900">Regex pattern</p>
+              </div>
+              <input type="text" value={attr.regex}
+                onChange={(e) => onChange({ ...attr, regex: e.target.value })}
+                placeholder="e.g. ^[A-Za-z0-9 ]{2,100}$  (optional)"
+                className="w-full h-9 px-3 text-sm font-mono border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          )}
         </div>
 
         <div className="border-t border-bluegrey-100" />
@@ -407,7 +453,7 @@ function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
     const trimmed = label.trim();
     if (!trimmed) return;
     const id = trimmed.replace(/\s+(.)/g, (_, c) => c.toUpperCase()).replace(/\s/g, "").replace(/^./, (c) => c.toLowerCase());
-    onAdd({ id, defaultLabel: trimmed, isSystem: false, required: false, unique: false, minLength: "", maxLength: "", regex: "", translations: [], validationTranslations: [] });
+    onAdd({ id, defaultLabel: trimmed, isSystem: false, type: "string", required: false, unique: false, minLength: "", maxLength: "", regex: "", translations: [], validationTranslations: [] });
     setLabel("");
     setOpen(false);
   };
