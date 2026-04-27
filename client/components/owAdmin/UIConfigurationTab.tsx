@@ -24,12 +24,13 @@ const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
 ];
 
 const DEFAULT_USERS_DETAIL: DetailAttribute[] = [
-  { id: "firstName", label: "First Name", visible: true, editable: true, section: "basic" },
-  { id: "lastName", label: "Last Name", visible: true, editable: true, section: "basic" },
-  { id: "email", label: "Email", visible: true, editable: false, section: "basic" },
-  { id: "role", label: "Role", visible: true, editable: true, section: "access" },
-  { id: "organization", label: "Organization", visible: true, editable: false, section: "organization" },
-  { id: "status", label: "Status", visible: true, editable: true, section: "access" },
+  { id: "firstName",    label: "First Name",   category: "Basic Info"        },
+  { id: "lastName",     label: "Last Name",    category: "Basic Info"        },
+  { id: "email",        label: "Email",        category: "Contact Info"      },
+  { id: "phoneNumber",  label: "Phone Number", category: "Contact Info"      },
+  { id: "status",       label: "Status",       category: "System"            },
+  { id: "role",         label: "Role",         category: "Access Info"       },
+  { id: "organization", label: "Organization", category: "Organization Info" },
 ];
 
 const DEFAULT_INVITATIONS_OVERVIEW: AttributeCapability[] = [
@@ -41,11 +42,11 @@ const DEFAULT_INVITATIONS_OVERVIEW: AttributeCapability[] = [
 ];
 
 const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
-  { id: "email", label: "Email", visible: true, editable: false, section: "basic" },
-  { id: "phoneNumber", label: "Phone Number", visible: true, editable: true, section: "basic" },
-  { id: "status", label: "Status", visible: true, editable: false, section: "access" },
-  { id: "invitedBy", label: "Invited By", visible: true, editable: false, section: "access" },
-  { id: "expiryDate", label: "Expiry Date", visible: true, editable: true, section: "access" },
+  { id: "email",       label: "Email",        category: "Contact Info" },
+  { id: "phoneNumber", label: "Phone Number", category: "Contact Info" },
+  { id: "status",      label: "Status",       category: "System"       },
+  { id: "invitedBy",   label: "Invited By",   category: "Access Info"  },
+  { id: "expiryDate",  label: "Expiry Date",  category: "System"       },
 ];
 
 // ─── Sub-tab style ─────────────────────────────────────────────────────────
