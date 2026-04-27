@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Users, Mail, Shield, AppWindow, Key } from "lucide-react";
 import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatrix";
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
 
@@ -45,7 +46,7 @@ const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
   { id: "expiryDate", label: "Expiry Date", visible: true, editable: true, section: "access" },
 ];
 
-// ─── Sub-tab trigger style ─────────────────────────────────────────────────
+// ─── Sub-tab style ─────────────────────────────────────────────────────────
 
 const SUB_TAB_CLASS =
   "h-auto py-2.5 px-0 rounded-none bg-transparent text-sm font-medium " +
@@ -55,7 +56,13 @@ const SUB_TAB_CLASS =
   "data-[state=active]:bg-transparent data-[state=active]:shadow-none " +
   "hover:text-bluegrey-900 transition-colors";
 
-// ─── Entity config block ───────────────────────────────────────────────────
+const ENTITY_TAB_CLASS =
+  "h-9 px-4 rounded-full text-sm font-medium transition-colors " +
+  "bg-transparent text-bluegrey-500 shadow-none " +
+  "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-none " +
+  "hover:text-bluegrey-900";
+
+// ─── Entity config (Users + Invitations) ──────────────────────────────────
 
 interface EntityConfigProps {
   overviewDefaults: AttributeCapability[];
@@ -68,7 +75,6 @@ function EntityConfig({ overviewDefaults, detailDefaults }: EntityConfigProps) {
 
   return (
     <Tabs defaultValue="overview">
-      {/* Sub-tab bar */}
       <div className="bg-white border-b border-bluegrey-100 px-6">
         <TabsList className="h-auto bg-transparent p-0 gap-6 -mb-px">
           <TabsTrigger value="overview" className={SUB_TAB_CLASS}>
@@ -90,10 +96,7 @@ function EntityConfig({ overviewDefaults, detailDefaults }: EntityConfigProps) {
         <OverviewConfigMatrix
           attributes={overviewAttrs}
           onSave={setOverviewAttrs}
-          onReset={() => {
-            setOverviewAttrs(overviewDefaults);
-            return overviewDefaults;
-          }}
+          onReset={() => { setOverviewAttrs(overviewDefaults); return overviewDefaults; }}
         />
       </TabsContent>
 
@@ -107,57 +110,82 @@ function EntityConfig({ overviewDefaults, detailDefaults }: EntityConfigProps) {
         <DetailViewConfig
           attributes={detailAttrs}
           onSave={setDetailAttrs}
-          onReset={() => {
-            setDetailAttrs(detailDefaults);
-            return detailDefaults;
-          }}
+          onReset={() => { setDetailAttrs(detailDefaults); return detailDefaults; }}
         />
       </TabsContent>
     </Tabs>
   );
 }
 
-// ─── Entity tab style ──────────────────────────────────────────────────────
+// ─── Users & Invitations panel ─────────────────────────────────────────────
 
-const ENTITY_TAB_CLASS =
-  "h-9 px-4 rounded-full text-sm font-medium transition-colors " +
-  "bg-transparent text-bluegrey-500 shadow-none " +
-  "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-none " +
-  "hover:text-bluegrey-900";
+function UsersAndInvitationsPanel() {
+  return (
+    <Tabs defaultValue="users" className="w-full">
+      <div className="px-6 py-3 border-b border-bluegrey-100 flex items-center gap-2 bg-bluegrey-25">
+        <TabsList className="h-auto bg-bluegrey-100 p-1 rounded-full gap-1">
+          <TabsTrigger value="users" className={ENTITY_TAB_CLASS}>Users</TabsTrigger>
+          <TabsTrigger value="invitations" className={ENTITY_TAB_CLASS}>Invitations</TabsTrigger>
+        </TabsList>
+      </div>
+      <TabsContent value="users" className="mt-0">
+        <EntityConfig overviewDefaults={DEFAULT_USERS_OVERVIEW} detailDefaults={DEFAULT_USERS_DETAIL} />
+      </TabsContent>
+      <TabsContent value="invitations" className="mt-0">
+        <EntityConfig overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW} detailDefaults={DEFAULT_INVITATIONS_DETAIL} />
+      </TabsContent>
+    </Tabs>
+  );
+}
 
-// ─── Main UIConfigurationTab ───────────────────────────────────────────────
+// ─── Coming soon placeholder ───────────────────────────────────────────────
 
-const SCOPE_OPTIONS = [
-  { value: "global", label: "Global" },
-  { value: "organization", label: "Organization-specific" },
-  { value: "role", label: "Role-specific" },
+function ComingSoonSection({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
+  return (
+    <div className="flex items-center justify-center min-h-[320px]">
+      <div className="text-center max-w-xs">
+        <div className="w-12 h-12 rounded-xl bg-bluegrey-50 flex items-center justify-center mx-auto mb-3">
+          <Icon className="w-6 h-6 text-bluegrey-300" />
+        </div>
+        <p className="text-sm font-medium text-bluegrey-600 mb-1">{label}</p>
+        <p className="text-xs text-bluegrey-400">UI configuration for this entity is coming soon.</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Entity options ────────────────────────────────────────────────────────
+
+const ENTITY_OPTIONS = [
+  { value: "users-invitations", label: "Users & Invitations" },
+  { value: "organization", label: "Organization" },
+  { value: "access-role", label: "Access Role" },
+  { value: "application", label: "Application" },
+  { value: "permission", label: "Permission" },
 ];
 
+// ─── Main component ────────────────────────────────────────────────────────
+
 export default function UIConfigurationTab() {
-  const [scope, setScope] = useState("global");
+  const [entity, setEntity] = useState("users-invitations");
+
+  const selectedLabel = ENTITY_OPTIONS.find((o) => o.value === entity)?.label ?? "";
 
   return (
     <div>
-      {/* Section description + scope selector */}
-      <div className="px-6 py-5 border-b border-bluegrey-100 flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-0 sm:justify-between">
-        <div>
-          <h2 className="text-base font-semibold text-bluegrey-900">UI Configuration</h2>
-          <p className="text-sm text-bluegrey-500 mt-1 max-w-xl">
-            Configure which attributes are visible, searchable, filterable, and sortable for each entity. Customise both the overview table and single-record detail view.
-          </p>
-        </div>
-
-        {/* Configuration scope */}
+      {/* Header bar — entity selector on LEFT, description on right */}
+      <div className="px-6 py-4 border-b border-bluegrey-100 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+        {/* Left: selector */}
         <div className="flex items-center gap-3 shrink-0">
           <label className="text-sm font-medium text-bluegrey-700 whitespace-nowrap">
-            Configuration scope
+            Entity
           </label>
-          <Select value={scope} onValueChange={setScope}>
-            <SelectTrigger className="w-48 text-sm h-9">
+          <Select value={entity} onValueChange={setEntity}>
+            <SelectTrigger className="w-52 text-sm h-9">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {SCOPE_OPTIONS.map((opt) => (
+              {ENTITY_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </SelectItem>
@@ -165,35 +193,23 @@ export default function UIConfigurationTab() {
             </SelectContent>
           </Select>
         </div>
+
+        {/* Divider */}
+        <div className="hidden sm:block h-6 w-px bg-bluegrey-200" />
+
+        {/* Right: description */}
+        <p className="text-sm text-bluegrey-500">
+          Configure attribute visibility, search, filter, sort and detail view layout for{" "}
+          <span className="font-medium text-bluegrey-700">{selectedLabel}</span>.
+        </p>
       </div>
 
-      {/* Entity tabs */}
-      <Tabs defaultValue="users" className="w-full">
-        <div className="px-6 py-3 border-b border-bluegrey-100 flex items-center gap-2 bg-bluegrey-25">
-          <TabsList className="h-auto bg-bluegrey-100 p-1 rounded-full gap-1">
-            <TabsTrigger value="users" className={ENTITY_TAB_CLASS}>
-              Users
-            </TabsTrigger>
-            <TabsTrigger value="invitations" className={ENTITY_TAB_CLASS}>
-              Invitations
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent value="users" className="mt-0">
-          <EntityConfig
-            overviewDefaults={DEFAULT_USERS_OVERVIEW}
-            detailDefaults={DEFAULT_USERS_DETAIL}
-          />
-        </TabsContent>
-
-        <TabsContent value="invitations" className="mt-0">
-          <EntityConfig
-            overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW}
-            detailDefaults={DEFAULT_INVITATIONS_DETAIL}
-          />
-        </TabsContent>
-      </Tabs>
+      {/* Content area */}
+      {entity === "users-invitations" && <UsersAndInvitationsPanel />}
+      {entity === "organization" && <ComingSoonSection icon={Users} label="Organization" />}
+      {entity === "access-role" && <ComingSoonSection icon={Shield} label="Access Role" />}
+      {entity === "application" && <ComingSoonSection icon={AppWindow} label="Application" />}
+      {entity === "permission" && <ComingSoonSection icon={Key} label="Permission" />}
     </div>
   );
 }
