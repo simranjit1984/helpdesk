@@ -15,11 +15,12 @@ import AttributeGlobalConfig from "./AttributeGlobalConfig";
 // ─── Default data ─────────────────────────────────────────────────────────────
 
 const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
-  { id: "firstName", label: "First Name", visible: true, searchable: true, filterable: true, sortable: true },
-  { id: "lastName", label: "Last Name", visible: true, searchable: true, filterable: true, sortable: true },
-  { id: "email", label: "Email", visible: true, searchable: true, filterable: true, sortable: true },
-  { id: "role", label: "Role", visible: true, searchable: true, filterable: true, sortable: false, disabledCaps: ["sortable"] },
-  { id: "organization", label: "Organization", visible: true, searchable: false, filterable: true, sortable: true, disabledCaps: ["searchable"] },
+  { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: true,  sortable: true  },
+  { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: true,  sortable: true  },
+  { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: true,  sortable: true  },
+  { id: "role",        label: "Role",         visible: true,  searchable: true,  filterable: true,  sortable: false, disabledCaps: ["sortable"] },
+  { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
+  { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["sortable"] },
 ];
 
 const DEFAULT_USERS_DETAIL: DetailAttribute[] = [
