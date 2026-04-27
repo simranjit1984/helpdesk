@@ -517,9 +517,22 @@ export default function AttributeGlobalConfig() {
 
   return (
     <div className="px-6 py-6 space-y-5">
-      <p className="text-sm text-bluegrey-500 max-w-2xl">
-        Global settings for each IDS attribute — applied regardless of where the attribute appears. Attribute constraints (mandatory, unique, identifier, regex) are read from IDS and shown for reference only.
-      </p>
+      <div className="space-y-2 max-w-2xl">
+        <p className="text-sm text-bluegrey-500">
+          Global settings for each IDS attribute — applied regardless of where the attribute appears. Attribute constraints (mandatory, unique, identifier, regex) are read from IDS and shown for reference only.
+        </p>
+        <p className="text-sm text-bluegrey-500">
+          New user attributes cannot be created here.{" "}
+          <a
+            href="#"
+            onClick={(e) => e.preventDefault()}
+            className="text-blue-600 hover:text-blue-800 underline underline-offset-2 font-medium transition-colors"
+          >
+            Go to IDS Configuration UI
+          </a>{" "}
+          to add or manage attribute definitions.
+        </p>
+      </div>
 
       <div className="grid grid-cols-[220px_1fr] gap-5">
         {/* Left: attribute list */}
