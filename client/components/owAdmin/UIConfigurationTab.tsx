@@ -11,6 +11,7 @@ import { Users, Mail, Shield, AppWindow, Key } from "lucide-react";
 import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatrix";
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
 import AttributeGlobalConfig from "./AttributeGlobalConfig";
+import OrganizationConfig from "./OrganizationConfig";
 
 // ─── Default data ─────────────────────────────────────────────────────────────
 
@@ -246,7 +247,7 @@ export default function UIConfigurationTab() {
 
       {/* Content area */}
       {entity === "users-invitations" && <UsersAndInvitationsPanel />}
-      {entity === "organization" && <ComingSoonSection icon={Users} label="Organization" />}
+      {entity === "organization" && <OrganizationConfig />}
       {entity === "access-role" && <ComingSoonSection icon={Shield} label="Access Role" />}
       {entity === "application" && <ComingSoonSection icon={AppWindow} label="Application" />}
       {entity === "permission" && <ComingSoonSection icon={Key} label="Permission" />}

@@ -29,6 +29,7 @@ interface DetailViewConfigProps {
   onSave: (attrs: DetailAttribute[]) => void;
   onReset: () => DetailAttribute[];
   showCreateColumn?: boolean;
+  showCategoryColumn?: boolean;
 }
 
 // ─── Live preview ─────────────────────────────────────────────────────────────
@@ -102,7 +103,7 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false }: DetailViewConfigProps) {
+export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true }: DetailViewConfigProps) {
   const [rows, setRows] = useState<DetailAttribute[]>(attributes);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -189,10 +190,17 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
         {/* Attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden">
           {/* Header */}
-          <div className={`grid ${showCreateColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" : "grid-cols-[40px_1fr_150px_100px]"} bg-bluegrey-50 border-b border-bluegrey-200`}>
+          <div className={`grid ${
+            showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" :
+            showCategoryColumn && !showCreateColumn ? "grid-cols-[40px_1fr_150px_100px]" :
+            !showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_100px_100px]" :
+            "grid-cols-[40px_1fr_100px]"
+          } bg-bluegrey-50 border-b border-bluegrey-200`}>
             <div className="px-3 py-3" />
             <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Attribute</div>
-            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Category</div>
+            {showCategoryColumn && (
+              <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Category</div>
+            )}
             {showCreateColumn && (
               <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create</div>
             )}
@@ -211,7 +219,12 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 onDragOver={(e) => handleDragOver(e, row.id)}
                 onDrop={(e) => handleDrop(e, row.id)}
                 onDragEnd={handleDragEnd}
-                className={`grid ${showCreateColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" : "grid-cols-[40px_1fr_150px_100px]"} border-b border-bluegrey-100 last:border-b-0 transition-colors ${
+                className={`grid ${
+                  showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" :
+                  showCategoryColumn && !showCreateColumn ? "grid-cols-[40px_1fr_150px_100px]" :
+                  !showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_100px_100px]" :
+                  "grid-cols-[40px_1fr_100px]"
+                } border-b border-bluegrey-100 last:border-b-0 transition-colors ${
                   isDragging ? "opacity-40 bg-bluegrey-50"
                   : isOver   ? "bg-blue-50 border-l-2 border-l-blue-400"
                   :             "bg-white hover:bg-bluegrey-25"
@@ -228,11 +241,13 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 </div>
 
                 {/* Category badge */}
-                <div className="px-4 py-3 flex items-center">
-                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${categoryColor(row.category)}`}>
-                    {row.category}
-                  </span>
-                </div>
+                {showCategoryColumn && (
+                  <div className="px-4 py-3 flex items-center">
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${categoryColor(row.category)}`}>
+                      {row.category}
+                    </span>
+                  </div>
+                )}
 
                 {/* Create toggle — Invitations only */}
                 {showCreateColumn && (
