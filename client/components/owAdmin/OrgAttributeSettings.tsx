@@ -22,7 +22,11 @@ interface ValidationTranslation {
   uniqueMessage: string;
   minLengthMessage: string;
   maxLengthMessage: string;
-  formatMessage: string;
+}
+
+interface FormatTranslation {
+  language: string;
+  message: string;
 }
 
 export type AttributeType = "string" | "number" | "boolean";
@@ -39,6 +43,7 @@ export interface OrgAttribute {
   regex: string;
   translations: Translation[];
   validationTranslations: ValidationTranslation[];
+  formatTranslations: FormatTranslation[];
 }
 
 const ATTRIBUTE_TYPES: { value: AttributeType; label: string; icon: React.ElementType; description: string }[] = [
@@ -53,12 +58,12 @@ export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
   {
     id: "orgName", defaultLabel: "Organization Name", isSystem: true,
     type: "string", required: true, unique: true, minLength: 2, maxLength: 100, regex: "",
-    translations: [], validationTranslations: [],
+    translations: [], validationTranslations: [], formatTranslations: [],
   },
   {
     id: "description", defaultLabel: "Description", isSystem: true,
     type: "string", required: false, unique: false, minLength: "", maxLength: 500, regex: "",
-    translations: [], validationTranslations: [],
+    translations: [], validationTranslations: [], formatTranslations: [],
   },
 ];
 
@@ -90,7 +95,6 @@ function activeRules(attr: OrgAttribute) {
     unique:    attr.unique,
     minLength: isString && attr.minLength !== "",
     maxLength: isString && attr.maxLength !== "",
-    format:    isString && !!attr.regex,
   };
 }
 
@@ -169,14 +173,34 @@ function ValidationTranslationRow({
             className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
         )}
-        {rules.format && (
-          <input type="text" value={row.formatMessage} onChange={(e) => onChange({ ...row, formatMessage: e.target.value })}
-            placeholder={ENGLISH_DEFAULTS.format}
-            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          />
-        )}
       </div>
       <button type="button" onClick={onRemove} className="p-1.5 mt-0.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+        <Trash2 className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
+// ─── Inline format translation row ───────────────────────────────────────────
+
+function FormatTranslationRow({
+  row, usedLanguages, onChange, onRemove,
+}: {
+  row: FormatTranslation; usedLanguages: string[];
+  onChange: (r: FormatTranslation) => void; onRemove: () => void;
+}) {
+  const available = LANGUAGES.filter((l) => l.code === row.language || !usedLanguages.includes(l.code));
+  return (
+    <div className="flex items-center gap-2">
+      <Select value={row.language} onValueChange={(v) => onChange({ ...row, language: v })}>
+        <SelectTrigger className="w-32 h-8 text-sm shrink-0"><SelectValue placeholder="Language" /></SelectTrigger>
+        <SelectContent>{available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}</SelectContent>
+      </Select>
+      <input type="text" value={row.message} onChange={(e) => onChange({ ...row, message: e.target.value })}
+        placeholder={ENGLISH_DEFAULTS.format}
+        className="flex-1 h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+      />
+      <button type="button" onClick={onRemove} className="p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
@@ -341,18 +365,59 @@ function AttributePanel({ attr, onChange, onDelete }: {
             </div>
           )}
 
-          {/* Regex — string only */}
+          {/* Regex + inline format translations — string only */}
           {attr.type === "string" && (
-            <div className="space-y-1.5 pt-1">
-              <div className="flex items-center gap-1.5">
-                <Code className="w-3.5 h-3.5 text-bluegrey-500" />
-                <p className="text-sm font-medium text-bluegrey-900">Regex pattern</p>
+            <div className="space-y-3 pt-1 border border-bluegrey-100 rounded-md px-3 py-3 bg-bluegrey-25">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Code className="w-3.5 h-3.5 text-bluegrey-500" />
+                  <p className="text-sm font-medium text-bluegrey-900">Format check (regex)</p>
+                  <span className="text-[10px] text-bluegrey-400 ml-auto">optional</span>
+                </div>
+                <input type="text" value={attr.regex}
+                  onChange={(e) => onChange({ ...attr, regex: e.target.value })}
+                  placeholder="e.g. ^[A-Za-z0-9 ]{2,100}$"
+                  className="w-full h-9 px-3 text-sm font-mono border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                />
               </div>
-              <input type="text" value={attr.regex}
-                onChange={(e) => onChange({ ...attr, regex: e.target.value })}
-                placeholder="e.g. ^[A-Za-z0-9 ]{2,100}$  (optional)"
-                className="w-full h-9 px-3 text-sm font-mono border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              />
+
+              {/* Inline format error translations */}
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-bluegrey-600">Format error translations</p>
+                {/* English default (read-only) */}
+                <div className="flex items-center gap-2">
+                  <div className="w-32 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-white text-bluegrey-500 shrink-0">English</div>
+                  <div className="flex-1 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-white text-bluegrey-500 gap-1.5">
+                    <span className={`text-[10px] font-semibold px-1 py-0.5 rounded border shrink-0 ${RULE_BADGE.format}`}>format</span>
+                    {attr.regex ? ENGLISH_DEFAULTS.format : <span className="italic text-bluegrey-400">Enter a regex above to activate</span>}
+                  </div>
+                  <div className="w-7" />
+                </div>
+
+                {attr.formatTranslations.map((row, i) => (
+                  <FormatTranslationRow key={i} row={row}
+                    usedLanguages={attr.formatTranslations.filter((_, idx) => idx !== i).map((t) => t.language)}
+                    onChange={(u) => {
+                      const next = [...attr.formatTranslations]; next[i] = u;
+                      onChange({ ...attr, formatTranslations: next });
+                    }}
+                    onRemove={() => onChange({ ...attr, formatTranslations: attr.formatTranslations.filter((_, idx) => idx !== i) })}
+                  />
+                ))}
+
+                {attr.formatTranslations.length < LANGUAGES.length && (
+                  <button type="button"
+                    onClick={() => {
+                      const usedLangs = attr.formatTranslations.map((t) => t.language);
+                      const next = LANGUAGES.find((l) => !usedLangs.includes(l.code));
+                      if (!next) return;
+                      onChange({ ...attr, formatTranslations: [...attr.formatTranslations, { language: next.code, message: "" }] });
+                    }}
+                    className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                    <Plus className="w-3.5 h-3.5" />Add language
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -416,8 +481,7 @@ function AttributePanel({ attr, onChange, onDelete }: {
                   {rules.unique    && <EnglishDefaultRow ruleKey="unique"    text={ENGLISH_DEFAULTS.unique} />}
                   {rules.minLength && <EnglishDefaultRow ruleKey="minLength" text={ENGLISH_DEFAULTS.minLength(attr.minLength)} />}
                   {rules.maxLength && <EnglishDefaultRow ruleKey="maxLength" text={ENGLISH_DEFAULTS.maxLength(attr.maxLength)} />}
-                  {rules.format    && <EnglishDefaultRow ruleKey="format"    text={ENGLISH_DEFAULTS.format} />}
-                </div>
+                    </div>
                 <div className="w-7" />
               </div>
 
@@ -453,7 +517,7 @@ function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
     const trimmed = label.trim();
     if (!trimmed) return;
     const id = trimmed.replace(/\s+(.)/g, (_, c) => c.toUpperCase()).replace(/\s/g, "").replace(/^./, (c) => c.toLowerCase());
-    onAdd({ id, defaultLabel: trimmed, isSystem: false, type: "string", required: false, unique: false, minLength: "", maxLength: "", regex: "", translations: [], validationTranslations: [] });
+    onAdd({ id, defaultLabel: trimmed, isSystem: false, type: "string", required: false, unique: false, minLength: "", maxLength: "", regex: "", translations: [], validationTranslations: [], formatTranslations: [] });
     setLabel("");
     setOpen(false);
   };
