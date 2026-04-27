@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Save } from "lucide-react";
+import { GripVertical, RotateCcw, Save } from "lucide-react";
 
 export interface AttributeCapability {
   id: string;
@@ -31,6 +31,10 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
   const [rows, setRows] = useState<AttributeCapability[]>(attributes);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDirty, setIsDirty] = useState(false);
+
+  // Drag state
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const toggleCap = (id: string, cap: keyof AttributeCapability) => {
     setRows((prev) =>
@@ -68,6 +72,43 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
       })
     );
     setIsDirty(true);
+  };
+
+  // Drag handlers
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    setDraggingId(id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverId(id);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggingId || draggingId === targetId) {
+      setDragOverId(null);
+      setDraggingId(null);
+      return;
+    }
+    setRows((prev) => {
+      const from = prev.findIndex((r) => r.id === draggingId);
+      const to = prev.findIndex((r) => r.id === targetId);
+      const reordered = [...prev];
+      const [moved] = reordered.splice(from, 1);
+      reordered.splice(to, 0, moved);
+      return reordered;
+    });
+    setDragOverId(null);
+    setDraggingId(null);
+    setIsDirty(true);
+  };
+
+  const handleDragEnd = () => {
+    setDragOverId(null);
+    setDraggingId(null);
   };
 
   const handleReset = () => {
@@ -115,8 +156,11 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
 
       {/* Matrix table */}
       <div className="border border-bluegrey-200 rounded-md overflow-hidden">
-        {/* Header */}
-        <div className="grid grid-cols-[44px_1fr_repeat(4,120px)] bg-bluegrey-50 border-b border-bluegrey-200">
+        {/* Header — extra leading column for the drag handle */}
+        <div className="grid grid-cols-[36px_44px_1fr_repeat(4,120px)] bg-bluegrey-50 border-b border-bluegrey-200">
+          {/* Drag-handle header (empty, just a spacer) */}
+          <div className="px-2 py-3" />
+          {/* Select-all checkbox */}
           <div className="flex items-center justify-center px-3 py-3">
             <Checkbox
               checked={allSelected}
@@ -139,13 +183,32 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
         {/* Rows */}
         {rows.map((row) => {
           const isSelected = selectedIds.has(row.id);
+          const isDragging = draggingId === row.id;
+          const isOver = dragOverId === row.id && !isDragging;
+
           return (
             <div
               key={row.id}
-              className={`grid grid-cols-[44px_1fr_repeat(4,120px)] border-b border-bluegrey-100 last:border-b-0 transition-colors ${
-                isSelected ? "bg-blue-50" : "bg-white hover:bg-bluegrey-25"
+              draggable
+              onDragStart={(e) => handleDragStart(e, row.id)}
+              onDragOver={(e) => handleDragOver(e, row.id)}
+              onDrop={(e) => handleDrop(e, row.id)}
+              onDragEnd={handleDragEnd}
+              className={`grid grid-cols-[36px_44px_1fr_repeat(4,120px)] border-b border-bluegrey-100 last:border-b-0 transition-colors ${
+                isDragging
+                  ? "opacity-40 bg-bluegrey-50"
+                  : isOver
+                  ? "bg-blue-50 border-l-2 border-l-blue-400"
+                  : isSelected
+                  ? "bg-blue-50"
+                  : "bg-white hover:bg-bluegrey-25"
               }`}
             >
+              {/* Drag handle */}
+              <div className="flex items-center justify-center px-2 py-4 cursor-grab active:cursor-grabbing text-bluegrey-300 hover:text-bluegrey-500 transition-colors">
+                <GripVertical className="w-4 h-4" />
+              </div>
+
               {/* Checkbox */}
               <div className="flex items-center justify-center px-3 py-4">
                 <Checkbox
@@ -156,7 +219,7 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
               </div>
 
               {/* Attribute name */}
-              <div className="px-4 py-4 flex items-center">
+              <div className="px-4 py-4 flex items-center gap-2">
                 <span className="text-sm font-medium text-bluegrey-900">{row.label}</span>
               </div>
 
