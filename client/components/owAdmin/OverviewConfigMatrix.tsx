@@ -225,14 +225,20 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
 
               {/* Capability toggles */}
               {CAPABILITIES.map((cap) => {
-                const isDisabled = row.disabledCaps?.includes(cap.key as any);
+                const isN_A = row.disabledCaps?.includes(cap.key as any);
+                const isHiddenByVisibility = cap.key !== "visible" && !row.visible;
                 const value = row[cap.key] as boolean;
                 return (
                   <div key={cap.key} className="flex items-center justify-center px-4 py-4">
-                    {isDisabled ? (
+                    {isN_A ? (
                       <div className="flex flex-col items-center gap-1">
                         <Switch disabled checked={false} />
                         <span className="text-[10px] text-bluegrey-400">N/A</span>
+                      </div>
+                    ) : isHiddenByVisibility ? (
+                      <div className="flex flex-col items-center gap-1">
+                        <Switch disabled checked={false} />
+                        <span className="text-[10px] text-bluegrey-400">Hidden</span>
                       </div>
                     ) : (
                       <Switch
