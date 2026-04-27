@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Plus, Trash2, Save, RotateCcw, Globe, AlertCircle,
+  Plus, Trash2, RotateCcw, Globe, AlertCircle,
   Lock, Check, X, Code,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,14 +19,20 @@ interface Translation {
 interface ValidationTranslation {
   language: string;
   requiredMessage: string;
+  uniqueMessage: string;
+  minLengthMessage: string;
+  maxLengthMessage: string;
   formatMessage: string;
 }
 
 export interface OrgAttribute {
   id: string;
   defaultLabel: string;
-  isSystem: boolean;      // cannot be removed
-  mandatory: boolean;
+  isSystem: boolean;
+  required: boolean;
+  unique: boolean;
+  minLength: number | "";
+  maxLength: number | "";
   regex: string;
   translations: Translation[];
   validationTranslations: ValidationTranslation[];
@@ -37,12 +43,12 @@ export interface OrgAttribute {
 export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
   {
     id: "orgName", defaultLabel: "Organization Name", isSystem: true,
-    mandatory: true, regex: "",
+    required: true, unique: true, minLength: 2, maxLength: 100, regex: "",
     translations: [], validationTranslations: [],
   },
   {
     id: "description", defaultLabel: "Description", isSystem: true,
-    mandatory: false, regex: "",
+    required: false, unique: false, minLength: "", maxLength: 500, regex: "",
     translations: [], validationTranslations: [],
   },
 ];
@@ -56,35 +62,48 @@ const LANGUAGES = [
   { code: "pt", label: "Portuguese" },
 ];
 
+// ─── English default messages ─────────────────────────────────────────────────
+
+const ENGLISH_DEFAULTS = {
+  required:  "This field is required.",
+  unique:    "This value is already in use.",
+  minLength: (n: number | "") => `Must be at least ${n} characters.`,
+  maxLength: (n: number | "") => `Must be no more than ${n} characters.`,
+  format:    "The value does not match the expected format.",
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function activeRules(attr: OrgAttribute) {
+  return {
+    required:  attr.required,
+    unique:    attr.unique,
+    minLength: attr.minLength !== "",
+    maxLength: attr.maxLength !== "",
+    format:    !!attr.regex,
+  };
+}
+
 // ─── Translation row ──────────────────────────────────────────────────────────
 
 function LabelTranslationRow({
   t, usedLanguages, onChange, onRemove,
 }: {
-  t: Translation;
-  usedLanguages: string[];
-  onChange: (t: Translation) => void;
-  onRemove: () => void;
+  t: Translation; usedLanguages: string[];
+  onChange: (t: Translation) => void; onRemove: () => void;
 }) {
-  const available = LANGUAGES.filter(
-    (l) => l.code === t.language || !usedLanguages.includes(l.code)
-  );
+  const available = LANGUAGES.filter((l) => l.code === t.language || !usedLanguages.includes(l.code));
   return (
     <div className="flex items-center gap-2">
       <Select value={t.language} onValueChange={(v) => onChange({ ...t, language: v })}>
-        <SelectTrigger className="w-36 h-8 text-sm"><SelectValue placeholder="Language" /></SelectTrigger>
-        <SelectContent>
-          {available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}
-        </SelectContent>
+        <SelectTrigger className="w-32 h-8 text-sm"><SelectValue placeholder="Language" /></SelectTrigger>
+        <SelectContent>{available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}</SelectContent>
       </Select>
-      <input
-        type="text" value={t.label}
-        onChange={(e) => onChange({ ...t, label: e.target.value })}
+      <input type="text" value={t.label} onChange={(e) => onChange({ ...t, label: e.target.value })}
         placeholder="Translated label…"
         className="flex-1 h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
       />
-      <button type="button" onClick={onRemove}
-        className="p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+      <button type="button" onClick={onRemove} className="p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
@@ -93,91 +112,135 @@ function LabelTranslationRow({
 
 // ─── Validation translation row ───────────────────────────────────────────────
 
-function ValidationRow({
-  row, usedLanguages, showRequired, showFormat, onChange, onRemove,
+const RULE_BADGE: Record<string, string> = {
+  required:  "bg-red-50 text-red-700 border-red-200",
+  unique:    "bg-amber-50 text-amber-700 border-amber-200",
+  minLength: "bg-blue-50 text-blue-700 border-blue-200",
+  maxLength: "bg-blue-50 text-blue-700 border-blue-200",
+  format:    "bg-purple-50 text-purple-700 border-purple-200",
+};
+
+function ValidationTranslationRow({
+  row, usedLanguages, rules, attr, onChange, onRemove,
 }: {
-  row: ValidationTranslation;
-  usedLanguages: string[];
-  showRequired: boolean;
-  showFormat: boolean;
-  onChange: (r: ValidationTranslation) => void;
-  onRemove: () => void;
+  row: ValidationTranslation; usedLanguages: string[];
+  rules: ReturnType<typeof activeRules>; attr: OrgAttribute;
+  onChange: (r: ValidationTranslation) => void; onRemove: () => void;
 }) {
-  const available = LANGUAGES.filter(
-    (l) => l.code === row.language || !usedLanguages.includes(l.code)
-  );
+  const available = LANGUAGES.filter((l) => l.code === row.language || !usedLanguages.includes(l.code));
   return (
     <div className="flex items-start gap-2">
       <Select value={row.language} onValueChange={(v) => onChange({ ...row, language: v })}>
-        <SelectTrigger className="w-36 h-8 text-sm shrink-0"><SelectValue placeholder="Language" /></SelectTrigger>
-        <SelectContent>
-          {available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}
-        </SelectContent>
+        <SelectTrigger className="w-32 h-8 text-sm shrink-0"><SelectValue placeholder="Language" /></SelectTrigger>
+        <SelectContent>{available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}</SelectContent>
       </Select>
       <div className="flex-1 flex flex-col gap-1.5">
-        {showRequired && (
-          <input type="text" value={row.requiredMessage}
-            onChange={(e) => onChange({ ...row, requiredMessage: e.target.value })}
-            placeholder="Required error message…"
+        {rules.required && (
+          <input type="text" value={row.requiredMessage} onChange={(e) => onChange({ ...row, requiredMessage: e.target.value })}
+            placeholder={ENGLISH_DEFAULTS.required}
             className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
         )}
-        {showFormat && (
-          <input type="text" value={row.formatMessage}
-            onChange={(e) => onChange({ ...row, formatMessage: e.target.value })}
-            placeholder="Format error message…"
+        {rules.unique && (
+          <input type="text" value={row.uniqueMessage} onChange={(e) => onChange({ ...row, uniqueMessage: e.target.value })}
+            placeholder={ENGLISH_DEFAULTS.unique}
+            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        )}
+        {rules.minLength && (
+          <input type="text" value={row.minLengthMessage} onChange={(e) => onChange({ ...row, minLengthMessage: e.target.value })}
+            placeholder={ENGLISH_DEFAULTS.minLength(attr.minLength)}
+            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        )}
+        {rules.maxLength && (
+          <input type="text" value={row.maxLengthMessage} onChange={(e) => onChange({ ...row, maxLengthMessage: e.target.value })}
+            placeholder={ENGLISH_DEFAULTS.maxLength(attr.maxLength)}
+            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        )}
+        {rules.format && (
+          <input type="text" value={row.formatMessage} onChange={(e) => onChange({ ...row, formatMessage: e.target.value })}
+            placeholder={ENGLISH_DEFAULTS.format}
             className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
         )}
       </div>
-      <button type="button" onClick={onRemove}
-        className="p-1.5 mt-0.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+      <button type="button" onClick={onRemove} className="p-1.5 mt-0.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
   );
 }
 
+// ─── Number input ─────────────────────────────────────────────────────────────
+
+function NumInput({ label, value, onChange, min = 0 }: {
+  label: string; value: number | ""; onChange: (v: number | "") => void; min?: number;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-bluegrey-600 w-28 shrink-0">{label}</span>
+      <input
+        type="number" min={min}
+        value={value === "" ? "" : value}
+        onChange={(e) => onChange(e.target.value === "" ? "" : Math.max(min, parseInt(e.target.value, 10) || 0))}
+        placeholder="—"
+        className="w-24 h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+      />
+      {value !== "" && (
+        <button type="button" onClick={() => onChange("")} className="text-xs text-bluegrey-400 hover:text-red-500 transition-colors">
+          <X className="w-3 h-3" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── English default row ──────────────────────────────────────────────────────
+
+function EnglishDefaultRow({ ruleKey, text }: { ruleKey: string; text: string }) {
+  return (
+    <div className="flex items-center gap-1.5 min-h-8 px-3 text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
+      <span className={`text-[10px] font-semibold px-1 py-0.5 rounded border shrink-0 ${RULE_BADGE[ruleKey]}`}>
+        {ruleKey}
+      </span>
+      {text}
+    </div>
+  );
+}
+
 // ─── Config panel ─────────────────────────────────────────────────────────────
 
-function AttributePanel({
-  attr, onChange, onDelete,
-}: {
-  attr: OrgAttribute;
-  onChange: (a: OrgAttribute) => void;
-  onDelete: () => void;
+function AttributePanel({ attr, onChange, onDelete }: {
+  attr: OrgAttribute; onChange: (a: OrgAttribute) => void; onDelete: () => void;
 }) {
   const usedLabelLangs = attr.translations.map((t) => t.language);
   const usedValidLangs = attr.validationTranslations.map((t) => t.language);
-  const hasValidation = attr.mandatory || !!attr.regex;
+  const rules = activeRules(attr);
+  const hasAnyValidation = Object.values(rules).some(Boolean);
 
   const addLabel = () => {
     const next = LANGUAGES.find((l) => !usedLabelLangs.includes(l.code));
     if (!next) return;
     onChange({ ...attr, translations: [...attr.translations, { language: next.code, label: "" }] });
   };
-
   const updateLabel = (i: number, t: Translation) => {
     const next = [...attr.translations]; next[i] = t;
     onChange({ ...attr, translations: next });
   };
-
-  const removeLabel = (i: number) =>
-    onChange({ ...attr, translations: attr.translations.filter((_, idx) => idx !== i) });
+  const removeLabel = (i: number) => onChange({ ...attr, translations: attr.translations.filter((_, idx) => idx !== i) });
 
   const addValidation = () => {
     const next = LANGUAGES.find((l) => !usedValidLangs.includes(l.code));
     if (!next) return;
-    onChange({ ...attr, validationTranslations: [...attr.validationTranslations, { language: next.code, requiredMessage: "", formatMessage: "" }] });
+    onChange({ ...attr, validationTranslations: [...attr.validationTranslations, { language: next.code, requiredMessage: "", uniqueMessage: "", minLengthMessage: "", maxLengthMessage: "", formatMessage: "" }] });
   };
-
   const updateValidation = (i: number, r: ValidationTranslation) => {
     const next = [...attr.validationTranslations]; next[i] = r;
     onChange({ ...attr, validationTranslations: next });
   };
-
-  const removeValidation = (i: number) =>
-    onChange({ ...attr, validationTranslations: attr.validationTranslations.filter((_, idx) => idx !== i) });
+  const removeValidation = (i: number) => onChange({ ...attr, validationTranslations: attr.validationTranslations.filter((_, idx) => idx !== i) });
 
   return (
     <div className="border border-bluegrey-200 rounded-md overflow-hidden">
@@ -193,58 +256,74 @@ function AttributePanel({
         )}
         {!attr.isSystem && (
           <button type="button" onClick={onDelete}
-            className="ml-auto p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-            aria-label="Delete attribute">
+            className="ml-auto p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors" aria-label="Delete">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         )}
       </div>
 
-      <div className="px-4 py-5 space-y-6 overflow-y-auto max-h-[calc(100vh-280px)]">
-        {/* Mandatory */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-bluegrey-900">Mandatory</p>
-            <p className="text-xs text-bluegrey-500 mt-0.5">Require this field when creating an organization</p>
+      <div className="px-4 py-5 space-y-5 overflow-y-auto max-h-[calc(100vh-280px)]">
+
+        {/* ── Validation constraints ── */}
+        <div className="space-y-3">
+          <p className="text-xs font-semibold text-bluegrey-500 uppercase tracking-wide">Validation constraints</p>
+
+          {/* Required */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-bluegrey-900">Required</p>
+              <p className="text-xs text-bluegrey-500">Field must be filled when creating an organization</p>
+            </div>
+            <Switch checked={attr.required}
+              onCheckedChange={(v) => onChange({ ...attr, required: v })}
+              disabled={attr.isSystem && attr.id === "orgName"}
+            />
           </div>
-          <Switch
-            checked={attr.mandatory}
-            onCheckedChange={(v) => onChange({ ...attr, mandatory: v })}
-            disabled={attr.isSystem && attr.id === "orgName"}
-          />
+
+          {/* Unique */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-bluegrey-900">Unique</p>
+              <p className="text-xs text-bluegrey-500">Value must be unique across all organizations</p>
+            </div>
+            <Switch checked={attr.unique} onCheckedChange={(v) => onChange({ ...attr, unique: v })} />
+          </div>
+
+          {/* Min / Max length */}
+          <div className="space-y-2 pt-1">
+            <NumInput label="Minimum length" value={attr.minLength}
+              onChange={(v) => onChange({ ...attr, minLength: v })} min={0} />
+            <NumInput label="Maximum length" value={attr.maxLength}
+              onChange={(v) => onChange({ ...attr, maxLength: v })} min={0} />
+          </div>
+
+          {/* Regex */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center gap-1.5">
+              <Code className="w-3.5 h-3.5 text-bluegrey-500" />
+              <p className="text-sm font-medium text-bluegrey-900">Regex pattern</p>
+            </div>
+            <input type="text" value={attr.regex}
+              onChange={(e) => onChange({ ...attr, regex: e.target.value })}
+              placeholder="e.g. ^[A-Za-z0-9 ]{2,100}$  (optional)"
+              className="w-full h-9 px-3 text-sm font-mono border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
         </div>
 
         <div className="border-t border-bluegrey-100" />
 
-        {/* Regex */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5">
-            <Code className="w-3.5 h-3.5 text-bluegrey-500" />
-            <p className="text-sm font-medium text-bluegrey-900">Validation regex</p>
-          </div>
-          <p className="text-xs text-bluegrey-500">Optional. Leave empty for no format restriction.</p>
-          <input
-            type="text"
-            value={attr.regex}
-            onChange={(e) => onChange({ ...attr, regex: e.target.value })}
-            placeholder="e.g. ^[A-Za-z0-9 ]{2,100}$"
-            className="w-full h-9 px-3 text-sm font-mono border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div className="border-t border-bluegrey-100" />
-
-        {/* Label translations */}
+        {/* ── Label translations ── */}
         <div className="space-y-3">
           <div className="flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5 text-bluegrey-500" />
             <p className="text-sm font-medium text-bluegrey-900">Label translations</p>
           </div>
-          <p className="text-xs text-bluegrey-500">English is the default label.</p>
+          <p className="text-xs text-bluegrey-500">English is the default.</p>
 
           {/* English default */}
           <div className="flex items-center gap-2">
-            <div className="w-36 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">English</div>
+            <div className="w-32 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">English</div>
             <div className="flex-1 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500 gap-2">
               {attr.defaultLabel}
               <span className="text-[10px] text-bluegrey-400 bg-bluegrey-100 px-1.5 py-0.5 rounded">default</span>
@@ -267,8 +346,8 @@ function AttributePanel({
           )}
         </div>
 
-        {/* Validation translations */}
-        {hasValidation && (
+        {/* ── Validation error translations ── */}
+        {hasAnyValidation && (
           <>
             <div className="border-t border-bluegrey-100" />
             <div className="space-y-3">
@@ -277,35 +356,29 @@ function AttributePanel({
                 <p className="text-sm font-medium text-bluegrey-900">Validation error translations</p>
               </div>
               <p className="text-xs text-bluegrey-500">
-                Active rules:{" "}
-                {[attr.mandatory && "required", attr.regex && "format"].filter(Boolean).join(", ")}.
+                Translate the error messages shown when validation fails. Active rules:{" "}
+                <span className="font-medium text-bluegrey-700">
+                  {Object.entries(rules).filter(([, v]) => v).map(([k]) => k).join(", ")}
+                </span>.
               </p>
 
               {/* English defaults (read-only) */}
               <div className="flex items-start gap-2">
-                <div className="w-36 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500 shrink-0">English</div>
+                <div className="w-32 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500 shrink-0">English</div>
                 <div className="flex-1 flex flex-col gap-1.5">
-                  {attr.mandatory && (
-                    <div className="flex items-center gap-1.5 h-8 px-3 text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
-                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded shrink-0">required</span>
-                      This field is required.
-                    </div>
-                  )}
-                  {attr.regex && (
-                    <div className="flex items-center gap-1.5 h-8 px-3 text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
-                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded shrink-0">format</span>
-                      The value does not match the expected format.
-                    </div>
-                  )}
+                  {rules.required  && <EnglishDefaultRow ruleKey="required"  text={ENGLISH_DEFAULTS.required} />}
+                  {rules.unique    && <EnglishDefaultRow ruleKey="unique"    text={ENGLISH_DEFAULTS.unique} />}
+                  {rules.minLength && <EnglishDefaultRow ruleKey="minLength" text={ENGLISH_DEFAULTS.minLength(attr.minLength)} />}
+                  {rules.maxLength && <EnglishDefaultRow ruleKey="maxLength" text={ENGLISH_DEFAULTS.maxLength(attr.maxLength)} />}
+                  {rules.format    && <EnglishDefaultRow ruleKey="format"    text={ENGLISH_DEFAULTS.format} />}
                 </div>
                 <div className="w-7" />
               </div>
 
               {attr.validationTranslations.map((row, i) => (
-                <ValidationRow key={i} row={row}
+                <ValidationTranslationRow key={i} row={row}
                   usedLanguages={usedValidLangs.filter((_, idx) => idx !== i)}
-                  showRequired={attr.mandatory}
-                  showFormat={!!attr.regex}
+                  rules={rules} attr={attr}
                   onChange={(u) => updateValidation(i, u)}
                   onRemove={() => removeValidation(i)}
                 />
@@ -334,7 +407,7 @@ function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
     const trimmed = label.trim();
     if (!trimmed) return;
     const id = trimmed.replace(/\s+(.)/g, (_, c) => c.toUpperCase()).replace(/\s/g, "").replace(/^./, (c) => c.toLowerCase());
-    onAdd({ id, defaultLabel: trimmed, isSystem: false, mandatory: false, regex: "", translations: [], validationTranslations: [] });
+    onAdd({ id, defaultLabel: trimmed, isSystem: false, required: false, unique: false, minLength: "", maxLength: "", regex: "", translations: [], validationTranslations: [] });
     setLabel("");
     setOpen(false);
   };
@@ -350,8 +423,7 @@ function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
 
   return (
     <div className="px-3 py-2.5 border-t border-bluegrey-100 flex items-center gap-2">
-      <input
-        autoFocus type="text" value={label}
+      <input autoFocus type="text" value={label}
         onChange={(e) => setLabel(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") handleAdd(); if (e.key === "Escape") setOpen(false); }}
         placeholder="Attribute label…"
@@ -398,17 +470,17 @@ export default function OrgAttributeSettings({ attributes, onChange, onReset }: 
 
   return (
     <div className="px-6 py-6 space-y-5">
-      <div className="space-y-1.5 max-w-2xl">
-        <p className="text-sm text-bluegrey-500">
-          Configure attributes for the Organization entity. System attributes (Organization Name, Description) are always present and cannot be removed. Add custom attributes as needed — configure regex, translations and validation messages for each.
-        </p>
-      </div>
+      <p className="text-sm text-bluegrey-500 max-w-2xl">
+        Configure attributes for the Organization entity. System attributes (Organization Name, Description) are always present and cannot be removed. Add custom attributes and configure their validation rules, translations and error messages.
+      </p>
 
       <div className="grid grid-cols-[220px_1fr] gap-5">
         {/* Left: attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden self-start">
           {attributes.map((attr) => {
             const isActive = attr.id === selectedId;
+            const rules = activeRules(attr);
+            const activeCount = Object.values(rules).filter(Boolean).length;
             return (
               <button key={attr.id} type="button" onClick={() => setSelectedId(attr.id)}
                 className={`w-full text-left px-3 py-3 flex items-center gap-2 border-b border-bluegrey-100 last:border-b-0 transition-colors ${
@@ -419,8 +491,10 @@ export default function OrgAttributeSettings({ attributes, onChange, onReset }: 
                   {attr.defaultLabel}
                 </span>
                 {attr.isSystem && <Lock className="w-3 h-3 text-bluegrey-400 shrink-0" />}
-                {attr.mandatory && !attr.isSystem && (
-                  <span className="text-[10px] font-medium px-1 py-0.5 rounded border bg-amber-50 text-amber-700 border-amber-200 shrink-0">req</span>
+                {activeCount > 0 && !attr.isSystem && (
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0">
+                    {activeCount}
+                  </span>
                 )}
               </button>
             );
@@ -430,12 +504,7 @@ export default function OrgAttributeSettings({ attributes, onChange, onReset }: 
 
         {/* Right: config panel */}
         {selected ? (
-          <AttributePanel
-            key={selected.id}
-            attr={selected}
-            onChange={handleChange}
-            onDelete={() => handleDelete(selected.id)}
-          />
+          <AttributePanel key={selected.id} attr={selected} onChange={handleChange} onDelete={() => handleDelete(selected.id)} />
         ) : (
           <div className="border border-bluegrey-200 rounded-md px-4 py-8 text-center text-sm text-bluegrey-400">
             Select an attribute to configure it.
@@ -443,11 +512,9 @@ export default function OrgAttributeSettings({ attributes, onChange, onReset }: 
         )}
       </div>
 
-      <div className="flex items-center gap-3 pt-1">
-        <Button variant="outline" onClick={onReset} className="gap-2 text-bluegrey-600">
-          <RotateCcw className="w-4 h-4" />Reset to default
-        </Button>
-      </div>
+      <Button variant="outline" onClick={onReset} className="gap-2 text-bluegrey-600">
+        <RotateCcw className="w-4 h-4" />Reset to default
+      </Button>
     </div>
   );
 }
