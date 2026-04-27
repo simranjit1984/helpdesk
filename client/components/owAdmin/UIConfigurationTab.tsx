@@ -75,10 +75,11 @@ interface EntityConfigProps {
   overviewDefaults: AttributeCapability[];
   detailDefaults: DetailAttribute[];
   detailTabLabel?: string;
+  detailDescription?: string;
   showDetailCreateColumn?: boolean;
 }
 
-function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)", showDetailCreateColumn = false }: EntityConfigProps) {
+function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", showDetailCreateColumn = false }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
 
@@ -113,7 +114,7 @@ function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Deta
         <div className="mb-4">
           <h3 className="text-base font-semibold text-bluegrey-900">Detail view configuration</h3>
           <p className="text-sm text-bluegrey-500 mt-1">
-            Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.
+            {detailDescription}
           </p>
         </div>
         <DetailViewConfig
@@ -169,6 +170,7 @@ function UsersAndInvitationsPanel() {
           overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW}
           detailDefaults={DEFAULT_INVITATIONS_DETAIL}
           detailTabLabel="Invite / View"
+          detailDescription="Configure which fields will be available for create invite and view invite."
           showDetailCreateColumn={true}
         />
       </TabsContent>
