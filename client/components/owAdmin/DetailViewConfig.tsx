@@ -7,7 +7,8 @@ export interface DetailAttribute {
   id: string;
   label: string;
   category: string;
-  visible: boolean;
+  create: boolean;  // visible when creating / inviting
+  view: boolean;    // visible when viewing the record
 }
 
 // Colour map for category badges — matches AttributeGlobalConfig
@@ -32,10 +33,13 @@ interface DetailViewConfigProps {
 // ─── Live preview ─────────────────────────────────────────────────────────────
 
 function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
-  // Group by category, preserving encounter order — only visible attributes
+  const [mode, setMode] = useState<"view" | "create">("view");
+  const visible = attributes.filter((a) => mode === "view" ? a.view : a.create);
+
+  // Group by category, preserving encounter order
   const groups: { category: string; attrs: DetailAttribute[] }[] = [];
   const seen = new Set<string>();
-  for (const attr of attributes.filter((a) => a.visible)) {
+  for (const attr of visible) {
     if (!seen.has(attr.category)) {
       seen.add(attr.category);
       groups.push({ category: attr.category, attrs: [] });
@@ -45,24 +49,39 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
   return (
     <div className="bg-white border border-bluegrey-200 rounded-lg overflow-hidden">
-      {/* Mock user header */}
-      <div className="bg-bluegrey-50 border-b border-bluegrey-200 px-5 py-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-base">A</div>
-        <div>
-          <p className="text-sm font-semibold text-bluegrey-900">Alice Anderson</p>
-          <p className="text-xs text-bluegrey-500">alice.anderson@example.com</p>
+      {/* Mock header */}
+      <div className="bg-bluegrey-50 border-b border-bluegrey-200 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">A</div>
+          <div>
+            <p className="text-xs font-semibold text-bluegrey-900">Alice Anderson</p>
+            <p className="text-[10px] text-bluegrey-500">alice.anderson@example.com</p>
+          </div>
+        </div>
+        {/* Mode toggle */}
+        <div className="flex rounded-md border border-bluegrey-200 overflow-hidden text-[10px] font-medium">
+          <button
+            type="button"
+            onClick={() => setMode("view")}
+            className={`px-2.5 py-1 transition-colors ${mode === "view" ? "bg-blue-600 text-white" : "bg-white text-bluegrey-600 hover:bg-bluegrey-50"}`}
+          >View</button>
+          <button
+            type="button"
+            onClick={() => setMode("create")}
+            className={`px-2.5 py-1 transition-colors border-l border-bluegrey-200 ${mode === "create" ? "bg-blue-600 text-white" : "bg-white text-bluegrey-600 hover:bg-bluegrey-50"}`}
+          >Create</button>
         </div>
       </div>
 
       <div className="divide-y divide-bluegrey-100">
         {groups.map(({ category, attrs }) => (
-          <div key={category} className="px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-bluegrey-500 mb-3">{category}</p>
-            <div className="space-y-2.5">
+          <div key={category} className="px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-bluegrey-500 mb-2">{category}</p>
+            <div className="space-y-2">
               {attrs.map((attr) => (
-                <div key={attr.id} className="flex items-center gap-3">
-                  <span className="text-xs text-bluegrey-500 w-28 shrink-0">{attr.label}</span>
-                  <div className="flex-1 h-7 rounded border border-bluegrey-200 bg-white px-2 flex items-center text-xs text-bluegrey-400 italic">
+                <div key={attr.id} className="flex items-center gap-2">
+                  <span className="text-xs text-bluegrey-500 w-24 shrink-0">{attr.label}</span>
+                  <div className="flex-1 h-6 rounded border border-bluegrey-200 bg-white px-2 flex items-center text-[10px] text-bluegrey-400 italic">
                     {attr.label}…
                   </div>
                 </div>
@@ -71,7 +90,9 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
           </div>
         ))}
         {groups.length === 0 && (
-          <div className="px-5 py-8 text-center text-sm text-bluegrey-400">No visible attributes configured.</div>
+          <div className="px-4 py-6 text-center text-xs text-bluegrey-400">
+            No attributes visible in {mode} mode.
+          </div>
         )}
       </div>
     </div>
@@ -82,15 +103,20 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
 export default function DetailViewConfig({ attributes, onSave, onReset }: DetailViewConfigProps) {
   const [rows, setRows] = useState<DetailAttribute[]>(attributes);
-
-  const toggleVisible = (id: string) => {
-    setRows((prev) => prev.map((r) => r.id === id ? { ...r, visible: !r.visible } : r));
-    setIsDirty(true);
-  };
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+
+  const toggleCreate = (id: string) => {
+    setRows((prev) => prev.map((r) => r.id === id ? { ...r, create: !r.create } : r));
+    setIsDirty(true);
+  };
+
+  const toggleView = (id: string) => {
+    setRows((prev) => prev.map((r) => r.id === id ? { ...r, view: !r.view } : r));
+    setIsDirty(true);
+  };
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
     setDraggingId(id);
@@ -144,7 +170,8 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
       {/* Toolbar */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-bluegrey-600">
-          Drag attributes to reorder. The category shown is sourced from <span className="font-medium text-bluegrey-800">Attribute Settings</span>.
+          Drag attributes to reorder. The category shown is sourced from{" "}
+          <span className="font-medium text-bluegrey-800">Attribute Settings</span>.
         </p>
         <Button
           variant={showPreview ? "default" : "outline"}
@@ -157,21 +184,16 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
         </Button>
       </div>
 
-      <div className={`grid gap-6 ${showPreview ? "grid-cols-[1fr_300px]" : "grid-cols-1"}`}>
+      <div className={`grid gap-6 ${showPreview ? "grid-cols-[1fr_280px]" : "grid-cols-1"}`}>
         {/* Attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden">
           {/* Header */}
-          <div className="grid grid-cols-[40px_1fr_150px_100px] bg-bluegrey-50 border-b border-bluegrey-200">
+          <div className="grid grid-cols-[40px_1fr_150px_100px_100px] bg-bluegrey-50 border-b border-bluegrey-200">
             <div className="px-3 py-3" />
-            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
-              Attribute
-            </div>
-            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
-              Category
-            </div>
-            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
-              Visible
-            </div>
+            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Attribute</div>
+            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Category</div>
+            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create</div>
+            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">View</div>
           </div>
 
           {rows.map((row) => {
@@ -186,12 +208,10 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
                 onDragOver={(e) => handleDragOver(e, row.id)}
                 onDrop={(e) => handleDrop(e, row.id)}
                 onDragEnd={handleDragEnd}
-                className={`grid grid-cols-[40px_1fr_150px_100px] border-b border-bluegrey-100 last:border-b-0 transition-colors ${
-                  isDragging
-                    ? "opacity-40 bg-bluegrey-50"
-                    : isOver
-                    ? "bg-blue-50 border-l-2 border-l-blue-400"
-                    : "bg-white hover:bg-bluegrey-25"
+                className={`grid grid-cols-[40px_1fr_150px_100px_100px] border-b border-bluegrey-100 last:border-b-0 transition-colors ${
+                  isDragging ? "opacity-40 bg-bluegrey-50"
+                  : isOver   ? "bg-blue-50 border-l-2 border-l-blue-400"
+                  :             "bg-white hover:bg-bluegrey-25"
                 }`}
               >
                 {/* Drag handle */}
@@ -211,12 +231,21 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
                   </span>
                 </div>
 
-                {/* Visible toggle */}
+                {/* Create toggle */}
                 <div className="px-4 py-3 flex items-center justify-center">
                   <Switch
-                    checked={row.visible}
-                    onCheckedChange={() => toggleVisible(row.id)}
-                    aria-label={`${row.label} visible`}
+                    checked={row.create}
+                    onCheckedChange={() => toggleCreate(row.id)}
+                    aria-label={`${row.label} create`}
+                  />
+                </div>
+
+                {/* View toggle */}
+                <div className="px-4 py-3 flex items-center justify-center">
+                  <Switch
+                    checked={row.view}
+                    onCheckedChange={() => toggleView(row.id)}
+                    aria-label={`${row.label} view`}
                   />
                 </div>
               </div>

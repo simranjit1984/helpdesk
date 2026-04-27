@@ -24,13 +24,13 @@ const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
 ];
 
 const DEFAULT_USERS_DETAIL: DetailAttribute[] = [
-  { id: "firstName",    label: "First Name",   category: "Basic Info",        visible: true  },
-  { id: "lastName",     label: "Last Name",    category: "Basic Info",        visible: true  },
-  { id: "email",        label: "Email",        category: "Contact Info",      visible: true  },
-  { id: "phoneNumber",  label: "Phone Number", category: "Contact Info",      visible: false },
-  { id: "status",       label: "Status",       category: "System",            visible: true  },
-  { id: "role",         label: "Role",         category: "Access Info",       visible: true  },
-  { id: "organization", label: "Organization", category: "Organization Info", visible: true  },
+  { id: "firstName",    label: "First Name",   category: "Basic Info",        create: true,  view: true  },
+  { id: "lastName",     label: "Last Name",    category: "Basic Info",        create: true,  view: true  },
+  { id: "email",        label: "Email",        category: "Contact Info",      create: true,  view: true  },
+  { id: "phoneNumber",  label: "Phone Number", category: "Contact Info",      create: false, view: false },
+  { id: "status",       label: "Status",       category: "System",            create: false, view: true  },
+  { id: "role",         label: "Role",         category: "Access Info",       create: true,  view: true  },
+  { id: "organization", label: "Organization", category: "Organization Info", create: true,  view: true  },
 ];
 
 const DEFAULT_INVITATIONS_OVERVIEW: AttributeCapability[] = [
@@ -42,11 +42,15 @@ const DEFAULT_INVITATIONS_OVERVIEW: AttributeCapability[] = [
 ];
 
 const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
-  { id: "email",       label: "Email",        category: "Contact Info", visible: true  },
-  { id: "phoneNumber", label: "Phone Number", category: "Contact Info", visible: false },
-  { id: "status",      label: "Status",       category: "System",       visible: true  },
-  { id: "invitedBy",   label: "Invited By",   category: "Access Info",  visible: true  },
-  { id: "expiryDate",  label: "Expiry Date",  category: "System",       visible: true  },
+  { id: "firstName",   label: "First Name",   category: "Basic Info",   create: true,  view: true  },
+  { id: "lastName",    label: "Last Name",    category: "Basic Info",   create: true,  view: true  },
+  { id: "email",       label: "Email",        category: "Contact Info", create: true,  view: true  },
+  { id: "phoneNumber", label: "Phone Number", category: "Contact Info", create: false, view: true  },
+  { id: "accessRoles", label: "Access Roles", category: "Access Info",  create: true,  view: true  },
+  { id: "adminRoles",  label: "Admin Roles",  category: "Access Info",  create: false, view: true  },
+  { id: "status",      label: "Status",       category: "System",       create: false, view: true  },
+  { id: "invitedBy",   label: "Invited By",   category: "Access Info",  create: false, view: true  },
+  { id: "expiryDate",  label: "Expiry Date",  category: "System",       create: true,  view: true  },
 ];
 
 // ─── Sub-tab style ─────────────────────────────────────────────────────────
@@ -70,9 +74,10 @@ const ENTITY_TAB_CLASS =
 interface EntityConfigProps {
   overviewDefaults: AttributeCapability[];
   detailDefaults: DetailAttribute[];
+  detailTabLabel?: string;
 }
 
-function EntityConfig({ overviewDefaults, detailDefaults }: EntityConfigProps) {
+function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)" }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
 
@@ -84,7 +89,7 @@ function EntityConfig({ overviewDefaults, detailDefaults }: EntityConfigProps) {
             Overview (Table View)
           </TabsTrigger>
           <TabsTrigger value="detail" className={SUB_TAB_CLASS}>
-            Detail View (Single Record)
+            {detailTabLabel}
           </TabsTrigger>
         </TabsList>
       </div>
@@ -158,7 +163,11 @@ function UsersAndInvitationsPanel() {
         <EntityConfig overviewDefaults={DEFAULT_USERS_OVERVIEW} detailDefaults={DEFAULT_USERS_DETAIL} />
       </TabsContent>
       <TabsContent value="invitations" className="mt-0">
-        <EntityConfig overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW} detailDefaults={DEFAULT_INVITATIONS_DETAIL} />
+        <EntityConfig
+          overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW}
+          detailDefaults={DEFAULT_INVITATIONS_DETAIL}
+          detailTabLabel="Invite / View"
+        />
       </TabsContent>
     </Tabs>
   );
