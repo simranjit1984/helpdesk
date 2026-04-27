@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, Save, RotateCcw, Globe, Tag, AlertCircle, Info } from "lucide-react";
+import { Plus, Trash2, Save, RotateCcw, Globe, Tag, AlertCircle, Info, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -221,10 +221,28 @@ function ValidationTranslationRow({ row, usedLanguages, showRequired, showFormat
 
 interface AttributeConfigPanelProps {
   attr: GlobalAttributeSetting;
+  categories: string[];
+  onAddCategory: (name: string) => void;
   onChange: (updated: GlobalAttributeSetting) => void;
 }
 
-function AttributeConfigPanel({ attr, onChange }: AttributeConfigPanelProps) {
+function AttributeConfigPanel({ attr, categories, onAddCategory, onChange }: AttributeConfigPanelProps) {
+  const [creatingCategory, setCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+
+  const handleConfirmCategory = () => {
+    const trimmed = newCategoryName.trim();
+    if (!trimmed || categories.includes(trimmed)) return;
+    onAddCategory(trimmed);
+    onChange({ ...attr, category: trimmed });
+    setNewCategoryName("");
+    setCreatingCategory(false);
+  };
+
+  const handleCancelCategory = () => {
+    setNewCategoryName("");
+    setCreatingCategory(false);
+  };
   const { idsMetadata: ids } = attr;
   const hasValidation = ids.mandatory || !!ids.regex || ids.unique;
 
@@ -315,9 +333,53 @@ function AttributeConfigPanel({ attr, onChange }: AttributeConfigPanelProps) {
           <Select value={attr.category} onValueChange={(v) => onChange({ ...attr, category: v })}>
             <SelectTrigger className="w-full text-sm h-9"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {CATEGORIES.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+              {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
             </SelectContent>
           </Select>
+
+          {/* Create new category */}
+          {creatingCategory ? (
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                autoFocus
+                type="text"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleConfirmCategory();
+                  if (e.key === "Escape") handleCancelCategory();
+                }}
+                placeholder="Category name…"
+                className="flex-1 h-8 px-3 text-sm border border-blue-400 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={handleConfirmCategory}
+                disabled={!newCategoryName.trim() || categories.includes(newCategoryName.trim())}
+                className="p-1.5 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                aria-label="Confirm"
+              >
+                <Check className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelCategory}
+                className="p-1.5 rounded border border-bluegrey-200 text-bluegrey-500 hover:bg-bluegrey-50 transition-colors"
+                aria-label="Cancel"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setCreatingCategory(true)}
+              className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors mt-1"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Create new category
+            </button>
+          )}
         </div>
 
         <div className="border-t border-bluegrey-100" />
@@ -431,6 +493,7 @@ function AttributeConfigPanel({ attr, onChange }: AttributeConfigPanelProps) {
 export default function AttributeGlobalConfig() {
   const [attributes, setAttributes] = useState<GlobalAttributeSetting[]>(DEFAULT_ATTRIBUTES);
   const [selectedId, setSelectedId] = useState<string>(DEFAULT_ATTRIBUTES[0].id);
+  const [categories, setCategories] = useState<string[]>(CATEGORIES);
   const [isDirty, setIsDirty] = useState(false);
 
   const selected = attributes.find((a) => a.id === selectedId) ?? null;
@@ -440,8 +503,14 @@ export default function AttributeGlobalConfig() {
     setIsDirty(true);
   };
 
+  const handleAddCategory = (name: string) => {
+    setCategories((prev) => [...prev, name]);
+    setIsDirty(true);
+  };
+
   const handleReset = () => {
     setAttributes(DEFAULT_ATTRIBUTES);
+    setCategories(CATEGORIES);
     setSelectedId(DEFAULT_ATTRIBUTES[0].id);
     setIsDirty(false);
   };
@@ -480,7 +549,13 @@ export default function AttributeGlobalConfig() {
 
         {/* Right: config panel */}
         {selected ? (
-          <AttributeConfigPanel key={selected.id} attr={selected} onChange={handleChange} />
+          <AttributeConfigPanel
+            key={selected.id}
+            attr={selected}
+            categories={categories}
+            onAddCategory={handleAddCategory}
+            onChange={handleChange}
+          />
         ) : (
           <div className="border border-bluegrey-200 rounded-md px-4 py-8 text-center text-sm text-bluegrey-400">
             Select an attribute to configure it.
