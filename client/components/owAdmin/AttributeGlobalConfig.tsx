@@ -93,13 +93,18 @@ const DEFAULT_ATTRIBUTES: GlobalAttributeSetting[] = [
     translations: [], validationTranslations: [],
   },
   {
-    id: "invitedBy", defaultLabel: "Invited By", category: "Access Info",
+    id: "title", defaultLabel: "Title", category: "Basic Info",
     idsMetadata: { mandatory: false, unique: false, identifier: false },
     translations: [], validationTranslations: [],
   },
   {
-    id: "expiryDate", defaultLabel: "Expiry Date", category: "System",
+    id: "gender", defaultLabel: "Gender", category: "Basic Info",
     idsMetadata: { mandatory: false, unique: false, identifier: false },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "address", defaultLabel: "Address", category: "Contact Info",
+    idsMetadata: { mandatory: false, unique: false, identifier: false, regex: "^.{5,200}$" },
     translations: [], validationTranslations: [],
   },
 ];
