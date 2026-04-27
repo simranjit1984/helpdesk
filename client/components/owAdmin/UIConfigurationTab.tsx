@@ -10,6 +10,7 @@ import {
 import { Users, Mail, Shield, AppWindow, Key } from "lucide-react";
 import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatrix";
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
+import AttributeGlobalConfig from "./AttributeGlobalConfig";
 
 // ─── Default data ─────────────────────────────────────────────────────────────
 
@@ -119,15 +120,38 @@ function EntityConfig({ overviewDefaults, detailDefaults }: EntityConfigProps) {
 
 // ─── Users & Invitations panel ─────────────────────────────────────────────
 
+const PANEL_TAB_CLASS =
+  "h-auto py-2.5 px-0 rounded-none bg-transparent text-sm font-medium " +
+  "border-b-2 border-transparent shadow-none " +
+  "text-bluegrey-500 " +
+  "data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 " +
+  "data-[state=active]:bg-transparent data-[state=active]:shadow-none " +
+  "hover:text-bluegrey-900 transition-colors";
+
 function UsersAndInvitationsPanel() {
   return (
-    <Tabs defaultValue="users" className="w-full">
-      <div className="px-6 py-3 border-b border-bluegrey-100 flex items-center gap-2 bg-bluegrey-25">
-        <TabsList className="h-auto bg-bluegrey-100 p-1 rounded-full gap-1">
-          <TabsTrigger value="users" className={ENTITY_TAB_CLASS}>Users</TabsTrigger>
-          <TabsTrigger value="invitations" className={ENTITY_TAB_CLASS}>Invitations</TabsTrigger>
+    <Tabs defaultValue="attributes" className="w-full">
+      {/* Top-level section tabs */}
+      <div className="bg-white border-b border-bluegrey-200 px-6">
+        <TabsList className="h-auto bg-transparent p-0 gap-8 -mb-px">
+          <TabsTrigger value="attributes" className={PANEL_TAB_CLASS}>
+            Attribute Settings
+          </TabsTrigger>
+          <TabsTrigger value="users" className={PANEL_TAB_CLASS}>
+            Users
+          </TabsTrigger>
+          <TabsTrigger value="invitations" className={PANEL_TAB_CLASS}>
+            Invitations
+          </TabsTrigger>
         </TabsList>
       </div>
+
+      {/* Attribute-level global config */}
+      <TabsContent value="attributes" className="mt-0">
+        <AttributeGlobalConfig />
+      </TabsContent>
+
+      {/* Entity-specific config */}
       <TabsContent value="users" className="mt-0">
         <EntityConfig overviewDefaults={DEFAULT_USERS_OVERVIEW} detailDefaults={DEFAULT_USERS_DETAIL} />
       </TabsContent>
