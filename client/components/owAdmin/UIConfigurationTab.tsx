@@ -75,9 +75,10 @@ interface EntityConfigProps {
   overviewDefaults: AttributeCapability[];
   detailDefaults: DetailAttribute[];
   detailTabLabel?: string;
+  showDetailCreateColumn?: boolean;
 }
 
-function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)" }: EntityConfigProps) {
+function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)", showDetailCreateColumn = false }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
 
@@ -119,6 +120,7 @@ function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Deta
           attributes={detailAttrs}
           onSave={setDetailAttrs}
           onReset={() => { setDetailAttrs(detailDefaults); return detailDefaults; }}
+          showCreateColumn={showDetailCreateColumn}
         />
       </TabsContent>
     </Tabs>
@@ -167,6 +169,7 @@ function UsersAndInvitationsPanel() {
           overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW}
           detailDefaults={DEFAULT_INVITATIONS_DETAIL}
           detailTabLabel="Invite / View"
+          showDetailCreateColumn={true}
         />
       </TabsContent>
     </Tabs>
