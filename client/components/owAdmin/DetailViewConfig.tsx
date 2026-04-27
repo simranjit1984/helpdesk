@@ -2,14 +2,6 @@ import { useState } from "react";
 import { GripVertical, RotateCcw, Save, Eye } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 
 export interface DetailAttribute {
   id: string;
@@ -300,29 +292,6 @@ export default function DetailViewConfig({ attributes, onSave, onReset }: Detail
                     />
                   </div>
 
-                  <div className="border-t border-bluegrey-100" />
-
-                  {/* Section */}
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-bluegrey-900">Section</p>
-                    <p className="text-xs text-bluegrey-500">Group this field under a section</p>
-                    <Select
-                      value={selected.section}
-                      onValueChange={(v) => updateSelected({ section: v as DetailAttribute["section"] })}
-                      disabled={!selected.visible}
-                    >
-                      <SelectTrigger className="w-full text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SECTIONS.map((s) => (
-                          <SelectItem key={s.value} value={s.value}>
-                            {s.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </div>
             ) : (
