@@ -209,8 +209,6 @@ export default function PersonaSelection() {
             title="OW Admin Console"
             description="Manage platform-level settings, tenants, and system-wide configurations."
             href="/ow-admin"
-            disabled
-            badge="Coming soon"
           />
 
           <PersonaTile
