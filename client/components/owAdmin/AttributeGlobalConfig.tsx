@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, Save, RotateCcw, Globe, Tag } from "lucide-react";
+import { Plus, Trash2, Save, RotateCcw, Globe, Tag, AlertCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -16,11 +16,27 @@ interface Translation {
   label: string;
 }
 
+interface ValidationErrorTranslations {
+  language: string;
+  requiredMessage: string;
+  formatMessage: string;
+  uniqueMessage: string;
+}
+
+export interface IDSMetadata {
+  mandatory: boolean;
+  unique: boolean;
+  identifier: boolean;
+  regex?: string;
+}
+
 export interface GlobalAttributeSetting {
   id: string;
   defaultLabel: string;
   category: string;
+  idsMetadata: IDSMetadata;
   translations: Translation[];
+  validationTranslations: ValidationErrorTranslations[];
 }
 
 // ─── Static data ──────────────────────────────────────────────────────────────
@@ -51,47 +67,75 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 const DEFAULT_ATTRIBUTES: GlobalAttributeSetting[] = [
-  { id: "firstName",   defaultLabel: "First Name",   category: "Basic Info",        translations: [] },
-  { id: "lastName",    defaultLabel: "Last Name",    category: "Basic Info",        translations: [] },
-  { id: "email",       defaultLabel: "Email",        category: "Contact Info",      translations: [] },
-  { id: "phoneNumber", defaultLabel: "Phone Number", category: "Contact Info",      translations: [] },
-  { id: "role",        defaultLabel: "Role",         category: "Access Info",       translations: [] },
-  { id: "status",      defaultLabel: "Status",       category: "System",            translations: [] },
-  { id: "organization",defaultLabel: "Organization", category: "Organization Info", translations: [] },
-  { id: "invitedBy",   defaultLabel: "Invited By",   category: "Access Info",       translations: [] },
-  { id: "expiryDate",  defaultLabel: "Expiry Date",  category: "System",            translations: [] },
+  {
+    id: "firstName", defaultLabel: "First Name", category: "Basic Info",
+    idsMetadata: { mandatory: true,  unique: false, identifier: false },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "lastName", defaultLabel: "Last Name", category: "Basic Info",
+    idsMetadata: { mandatory: true,  unique: false, identifier: false },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "email", defaultLabel: "Email", category: "Contact Info",
+    idsMetadata: { mandatory: true,  unique: true,  identifier: true,  regex: "^[\\w.+-]+@[\\w-]+\\.[\\w.]+$" },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "phoneNumber", defaultLabel: "Phone Number", category: "Contact Info",
+    idsMetadata: { mandatory: false, unique: false, identifier: false, regex: "^\\+?[0-9\\s\\-().]{7,20}$" },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "status", defaultLabel: "Status", category: "System",
+    idsMetadata: { mandatory: true,  unique: false, identifier: false },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "invitedBy", defaultLabel: "Invited By", category: "Access Info",
+    idsMetadata: { mandatory: false, unique: false, identifier: false },
+    translations: [], validationTranslations: [],
+  },
+  {
+    id: "expiryDate", defaultLabel: "Expiry Date", category: "System",
+    idsMetadata: { mandatory: false, unique: false, identifier: false },
+    translations: [], validationTranslations: [],
+  },
 ];
 
-// ─── Translation row editor ───────────────────────────────────────────────────
+// ─── IDS metadata badge ───────────────────────────────────────────────────────
 
-interface TranslationRowProps {
+function IDSBadge({ active, label }: { active: boolean; label: string }) {
+  if (!active) return null;
+  return (
+    <span className="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded border bg-amber-50 text-amber-700 border-amber-200">
+      {label}
+    </span>
+  );
+}
+
+// ─── Reusable translation row ─────────────────────────────────────────────────
+
+interface LabelTranslationRowProps {
   translation: Translation;
   usedLanguages: string[];
   onChange: (t: Translation) => void;
   onRemove: () => void;
 }
 
-function TranslationRow({ translation, usedLanguages, onChange, onRemove }: TranslationRowProps) {
-  const availableLanguages = LANGUAGES.filter(
+function LabelTranslationRow({ translation, usedLanguages, onChange, onRemove }: LabelTranslationRowProps) {
+  const available = LANGUAGES.filter(
     (l) => l.code === translation.language || !usedLanguages.includes(l.code)
   );
-
   return (
     <div className="flex items-center gap-2">
-      <Select
-        value={translation.language}
-        onValueChange={(v) => onChange({ ...translation, language: v })}
-      >
-        <SelectTrigger className="w-36 h-8 text-sm">
-          <SelectValue placeholder="Language" />
-        </SelectTrigger>
+      <Select value={translation.language} onValueChange={(v) => onChange({ ...translation, language: v })}>
+        <SelectTrigger className="w-36 h-8 text-sm"><SelectValue placeholder="Language" /></SelectTrigger>
         <SelectContent>
-          {availableLanguages.map((l) => (
-            <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>
-          ))}
+          {available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}
         </SelectContent>
       </Select>
-
       <input
         type="text"
         value={translation.label}
@@ -99,20 +143,76 @@ function TranslationRow({ translation, usedLanguages, onChange, onRemove }: Tran
         placeholder="Translated label…"
         className="flex-1 h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
       />
-
-      <button
-        type="button"
-        onClick={onRemove}
-        className="p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-        aria-label="Remove translation"
-      >
+      <button type="button" onClick={onRemove} className="p-1.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors" aria-label="Remove">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
   );
 }
 
-// ─── Right-hand config panel ──────────────────────────────────────────────────
+// ─── Validation translation row ───────────────────────────────────────────────
+
+interface ValidationRowProps {
+  row: ValidationErrorTranslations;
+  usedLanguages: string[];
+  showRequired: boolean;
+  showFormat: boolean;
+  showUnique: boolean;
+  onChange: (r: ValidationErrorTranslations) => void;
+  onRemove: () => void;
+}
+
+function ValidationTranslationRow({ row, usedLanguages, showRequired, showFormat, showUnique, onChange, onRemove }: ValidationRowProps) {
+  const available = LANGUAGES.filter(
+    (l) => l.code === row.language || !usedLanguages.includes(l.code)
+  );
+  return (
+    <div className="flex items-start gap-2">
+      <Select value={row.language} onValueChange={(v) => onChange({ ...row, language: v })}>
+        <SelectTrigger className="w-36 h-8 text-sm shrink-0"><SelectValue placeholder="Language" /></SelectTrigger>
+        <SelectContent>
+          {available.map((l) => <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>)}
+        </SelectContent>
+      </Select>
+
+      <div className="flex-1 flex flex-col gap-1.5">
+        {showRequired && (
+          <input
+            type="text"
+            value={row.requiredMessage}
+            onChange={(e) => onChange({ ...row, requiredMessage: e.target.value })}
+            placeholder="Required error message…"
+            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        )}
+        {showFormat && (
+          <input
+            type="text"
+            value={row.formatMessage}
+            onChange={(e) => onChange({ ...row, formatMessage: e.target.value })}
+            placeholder="Format error message…"
+            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        )}
+        {showUnique && (
+          <input
+            type="text"
+            value={row.uniqueMessage}
+            onChange={(e) => onChange({ ...row, uniqueMessage: e.target.value })}
+            placeholder="Uniqueness error message…"
+            className="w-full h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        )}
+      </div>
+
+      <button type="button" onClick={onRemove} className="p-1.5 mt-0.5 rounded text-bluegrey-400 hover:text-red-500 hover:bg-red-50 transition-colors" aria-label="Remove">
+        <Trash2 className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
+// ─── Config panel ─────────────────────────────────────────────────────────────
 
 interface AttributeConfigPanelProps {
   attr: GlobalAttributeSetting;
@@ -120,108 +220,202 @@ interface AttributeConfigPanelProps {
 }
 
 function AttributeConfigPanel({ attr, onChange }: AttributeConfigPanelProps) {
-  const usedLanguages = attr.translations.map((t) => t.language);
-  const canAddMore = attr.translations.length < LANGUAGES.length;
+  const { idsMetadata: ids } = attr;
+  const hasValidation = ids.mandatory || !!ids.regex || ids.unique;
 
-  const addTranslation = () => {
-    const nextLang = LANGUAGES.find((l) => !usedLanguages.includes(l.code));
-    if (!nextLang) return;
-    onChange({
-      ...attr,
-      translations: [...attr.translations, { language: nextLang.code, label: "" }],
-    });
+  const usedLabelLangs = attr.translations.map((t) => t.language);
+  const usedValidLangs = attr.validationTranslations.map((t) => t.language);
+
+  const addLabelTranslation = () => {
+    const next = LANGUAGES.find((l) => !usedLabelLangs.includes(l.code));
+    if (!next) return;
+    onChange({ ...attr, translations: [...attr.translations, { language: next.code, label: "" }] });
   };
 
-  const updateTranslation = (index: number, t: Translation) => {
+  const updateLabelTranslation = (i: number, t: Translation) => {
     const next = [...attr.translations];
-    next[index] = t;
+    next[i] = t;
     onChange({ ...attr, translations: next });
   };
 
-  const removeTranslation = (index: number) => {
-    onChange({ ...attr, translations: attr.translations.filter((_, i) => i !== index) });
+  const removeLabelTranslation = (i: number) => {
+    onChange({ ...attr, translations: attr.translations.filter((_, idx) => idx !== i) });
+  };
+
+  const addValidationTranslation = () => {
+    const next = LANGUAGES.find((l) => !usedValidLangs.includes(l.code));
+    if (!next) return;
+    onChange({
+      ...attr,
+      validationTranslations: [
+        ...attr.validationTranslations,
+        { language: next.code, requiredMessage: "", formatMessage: "", uniqueMessage: "" },
+      ],
+    });
+  };
+
+  const updateValidationTranslation = (i: number, r: ValidationErrorTranslations) => {
+    const next = [...attr.validationTranslations];
+    next[i] = r;
+    onChange({ ...attr, validationTranslations: next });
+  };
+
+  const removeValidationTranslation = (i: number) => {
+    onChange({ ...attr, validationTranslations: attr.validationTranslations.filter((_, idx) => idx !== i) });
   };
 
   return (
     <div className="border border-bluegrey-200 rounded-md overflow-hidden">
-      {/* Panel header */}
+      {/* Header */}
       <div className="px-4 py-3 bg-bluegrey-50 border-b border-bluegrey-200 flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-blue-500" />
         <p className="text-sm font-semibold text-bluegrey-900">{attr.defaultLabel}</p>
-        <span className="ml-auto text-xs text-bluegrey-400 font-mono">{attr.id}</span>
+        <span className="font-mono text-xs text-bluegrey-400 ml-1">{attr.id}</span>
+        <div className="ml-auto flex items-center gap-1.5">
+          <IDSBadge active={ids.mandatory}   label="mandatory" />
+          <IDSBadge active={ids.unique}      label="unique" />
+          <IDSBadge active={ids.identifier}  label="identifier" />
+        </div>
       </div>
 
-      <div className="px-4 py-4 space-y-6">
+      <div className="px-4 py-5 space-y-6 overflow-y-auto max-h-[calc(100vh-280px)]">
+
+        {/* IDS metadata (read-only) */}
+        <div className="rounded-md bg-amber-50 border border-amber-100 px-3 py-3 space-y-2">
+          <div className="flex items-center gap-1.5">
+            <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <p className="text-xs font-semibold text-amber-700">IDS system metadata (read-only)</p>
+          </div>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs text-amber-800">
+            <span>Mandatory: <strong>{ids.mandatory ? "Yes" : "No"}</strong></span>
+            <span>Unique: <strong>{ids.unique ? "Yes" : "No"}</strong></span>
+            <span>Identifier: <strong>{ids.identifier ? "Yes" : "No"}</strong></span>
+            <span>
+              Regex:{" "}
+              {ids.regex
+                ? <code className="font-mono bg-amber-100 px-1 py-0.5 rounded text-[10px] break-all">{ids.regex}</code>
+                : <strong>—</strong>
+              }
+            </span>
+          </div>
+        </div>
+
         {/* Category */}
         <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5 mb-1">
+          <div className="flex items-center gap-1.5">
             <Tag className="w-3.5 h-3.5 text-bluegrey-500" />
             <p className="text-sm font-medium text-bluegrey-900">Category</p>
           </div>
-          <p className="text-xs text-bluegrey-500">
-            Group this attribute under a logical category across all views.
-          </p>
-          <Select
-            value={attr.category}
-            onValueChange={(v) => onChange({ ...attr, category: v })}
-          >
-            <SelectTrigger className="w-full text-sm h-9">
-              <SelectValue />
-            </SelectTrigger>
+          <p className="text-xs text-bluegrey-500">Group this attribute under a logical category across all views.</p>
+          <Select value={attr.category} onValueChange={(v) => onChange({ ...attr, category: v })}>
+            <SelectTrigger className="w-full text-sm h-9"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {CATEGORIES.map((cat) => (
-                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-              ))}
+              {CATEGORIES.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
         <div className="border-t border-bluegrey-100" />
 
-        {/* Translations */}
+        {/* Label translations */}
         <div className="space-y-3">
           <div className="flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5 text-bluegrey-500" />
-            <p className="text-sm font-medium text-bluegrey-900">Translations</p>
+            <p className="text-sm font-medium text-bluegrey-900">Label translations</p>
           </div>
-          <p className="text-xs text-bluegrey-500">
-            Provide the label for this attribute in other languages. English is the default.
-          </p>
+          <p className="text-xs text-bluegrey-500">Translate the attribute label. English is the default.</p>
 
-          {/* English default (read-only) */}
+          {/* English default */}
           <div className="flex items-center gap-2">
-            <div className="w-36 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
-              English
-            </div>
-            <div className="flex-1 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
+            <div className="w-36 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">English</div>
+            <div className="flex-1 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500 gap-2">
               {attr.defaultLabel}
-              <span className="ml-2 text-[10px] text-bluegrey-400 bg-bluegrey-100 px-1.5 py-0.5 rounded">default</span>
+              <span className="text-[10px] text-bluegrey-400 bg-bluegrey-100 px-1.5 py-0.5 rounded">default</span>
             </div>
             <div className="w-7" />
           </div>
 
-          {/* Additional translations */}
           {attr.translations.map((t, i) => (
-            <TranslationRow
+            <LabelTranslationRow
               key={i}
               translation={t}
-              usedLanguages={usedLanguages.filter((_, idx) => idx !== i)}
-              onChange={(updated) => updateTranslation(i, updated)}
-              onRemove={() => removeTranslation(i)}
+              usedLanguages={usedLabelLangs.filter((_, idx) => idx !== i)}
+              onChange={(u) => updateLabelTranslation(i, u)}
+              onRemove={() => removeLabelTranslation(i)}
             />
           ))}
 
-          {canAddMore && (
-            <button
-              type="button"
-              onClick={addTranslation}
-              className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Add language
+          {attr.translations.length < LANGUAGES.length && (
+            <button type="button" onClick={addLabelTranslation} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors">
+              <Plus className="w-3.5 h-3.5" />Add language
             </button>
           )}
         </div>
+
+        {/* Validation error translations */}
+        {hasValidation && (
+          <>
+            <div className="border-t border-bluegrey-100" />
+            <div className="space-y-3">
+              <div className="flex items-center gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 text-bluegrey-500" />
+                <p className="text-sm font-medium text-bluegrey-900">Validation error translations</p>
+              </div>
+              <p className="text-xs text-bluegrey-500">
+                Translate the error messages shown to users when validation fails.
+                Active rules from IDS:{" "}
+                {[ids.mandatory && "required", ids.regex && "format", ids.unique && "unique"]
+                  .filter(Boolean).join(", ")}.
+              </p>
+
+              {/* English defaults (read-only) */}
+              <div className="flex items-start gap-2">
+                <div className="w-36 h-8 px-3 flex items-center text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500 shrink-0">English</div>
+                <div className="flex-1 flex flex-col gap-1.5">
+                  {ids.mandatory && (
+                    <div className="flex items-center gap-1.5 h-8 px-3 text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
+                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded shrink-0">required</span>
+                      This field is required.
+                    </div>
+                  )}
+                  {ids.regex && (
+                    <div className="flex items-center gap-1.5 h-8 px-3 text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
+                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded shrink-0">format</span>
+                      The value does not match the expected format.
+                    </div>
+                  )}
+                  {ids.unique && (
+                    <div className="flex items-center gap-1.5 h-8 px-3 text-sm border border-bluegrey-100 rounded-md bg-bluegrey-50 text-bluegrey-500">
+                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded shrink-0">unique</span>
+                      This value is already in use.
+                    </div>
+                  )}
+                </div>
+                <div className="w-7" />
+              </div>
+
+              {/* Translated rows */}
+              {attr.validationTranslations.map((row, i) => (
+                <ValidationTranslationRow
+                  key={i}
+                  row={row}
+                  usedLanguages={usedValidLangs.filter((_, idx) => idx !== i)}
+                  showRequired={ids.mandatory}
+                  showFormat={!!ids.regex}
+                  showUnique={ids.unique}
+                  onChange={(u) => updateValidationTranslation(i, u)}
+                  onRemove={() => removeValidationTranslation(i)}
+                />
+              ))}
+
+              {attr.validationTranslations.length < LANGUAGES.length && (
+                <button type="button" onClick={addValidationTranslation} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                  <Plus className="w-3.5 h-3.5" />Add language
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -243,17 +437,15 @@ export default function AttributeGlobalConfig() {
 
   const handleReset = () => {
     setAttributes(DEFAULT_ATTRIBUTES);
+    setSelectedId(DEFAULT_ATTRIBUTES[0].id);
     setIsDirty(false);
   };
 
   return (
     <div className="px-6 py-6 space-y-5">
-      {/* Section description */}
-      <div>
-        <p className="text-sm text-bluegrey-500 max-w-2xl">
-          Global settings applied to each attribute regardless of where it appears — in the Users table, Invitations list, detail views, or any future entity. Configure the display category and translations here once; they propagate everywhere.
-        </p>
-      </div>
+      <p className="text-sm text-bluegrey-500 max-w-2xl">
+        Global settings for each IDS attribute — applied regardless of where the attribute appears. Attribute constraints (mandatory, unique, identifier, regex) are read from IDS and shown for reference only.
+      </p>
 
       <div className="grid grid-cols-[220px_1fr] gap-5">
         {/* Left: attribute list */}
@@ -267,9 +459,7 @@ export default function AttributeGlobalConfig() {
                 type="button"
                 onClick={() => setSelectedId(attr.id)}
                 className={`w-full text-left px-3 py-3 flex items-center justify-between gap-2 border-b border-bluegrey-100 last:border-b-0 transition-colors ${
-                  isActive
-                    ? "bg-blue-50"
-                    : "bg-white hover:bg-bluegrey-25"
+                  isActive ? "bg-blue-50" : "bg-white hover:bg-bluegrey-25"
                 }`}
               >
                 <span className={`text-sm font-medium ${isActive ? "text-blue-700" : "text-bluegrey-900"}`}>
@@ -285,11 +475,7 @@ export default function AttributeGlobalConfig() {
 
         {/* Right: config panel */}
         {selected ? (
-          <AttributeConfigPanel
-            key={selected.id}
-            attr={selected}
-            onChange={handleChange}
-          />
+          <AttributeConfigPanel key={selected.id} attr={selected} onChange={handleChange} />
         ) : (
           <div className="border border-bluegrey-200 rounded-md px-4 py-8 text-center text-sm text-bluegrey-400">
             Select an attribute to configure it.
@@ -297,15 +483,12 @@ export default function AttributeGlobalConfig() {
         )}
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-3 pt-1">
         <Button onClick={() => setIsDirty(false)} disabled={!isDirty} className="gap-2">
-          <Save className="w-4 h-4" />
-          Save attribute settings
+          <Save className="w-4 h-4" />Save attribute settings
         </Button>
         <Button variant="outline" onClick={handleReset} className="gap-2 text-bluegrey-600">
-          <RotateCcw className="w-4 h-4" />
-          Reset to default
+          <RotateCcw className="w-4 h-4" />Reset to default
         </Button>
       </div>
     </div>
