@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import IdpMappingTab from "@/components/organizations/IdpMappingTab";
 
 export default function AddOrganization() {
   const navigate = useNavigate();
@@ -114,8 +115,7 @@ export default function AddOrganization() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="idp-mapping"
-                    disabled
-                    className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative rounded-none border-b-4 border-transparent px-4 py-2 text-base font-normal data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:text-blue-500 data-[state=active]:shadow-none"
                   >
                     IDP mapping
                   </TabsTrigger>
@@ -211,9 +211,7 @@ export default function AddOrganization() {
               </TabsContent>
 
               <TabsContent value="idp-mapping" className="pt-6">
-                <div className="text-bluegrey-500">
-                  IDP mapping will be available after creating the organization.
-                </div>
+                <IdpMappingTab orgId="new" orgName={formData.organizationName || "new organization"} />
               </TabsContent>
             </Tabs>
           </div>
