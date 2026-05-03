@@ -27,6 +27,47 @@ export const ORG_IDP_MAP: Record<string, string[]> = {
   "1-2": ["idp-ow"],
 };
 
+// ─── Scopes (per org + global) ────────────────────────────────────────────────
+
+export interface OrgScope {
+  id: string;
+  name: string;
+  type: "Global" | "Organization";
+  description: string;
+}
+
+/** Scopes that are always available regardless of organization */
+export const GLOBAL_SCOPES: OrgScope[] = [
+  { id: "scope-global-1", name: "Global Scope", type: "Global", description: "Applies to all organizations" },
+  { id: "scope-global-2", name: "Read-only Global", type: "Global", description: "Read-only access across all organizations" },
+];
+
+/** Org-specific scopes keyed by org ID */
+export const ORG_SCOPE_MAP: Record<string, OrgScope[]> = {
+  "1": [
+    { id: "scope-1-a", name: "Acme Corp — Full Access", type: "Organization", description: "Full admin scope for Acme Corp" },
+    { id: "scope-1-b", name: "Acme Corp — Helpdesk", type: "Organization", description: "Helpdesk scope restricted to Acme Corp" },
+  ],
+  "2": [
+    { id: "scope-2-a", name: "Beta Ltd — Full Access", type: "Organization", description: "Full admin scope for Beta Ltd" },
+    { id: "scope-2-b", name: "Beta Ltd — Read Only", type: "Organization", description: "Read-only scope for Beta Ltd" },
+  ],
+  "3": [
+    { id: "scope-3-a", name: "Gamma Inc — Org Admin", type: "Organization", description: "Org admin scope for Gamma Inc" },
+  ],
+  "1-1": [
+    { id: "scope-1-1-a", name: "Partner1 — Limited", type: "Organization", description: "Limited scope for Partner1 sub-org" },
+  ],
+  "1-2": [
+    { id: "scope-1-2-a", name: "Partner2 — Standard", type: "Organization", description: "Standard scope for Partner2 sub-org" },
+  ],
+};
+
+/** Returns global scopes + scopes specific to the given org */
+export function getScopesForOrg(orgId: string): OrgScope[] {
+  return [...GLOBAL_SCOPES, ...(ORG_SCOPE_MAP[orgId] ?? [])];
+}
+
 // ─── Federation Config record ─────────────────────────────────────────────────
 
 export interface FederationConfig {

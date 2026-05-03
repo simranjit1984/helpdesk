@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { X, ChevronDown, Building2, ShieldCheck, Shield, Layers, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ID_BROKER_IDPS, ORG_IDP_MAP, type FederationConfig } from "@/lib/federationMockData";
+import { ID_BROKER_IDPS, ORG_IDP_MAP, getScopesForOrg, type OrgScope, type FederationConfig } from "@/lib/federationMockData";
 import { MOCK_ADMIN_ROLES } from "@/components/administrators/mockData";
-import { MOCK_SCOPES } from "@/components/administrators/mockData";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -86,17 +85,18 @@ function StyledSelect({
 // ─── Multi-select for scopes ──────────────────────────────────────────────────
 
 function ScopeMultiSelect({
+  scopes,
   selected,
   onToggle,
   disabled,
   error,
 }: {
+  scopes: OrgScope[];
   selected: string[];
   onToggle: (id: string) => void;
   disabled?: boolean;
   error?: string;
 }) {
-  const scopes = MOCK_SCOPES;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -209,12 +209,16 @@ export default function CreateFederationConfigModal({
     : [];
   const noIdpsForOrg = form.organizationId && orgIdps.length === 0;
 
+  // Scopes available for the currently selected org
+  const currentScopes = form.organizationId ? getScopesForOrg(form.organizationId) : [];
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => {
       const next = { ...prev, [key]: value };
-      // Reset dependent fields
+      // Reset dependent fields when org changes
       if (key === "organizationId") {
         next.idpId = "";
+        next.scopeIds = [];
       }
       return next;
     });
@@ -267,7 +271,7 @@ export default function CreateFederationConfigModal({
     const org = allOrgs.find((o) => o.id === form.organizationId);
     const idp = allIdps.find((i) => i.id === form.idpId);
     const role = allRoles.find((r) => r.id === form.adminRoleId);
-    const scopeNames = MOCK_SCOPES.filter((s) => form.scopeIds.includes(s.id)).map((s) => s.name);
+    const scopeNames = currentScopes.filter((s) => form.scopeIds.includes(s.id)).map((s) => s.name);
 
     onCreated({
       organization_id: form.organizationId,
@@ -384,13 +388,23 @@ export default function CreateFederationConfigModal({
                 error={errors.adminRoleId}
               />
 
-              {/* Step 4: Scopes */}
-              <ScopeMultiSelect
-                selected={form.scopeIds}
-                onToggle={toggleScope}
-                disabled={!!noIdpsForOrg || !form.organizationId}
-                error={errors.scopeIds}
-              />
+              {/* Step 4: Scopes — filtered to selected org */}
+              <div className="flex flex-col gap-1">
+                <ScopeMultiSelect
+                  scopes={currentScopes}
+                  selected={form.scopeIds}
+                  onToggle={toggleScope}
+                  disabled={!!noIdpsForOrg || !form.organizationId}
+                  error={errors.scopeIds}
+                />
+                {form.organizationId && !noIdpsForOrg && (
+                  <p className="text-xs text-bluegrey-400">
+                    Showing {currentScopes.length} scope{currentScopes.length !== 1 ? "s" : ""} available for this organization
+                    ({currentScopes.filter((s) => s.type === "Global").length} global,{" "}
+                    {currentScopes.filter((s) => s.type === "Organization").length} org-specific).
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </div>
