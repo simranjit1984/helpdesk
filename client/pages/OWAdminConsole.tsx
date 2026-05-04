@@ -184,7 +184,7 @@ export default function OWAdminConsole() {
         <AdminSidebar
           active={activeSection}
           onSelect={setSection}
-          uiConfigEnabled={isDeployed}
+          uiConfigEnabled={true}
         />
 
         {/* Main content */}

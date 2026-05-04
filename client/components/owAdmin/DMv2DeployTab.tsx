@@ -359,12 +359,12 @@ export default function DMv2DeployTab({ onDeployed, isDeployed, deployedOrgName 
           {deploying ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Deploying tenant…
+              Updating config…
             </>
           ) : (
             <>
               <Rocket className="w-4 h-4" />
-              Deploy tenant
+              Update DMv2 config
             </>
           )}
         </button>
