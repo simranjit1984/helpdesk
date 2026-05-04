@@ -120,7 +120,7 @@ export const MOCK_FEDERATION_CONFIGS: FederationConfig[] = [
     idp_id: "idp-ow",
     idp_name: "OneWelcome IDP",
     claim_name: "role",
-    claim_values: ["owread", "owwrite"],
+    claim_values: ["owread"],
     admin_role_id: "role-1",
     admin_role_name: "User Admin",
     scope_ids: ["scope-1-a"],
