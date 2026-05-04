@@ -132,15 +132,6 @@ function ScopeMultiSelect({
                   <span className="text-sm font-medium text-bluegrey-900">{scope.name}</span>
                   <span className="text-xs text-bluegrey-500">{scope.description}</span>
                 </div>
-                <span
-                  className={`ml-auto text-[11px] px-1.5 py-0.5 rounded font-medium shrink-0 mt-0.5 ${
-                    scope.type === "Global"
-                      ? "bg-purple-50 text-purple-700"
-                      : "bg-blue-50 text-blue-700"
-                  }`}
-                >
-                  {scope.type}
-                </span>
               </label>
             );
           })
@@ -397,11 +388,9 @@ export default function CreateFederationConfigModal({
                   disabled={!!noIdpsForOrg || !form.organizationId}
                   error={errors.scopeIds}
                 />
-                {form.organizationId && !noIdpsForOrg && (
+                {form.organizationId && !noIdpsForOrg && currentScopes.length > 0 && (
                   <p className="text-xs text-bluegrey-400">
-                    Showing {currentScopes.length} scope{currentScopes.length !== 1 ? "s" : ""} available for this organization
-                    ({currentScopes.filter((s) => s.type === "Global").length} global,{" "}
-                    {currentScopes.filter((s) => s.type === "Organization").length} org-specific).
+                    {currentScopes.length} scope{currentScopes.length !== 1 ? "s" : ""} available for this organization.
                   </p>
                 )}
               </div>

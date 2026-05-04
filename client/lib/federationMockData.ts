@@ -36,12 +36,6 @@ export interface OrgScope {
   description: string;
 }
 
-/** Scopes that are always available regardless of organization */
-export const GLOBAL_SCOPES: OrgScope[] = [
-  { id: "scope-global-1", name: "Global Scope", type: "Global", description: "Applies to all organizations" },
-  { id: "scope-global-2", name: "Read-only Global", type: "Global", description: "Read-only access across all organizations" },
-];
-
 /** Org-specific scopes keyed by org ID */
 export const ORG_SCOPE_MAP: Record<string, OrgScope[]> = {
   "1": [
@@ -63,9 +57,9 @@ export const ORG_SCOPE_MAP: Record<string, OrgScope[]> = {
   ],
 };
 
-/** Returns global scopes + scopes specific to the given org */
+/** Returns scopes specific to the given org */
 export function getScopesForOrg(orgId: string): OrgScope[] {
-  return [...GLOBAL_SCOPES, ...(ORG_SCOPE_MAP[orgId] ?? [])];
+  return ORG_SCOPE_MAP[orgId] ?? [];
 }
 
 // ─── Federation Config record ─────────────────────────────────────────────────
@@ -91,8 +85,8 @@ export const MOCK_FEDERATION_CONFIGS: FederationConfig[] = [
     idp_name: "OneWelcome IDP",
     admin_role_id: "role-1",
     admin_role_name: "User Admin",
-    scope_ids: ["scope-1"],
-    scope_names: ["Global Scope"],
+    scope_ids: ["scope-1-a"],
+    scope_names: ["Acme Corp — Full Access"],
   },
   {
     id: "fc-2",
