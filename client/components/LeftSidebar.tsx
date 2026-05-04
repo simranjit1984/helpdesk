@@ -136,23 +136,15 @@ interface LeftSidebarProps {
 
 export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const location = useLocation();
-  const isAdministratorsActive = location.pathname === "/administrators";
-  const isAdministratorsSubmenuActive = location.pathname.startsWith("/administrators/");
-  const [isAdministratorsExpanded, setIsAdministratorsExpanded] = useState(
-    isAdministratorsActive || isAdministratorsSubmenuActive
-  );
+  const isAdministratorsActive =
+    location.pathname === "/administrators" ||
+    location.pathname.startsWith("/administrators/");
 
   const isDelegatedActive = location.pathname.startsWith("/settings");
   const [isDelegatedExpanded, setIsDelegatedExpanded] = useState(isDelegatedActive);
 
   const isUsersActive = location.pathname === "/users" || location.pathname.startsWith("/users/");
   const navRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if ((isAdministratorsActive || isAdministratorsSubmenuActive) && !isAdministratorsExpanded) {
-      setIsAdministratorsExpanded(true);
-    }
-  }, [location.pathname]);
 
   useEffect(() => {
     if (isDelegatedActive && !isDelegatedExpanded) {
@@ -284,23 +276,8 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
               </svg>
             }
             label="Administrators"
-            href="/administrators"
+            href="/administrators/all"
             active={isAdministratorsActive}
-            hasSubmenu={true}
-            isExpanded={isAdministratorsExpanded}
-            onToggle={() => setIsAdministratorsExpanded(!isAdministratorsExpanded)}
-            submenuItems={[
-              {
-                label: "All administrators",
-                href: "/administrators/all",
-                active: location.pathname === "/administrators/all",
-              },
-              {
-                label: "Administrators roles",
-                href: "/administrators/roles",
-                active: location.pathname === "/administrators/roles",
-              },
-            ]}
           />
           <MenuItem
             icon={
