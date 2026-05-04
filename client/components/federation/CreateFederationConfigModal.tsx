@@ -152,7 +152,7 @@ function ScopeMultiSelect({
 interface FormState {
   organizationId: string;
   idpId: string;
-  claimValues: string[];   // selected claim values from the org's IdP claim config
+  claimValue: string;   // single claim value selected from the org's IdP claim config
   adminRoleId: string;
   scopeIds: string[];
 }
@@ -160,7 +160,7 @@ interface FormState {
 interface FormErrors {
   organizationId?: string;
   idpId?: string;
-  claimValues?: string;
+  claimValue?: string;
   adminRoleId?: string;
   scopeIds?: string;
 }
@@ -187,7 +187,7 @@ export default function CreateFederationConfigModal({
   const [form, setForm] = useState<FormState>({
     organizationId: "",
     idpId: "",
-    claimValues: [],
+    claimValue: "",
     adminRoleId: "",
     scopeIds: [],
   });
@@ -218,29 +218,16 @@ export default function CreateFederationConfigModal({
       // Reset dependent fields when org changes
       if (key === "organizationId") {
         next.idpId = "";
-        next.claimValues = [];
+        next.claimValue = "";
         next.scopeIds = [];
       }
-      // Reset claim values when IdP changes
+      // Reset claim value when IdP changes
       if (key === "idpId") {
-        next.claimValues = [];
+        next.claimValue = "";
       }
       return next;
     });
     setErrors((prev) => ({ ...prev, [key]: undefined }));
-  }
-
-  function toggleClaimValue(val: string) {
-    setForm((prev) => {
-      const already = prev.claimValues.includes(val);
-      return {
-        ...prev,
-        claimValues: already
-          ? prev.claimValues.filter((v) => v !== val)
-          : [...prev.claimValues, val],
-      };
-    });
-    setErrors((prev) => ({ ...prev, claimValues: undefined }));
   }
 
   function toggleScope(id: string) {
@@ -258,8 +245,8 @@ export default function CreateFederationConfigModal({
     const e: FormErrors = {};
     if (!form.organizationId) e.organizationId = "Organization is required.";
     if (!form.idpId) e.idpId = "Identity Provider is required.";
-    if (claimConfig && form.claimValues.length === 0)
-      e.claimValues = "At least one claim value is required.";
+    if (claimConfig && !form.claimValue)
+      e.claimValue = "Claim value is required.";
     if (!form.adminRoleId) e.adminRoleId = "Admin role is required.";
     if (form.scopeIds.length === 0) e.scopeIds = "At least one scope is required.";
 
@@ -299,7 +286,7 @@ export default function CreateFederationConfigModal({
       idp_id: form.idpId,
       idp_name: idp?.name ?? "",
       claim_name: claimConfig?.claimName ?? "",
-      claim_values: form.claimValues,
+      claim_values: form.claimValue ? [form.claimValue] : [],
       admin_role_id: form.adminRoleId,
       admin_role_name: role?.name ?? "",
       scope_ids: form.scopeIds,
@@ -311,7 +298,7 @@ export default function CreateFederationConfigModal({
   }
 
   function handleClose() {
-    setForm({ organizationId: "", idpId: "", claimValues: [], adminRoleId: "", scopeIds: [] });
+    setForm({ organizationId: "", idpId: "", claimValue: "", adminRoleId: "", scopeIds: [] });
     setErrors({});
     setSaving(false);
     setSuccess(false);
@@ -402,7 +389,7 @@ export default function CreateFederationConfigModal({
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center gap-1.5 text-sm font-medium text-bluegrey-700">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-bluegrey-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                    Claim values
+                    Claim value
                     {claimConfig && <span className="text-red-500">*</span>}
                   </label>
 
@@ -415,41 +402,34 @@ export default function CreateFederationConfigModal({
                       </p>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-2">
-                      {/* Show claim name context */}
-                      <div className="flex items-center gap-2 text-xs text-bluegrey-500 bg-bluegrey-25 px-3 py-2 rounded-md border border-bluegrey-100">
-                        <span className="font-medium text-bluegrey-700">Claim:</span>
-                        <code className="font-mono font-semibold text-blue-700">{claimConfig.claimName}</code>
-                        <span className="text-bluegrey-400 ml-1">— select which values apply to this config</span>
+                    <div className="flex flex-col gap-1.5">
+                      {/* Claim name context pill */}
+                      <div className="flex items-center gap-1.5 text-xs text-bluegrey-500">
+                        <span>Claim name:</span>
+                        <code className="font-mono font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">{claimConfig.claimName}</code>
                       </div>
 
-                      {/* Claim value checkboxes */}
-                      <div className={`border rounded-[2px] overflow-hidden ${errors.claimValues ? "border-red-400" : "border-bluegrey-400"}`}>
-                        {claimConfig.claimValues.map((val) => {
-                          const checked = form.claimValues.includes(val);
-                          return (
-                            <label
-                              key={val}
-                              className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer border-b border-bluegrey-50 last:border-b-0 transition-colors ${
-                                checked ? "bg-blue-50" : "bg-white hover:bg-bluegrey-25"
-                              }`}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={checked}
-                                onChange={() => toggleClaimValue(val)}
-                                className="accent-blue-600"
-                              />
-                              <code className="text-sm font-mono text-bluegrey-900">{val}</code>
-                            </label>
-                          );
-                        })}
+                      {/* Single dropdown for claim value */}
+                      <div className="relative">
+                        <select
+                          value={form.claimValue}
+                          onChange={(e) => update("claimValue", e.target.value)}
+                          className={`w-full h-10 pl-3 pr-8 text-sm border rounded-[2px] bg-white appearance-none font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                            errors.claimValue ? "border-red-400" : "border-bluegrey-400"
+                          } ${!form.claimValue ? "text-bluegrey-400" : "text-bluegrey-900"}`}
+                        >
+                          <option value="" disabled>Select a claim value…</option>
+                          {claimConfig.claimValues.map((val) => (
+                            <option key={val} value={val}>{val}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bluegrey-400 pointer-events-none" />
                       </div>
 
-                      {errors.claimValues && (
+                      {errors.claimValue && (
                         <p className="text-xs text-red-500 flex items-center gap-1">
                           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                          {errors.claimValues}
+                          {errors.claimValue}
                         </p>
                       )}
                     </div>
