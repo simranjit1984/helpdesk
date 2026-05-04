@@ -27,6 +27,40 @@ export const ORG_IDP_MAP: Record<string, string[]> = {
   "1-2": ["idp-ow"],
 };
 
+// ─── Per-org IdP claim configuration ─────────────────────────────────────────
+// Mirrors the claim name + values set in the IdP Mapping tab per org
+
+export interface IdpClaimConfig {
+  claimName: string;
+  claimValues: string[];
+}
+
+/** org ID → idp ID → claim config */
+export const ORG_IDP_CLAIM_MAP: Record<string, Record<string, IdpClaimConfig>> = {
+  "1": {
+    "idp-ow":   { claimName: "role",       claimValues: ["owread", "owwrite", "owadmin"] },
+    "idp-okta": { claimName: "groups",     claimValues: ["okta-viewer", "okta-editor"] },
+  },
+  "2": {
+    "idp-azure": { claimName: "role",      claimValues: ["entraread", "entrawrite", "entraadmin"] },
+  },
+  "3": {
+    "idp-ow":   { claimName: "department", claimValues: ["engineering", "finance", "hr"] },
+  },
+  "1-1": {
+    "idp-okta": { claimName: "role",       claimValues: ["partner-basic", "partner-admin"] },
+    "idp-ping": { claimName: "memberOf",   claimValues: ["ping-users", "ping-admins"] },
+  },
+  "1-2": {
+    "idp-ow":   { claimName: "role",       claimValues: ["p2-viewer", "p2-editor"] },
+  },
+};
+
+/** Returns the claim config for a given org + IdP combo, or null if not configured */
+export function getClaimConfig(orgId: string, idpId: string): IdpClaimConfig | null {
+  return ORG_IDP_CLAIM_MAP[orgId]?.[idpId] ?? null;
+}
+
 // ─── Scopes (per org + global) ────────────────────────────────────────────────
 
 export interface OrgScope {
@@ -70,6 +104,8 @@ export interface FederationConfig {
   organization_name: string;
   idp_id: string;
   idp_name: string;
+  claim_name: string;
+  claim_values: string[];
   admin_role_id: string;
   admin_role_name: string;
   scope_ids: string[];
@@ -83,6 +119,8 @@ export const MOCK_FEDERATION_CONFIGS: FederationConfig[] = [
     organization_name: "Acme Corp",
     idp_id: "idp-ow",
     idp_name: "OneWelcome IDP",
+    claim_name: "role",
+    claim_values: ["owread", "owwrite"],
     admin_role_id: "role-1",
     admin_role_name: "User Admin",
     scope_ids: ["scope-1-a"],
@@ -94,9 +132,11 @@ export const MOCK_FEDERATION_CONFIGS: FederationConfig[] = [
     organization_name: "Beta Ltd",
     idp_id: "idp-azure",
     idp_name: "Azure AD Enterprise",
+    claim_name: "role",
+    claim_values: ["entraread"],
     admin_role_id: "role-4",
     admin_role_name: "Org Admin",
-    scope_ids: ["scope-2", "scope-3"],
-    scope_names: ["Acme Corp Scope", "Beta Ltd Scope"],
+    scope_ids: ["scope-2-a"],
+    scope_names: ["Beta Ltd — Full Access"],
   },
 ];

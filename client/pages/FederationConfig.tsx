@@ -77,6 +77,27 @@ function ConfigRow({
         </span>
       </td>
       <td className="px-5 py-3.5">
+        {config.claim_name ? (
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-bluegrey-500">
+              <code className="font-mono font-semibold text-bluegrey-700">{config.claim_name}</code>
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {config.claim_values.map((v) => (
+                <code
+                  key={v}
+                  className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100"
+                >
+                  {v}
+                </code>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <span className="text-xs text-bluegrey-400">—</span>
+        )}
+      </td>
+      <td className="px-5 py-3.5">
         <span className="flex items-center gap-2 text-sm text-bluegrey-800">
           <Shield className="w-4 h-4 text-bluegrey-400 shrink-0" />
           {config.admin_role_name}
@@ -165,6 +186,9 @@ export default function FederationConfig() {
                   </th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wider">
                     Identity Provider
+                  </th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wider">
+                    Claim Values
                   </th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wider">
                     Admin Role
