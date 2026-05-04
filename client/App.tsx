@@ -16,6 +16,8 @@ import Organizations from "./pages/Organizations";
 import OrganizationDetail from "./pages/OrganizationDetail";
 import AddOrganization from "./pages/AddOrganization";
 import Applications from "./pages/Applications";
+import AddApplication from "./pages/AddApplication";
+import ApplicationDetail from "./pages/ApplicationDetail";
 import AccessRoles from "./pages/AccessRoles";
 import Administrators from "./pages/Administrators";
 import AllAdministrators from "./pages/AllAdministrators";
@@ -53,6 +55,8 @@ export const App = () => (
           <Route path="/organizations/:id" element={<OrganizationDetail />} />
           <Route path="/organizations/:id/access-roles/add" element={<AddAccessRolesToOrg />} />
           <Route path="/applications" element={<Applications />} />
+          <Route path="/applications/new" element={<AddApplication />} />
+          <Route path="/applications/:id" element={<ApplicationDetail />} />
           <Route path="/access-roles" element={<AccessRoles />} />
           <Route path="/event-log" element={<EventLog />} />
           <Route path="/administrators" element={<Administrators />} />
