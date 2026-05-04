@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Plus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,11 +24,16 @@ import {
 import ConfirmationModal from "@/components/ConfirmationModal";
 import ScopeDrawer from "./ScopeDrawer";
 import { type Scope, MOCK_SCOPES } from "./mockData";
+import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
 
-const SCOPE_TYPE_STYLES: Record<Scope["type"], { bg: string; text: string }> = {
-  Global: { bg: "bg-blue-50", text: "text-blue-600" },
-  Organization: { bg: "bg-green-50", text: "text-green-700" },
-};
+function accessRoleSummary(scope: Scope): string {
+  if (scope.accessRoleMode === "all") return "All access roles";
+  if (scope.accessRoleIds.length === 0) return "None selected";
+  const names = scope.accessRoleIds
+    .map((id) => ALL_ACCESS_ROLES.find((r) => r.id === id)?.name ?? id)
+    .join(", ");
+  return names.length > 40 ? `${names.slice(0, 40)}…` : names;
+}
 
 export default function ScopesTab() {
   const [scopes, setScopes] = useState<Scope[]>(MOCK_SCOPES);
@@ -42,8 +46,7 @@ export default function ScopesTab() {
     (s) =>
       s.name.toLowerCase().includes(search.toLowerCase()) ||
       s.description.toLowerCase().includes(search.toLowerCase()) ||
-      (s.organization ?? "").toLowerCase().includes(search.toLowerCase()) ||
-      s.type.toLowerCase().includes(search.toLowerCase()),
+      s.organization.toLowerCase().includes(search.toLowerCase()),
   );
 
   const openCreate = () => {
@@ -95,8 +98,8 @@ export default function ScopesTab() {
             <TableHeader>
               <TableHeadRow>
                 <TableHeadCell>Scope Name</TableHeadCell>
-                <TableHeadCell>Type</TableHeadCell>
                 <TableHeadCell>Organization</TableHeadCell>
+                <TableHeadCell>Access Roles</TableHeadCell>
                 <TableHeadCell>Description</TableHeadCell>
                 <TableHeadCell />
               </TableHeadRow>
@@ -110,64 +113,49 @@ export default function ScopesTab() {
                   }
                 />
               ) : (
-                filtered.map((scope) => {
-                  const style = SCOPE_TYPE_STYLES[scope.type];
-                  return (
-                    <TableRow key={scope.id}>
-                      <TableCell>
-                        <span className="font-medium text-bluegrey-900">
-                          {scope.name}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={`border-0 text-xs font-normal ${style.bg} ${style.text}`}
-                        >
-                          {scope.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {scope.organization ? (
-                          <span className="text-sm text-bluegrey-700">
-                            {scope.organization}
-                          </span>
-                        ) : (
-                          <span className="text-sm text-bluegrey-400">—</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-bluegrey-500 max-w-[200px] truncate block">
-                          {scope.description || "—"}
-                        </span>
-                      </TableCell>
-                      <TableActionCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button className="p-1.5 rounded hover:bg-bluegrey-50 text-bluegrey-500 transition-colors">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              className="gap-2"
-                              onClick={() => openEdit(scope)}
-                            >
-                              <Pencil className="h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="gap-2 text-red-600 focus:text-red-600"
-                              onClick={() => setDeleteTarget(scope)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableActionCell>
-                    </TableRow>
-                  );
-                })
+                filtered.map((scope) => (
+                  <TableRow key={scope.id}>
+                    <TableCell>
+                      <span className="font-medium text-bluegrey-900">{scope.name}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-700">{scope.organization}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-600">{accessRoleSummary(scope)}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-500 max-w-[200px] truncate block">
+                        {scope.description || "—"}
+                      </span>
+                    </TableCell>
+                    <TableActionCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="p-1.5 rounded hover:bg-bluegrey-50 text-bluegrey-500 transition-colors">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            className="gap-2"
+                            onClick={() => openEdit(scope)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="gap-2 text-red-600 focus:text-red-600"
+                            onClick={() => setDeleteTarget(scope)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableActionCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </TableContent>

@@ -71,34 +71,40 @@ export type ScopeInclusionMode =
 export interface Scope {
   id: string;
   name: string;
-  type: "Global" | "Organization";
   description: string;
-  organization?: string;       // label of the selected org (only when type=Organization)
-  inclusionMode?: ScopeInclusionMode;
+  organization: string;          // always required — scope is always org-bound
+  inclusionMode: ScopeInclusionMode;
+  accessRoleMode: "all" | "custom";
+  accessRoleIds: string[];       // populated when accessRoleMode === "custom"
 }
 
 export const MOCK_SCOPES: Scope[] = [
   {
     id: "scope-1",
-    name: "Global Scope",
-    type: "Global",
-    description: "Applies to all organizations",
+    name: "Acme Corp Scope",
+    description: "Full scope for Acme Corp and all sub-orgs",
+    organization: "Acme Corp",
+    inclusionMode: "all-children",
+    accessRoleMode: "all",
+    accessRoleIds: [],
   },
   {
     id: "scope-2",
-    name: "Acme Corp Scope",
-    type: "Organization",
-    description: "Restricted to the Acme Corp organization",
-    organization: "Acme Corp",
+    name: "Beta Ltd Scope",
+    description: "Restricted to the Beta Ltd organization only",
+    organization: "Beta Ltd",
     inclusionMode: "only",
+    accessRoleMode: "custom",
+    accessRoleIds: ["ar-1", "ar-2"],
   },
   {
     id: "scope-3",
-    name: "Beta Ltd Scope",
-    type: "Organization",
-    description: "Restricted to the Beta Ltd organization",
-    organization: "Beta Ltd",
-    inclusionMode: "all-children",
+    name: "Gamma Inc Scope",
+    description: "Scope covering Gamma Inc direct children",
+    organization: "Gamma Inc",
+    inclusionMode: "direct-children",
+    accessRoleMode: "custom",
+    accessRoleIds: ["ar-3", "ar-6"],
   },
 ];
 
