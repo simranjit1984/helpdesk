@@ -82,70 +82,6 @@ function StyledSelect({
   );
 }
 
-// ─── Multi-select for scopes ──────────────────────────────────────────────────
-
-function ScopeMultiSelect({
-  scopes,
-  selected,
-  onToggle,
-  disabled,
-  error,
-}: {
-  scopes: OrgScope[];
-  selected: string[];
-  onToggle: (id: string) => void;
-  disabled?: boolean;
-  error?: string;
-}) {
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label className="flex items-center gap-1.5 text-sm font-medium text-bluegrey-700">
-        <Layers className="w-4 h-4 text-bluegrey-400" />
-        Scopes
-        <span className="text-red-500">*</span>
-      </label>
-      <div
-        className={`border rounded-[2px] overflow-hidden ${
-          error ? "border-red-400" : "border-bluegrey-400"
-        } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
-      >
-        {scopes.length === 0 ? (
-          <div className="px-3 py-3 text-sm text-bluegrey-400 italic">No scopes available</div>
-        ) : (
-          scopes.map((scope) => {
-            const checked = selected.includes(scope.id);
-            return (
-              <label
-                key={scope.id}
-                className={`flex items-start gap-3 px-3 py-2.5 cursor-pointer border-b border-bluegrey-50 last:border-b-0 transition-colors ${
-                  checked ? "bg-blue-50" : "bg-white hover:bg-bluegrey-25"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={() => onToggle(scope.id)}
-                  className="mt-0.5 accent-blue-600"
-                />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-bluegrey-900">{scope.name}</span>
-                  <span className="text-xs text-bluegrey-500">{scope.description}</span>
-                </div>
-              </label>
-            );
-          })
-        )}
-      </div>
-      {error && (
-        <p className="text-xs text-red-500 flex items-center gap-1">
-          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -154,7 +90,7 @@ interface FormState {
   idpId: string;
   claimValue: string;   // single claim value selected from the org's IdP claim config
   adminRoleId: string;
-  scopeIds: string[];
+  scopeId: string;
 }
 
 interface FormErrors {
@@ -162,7 +98,7 @@ interface FormErrors {
   idpId?: string;
   claimValue?: string;
   adminRoleId?: string;
-  scopeIds?: string;
+  scopeId?: string;
 }
 
 interface CreateFederationConfigModalProps {
@@ -189,7 +125,7 @@ export default function CreateFederationConfigModal({
     idpId: "",
     claimValue: "",
     adminRoleId: "",
-    scopeIds: [],
+    scopeId: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [saving, setSaving] = useState(false);
@@ -219,7 +155,7 @@ export default function CreateFederationConfigModal({
       if (key === "organizationId") {
         next.idpId = "";
         next.claimValue = "";
-        next.scopeIds = [];
+        next.scopeId = "";
       }
       // Reset claim value when IdP changes
       if (key === "idpId") {
@@ -230,16 +166,6 @@ export default function CreateFederationConfigModal({
     setErrors((prev) => ({ ...prev, [key]: undefined }));
   }
 
-  function toggleScope(id: string) {
-    setForm((prev) => {
-      const already = prev.scopeIds.includes(id);
-      return {
-        ...prev,
-        scopeIds: already ? prev.scopeIds.filter((s) => s !== id) : [...prev.scopeIds, id],
-      };
-    });
-    setErrors((prev) => ({ ...prev, scopeIds: undefined }));
-  }
 
   function validate(): FormErrors {
     const e: FormErrors = {};
@@ -248,7 +174,7 @@ export default function CreateFederationConfigModal({
     if (claimConfig && !form.claimValue)
       e.claimValue = "Claim value is required.";
     if (!form.adminRoleId) e.adminRoleId = "Admin role is required.";
-    if (form.scopeIds.length === 0) e.scopeIds = "At least one scope is required.";
+    if (!form.scopeId) e.scopeId = "Scope is required.";
 
     // Duplicate check
     const duplicate = existingConfigs.find(
@@ -256,10 +182,10 @@ export default function CreateFederationConfigModal({
         c.organization_id === form.organizationId &&
         c.idp_id === form.idpId &&
         c.admin_role_id === form.adminRoleId &&
-        JSON.stringify([...c.scope_ids].sort()) === JSON.stringify([...form.scopeIds].sort())
+        c.scope_ids.includes(form.scopeId)
     );
     if (duplicate) {
-      e.scopeIds = "This exact combination already exists.";
+      e.scopeId = "This exact combination already exists.";
     }
 
     return e;
@@ -278,7 +204,8 @@ export default function CreateFederationConfigModal({
     const org = allOrgs.find((o) => o.id === form.organizationId);
     const idp = allIdps.find((i) => i.id === form.idpId);
     const role = allRoles.find((r) => r.id === form.adminRoleId);
-    const scopeNames = currentScopes.filter((s) => form.scopeIds.includes(s.id)).map((s) => s.name);
+    const selectedScope = currentScopes.find((s) => s.id === form.scopeId);
+    const scopeNames = selectedScope ? [selectedScope.name] : [];
 
     onCreated({
       organization_id: form.organizationId,
@@ -289,7 +216,7 @@ export default function CreateFederationConfigModal({
       claim_values: form.claimValue ? [form.claimValue] : [],
       admin_role_id: form.adminRoleId,
       admin_role_name: role?.name ?? "",
-      scope_ids: form.scopeIds,
+      scope_ids: form.scopeId ? [form.scopeId] : [],
       scope_names: scopeNames,
     });
 
@@ -298,7 +225,7 @@ export default function CreateFederationConfigModal({
   }
 
   function handleClose() {
-    setForm({ organizationId: "", idpId: "", claimValue: "", adminRoleId: "", scopeIds: [] });
+    setForm({ organizationId: "", idpId: "", claimValue: "", adminRoleId: "", scopeId: "" });
     setErrors({});
     setSaving(false);
     setSuccess(false);
@@ -450,21 +377,27 @@ export default function CreateFederationConfigModal({
                 error={errors.adminRoleId}
               />
 
-              {/* Step 4: Scopes — filtered to selected org */}
-              <div className="flex flex-col gap-1">
-                <ScopeMultiSelect
-                  scopes={currentScopes}
-                  selected={form.scopeIds}
-                  onToggle={toggleScope}
-                  disabled={!!noIdpsForOrg || !form.organizationId}
-                  error={errors.scopeIds}
-                />
-                {form.organizationId && !noIdpsForOrg && currentScopes.length > 0 && (
-                  <p className="text-xs text-bluegrey-400">
-                    {currentScopes.length} scope{currentScopes.length !== 1 ? "s" : ""} available for this organization.
-                  </p>
-                )}
-              </div>
+              {/* Step 5: Scope — single selection */}
+              <StyledSelect
+                label="Scope"
+                icon={Layers}
+                value={form.scopeId}
+                onChange={(v) => {
+                  setForm((prev) => ({ ...prev, scopeId: v }));
+                  setErrors((prev) => ({ ...prev, scopeId: undefined }));
+                }}
+                options={currentScopes.map((s) => ({ value: s.id, label: s.name }))}
+                placeholder={
+                  !form.organizationId
+                    ? "Select an organization first…"
+                    : currentScopes.length === 0
+                    ? "No scopes available for this organization"
+                    : "Select a scope…"
+                }
+                disabled={!!noIdpsForOrg || !form.organizationId || currentScopes.length === 0}
+                required
+                error={errors.scopeId}
+              />
             </div>
           )}
         </div>
