@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDown, LogOut, User, ArrowLeft, Settings, Rocket, Sliders } from "lucide-react";
+import { ContentHeader } from "@onewelcome/react-lib-components";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -190,20 +191,14 @@ export default function OWAdminConsole() {
         {/* Main content */}
         <main className="flex-1 min-w-0">
           {/* Page header */}
-          <div className="bg-white border-b border-bluegrey-100 px-6 py-5">
-            <h1 className="text-2xl font-semibold text-bluegrey-900">
-              {PAGE_TITLES[activeSection] ?? "Admin"}
-            </h1>
-            {activeSection === "dashboard" && isDeployed && (
-              <p className="text-sm text-green-600 font-medium mt-0.5 flex items-center gap-1.5">
-                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-                Tenant deployed · {deployedOrgName}
-              </p>
-            )}
-          </div>
+          <ContentHeader title={PAGE_TITLES[activeSection] ?? "Admin"}>
+            {activeSection === "dashboard" && isDeployed
+              ? `Tenant deployed · ${deployedOrgName}`
+              : undefined}
+          </ContentHeader>
 
           {/* Content */}
-          <div className="bg-white mx-6 my-6 rounded-lg border border-bluegrey-100 overflow-hidden">
+          <div className="bg-white">
             {activeSection === "dashboard" && (
               <DMv2DeployTab
                 isDeployed={isDeployed}
