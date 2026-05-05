@@ -158,7 +158,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Identity */}
-        <Typography variant="h3" tag="h3" spacing={{ marginTop: 24, marginBottom: 8 }}>
+        <Typography variant="h3" tag="h3" spacing={{ marginBottom: 8 }}>
           Identity
         </Typography>
         <Fieldset legend="Identity" hideLegend background="transparent">
@@ -202,7 +202,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Super Admin */}
-        <Typography variant="h3" tag="h3" spacing={{ marginTop: 24, marginBottom: 8 }}>
+        <Typography variant="h3" tag="h3" spacing={{ marginBottom: 8 }}>
           Super Admin
         </Typography>
         <Fieldset legend="Super Admin" hideLegend background="transparent">
