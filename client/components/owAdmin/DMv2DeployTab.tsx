@@ -6,6 +6,7 @@ import {
   SelectWrapper,
   Option,
   Button,
+  Typography,
 } from "@onewelcome/react-lib-components";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -136,9 +137,9 @@ export default function DMv2DeployTab({
 
       <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
-        <h3 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
+        <Typography variant="h3" tag="h3" style={{ fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
           Organisation
-        </h3>
+        </Typography>
         <Fieldset legend="Organisation" hideLegend background="transparent">
           <InputWrapper
             label="Root organisation name"
@@ -157,9 +158,9 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Identity */}
-        <h3 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
+        <Typography variant="h3" tag="h3" style={{ fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
           Identity
-        </h3>
+        </Typography>
         <Fieldset legend="Identity" hideLegend background="transparent">
           <SelectWrapper
             label="Identity Provider (IDP)"
@@ -201,9 +202,9 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Super Admin */}
-        <h3 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
+        <Typography variant="h3" tag="h3" style={{ fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
           Super Admin
-        </h3>
+        </Typography>
         <Fieldset legend="Super Admin" hideLegend background="transparent">
           <InputWrapper
             label="First super admin email"
