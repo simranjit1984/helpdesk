@@ -111,7 +111,12 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
   const [isDirty, setIsDirty] = useState(false);
 
   const toggleCreate = (id: string) => {
-    setRows((prev) => prev.map((r) => r.id === id ? { ...r, create: !r.create } : r));
+    setRows((prev) => prev.map((r) => {
+      if (r.id !== id) return r;
+      const next = !r.create;
+      // When Create/View is turned off, also clear Mandatory
+      return { ...r, create: next, view: next ? r.view : false };
+    }));
     setIsDirty(true);
   };
 
@@ -202,9 +207,11 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
               <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Category</div>
             )}
             {showCreateColumn && (
-              <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create</div>
+              <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create / View</div>
             )}
-            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">View</div>
+            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
+              {showCreateColumn ? "Mandatory attribute" : "View"}
+            </div>
           </div>
 
           {rows.map((row) => {
@@ -260,12 +267,13 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                   </div>
                 )}
 
-                {/* View toggle */}
+                {/* Mandatory / View toggle */}
                 <div className="px-4 py-3 flex items-center justify-center">
                   <Switch
                     checked={row.view}
                     onCheckedChange={() => toggleView(row.id)}
-                    aria-label={`${row.label} view`}
+                    disabled={showCreateColumn && !row.create}
+                    aria-label={showCreateColumn ? `${row.label} mandatory` : `${row.label} view`}
                   />
                 </div>
               </div>
