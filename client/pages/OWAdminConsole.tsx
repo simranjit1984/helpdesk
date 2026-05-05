@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDown, LogOut, User, ArrowLeft, Settings, Rocket, Sliders } from "lucide-react";
 import { ContentHeader } from "@onewelcome/react-lib-components";
@@ -168,6 +168,14 @@ export default function OWAdminConsole() {
   const [isDeployed, setIsDeployed] = useState(false);
   const [deployedOrgName, setDeployedOrgName] = useState<string>("");
 
+  // Collapse ContentHeader on scroll
+  const [headerCollapsed, setHeaderCollapsed] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setHeaderCollapsed(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const setSection = (key: string) => {
     setSearchParams({ section: key });
   };
@@ -191,7 +199,7 @@ export default function OWAdminConsole() {
         {/* Main content */}
         <main className="flex-1 min-w-0 flex flex-col">
           {/* Page header */}
-          <ContentHeader title={PAGE_TITLES[activeSection] ?? "Admin"}>
+          <ContentHeader title={PAGE_TITLES[activeSection] ?? "Admin"} collapsed={headerCollapsed}>
             {activeSection === "dashboard"
               ? isDeployed
                 ? `Tenant deployed · ${deployedOrgName}`
