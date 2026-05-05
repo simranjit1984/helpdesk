@@ -136,9 +136,9 @@ export default function DMv2DeployTab({
 
       <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
-        <h2 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
+        <h3 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
           Organisation
-        </h2>
+        </h3>
         <Fieldset legend="Organisation" hideLegend background="transparent">
           <InputWrapper
             label="Root organisation name"
@@ -157,9 +157,9 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Identity */}
-        <h2 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
+        <h3 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
           Identity
-        </h2>
+        </h3>
         <Fieldset legend="Identity" hideLegend background="transparent">
           <SelectWrapper
             label="Identity Provider (IDP)"
@@ -201,9 +201,9 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Super Admin */}
-        <h2 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
+        <h3 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
           Super Admin
-        </h2>
+        </h3>
         <Fieldset legend="Super Admin" hideLegend background="transparent">
           <InputWrapper
             label="First super admin email"
