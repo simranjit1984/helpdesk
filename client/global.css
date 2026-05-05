@@ -39,8 +39,8 @@ html {
   padding-right: 0 !important;
 }
 
-/* DMv2 Deploy form — fieldset legend headings styled as H2 with UCL brand blue */
-.dmv2-form fieldset > span {
+/* DMv2 Deploy form — fieldset legend headings: H2 style with UCL brand blue */
+.dmv2-form [class*="Fieldset_legend"] {
   color: #041295 !important;
   font-size: 1.5rem !important;
   font-weight: 600 !important;
