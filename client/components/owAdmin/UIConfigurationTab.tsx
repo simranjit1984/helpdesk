@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Users, Mail, Shield, AppWindow, Key } from "lucide-react";
+import { Users, Mail, Shield, AppWindow, Key, Calendar, ChevronDown, Save } from "lucide-react";
 import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatrix";
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
 import AttributeGlobalConfig from "./AttributeGlobalConfig";
@@ -195,6 +195,71 @@ function ComingSoonSection({ icon: Icon, label }: { icon: React.ElementType; lab
   );
 }
 
+// ─── General Settings ─────────────────────────────────────────────────────────
+
+const DATE_FORMATS = [
+  { value: "DD/MM/YYYY", label: "DD/MM/YYYY (e.g. 25/01/2025)" },
+  { value: "MM/DD/YYYY", label: "MM/DD/YYYY (e.g. 01/25/2025)" },
+  { value: "YYYY-MM-DD", label: "YYYY-MM-DD (e.g. 2025-01-25)" },
+  { value: "DD-MM-YYYY", label: "DD-MM-YYYY (e.g. 25-01-2025)" },
+  { value: "DD MMM YYYY", label: "DD MMM YYYY (e.g. 25 Jan 2025)" },
+  { value: "MMM DD, YYYY", label: "MMM DD, YYYY (e.g. Jan 25, 2025)" },
+];
+
+function GeneralSettings() {
+  const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
+  const [saved, setSaved] = useState(false);
+
+  async function handleSave() {
+    setSaved(false);
+    await new Promise((r) => setTimeout(r, 400));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  }
+
+  return (
+    <div className="border-b border-bluegrey-100 bg-bluegrey-25/50 px-6 py-4">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-bluegrey-400">
+            General Settings
+          </p>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-bluegrey-700 whitespace-nowrap">
+              <Calendar className="w-4 h-4 text-bluegrey-400" />
+              Date format
+            </label>
+            <div className="relative">
+              <select
+                value={dateFormat}
+                onChange={(e) => { setDateFormat(e.target.value); setSaved(false); }}
+                className="h-9 pl-3 pr-8 text-sm border border-bluegrey-300 rounded-[2px] bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-bluegrey-900"
+              >
+                {DATE_FORMATS.map((f) => (
+                  <option key={f.value} value={f.value}>{f.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bluegrey-400 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={handleSave}
+          className={`h-9 px-4 text-sm font-medium rounded-[2px] flex items-center gap-1.5 transition-colors ${
+            saved
+              ? "bg-green-50 text-green-700 border border-green-200"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          <Save className="w-3.5 h-3.5" />
+          {saved ? "Saved" : "Save"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Entity options ────────────────────────────────────────────────────────
 
 const ENTITY_OPTIONS = [
@@ -214,6 +279,9 @@ export default function UIConfigurationTab() {
 
   return (
     <div>
+      {/* General Settings bar */}
+      <GeneralSettings />
+
       {/* Header bar — entity selector on LEFT, description on right */}
       <div className="px-6 py-4 border-b border-bluegrey-100 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
         {/* Left: selector */}

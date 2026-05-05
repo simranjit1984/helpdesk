@@ -7,7 +7,6 @@ import {
   ShieldCheck,
   Mail,
   GitBranch,
-  Calendar,
   ChevronDown,
   Loader2,
 } from "lucide-react";
@@ -31,15 +30,6 @@ const INVITATION_JOURNEYS = [
   { value: "sso-provisioned", label: "SSO Auto-provisioned" },
 ];
 
-const DATE_FORMATS = [
-  { value: "DD/MM/YYYY", label: "DD/MM/YYYY (e.g. 25/01/2025)" },
-  { value: "MM/DD/YYYY", label: "MM/DD/YYYY (e.g. 01/25/2025)" },
-  { value: "YYYY-MM-DD", label: "YYYY-MM-DD (e.g. 2025-01-25)" },
-  { value: "DD-MM-YYYY", label: "DD-MM-YYYY (e.g. 25-01-2025)" },
-  { value: "DD MMM YYYY", label: "DD MMM YYYY (e.g. 25 Jan 2025)" },
-  { value: "MMM DD, YYYY", label: "MMM DD, YYYY (e.g. Jan 25, 2025)" },
-];
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface DeployForm {
@@ -47,7 +37,6 @@ interface DeployForm {
   idp: string;
   adminEmail: string;
   invitationJourney: string;
-  dateFormat: string;
 }
 
 interface FieldError {
@@ -55,7 +44,6 @@ interface FieldError {
   idp?: string;
   adminEmail?: string;
   invitationJourney?: string;
-  dateFormat?: string;
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -142,7 +130,6 @@ export default function DMv2DeployTab({ onDeployed, isDeployed, deployedOrgName 
     idp: "",
     adminEmail: "",
     invitationJourney: "",
-    dateFormat: "",
   });
   const [errors, setErrors] = useState<FieldError>({});
   const [deploying, setDeploying] = useState(false);
@@ -165,7 +152,6 @@ export default function DMv2DeployTab({ onDeployed, isDeployed, deployedOrgName 
 
     if (!form.idp) errs.idp = "Please select an Identity Provider.";
     if (!form.invitationJourney) errs.invitationJourney = "Please select an invitation journey.";
-    if (!form.dateFormat) errs.dateFormat = "Please select a date format.";
 
     if (!form.adminEmail.trim()) {
       errs.adminEmail = "Admin email is required.";
@@ -196,8 +182,7 @@ export default function DMv2DeployTab({ onDeployed, isDeployed, deployedOrgName 
     form.rootOrgName.length <= 8 &&
     form.idp &&
     form.adminEmail &&
-    form.invitationJourney &&
-    form.dateFormat;
+    form.invitationJourney;
 
   return (
     <div className="px-6 py-8 max-w-2xl mx-auto space-y-8">
@@ -272,16 +257,6 @@ export default function DMv2DeployTab({ onDeployed, isDeployed, deployedOrgName 
               </div>
             </div>
 
-            {/* Date format */}
-            <SelectField
-              label="Date format"
-              icon={Calendar}
-              value={form.dateFormat}
-              onChange={update("dateFormat")}
-              options={DATE_FORMATS}
-              placeholder="Select a date format…"
-              error={errors.dateFormat}
-            />
           </div>
 
           {/* Section: Identity */}
