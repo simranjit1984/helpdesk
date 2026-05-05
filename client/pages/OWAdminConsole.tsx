@@ -192,8 +192,10 @@ export default function OWAdminConsole() {
         <main className="flex-1 min-w-0">
           {/* Page header */}
           <ContentHeader title={PAGE_TITLES[activeSection] ?? "Admin"}>
-            {activeSection === "dashboard" && isDeployed
-              ? `Tenant deployed · ${deployedOrgName}`
+            {activeSection === "dashboard"
+              ? isDeployed
+                ? `Tenant deployed · ${deployedOrgName}`
+                : "Configure and deploy a new DMv2 tenant. Once deployed, the UI Configuration section will become available."
               : undefined}
           </ContentHeader>
 
