@@ -39,6 +39,11 @@ html {
   padding-right: 0 !important;
 }
 
+/* DMv2 Deploy — section legend headings use UCL primary colour */
+.dmv2-form [class*="Fieldset_legend"] {
+  color: var(--color-primary) !important;
+}
+
 @layer base {
   /**
    * Tailwind CSS theme
