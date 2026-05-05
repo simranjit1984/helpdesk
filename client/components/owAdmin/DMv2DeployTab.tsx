@@ -6,7 +6,6 @@ import {
   SelectWrapper,
   Option,
   Button,
-  Typography,
 } from "@onewelcome/react-lib-components";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -137,10 +136,7 @@ export default function DMv2DeployTab({
 
       <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
-        <Typography variant="h3" tag="h3" spacing={{ marginBottom: 8 }}>
-          Organisation
-        </Typography>
-        <Fieldset legend="Organisation" hideLegend background="transparent">
+        <Fieldset legend="Organisation" legendStyle="h3" background="transparent">
           <InputWrapper
             label="Root organisation name"
             type="text"
@@ -158,10 +154,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Identity */}
-        <Typography variant="h3" tag="h3" spacing={{ marginBottom: 8 }}>
-          Identity
-        </Typography>
-        <Fieldset legend="Identity" hideLegend background="transparent">
+        <Fieldset legend="Identity" legendStyle="h3" background="transparent">
           <SelectWrapper
             label="Identity Provider (IDP)"
             name="idp"
@@ -202,10 +195,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Super Admin */}
-        <Typography variant="h3" tag="h3" spacing={{ marginBottom: 8 }}>
-          Super Admin
-        </Typography>
-        <Fieldset legend="Super Admin" hideLegend background="transparent">
+        <Fieldset legend="Super Admin" legendStyle="h3" background="transparent">
           <InputWrapper
             label="First super admin email"
             type="email"
