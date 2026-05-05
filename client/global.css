@@ -39,6 +39,11 @@ html {
   padding-right: 0 !important;
 }
 
+/* DMv2 Deploy form — fieldset legend headings styled as H2 with UCL brand blue */
+.dmv2-form fieldset > span {
+  color: #041295 !important;
+}
+
 @layer base {
   /**
    * Tailwind CSS theme

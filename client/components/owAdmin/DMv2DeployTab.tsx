@@ -134,9 +134,9 @@ export default function DMv2DeployTab({
         <DeploySuccessBanner orgName={deployedOrgName} />
       )}
 
-      <div className={isDeployed ? "opacity-60 pointer-events-none" : ""}>
+      <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
-        <Fieldset legend="Organisation" background="transparent">
+        <Fieldset legend="Organisation" legendStyle="h2" background="transparent">
           <InputWrapper
             label="Root organisation name"
             type="text"
@@ -154,7 +154,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Identity */}
-        <Fieldset legend="Identity" background="transparent">
+        <Fieldset legend="Identity" legendStyle="h2" background="transparent">
           <SelectWrapper
             label="Identity Provider (IDP)"
             name="idp"
@@ -195,7 +195,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Super Admin */}
-        <Fieldset legend="Super Admin" background="transparent">
+        <Fieldset legend="Super Admin" legendStyle="h2" background="transparent">
           <InputWrapper
             label="First super admin email"
             type="email"
