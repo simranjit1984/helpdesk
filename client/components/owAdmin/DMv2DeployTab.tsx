@@ -137,7 +137,7 @@ export default function DMv2DeployTab({
 
       <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
-        <Typography variant="h3" tag="h3" style={{ fontWeight: 600, color: "#041295", margin: "0 0 0.5rem" }}>
+        <Typography variant="h3" tag="h3" spacing={{ marginBottom: 8 }}>
           Organisation
         </Typography>
         <Fieldset legend="Organisation" hideLegend background="transparent">
@@ -158,7 +158,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Identity */}
-        <Typography variant="h3" tag="h3" style={{ fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
+        <Typography variant="h3" tag="h3" spacing={{ marginTop: 24, marginBottom: 8 }}>
           Identity
         </Typography>
         <Fieldset legend="Identity" hideLegend background="transparent">
@@ -202,7 +202,7 @@ export default function DMv2DeployTab({
         </Fieldset>
 
         {/* Section: Super Admin */}
-        <Typography variant="h3" tag="h3" style={{ fontWeight: 600, color: "#041295", margin: "24px 0 0.5rem" }}>
+        <Typography variant="h3" tag="h3" spacing={{ marginTop: 24, marginBottom: 8 }}>
           Super Admin
         </Typography>
         <Fieldset legend="Super Admin" hideLegend background="transparent">
