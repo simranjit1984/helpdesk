@@ -189,7 +189,7 @@ export default function OWAdminConsole() {
         />
 
         {/* Main content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 flex flex-col">
           {/* Page header */}
           <ContentHeader title={PAGE_TITLES[activeSection] ?? "Admin"}>
             {activeSection === "dashboard"
@@ -200,7 +200,7 @@ export default function OWAdminConsole() {
           </ContentHeader>
 
           {/* Content */}
-          <div className="bg-white">
+          <div className="bg-white flex-1">
             {activeSection === "dashboard" && (
               <DMv2DeployTab
                 isDeployed={isDeployed}
