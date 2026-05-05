@@ -42,6 +42,8 @@ html {
 /* DMv2 Deploy form — fieldset legend headings styled as H2 with UCL brand blue */
 .dmv2-form fieldset > span {
   color: #041295 !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
 }
 
 @layer base {
