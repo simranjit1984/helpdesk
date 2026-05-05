@@ -270,7 +270,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 {/* Mandatory / View toggle */}
                 <div className="px-4 py-3 flex items-center justify-center">
                   <Switch
-                    checked={row.view}
+                    checked={showCreateColumn ? (row.view && row.create) : row.view}
                     onCheckedChange={() => toggleView(row.id)}
                     disabled={showCreateColumn && !row.create}
                     aria-label={showCreateColumn ? `${row.label} mandatory` : `${row.label} view`}
