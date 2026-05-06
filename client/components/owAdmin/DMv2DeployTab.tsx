@@ -219,7 +219,7 @@ export default function DMv2DeployTab({
             loading={deploying}
             onClick={handleDeploy}
           >
-            Update DMv2 config
+            Update tenant settings
           </Button>
           <Button
             variant="outline"
