@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { LogOut, User, ArrowLeft, Settings, Rocket, Sliders } from "lucide-react";
-import { ContentHeader, LeftNav, LeftNavMenuItem } from "@onewelcome/react-lib-components";
+import { LogOut, User, ArrowLeft, Settings } from "lucide-react";
+import { ContentHeader, LeftNav, LeftNavMenuItem, Icon, Icons } from "@onewelcome/react-lib-components";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -87,7 +87,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
       path: "dashboard",
       title: "DMv2 Deploy",
       active: activeSection === "dashboard",
-      iconComponent: <Rocket />,
+      iconComponent: <Icon icon={Icons.Build} />,
     },
     {
       key: "ui-config",
@@ -95,7 +95,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
       title: "UI Configuration",
       active: activeSection === "ui-config",
       disabled: !uiConfigEnabled,
-      iconComponent: <Sliders />,
+      iconComponent: <Icon icon={Icons.Grid} />,
     },
     {
       key: "settings",
@@ -103,7 +103,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
       title: "System Settings",
       active: activeSection === "settings",
       disabled: true,
-      iconComponent: <Settings />,
+      iconComponent: <Icon icon={Icons.Gearwheel} />,
     },
   ];
 }
