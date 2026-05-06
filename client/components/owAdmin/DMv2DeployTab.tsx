@@ -222,7 +222,7 @@ export default function DMv2DeployTab({
             Update tenant settings
           </Button>
           <Button
-            variant="outline"
+            variant="text"
             color="default"
             disabled={deploying}
             onClick={() => {}}
