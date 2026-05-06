@@ -164,7 +164,7 @@ export default function OWAdminConsole() {
             {activeSection === "dashboard"
               ? isDeployed
                 ? `Tenant deployed · ${deployedOrgName}`
-                : "Configure and deploy a new DMv2 tenant. Once deployed, the UI Configuration section will become available."
+                : "Set and update settings for your Delegated management tenant. Once deployed, the UI Configuration section will become available."
               : undefined}
           </ContentHeader>
 
