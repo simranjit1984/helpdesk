@@ -85,7 +85,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
     {
       key: "dashboard",
       path: "dashboard",
-      title: "DM Tenant Settings",
+      title: "DM Tenant settings",
       active: activeSection === "dashboard",
       iconComponent: <Icon icon={Icons.Build} />,
     },
@@ -111,7 +111,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
 // ─── Page header titles ───────────────────────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
-  dashboard: "DM Tenant Settings",
+  dashboard: "DM Tenant settings",
   "ui-config": "UI Configuration",
   settings: "System Settings",
 };
