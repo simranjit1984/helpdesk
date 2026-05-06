@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronDown, LogOut, User, ArrowLeft, Settings, Rocket, Sliders } from "lucide-react";
-import { ContentHeader } from "@onewelcome/react-lib-components";
+import { LogOut, User, ArrowLeft, Settings, Rocket, Sliders } from "lucide-react";
+import { ContentHeader, LeftNav, LeftNavMenuItem } from "@onewelcome/react-lib-components";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -78,79 +78,37 @@ function AdminTopBar() {
   );
 }
 
-// ─── Left sidebar ─────────────────────────────────────────────────────────────
+// ─── Nav items builder ────────────────────────────────────────────────────────
 
-interface NavItem {
-  key: string;
-  label: string;
-  icon: React.ElementType;
-  disabled: boolean;
-  badge?: string;
-}
-
-function buildNavItems(uiConfigEnabled: boolean): NavItem[] {
+function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNavMenuItem[] {
   return [
-    { key: "dashboard", label: "DMv2 Deploy", icon: Rocket, disabled: false },
-    { key: "ui-config", label: "UI Configuration", icon: Sliders, disabled: !uiConfigEnabled, badge: !uiConfigEnabled ? "Locked" : undefined },
-    { key: "settings", label: "System Settings", icon: Settings, disabled: true, badge: "Soon" },
+    {
+      key: "dashboard",
+      path: "dashboard",
+      title: "DMv2 Deploy",
+      active: activeSection === "dashboard",
+      iconComponent: <Rocket />,
+    },
+    {
+      key: "ui-config",
+      path: "ui-config",
+      title: "UI Configuration",
+      active: activeSection === "ui-config",
+      disabled: !uiConfigEnabled,
+      iconComponent: <Sliders />,
+    },
+    {
+      key: "settings",
+      path: "settings",
+      title: "System Settings",
+      active: activeSection === "settings",
+      disabled: true,
+      iconComponent: <Settings />,
+    },
   ];
 }
 
-function AdminSidebar({
-  active,
-  onSelect,
-  uiConfigEnabled,
-}: {
-  active: string;
-  onSelect: (key: string) => void;
-  uiConfigEnabled: boolean;
-}) {
-  const navItems = buildNavItems(uiConfigEnabled);
-
-  return (
-    <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-bluegrey-100 bg-white min-h-[calc(100vh-64px)] sticky top-16">
-      <nav className="py-4 px-3 flex-1">
-        <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-bluegrey-400 mb-1">
-          Admin
-        </p>
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = active === item.key;
-          return (
-            <button
-              key={item.key}
-              disabled={item.disabled}
-              onClick={() => !item.disabled && onSelect(item.key)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors mb-0.5 ${
-                item.disabled
-                  ? "cursor-not-allowed text-bluegrey-300"
-                  : isActive
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-bluegrey-700 hover:bg-bluegrey-50 hover:text-bluegrey-900 cursor-pointer"
-              }`}
-            >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span>{item.label}</span>
-              {item.badge && (
-                <span
-                  className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                    item.badge === "Locked"
-                      ? "bg-amber-50 text-amber-500 border border-amber-200"
-                      : "bg-bluegrey-100 text-bluegrey-400"
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
-    </aside>
-  );
-}
-
-// ─── Page header ─────────────────────────────────────────────────────────────
+// ─── Page header titles ───────────────────────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "DMv2 Deploy",
@@ -158,7 +116,7 @@ const PAGE_TITLES: Record<string, string> = {
   settings: "System Settings",
 };
 
-// ─── Main page ─────────────────────────────────────────────────────────────────
+// ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function OWAdminConsole() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -190,10 +148,13 @@ export default function OWAdminConsole() {
       <AdminTopBar />
 
       <div className="flex flex-1">
-        <AdminSidebar
-          active={activeSection}
-          onSelect={setSection}
-          uiConfigEnabled={true}
+        {/* UCL Left navigation */}
+        <LeftNav
+          items={buildNavItems(activeSection, true)}
+          navigate={(path) => setSection(path)}
+          isSideMenuOpen={true}
+          marginTop="4rem"
+          internalLinkPrefix="#"
         />
 
         {/* Main content */}
