@@ -154,7 +154,7 @@ export default function DMv2DeployTab({
       <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
         <Fieldset legend="Organisation" legendStyle="h3" background="transparent">
-          <div style={{ display: "flex", gap: "12px", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
             <div style={{ flex: 1 }}>
               <InputWrapper
                 label="Root organisation name"
@@ -170,14 +170,14 @@ export default function DMv2DeployTab({
                 errorMessage={errors.rootOrgName}
                 helperText={`${form.rootOrgName.length}/8 characters — no spaces. This becomes the root organisation identifier.`}
                 inputProps={{ maxLength: 8 }}
-                disabled={orgNameSaved}
               />
             </div>
             <Button
               variant="outline"
               color="primary"
               onClick={handleSaveOrgName}
-              disabled={orgNameSaved || !form.rootOrgName.trim()}
+              disabled={!form.rootOrgName.trim()}
+              style={{ marginTop: "1.75rem", flexShrink: 0 }}
             >
               {orgNameSaved ? "Saved ✓" : "Save to continue"}
             </Button>
