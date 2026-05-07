@@ -84,6 +84,23 @@ export default function DMv2DeployTab({
   });
   const [errors, setErrors] = useState<FieldError>({});
   const [deploying, setDeploying] = useState(false);
+  const [orgNameSaved, setOrgNameSaved] = useState(false);
+
+  function handleSaveOrgName() {
+    const errs: FieldError = {};
+    if (!form.rootOrgName.trim()) {
+      errs.rootOrgName = "Root organisation name is required.";
+    } else if (/\s/.test(form.rootOrgName)) {
+      errs.rootOrgName = "No spaces are allowed.";
+    } else if (form.rootOrgName.length > 8) {
+      errs.rootOrgName = "Maximum 8 characters allowed.";
+    }
+    if (Object.keys(errs).length > 0) {
+      setErrors((prev) => ({ ...prev, ...errs }));
+      return;
+    }
+    setOrgNameSaved(true);
+  }
 
   const update = (field: keyof DeployForm) => (value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -137,20 +154,34 @@ export default function DMv2DeployTab({
       <div className={`dmv2-form ${isDeployed ? "opacity-60 pointer-events-none" : ""}`}>
         {/* Section: Organisation */}
         <Fieldset legend="Organisation" legendStyle="h3" background="transparent">
-          <InputWrapper
-            label="Root organisation name"
-            type="text"
-            name="rootOrgName"
-            value={form.rootOrgName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              update("rootOrgName")(e.target.value.replace(/\s/g, ""))
-            }
-            required
-            error={!!errors.rootOrgName}
-            errorMessage={errors.rootOrgName}
-            helperText={`${form.rootOrgName.length}/8 characters — no spaces. This becomes the root organisation identifier.`}
-            inputProps={{ maxLength: 8 }}
-          />
+          <div style={{ display: "flex", gap: "12px", alignItems: "flex-end" }}>
+            <div style={{ flex: 1 }}>
+              <InputWrapper
+                label="Root organisation name"
+                type="text"
+                name="rootOrgName"
+                value={form.rootOrgName}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  update("rootOrgName")(e.target.value.replace(/\s/g, ""));
+                  setOrgNameSaved(false);
+                }}
+                required
+                error={!!errors.rootOrgName}
+                errorMessage={errors.rootOrgName}
+                helperText={`${form.rootOrgName.length}/8 characters — no spaces. This becomes the root organisation identifier.`}
+                inputProps={{ maxLength: 8 }}
+                disabled={orgNameSaved}
+              />
+            </div>
+            <Button
+              variant="outline"
+              color="primary"
+              onClick={handleSaveOrgName}
+              disabled={orgNameSaved || !form.rootOrgName.trim()}
+            >
+              {orgNameSaved ? "Saved ✓" : "Save to continue"}
+            </Button>
+          </div>
         </Fieldset>
 
         {/* Section: Identity */}
