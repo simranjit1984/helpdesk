@@ -28,6 +28,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import type { User, AccessRole } from "@/lib/usersMockData";
+import { baseUsers, users, getUserById, getUserByUsername } from "@/lib/usersMockData";
 
 const PAGE_SIZE: PageSize = 25;
 
@@ -38,34 +40,7 @@ const DEFAULT_OPERATORS = [
   { value: "endsWith", label: "Ends with" },
 ];
 
-type StatusType =
-  | "active"
-  | "invited"
-  | "invitation-withdrawn"
-  | "invitation-expired"
-  | "blocked"
-  | "grace"
-  | "inactive";
-
-export interface AccessRole {
-  id: string;
-  name: string;
-  applications: number;
-  startDate: string;
-  endDate: string | null;
-}
-
-interface User {
-  id: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  dateCreated: string;
-  status: StatusType;
-  organizations: string[];
-  accessRoles?: AccessRole[];
-}
+type StatusType = User["status"];
 
 export type Filter = {
   id: string;
@@ -499,7 +474,7 @@ function formatFilterDisplay(
 
 // ─── User data ────────────────────────────────────────────────────────────────
 
-export const baseUsers: Partial<User>[] = [
+const _baseUsers_unused: Partial<User>[] = [
   {
     id: "1",
     username: "alison.adams@example.com",
@@ -959,26 +934,6 @@ export const baseUsers: Partial<User>[] = [
   },
 ];
 
-// Assign IDs based on array index
-export const users: User[] = baseUsers.map(
-  (user, index) =>
-    ({
-      ...user,
-      id: user.id || (index + 1).toString(),
-    }) as User,
-);
-
-// Helper function to get a user by ID
-export function getUserById(id: string): User | undefined {
-  return baseUsers.find((user) => user.id === id) as User | undefined;
-}
-
-// Helper function to get a user by username (email)
-export function getUserByUsername(username: string): User | undefined {
-  return baseUsers.find((user) => user.username === username) as
-    | User
-    | undefined;
-}
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 
