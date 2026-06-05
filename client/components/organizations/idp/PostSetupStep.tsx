@@ -32,7 +32,7 @@ function ClaimRow({
   onChangeValue: (v: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-[200px_1fr_1fr] gap-3 items-center px-4 py-3">
+    <div className="grid grid-cols-[1fr_1fr_1fr] gap-3 items-center px-4 py-3">
       <span className="text-sm font-medium text-bluegrey-900 truncate" title={label}>
         {label}
       </span>
@@ -257,7 +257,7 @@ export default function PostSetupStep({
 
               <div className="border border-bluegrey-200 rounded-md overflow-hidden">
                 {/* Header row */}
-                <div className="grid grid-cols-[200px_1fr_1fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
+                <div className="grid grid-cols-[1fr_1fr_1fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
                   <span>Access role</span>
                   <span>Claim name</span>
                   <span>Claim value</span>
@@ -287,7 +287,7 @@ export default function PostSetupStep({
 
             <div className="border border-bluegrey-200 rounded-md overflow-hidden">
               {/* Header row */}
-              <div className="grid grid-cols-[160px_1fr_1fr_160px] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
+              <div className="grid grid-cols-[1fr_1fr_1fr_1.5fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
                 <span>Admin role</span>
                 <span>Claim name</span>
                 <span>Claim value</span>
@@ -295,7 +295,7 @@ export default function PostSetupStep({
               </div>
               <div className="divide-y divide-bluegrey-100">
                 {adminRoleClaims.map((rc, i) => (
-                  <div key={rc.roleId} className="grid grid-cols-[160px_1fr_1fr_160px] gap-3 items-center px-4 py-3">
+                  <div key={rc.roleId} className="grid grid-cols-[1fr_1fr_1fr_1.5fr] gap-3 items-center px-4 py-3">
                     <span className="text-sm font-medium text-bluegrey-900 truncate" title={rc.roleName}>
                       {rc.roleName}
                     </span>
