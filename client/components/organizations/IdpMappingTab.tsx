@@ -162,12 +162,45 @@ function IdpConfigPanel({ oidc }: { oidc: OIDCFormData }) {
 
 // ─── Login Config tab content ─────────────────────────────────────────────────
 
+function ClaimDisplayTable({
+  headerLabel,
+  rows,
+}: {
+  headerLabel: string;
+  rows: Array<{ id: string; label: string; claimName: string; claimValue: string }>;
+}) {
+  return (
+    <div className="border border-bluegrey-200 rounded-md overflow-hidden">
+      <div className="grid grid-cols-3 gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
+        <span>{headerLabel}</span>
+        <span>Claim name</span>
+        <span>Claim value</span>
+      </div>
+      <div className="divide-y divide-bluegrey-100">
+        {rows.map((r) => (
+          <div key={r.id} className="grid grid-cols-3 gap-3 px-4 py-2.5 items-center">
+            <span className="text-sm font-medium text-bluegrey-900 truncate" title={r.label}>
+              {r.label}
+            </span>
+            <code className="text-sm font-mono text-blue-700">
+              {r.claimName || <span className="text-bluegrey-300 not-italic font-sans">—</span>}
+            </code>
+            <code className="text-sm font-mono text-blue-700">
+              {r.claimValue || <span className="text-bluegrey-300 not-italic font-sans">—</span>}
+            </code>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function LoginConfigPanel({ postSetup }: { postSetup: PostSetupData }) {
+  const hasChildAudiences =
+    postSetup.sameIdpForChildren && postSetup.childOrgAudiences.some((c) => c.audience);
   const hasAccessRoles = postSetup.accessRoleClaims.some((r) => r.claimName || r.claimValue);
   const hasAdminRoles  = postSetup.adminRoleClaims.some((r) => r.claimName || r.claimValue);
-  const hasChildAudiences =
-    postSetup.sameIdpForChildren &&
-    postSetup.childOrgAudiences.some((c) => c.audience);
+  const hasScopeClaims = postSetup.scopeClaims?.some((s) => s.claimName || s.claimValue);
 
   return (
     <div className="space-y-6">
@@ -197,61 +230,55 @@ function LoginConfigPanel({ postSetup }: { postSetup: PostSetupData }) {
         </div>
       )}
 
-      {/* Access role claim mapping */}
+      {/* Access role claims */}
       {hasAccessRoles && (
         <div>
           <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
             <Tag className="w-3.5 h-3.5" />
             Access role claims
           </h4>
-          <div className="border border-bluegrey-200 rounded-md overflow-hidden">
-            <div className="grid grid-cols-3 gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
-              <span>Access role</span>
-              <span>Claim name</span>
-              <span>Claim value</span>
-            </div>
-            <div className="divide-y divide-bluegrey-100">
-              {postSetup.accessRoleClaims.map((r) => (
-                <div key={r.roleId} className="grid grid-cols-3 gap-3 px-4 py-2.5 items-center">
-                  <span className="text-sm font-medium text-bluegrey-900">{r.roleName}</span>
-                  <code className="text-sm font-mono text-blue-700">{r.claimName || <span className="text-bluegrey-300 not-italic">—</span>}</code>
-                  <code className="text-sm font-mono text-blue-700">{r.claimValue || <span className="text-bluegrey-300 not-italic">—</span>}</code>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ClaimDisplayTable
+            headerLabel="Access role"
+            rows={postSetup.accessRoleClaims.map((r) => ({
+              id: r.roleId, label: r.roleName, claimName: r.claimName, claimValue: r.claimValue,
+            }))}
+          />
         </div>
       )}
 
-      {/* Admin role claim mapping */}
+      {/* Admin role claims */}
       {hasAdminRoles && (
         <div>
           <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
             <Shield className="w-3.5 h-3.5" />
-            Admin role & scope claims
+            Admin role claims
           </h4>
-          <div className="border border-bluegrey-200 rounded-md overflow-hidden">
-            <div className="grid grid-cols-[1fr_1fr_1fr_1.5fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
-              <span>Admin role</span>
-              <span>Claim name</span>
-              <span>Claim value</span>
-              <span>Scope</span>
-            </div>
-            <div className="divide-y divide-bluegrey-100">
-              {postSetup.adminRoleClaims.map((r) => (
-                <div key={r.roleId} className="grid grid-cols-[1fr_1fr_1fr_1.5fr] gap-3 px-4 py-2.5 items-center">
-                  <span className="text-sm font-medium text-bluegrey-900">{r.roleName}</span>
-                  <code className="text-sm font-mono text-blue-700">{r.claimName || <span className="text-bluegrey-300 not-italic">—</span>}</code>
-                  <code className="text-sm font-mono text-blue-700">{r.claimValue || <span className="text-bluegrey-300 not-italic">—</span>}</code>
-                  <span className="text-sm text-bluegrey-600 truncate">{r.scopeName || "—"}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ClaimDisplayTable
+            headerLabel="Admin role"
+            rows={postSetup.adminRoleClaims.map((r) => ({
+              id: r.roleId, label: r.roleName, claimName: r.claimName, claimValue: r.claimValue,
+            }))}
+          />
         </div>
       )}
 
-      {!hasAccessRoles && !hasAdminRoles && (
+      {/* Scope claims — separate from admin role claims */}
+      {hasScopeClaims && (
+        <div>
+          <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <Shield className="w-3.5 h-3.5" />
+            Scope claims
+          </h4>
+          <ClaimDisplayTable
+            headerLabel="Scope"
+            rows={(postSetup.scopeClaims ?? []).map((s) => ({
+              id: s.scopeId, label: s.scopeName, claimName: s.claimName, claimValue: s.claimValue,
+            }))}
+          />
+        </div>
+      )}
+
+      {!hasAccessRoles && !hasAdminRoles && !hasScopeClaims && (
         <p className="text-sm text-bluegrey-400 italic">No claim mappings configured.</p>
       )}
     </div>

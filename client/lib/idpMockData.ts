@@ -1,7 +1,6 @@
 import type { ConfiguredIdp } from "@/components/organizations/idp/types";
 
 // ─── Shared OIDC base config (Acme Corporate SSO) ─────────────────────────────
-// Child orgs derive from the same provider — only audience + role mappings differ.
 
 const ACME_SSO_BASE = {
   type: "oidc" as const,
@@ -14,8 +13,7 @@ const ACME_SSO_BASE = {
     authMethod: "client_secret_basic" as const,
     clientSecret: "••••••••••••••••",
     pkce: true,
-    wellKnownEndpoint:
-      "https://sso.acme-corp.com/.well-known/openid-configuration",
+    wellKnownEndpoint: "https://sso.acme-corp.com/.well-known/openid-configuration",
     issuer: "https://sso.acme-corp.com",
     authorizationEndpoint: "https://sso.acme-corp.com/oauth2/authorize",
     tokenEndpoint: "https://sso.acme-corp.com/oauth2/token",
@@ -59,15 +57,20 @@ export const ACME_CORP_DEFAULT_IDP: ConfiguredIdp = {
     ],
     // Access roles assigned to org "1": ar-3 (Sales general), ar-5 (Normal_User_K)
     accessRoleClaims: [
-      { roleId: "ar-3", roleName: "Sales general",  claimName: "role", claimValue: "sales-general" },
-      { roleId: "ar-5", roleName: "Normal_User_K",  claimName: "role", claimValue: "normal-user"   },
+      { roleId: "ar-3", roleName: "Sales general", claimName: "role", claimValue: "sales-general" },
+      { roleId: "ar-5", roleName: "Normal_User_K", claimName: "role", claimValue: "normal-user"   },
     ],
-    // All four admin roles mapped to Acme Corp scopes
+    // Admin roles — each has its own independent claim
     adminRoleClaims: [
-      { roleId: "role-1", roleName: "User Admin",    claimName: "admin_role", claimValue: "user-admin",  scopeId: "scope-1-a", scopeName: "Acme Corp — Full Access" },
-      { roleId: "role-2", roleName: "Helpdesk Admin",claimName: "admin_role", claimValue: "helpdesk",    scopeId: "scope-1-b", scopeName: "Acme Corp — Helpdesk"    },
-      { roleId: "role-3", roleName: "Viewer",        claimName: "admin_role", claimValue: "viewer",      scopeId: "scope-1-b", scopeName: "Acme Corp — Helpdesk"    },
-      { roleId: "role-4", roleName: "Org Admin",     claimName: "admin_role", claimValue: "org-admin",   scopeId: "scope-1-a", scopeName: "Acme Corp — Full Access" },
+      { roleId: "role-1", roleName: "User Admin",     claimName: "admin_role", claimValue: "user-admin"  },
+      { roleId: "role-2", roleName: "Helpdesk Admin", claimName: "admin_role", claimValue: "helpdesk"    },
+      { roleId: "role-3", roleName: "Viewer",         claimName: "admin_role", claimValue: "viewer"      },
+      { roleId: "role-4", roleName: "Org Admin",      claimName: "admin_role", claimValue: "org-admin"   },
+    ],
+    // Scopes — each scope has its own independent claim
+    scopeClaims: [
+      { scopeId: "scope-1-a", scopeName: "Acme Corp — Full Access", claimName: "scope", claimValue: "full-access" },
+      { scopeId: "scope-1-b", scopeName: "Acme Corp — Helpdesk",    claimName: "scope", claimValue: "helpdesk"    },
     ],
   },
 };
@@ -88,12 +91,15 @@ export const ACME_EUROPE_DEFAULT_IDP: ConfiguredIdp = {
     audienceValue: "https://api.acme-europe.com",
     sameIdpForChildren: false,
     childOrgAudiences: [],
-    accessRoleClaims: [],       // No access roles assigned to "1-1" yet
+    accessRoleClaims: [],
     adminRoleClaims: [
-      { roleId: "role-1", roleName: "User Admin",    claimName: "admin_role", claimValue: "user-admin", scopeId: "scope-1-1-a", scopeName: "Partner1 — Limited" },
-      { roleId: "role-2", roleName: "Helpdesk Admin",claimName: "admin_role", claimValue: "helpdesk",   scopeId: "scope-1-1-a", scopeName: "Partner1 — Limited" },
-      { roleId: "role-3", roleName: "Viewer",        claimName: "admin_role", claimValue: "viewer",     scopeId: "scope-1-1-a", scopeName: "Partner1 — Limited" },
-      { roleId: "role-4", roleName: "Org Admin",     claimName: "admin_role", claimValue: "org-admin",  scopeId: "scope-1-1-a", scopeName: "Partner1 — Limited" },
+      { roleId: "role-1", roleName: "User Admin",     claimName: "admin_role", claimValue: "user-admin" },
+      { roleId: "role-2", roleName: "Helpdesk Admin", claimName: "admin_role", claimValue: "helpdesk"   },
+      { roleId: "role-3", roleName: "Viewer",         claimName: "admin_role", claimValue: "viewer"     },
+      { roleId: "role-4", roleName: "Org Admin",      claimName: "admin_role", claimValue: "org-admin"  },
+    ],
+    scopeClaims: [
+      { scopeId: "scope-1-1-a", scopeName: "Partner1 — Limited", claimName: "scope", claimValue: "partner1-limited" },
     ],
   },
 };
@@ -114,12 +120,15 @@ export const ACME_AMERICAS_DEFAULT_IDP: ConfiguredIdp = {
     audienceValue: "https://api.acme-americas.com",
     sameIdpForChildren: false,
     childOrgAudiences: [],
-    accessRoleClaims: [],       // No access roles assigned to "1-2" yet
+    accessRoleClaims: [],
     adminRoleClaims: [
-      { roleId: "role-1", roleName: "User Admin",    claimName: "admin_role", claimValue: "user-admin", scopeId: "scope-1-2-a", scopeName: "Partner2 — Standard" },
-      { roleId: "role-2", roleName: "Helpdesk Admin",claimName: "admin_role", claimValue: "helpdesk",   scopeId: "scope-1-2-a", scopeName: "Partner2 — Standard" },
-      { roleId: "role-3", roleName: "Viewer",        claimName: "admin_role", claimValue: "viewer",     scopeId: "scope-1-2-a", scopeName: "Partner2 — Standard" },
-      { roleId: "role-4", roleName: "Org Admin",     claimName: "admin_role", claimValue: "org-admin",  scopeId: "scope-1-2-a", scopeName: "Partner2 — Standard" },
+      { roleId: "role-1", roleName: "User Admin",     claimName: "admin_role", claimValue: "user-admin" },
+      { roleId: "role-2", roleName: "Helpdesk Admin", claimName: "admin_role", claimValue: "helpdesk"   },
+      { roleId: "role-3", roleName: "Viewer",         claimName: "admin_role", claimValue: "viewer"     },
+      { roleId: "role-4", roleName: "Org Admin",      claimName: "admin_role", claimValue: "org-admin"  },
+    ],
+    scopeClaims: [
+      { scopeId: "scope-1-2-a", scopeName: "Partner2 — Standard", claimName: "scope", claimValue: "partner2-standard" },
     ],
   },
 };

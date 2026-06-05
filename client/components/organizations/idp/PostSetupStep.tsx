@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { CheckCircle2, ChevronDown, ChevronLeft, Info } from "lucide-react";
+import { CheckCircle2, ChevronLeft, Info } from "lucide-react";
 import { getOrgAccessRoles } from "@/components/organizations/accessRolesMockData";
 import { MOCK_ADMIN_ROLES } from "@/components/administrators/mockData";
 import { getScopesForOrg } from "@/lib/federationMockData";
-import type { ChildOrg, PostSetupData, AccessRoleClaim, AdminRoleClaim } from "./types";
+import type { ChildOrg, PostSetupData, AccessRoleClaim, AdminRoleClaim, ScopeClaim } from "./types";
 
 // ─── Section header ───────────────────────────────────────────────────────────
 
@@ -16,40 +16,49 @@ function SectionTitle({ title, description }: { title: string; description: stri
   );
 }
 
-// ─── Claim row ────────────────────────────────────────────────────────────────
+// ─── Generic 3-column claim table ─────────────────────────────────────────────
 
-function ClaimRow({
-  label,
-  claimName,
-  claimValue,
+function ClaimTable({
+  headerLabel,
+  rows,
   onChangeName,
   onChangeValue,
 }: {
-  label: string;
-  claimName: string;
-  claimValue: string;
-  onChangeName: (v: string) => void;
-  onChangeValue: (v: string) => void;
+  headerLabel: string;
+  rows: Array<{ id: string; label: string; claimName: string; claimValue: string }>;
+  onChangeName: (index: number, v: string) => void;
+  onChangeValue: (index: number, v: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-[1fr_1fr_1fr] gap-3 items-center px-4 py-3">
-      <span className="text-sm font-medium text-bluegrey-900 truncate" title={label}>
-        {label}
-      </span>
-      <input
-        type="text"
-        value={claimName}
-        onChange={(e) => onChangeName(e.target.value)}
-        placeholder="e.g. role"
-        className="h-9 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
-      />
-      <input
-        type="text"
-        value={claimValue}
-        onChange={(e) => onChangeValue(e.target.value)}
-        placeholder="e.g. admin"
-        className="h-9 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
-      />
+    <div className="border border-bluegrey-200 rounded-md overflow-hidden">
+      <div className="grid grid-cols-[1fr_1fr_1fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
+        <span>{headerLabel}</span>
+        <span>Claim name</span>
+        <span>Claim value</span>
+      </div>
+      <div className="divide-y divide-bluegrey-100">
+        {rows.map((row, i) => (
+          <div key={row.id} className="grid grid-cols-[1fr_1fr_1fr] gap-3 items-center px-4 py-3">
+            <span className="text-sm font-medium text-bluegrey-900 truncate" title={row.label}>
+              {row.label}
+            </span>
+            <input
+              type="text"
+              value={row.claimName}
+              onChange={(e) => onChangeName(i, e.target.value)}
+              placeholder="e.g. role"
+              className="h-9 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+            />
+            <input
+              type="text"
+              value={row.claimValue}
+              onChange={(e) => onChangeValue(i, e.target.value)}
+              placeholder="e.g. admin"
+              className="h-9 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -74,8 +83,8 @@ export default function PostSetupStep({
   onBack,
 }: Props) {
   const accessRoles = getOrgAccessRoles(orgId);
-  const adminRoles = MOCK_ADMIN_ROLES;
-  const scopes = getScopesForOrg(orgId);
+  const adminRoles  = MOCK_ADMIN_ROLES;
+  const scopes      = getScopesForOrg(orgId);
 
   const [audienceValue, setAudienceValue] = useState("");
   const [sameIdpForChildren, setSameIdpForChildren] = useState<boolean | null>(null);
@@ -86,35 +95,11 @@ export default function PostSetupStep({
     accessRoles.map((r) => ({ roleId: r.id, roleName: r.name, claimName: "", claimValue: "" }))
   );
   const [adminRoleClaims, setAdminRoleClaims] = useState<AdminRoleClaim[]>(
-    adminRoles.map((r) => ({
-      roleId: r.id,
-      roleName: r.name,
-      claimName: "",
-      claimValue: "",
-      scopeId: "",
-      scopeName: "",
-    }))
+    adminRoles.map((r) => ({ roleId: r.id, roleName: r.name, claimName: "", claimValue: "" }))
   );
-
-  function updateAccessRoleClaim(index: number, field: keyof AccessRoleClaim, value: string) {
-    setAccessRoleClaims((prev) =>
-      prev.map((r, i) => (i === index ? { ...r, [field]: value } : r))
-    );
-  }
-
-  function updateAdminRoleClaim(index: number, field: keyof AdminRoleClaim, value: string) {
-    setAdminRoleClaims((prev) => {
-      const updated = prev.map((r, i) => {
-        if (i !== index) return r;
-        if (field === "scopeId") {
-          const scope = scopes.find((s) => s.id === value);
-          return { ...r, scopeId: value, scopeName: scope?.name ?? "" };
-        }
-        return { ...r, [field]: value };
-      });
-      return updated;
-    });
-  }
+  const [scopeClaims, setScopeClaims] = useState<ScopeClaim[]>(
+    scopes.map((s) => ({ scopeId: s.id, scopeName: s.name, claimName: "", claimValue: "" }))
+  );
 
   function handleFinish() {
     onComplete({
@@ -127,6 +112,7 @@ export default function PostSetupStep({
       })),
       accessRoleClaims,
       adminRoleClaims,
+      scopeClaims,
     });
   }
 
@@ -164,7 +150,7 @@ export default function PostSetupStep({
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="max-w-2xl space-y-10">
 
-          {/* ── 1. Audience ────────────────────────────────────────────── */}
+          {/* ── 1. Audience ──────────────────────────────────────────────── */}
           <section>
             <SectionTitle
               title="Audience"
@@ -184,7 +170,7 @@ export default function PostSetupStep({
             </div>
           </section>
 
-          {/* ── 2. Child organizations ─────────────────────────────────── */}
+          {/* ── 2. Child organizations ───────────────────────────────────── */}
           {childOrgs.length > 0 && (
             <section>
               <SectionTitle
@@ -194,8 +180,8 @@ export default function PostSetupStep({
 
               <div className="flex gap-3 mb-5">
                 {[
-                  { val: true, label: "Yes" },
-                  { val: false, label: "No" },
+                  { val: true,  label: "Yes" },
+                  { val: false, label: "No"  },
                 ].map(({ val, label }) => (
                   <button
                     key={String(val)}
@@ -247,96 +233,90 @@ export default function PostSetupStep({
             </section>
           )}
 
-          {/* ── 3. Access role claim mapping ───────────────────────────── */}
+          {/* ── 3. Access role claim mapping ─────────────────────────────── */}
           {accessRoles.length > 0 && (
             <section>
               <SectionTitle
                 title="Access role claim mapping"
                 description={`Specify the claim name and value the IDP sends to grant each access role in ${orgName}.`}
               />
-
-              <div className="border border-bluegrey-200 rounded-md overflow-hidden">
-                {/* Header row */}
-                <div className="grid grid-cols-[1fr_1fr_1fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
-                  <span>Access role</span>
-                  <span>Claim name</span>
-                  <span>Claim value</span>
-                </div>
-                <div className="divide-y divide-bluegrey-100">
-                  {accessRoleClaims.map((rc, i) => (
-                    <ClaimRow
-                      key={rc.roleId}
-                      label={rc.roleName}
-                      claimName={rc.claimName}
-                      claimValue={rc.claimValue}
-                      onChangeName={(v) => updateAccessRoleClaim(i, "claimName", v)}
-                      onChangeValue={(v) => updateAccessRoleClaim(i, "claimValue", v)}
-                    />
-                  ))}
-                </div>
-              </div>
+              <ClaimTable
+                headerLabel="Access role"
+                rows={accessRoleClaims.map((r) => ({
+                  id: r.roleId,
+                  label: r.roleName,
+                  claimName: r.claimName,
+                  claimValue: r.claimValue,
+                }))}
+                onChangeName={(i, v) =>
+                  setAccessRoleClaims((prev) =>
+                    prev.map((r, j) => (j === i ? { ...r, claimName: v } : r))
+                  )
+                }
+                onChangeValue={(i, v) =>
+                  setAccessRoleClaims((prev) =>
+                    prev.map((r, j) => (j === i ? { ...r, claimValue: v } : r))
+                  )
+                }
+              />
             </section>
           )}
 
-          {/* ── 4. Admin role + scope claim mapping ────────────────────── */}
+          {/* ── 4. Admin role claim mapping ──────────────────────────────── */}
+          <section>
+            <SectionTitle
+              title="Admin role claim mapping"
+              description="Specify the claim name and value the IDP sends to grant each admin role. Admin role claims are evaluated independently of scope claims."
+            />
+            <ClaimTable
+              headerLabel="Admin role"
+              rows={adminRoleClaims.map((r) => ({
+                id: r.roleId,
+                label: r.roleName,
+                claimName: r.claimName,
+                claimValue: r.claimValue,
+              }))}
+              onChangeName={(i, v) =>
+                setAdminRoleClaims((prev) =>
+                  prev.map((r, j) => (j === i ? { ...r, claimName: v } : r))
+                )
+              }
+              onChangeValue={(i, v) =>
+                setAdminRoleClaims((prev) =>
+                  prev.map((r, j) => (j === i ? { ...r, claimValue: v } : r))
+                )
+              }
+            />
+          </section>
+
+          {/* ── 5. Scope claim mapping ───────────────────────────────────── */}
           <section className="pb-10">
             <SectionTitle
-              title="Admin role & scope claim mapping"
-              description="Specify the claim name and value the IDP sends to grant each admin role, and which scope it applies to."
+              title="Scope claim mapping"
+              description="Specify the claim name and value the IDP sends to activate each scope. Scope claims are evaluated independently from admin role claims."
             />
-
-            <div className="border border-bluegrey-200 rounded-md overflow-hidden">
-              {/* Header row */}
-              <div className="grid grid-cols-[1fr_1fr_1fr_1.5fr] gap-3 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider">
-                <span>Admin role</span>
-                <span>Claim name</span>
-                <span>Claim value</span>
-                <span>Scope</span>
-              </div>
-              <div className="divide-y divide-bluegrey-100">
-                {adminRoleClaims.map((rc, i) => (
-                  <div key={rc.roleId} className="grid grid-cols-[1fr_1fr_1fr_1.5fr] gap-3 items-center px-4 py-3">
-                    <span className="text-sm font-medium text-bluegrey-900 truncate" title={rc.roleName}>
-                      {rc.roleName}
-                    </span>
-                    <input
-                      type="text"
-                      value={rc.claimName}
-                      onChange={(e) => updateAdminRoleClaim(i, "claimName", e.target.value)}
-                      placeholder="e.g. role"
-                      className="h-9 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
-                    />
-                    <input
-                      type="text"
-                      value={rc.claimValue}
-                      onChange={(e) => updateAdminRoleClaim(i, "claimValue", e.target.value)}
-                      placeholder="e.g. user-admin"
-                      className="h-9 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
-                    />
-                    <div className="relative">
-                      <select
-                        value={rc.scopeId}
-                        onChange={(e) => updateAdminRoleClaim(i, "scopeId", e.target.value)}
-                        className={`w-full h-9 pl-2.5 pr-7 text-sm border rounded-sm bg-white appearance-none focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${
-                          rc.scopeId ? "text-bluegrey-900 border-bluegrey-300" : "text-bluegrey-400 border-bluegrey-300"
-                        }`}
-                      >
-                        <option value="">— Select —</option>
-                        {scopes.map((s) => (
-                          <option key={s.id} value={s.id}>
-                            {s.name}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-bluegrey-400 pointer-events-none" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {scopes.length === 0 && (
-              <p className="mt-3 text-xs text-bluegrey-400 flex items-center gap-1.5">
+            {scopes.length > 0 ? (
+              <ClaimTable
+                headerLabel="Scope"
+                rows={scopeClaims.map((s) => ({
+                  id: s.scopeId,
+                  label: s.scopeName,
+                  claimName: s.claimName,
+                  claimValue: s.claimValue,
+                }))}
+                onChangeName={(i, v) =>
+                  setScopeClaims((prev) =>
+                    prev.map((s, j) => (j === i ? { ...s, claimName: v } : s))
+                  )
+                }
+                onChangeValue={(i, v) =>
+                  setScopeClaims((prev) =>
+                    prev.map((s, j) => (j === i ? { ...s, claimValue: v } : s))
+                  )
+                }
+              />
+            ) : (
+              <p className="text-sm text-bluegrey-400 flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5" />
                 No scopes are configured for this organization yet. You can add them later.
               </p>

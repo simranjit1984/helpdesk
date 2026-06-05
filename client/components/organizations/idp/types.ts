@@ -114,8 +114,13 @@ export interface AdminRoleClaim {
   roleName: string;
   claimName: string;
   claimValue: string;
+}
+
+export interface ScopeClaim {
   scopeId: string;
   scopeName: string;
+  claimName: string;
+  claimValue: string;
 }
 
 export interface PostSetupData {
@@ -124,6 +129,7 @@ export interface PostSetupData {
   childOrgAudiences: Array<{ orgId: string; orgName: string; audience: string }>;
   accessRoleClaims: AccessRoleClaim[];
   adminRoleClaims: AdminRoleClaim[];
+  scopeClaims: ScopeClaim[];
 }
 
 // ─── Completed IDP config (stored after wizard) ───────────────────────────────
