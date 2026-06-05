@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 import AddIdpWizard from "./AddIdpWizard";
 import type { ConfiguredIdp, ChildOrg } from "./idp/types";
+import { getDefaultIdpsForOrg } from "@/lib/idpMockData";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -190,7 +191,9 @@ export default function IdpMappingTab({ orgId, orgName, readOnly }: IdpMappingTa
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
-  const [configuredIdps, setConfiguredIdps] = useState<ConfiguredIdp[]>([]);
+  const [configuredIdps, setConfiguredIdps] = useState<ConfiguredIdp[]>(() =>
+    getDefaultIdpsForOrg(orgId)
+  );
   const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
 
   const childOrgs = getChildOrgs(orgId);
