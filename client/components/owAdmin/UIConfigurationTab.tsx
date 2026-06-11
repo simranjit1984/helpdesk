@@ -12,13 +12,14 @@ import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatri
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
 import AttributeGlobalConfig from "./AttributeGlobalConfig";
 import OrganizationConfig from "./OrganizationConfig";
+import FilterConfigTab, { FilterAttributeConfig } from "./FilterConfigTab";
 
 // ─── Default data ─────────────────────────────────────────────────────────────
 
 const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
-  { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: true,  sortable: true  },
-  { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: true,  sortable: true  },
-  { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: true,  sortable: true  },
+  { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
+  { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
+  { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
   { id: "role",        label: "Role",         visible: true,  searchable: true,  filterable: true,  sortable: false, disabledCaps: ["sortable"] },
   { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["sortable"] },
@@ -83,6 +84,10 @@ interface EntityConfigProps {
 function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", showDetailCreateColumn = false }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
+  const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>([]);
+
+  // Derive filterable attributes live from overview state
+  const filterableAttrs = overviewAttrs.filter((a) => a.filterable);
 
   return (
     <Tabs defaultValue="overview">
@@ -90,6 +95,9 @@ function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Deta
         <TabsList className="h-auto bg-transparent p-0 gap-6 -mb-px">
           <TabsTrigger value="overview" className={SUB_TAB_CLASS}>
             Overview (Table View)
+          </TabsTrigger>
+          <TabsTrigger value="filter-config" className={SUB_TAB_CLASS}>
+            Filter Configuration
           </TabsTrigger>
           <TabsTrigger value="detail" className={SUB_TAB_CLASS}>
             {detailTabLabel}
@@ -108,6 +116,20 @@ function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Deta
           attributes={overviewAttrs}
           onSave={setOverviewAttrs}
           onReset={() => { setOverviewAttrs(overviewDefaults); return overviewDefaults; }}
+        />
+      </TabsContent>
+
+      <TabsContent value="filter-config" className="mt-0 px-6 py-6">
+        <div className="mb-4">
+          <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
+          <p className="text-sm text-bluegrey-500 mt-1">
+            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab. Set default pre-selected values, whether users can select one or many values, and whether activating this filter clears all others.
+          </p>
+        </div>
+        <FilterConfigTab
+          filterableAttrs={filterableAttrs}
+          initial={filterConfigs}
+          onSave={setFilterConfigs}
         />
       </TabsContent>
 
