@@ -55,6 +55,35 @@ const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
   { id: "expiryDate",  label: "Expiry Date",  category: "System",       create: true,  view: true  },
 ];
 
+// ─── Default filter configs ──────────────────────────────────────────────────
+
+const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
+  {
+    id: "role",
+    label: "Role",
+    valueSource: "app-object",
+    appObjectRef: "access-roles",
+    valueSelectType: "multiple",
+    allowSingleFilterOnly: false,
+  },
+  {
+    id: "organization",
+    label: "Organization",
+    valueSource: "app-object",
+    appObjectRef: "organizations",
+    valueSelectType: "single",
+    allowSingleFilterOnly: false,
+  },
+  {
+    id: "status",
+    label: "Status",
+    valueSource: "external-system",
+    externalSystemRef: "userStatus",
+    valueSelectType: "single",
+    allowSingleFilterOnly: true,
+  },
+];
+
 // ─── Sub-tab style ─────────────────────────────────────────────────────────
 
 const SUB_TAB_CLASS =
@@ -76,15 +105,16 @@ const ENTITY_TAB_CLASS =
 interface EntityConfigProps {
   overviewDefaults: AttributeCapability[];
   detailDefaults: DetailAttribute[];
+  filterDefaults?: FilterAttributeConfig[];
   detailTabLabel?: string;
   detailDescription?: string;
   showDetailCreateColumn?: boolean;
 }
 
-function EntityConfig({ overviewDefaults, detailDefaults, detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", showDetailCreateColumn = false }: EntityConfigProps) {
+function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", showDetailCreateColumn = false }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
-  const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>([]);
+  const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>(filterDefaults);
 
   // Derive filterable attributes live from overview state
   const filterableAttrs = overviewAttrs.filter((a) => a.filterable);
@@ -186,7 +216,11 @@ function UsersAndInvitationsPanel() {
 
       {/* Entity-specific config */}
       <TabsContent value="users" className="mt-0">
-        <EntityConfig overviewDefaults={DEFAULT_USERS_OVERVIEW} detailDefaults={DEFAULT_USERS_DETAIL} />
+        <EntityConfig
+          overviewDefaults={DEFAULT_USERS_OVERVIEW}
+          detailDefaults={DEFAULT_USERS_DETAIL}
+          filterDefaults={DEFAULT_USERS_FILTER}
+        />
       </TabsContent>
       <TabsContent value="invitations" className="mt-0">
         <EntityConfig
