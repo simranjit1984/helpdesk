@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Save, X, Filter, ChevronDown } from "lucide-react";
+import { Save, X, Filter, ChevronDown, Plus } from "lucide-react";
 import type { AttributeCapability } from "./OverviewConfigMatrix";
 
 // ─── Value source types ───────────────────────────────────────────────────────
@@ -24,15 +24,20 @@ export interface FilterAttributeConfig {
   label: string;
   // — Source of filter options ——————————————————————————————————————————————
   valueSource: ValueSourceType;
-  appObjectRef?: AppObjectRef;       // when valueSource = "app-object"
-  externalSystemRef?: string;        // when valueSource = "external-system"
-  userDefinedValues?: string[];      // when valueSource = "user-defined": typed defaults
+  // app-object
+  appObjectRef?: AppObjectRef;
+  appObjectAttribute?: string;
+  // external-system
+  externalSystemAttribute?: string;   // IDS attribute key, e.g. "userStatus"
+  externalSystemFallback?: string[];  // admin-configured fallback values
+  // user-defined
+  userDefinedValues?: string[];
   // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
   allowSingleFilterOnly: boolean;
 }
 
-// ─── App object labels ────────────────────────────────────────────────────────
+// ─── App object attribute catalogue ──────────────────────────────────────────
 
 const APP_OBJECT_LABELS: Record<AppObjectRef, string> = {
   "access-roles":  "Access Roles",
@@ -40,6 +45,66 @@ const APP_OBJECT_LABELS: Record<AppObjectRef, string> = {
   "applications":  "Applications",
   "users":         "Users",
 };
+
+const APP_OBJECT_ATTRIBUTES: Record<AppObjectRef, { value: string; label: string }[]> = {
+  "access-roles": [
+    { value: "name",        label: "Access Role Name" },
+    { value: "externalId",  label: "Access Role External ID" },
+    { value: "description", label: "Description" },
+    { value: "type",        label: "Role Type" },
+  ],
+  "organizations": [
+    { value: "name",        label: "Organization Name" },
+    { value: "orgId",       label: "Organization ID" },
+    { value: "externalId",  label: "External ID" },
+    { value: "referenceId", label: "Reference ID" },
+    { value: "status",      label: "Status" },
+  ],
+  "applications": [
+    { value: "name",        label: "Application Name" },
+    { value: "clientId",    label: "Client ID" },
+    { value: "description", label: "Description" },
+    { value: "type",        label: "Application Type" },
+  ],
+  "users": [
+    { value: "username",    label: "Username" },
+    { value: "email",       label: "Email" },
+    { value: "userId",      label: "User ID" },
+    { value: "externalId",  label: "External ID" },
+  ],
+};
+
+// ─── IDS attribute catalogue ──────────────────────────────────────────────────
+
+interface IdsAttribute {
+  value: string;
+  label: string;
+  predefinedValues?: string[];
+}
+
+const IDS_ATTRIBUTES: IdsAttribute[] = [
+  {
+    value: "userStatus",
+    label: "User Status",
+    predefinedValues: [
+      "Active",
+      "Blocked",
+      "Grace",
+      "Inactive",
+      "Invited",
+      "Invitation expired",
+      "Invitation withdrawn",
+    ],
+  },
+  { value: "userId",       label: "User ID" },
+  { value: "userEmail",    label: "User Email" },
+  { value: "userGroups",   label: "User Groups" },
+  { value: "userRoles",    label: "User Roles" },
+  { value: "department",   label: "Department" },
+  { value: "employeeType", label: "Employee Type" },
+  { value: "locale",       label: "Locale" },
+  { value: "country",      label: "Country" },
+];
 
 // ─── Source type definitions ──────────────────────────────────────────────────
 
@@ -58,12 +123,12 @@ const SOURCE_TYPES: SourceDef[] = [
   {
     value: "app-object",
     label: "Application object",
-    description: "Options are fetched from an application entity (e.g. Access Roles, Organizations).",
+    description: "Options are fetched from an application entity attribute (e.g. Access Role Name, Org ID).",
   },
   {
     value: "external-system",
     label: "External system (IDS)",
-    description: "Options are retrieved from an external identity data store at runtime.",
+    description: "Options are retrieved from an IDS attribute. Fallback values apply if IDS returns nothing.",
   },
 ];
 
@@ -92,6 +157,36 @@ function SourcePill({
           {src.label}
         </button>
       ))}
+    </div>
+  );
+}
+
+function StyledSelect<T extends string>({
+  value,
+  onChange,
+  options,
+  placeholder,
+  className,
+}: {
+  value: T | undefined;
+  onChange: (v: T) => void;
+  options: { value: T; label: string }[];
+  placeholder: string;
+  className?: string;
+}) {
+  return (
+    <div className={`relative ${className ?? ""}`}>
+      <select
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value as T)}
+        className={`w-full h-9 pl-3 pr-8 text-xs border border-bluegrey-300 rounded-sm bg-white appearance-none focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${!value ? "text-bluegrey-400" : "text-bluegrey-900"}`}
+      >
+        <option value="" disabled>{placeholder}</option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+      <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-bluegrey-400 pointer-events-none" />
     </div>
   );
 }
@@ -138,30 +233,42 @@ function TagInput({
   );
 }
 
-function StyledSelect<T extends string>({
-  value,
+// ─── Predefined value checklist (IDS fallback) ────────────────────────────────
+
+function PredefinedChecklist({
+  pool,
+  selected,
   onChange,
-  options,
-  placeholder,
 }: {
-  value: T | undefined;
-  onChange: (v: T) => void;
-  options: { value: T; label: string }[];
-  placeholder: string;
+  pool: string[];
+  selected: string[];
+  onChange: (v: string[]) => void;
 }) {
   return (
-    <div className="relative">
-      <select
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value as T)}
-        className={`w-full h-9 pl-3 pr-8 text-xs border border-bluegrey-300 rounded-sm bg-white appearance-none focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${!value ? "text-bluegrey-400" : "text-bluegrey-900"}`}
-      >
-        <option value="" disabled>{placeholder}</option>
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>{o.label}</option>
-        ))}
-      </select>
-      <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-bluegrey-400 pointer-events-none" />
+    <div className="flex flex-wrap gap-1.5">
+      {pool.map((v) => {
+        const checked = selected.includes(v);
+        return (
+          <label
+            key={v}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border cursor-pointer transition-colors select-none ${
+              checked
+                ? "bg-blue-50 border-blue-400 text-blue-700"
+                : "bg-white border-bluegrey-300 text-bluegrey-600 hover:border-blue-300"
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() =>
+                onChange(checked ? selected.filter((x) => x !== v) : [...selected, v])
+              }
+              className="sr-only"
+            />
+            {v}
+          </label>
+        );
+      })}
     </div>
   );
 }
@@ -175,6 +282,8 @@ function SourceConfig({
   cfg: FilterAttributeConfig;
   onChange: (patch: Partial<FilterAttributeConfig>) => void;
 }) {
+  const selectedIdsAttr = IDS_ATTRIBUTES.find((a) => a.value === cfg.externalSystemAttribute);
+
   return (
     <div className="space-y-2">
       {/* Source type picker */}
@@ -183,7 +292,7 @@ function SourceConfig({
         onChange={(v) => onChange({ valueSource: v })}
       />
 
-      {/* Source-specific config */}
+      {/* ── User-defined ── */}
       {cfg.valueSource === "user-defined" && (
         <div className="space-y-1">
           <TagInput
@@ -197,35 +306,92 @@ function SourceConfig({
         </div>
       )}
 
+      {/* ── Application object ── */}
       {cfg.valueSource === "app-object" && (
-        <div className="space-y-1.5">
+        <div className="space-y-2">
+          {/* Step 1: object type */}
           <StyledSelect<AppObjectRef>
             value={cfg.appObjectRef}
-            onChange={(v) => onChange({ appObjectRef: v })}
+            onChange={(v) => onChange({ appObjectRef: v, appObjectAttribute: undefined })}
             options={Object.entries(APP_OBJECT_LABELS).map(([k, label]) => ({
               value: k as AppObjectRef,
               label,
             }))}
-            placeholder="Select application object…"
+            placeholder="Select object type…"
           />
+
+          {/* Step 2: attribute (shown once object is selected) */}
+          {cfg.appObjectRef && (
+            <StyledSelect<string>
+              value={cfg.appObjectAttribute}
+              onChange={(v) => onChange({ appObjectAttribute: v })}
+              options={APP_OBJECT_ATTRIBUTES[cfg.appObjectRef]}
+              placeholder="Select attribute…"
+            />
+          )}
+
           <p className="text-[11px] text-bluegrey-400">
-            Filter options will be dynamically populated from the selected object at runtime.
+            Filter options will be populated from the selected object attribute at runtime.
           </p>
         </div>
       )}
 
+      {/* ── External system (IDS) ── */}
       {cfg.valueSource === "external-system" && (
-        <div className="space-y-1.5">
-          <input
-            type="text"
-            value={cfg.externalSystemRef ?? ""}
-            onChange={(e) => onChange({ externalSystemRef: e.target.value })}
-            placeholder="e.g. IDS.roles.name or https://ids.example.com/values"
-            className="w-full h-9 px-3 text-xs border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+        <div className="space-y-2">
+          {/* IDS attribute picker */}
+          <StyledSelect<string>
+            value={cfg.externalSystemAttribute}
+            onChange={(v) =>
+              onChange({
+                externalSystemAttribute: v,
+                externalSystemFallback: [],
+              })
+            }
+            options={IDS_ATTRIBUTES.map((a) => ({ value: a.value, label: a.label }))}
+            placeholder="Select IDS attribute…"
           />
-          <p className="text-[11px] text-bluegrey-400">
-            Attribute path or endpoint in the external identity system that provides the option list.
-          </p>
+
+          {/* Once attribute is chosen */}
+          {selectedIdsAttr && (
+            <div className="space-y-2 rounded-md border border-bluegrey-200 bg-bluegrey-25 p-3">
+              {selectedIdsAttr.predefinedValues && selectedIdsAttr.predefinedValues.length > 0 ? (
+                <>
+                  <p className="text-[11px] font-medium text-bluegrey-600">
+                    Pre-defined values for <span className="font-semibold text-bluegrey-800">{selectedIdsAttr.label}</span> — check which should be pre-selected by default:
+                  </p>
+                  <PredefinedChecklist
+                    pool={selectedIdsAttr.predefinedValues}
+                    selected={cfg.externalSystemFallback ?? []}
+                    onChange={(v) => onChange({ externalSystemFallback: v })}
+                  />
+                  <p className="text-[11px] text-bluegrey-400">
+                    These values are used as fallback defaults if IDS returns no data at runtime.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-[11px] font-medium text-bluegrey-600">
+                    No pre-defined values for <span className="font-semibold text-bluegrey-800">{selectedIdsAttr.label}</span>. Configure fallback values:
+                  </p>
+                  <TagInput
+                    values={cfg.externalSystemFallback ?? []}
+                    onChange={(v) => onChange({ externalSystemFallback: v })}
+                    placeholder="Type fallback values, press Enter…"
+                  />
+                  <p className="text-[11px] text-bluegrey-400">
+                    Shown as defaults if IDS returns nothing. Leave empty to show no preset.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
+          {!selectedIdsAttr && (
+            <p className="text-[11px] text-bluegrey-400">
+              Select an IDS attribute to configure default / fallback values.
+            </p>
+          )}
         </div>
       )}
     </div>
@@ -353,7 +519,7 @@ export default function FilterConfigTab({
               <div className="pt-1">
                 <span className="text-sm font-medium text-bluegrey-900">{cfg.label}</span>
                 <p className="text-[11px] text-bluegrey-400 mt-0.5">
-                  {SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.description}
+                  {SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.label}
                 </p>
               </div>
 
@@ -392,11 +558,11 @@ export default function FilterConfigTab({
         </div>
         <div>
           <span className="font-semibold text-bluegrey-700">Application object</span>
-          <p className="mt-0.5">Options populated dynamically from an entity in the application (Access Roles, Organizations, etc.).</p>
+          <p className="mt-0.5">Values are an attribute of an entity in the system (Access Role Name, Org ID, etc.).</p>
         </div>
         <div>
           <span className="font-semibold text-bluegrey-700">External system (IDS)</span>
-          <p className="mt-0.5">Options fetched at runtime from an external identity data store via attribute path or endpoint.</p>
+          <p className="mt-0.5">Values come from an IDS attribute. Predefined or admin-configured fallbacks apply if IDS returns nothing.</p>
         </div>
       </div>
 
