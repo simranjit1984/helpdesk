@@ -1,83 +1,320 @@
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Save, X, Plus, Filter } from "lucide-react";
+import { Save, X, Filter, ChevronDown } from "lucide-react";
 import type { AttributeCapability } from "./OverviewConfigMatrix";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Value source types ───────────────────────────────────────────────────────
+
+export type ValueSourceType =
+  | "user-defined"     // Admin types values manually
+  | "app-object"       // Dynamically fetched from an application object
+  | "external-system"  // Fetched from an external system (e.g. IDS)
+  | "static";          // Picked from a fixed predefined list
+
+export type AppObjectRef =
+  | "access-roles"
+  | "organizations"
+  | "applications"
+  | "users";
+
+// ─── Per-attribute filter config ──────────────────────────────────────────────
 
 export interface FilterAttributeConfig {
   id: string;
   label: string;
-  defaultValues: string[];
+  // — Source of filter options ——————————————————————————————————————————————
+  valueSource: ValueSourceType;
+  appObjectRef?: AppObjectRef;       // when valueSource = "app-object"
+  externalSystemRef?: string;        // when valueSource = "external-system"
+  selectedStaticValues?: string[];   // when valueSource = "static": chosen defaults
+  userDefinedValues?: string[];      // when valueSource = "user-defined": typed defaults
+  // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
   allowSingleFilterOnly: boolean;
 }
 
-// ─── Value tag input ──────────────────────────────────────────────────────────
+// ─── Static value pool per attribute ─────────────────────────────────────────
+// Attributes known to have fixed enumerated values.
 
-function ValueTagInput({
+const STATIC_POOLS: Record<string, string[]> = {
+  status:       ["Active", "Blocked", "Grace", "Inactive", "Invited", "Invitation expired", "Invitation withdrawn"],
+  role:         ["User Admin", "Helpdesk Admin", "Viewer", "Org Admin"],
+  organization: [], // handled via app-object instead
+};
+
+function getStaticPool(id: string): string[] {
+  return STATIC_POOLS[id] ?? [];
+}
+
+// ─── App object labels ────────────────────────────────────────────────────────
+
+const APP_OBJECT_LABELS: Record<AppObjectRef, string> = {
+  "access-roles":  "Access Roles",
+  "organizations": "Organizations",
+  "applications":  "Applications",
+  "users":         "Users",
+};
+
+// ─── Source type definitions ──────────────────────────────────────────────────
+
+interface SourceDef {
+  value: ValueSourceType;
+  label: string;
+  description: string;
+}
+
+const SOURCE_TYPES: SourceDef[] = [
+  {
+    value: "user-defined",
+    label: "User-defined",
+    description: "Admin types specific values to pre-select when the filter opens.",
+  },
+  {
+    value: "app-object",
+    label: "Application object",
+    description: "Options are fetched from an application entity (e.g. Access Roles, Organizations).",
+  },
+  {
+    value: "external-system",
+    label: "External system (IDS)",
+    description: "Options are retrieved from an external identity data store at runtime.",
+  },
+  {
+    value: "static",
+    label: "Static values",
+    description: "Options come from a fixed predefined list specific to this attribute.",
+  },
+];
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function SourcePill({
+  value,
+  onChange,
+  availableSources,
+}: {
+  value: ValueSourceType;
+  onChange: (v: ValueSourceType) => void;
+  availableSources: ValueSourceType[];
+}) {
+  return (
+    <div className="inline-flex flex-wrap gap-1">
+      {SOURCE_TYPES.filter((s) => availableSources.includes(s.value)).map((src) => (
+        <button
+          key={src.value}
+          type="button"
+          onClick={() => onChange(src.value)}
+          className={`px-2.5 py-1 text-[11px] font-medium rounded-full border transition-colors ${
+            value === src.value
+              ? "bg-blue-600 text-white border-blue-600"
+              : "bg-white text-bluegrey-600 border-bluegrey-300 hover:border-blue-400 hover:text-blue-600"
+          }`}
+        >
+          {src.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function TagInput({
   values,
   onChange,
+  placeholder,
 }: {
   values: string[];
   onChange: (v: string[]) => void;
+  placeholder?: string;
 }) {
   const [input, setInput] = useState("");
 
-  function addTag() {
-    const trimmed = input.trim();
-    if (trimmed && !values.includes(trimmed)) {
-      onChange([...values, trimmed]);
-    }
+  function add() {
+    const t = input.trim();
+    if (t && !values.includes(t)) onChange([...values, t]);
     setInput("");
   }
 
-  function removeTag(tag: string) {
-    onChange(values.filter((v) => v !== tag));
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addTag();
-    } else if (e.key === "Backspace" && input === "" && values.length > 0) {
-      onChange(values.slice(0, -1));
-    }
-  }
-
   return (
-    <div className="min-h-[36px] flex flex-wrap gap-1.5 px-2.5 py-1.5 border border-bluegrey-300 rounded-sm bg-white focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 transition-colors">
+    <div className="min-h-[34px] flex flex-wrap gap-1.5 px-2.5 py-1.5 border border-bluegrey-300 rounded-sm bg-white focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 transition-colors">
       {values.map((v) => (
-        <span
-          key={v}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200"
-        >
+        <span key={v} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
           {v}
-          <button
-            type="button"
-            onClick={() => removeTag(v)}
-            className="hover:text-blue-900 transition-colors"
-            aria-label={`Remove ${v}`}
-          >
+          <button type="button" onClick={() => onChange(values.filter((x) => x !== v))} className="hover:text-blue-900">
             <X className="w-3 h-3" />
           </button>
         </span>
       ))}
       <input
-        type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onBlur={addTag}
-        placeholder={values.length === 0 ? "Type a value, press Enter…" : ""}
-        className="flex-1 min-w-[120px] text-xs bg-transparent focus:outline-none placeholder:text-bluegrey-400 text-bluegrey-900"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(); }
+          else if (e.key === "Backspace" && !input) onChange(values.slice(0, -1));
+        }}
+        onBlur={add}
+        placeholder={values.length === 0 ? (placeholder ?? "Type a value, press Enter…") : ""}
+        className="flex-1 min-w-[100px] text-xs bg-transparent focus:outline-none placeholder:text-bluegrey-400 text-bluegrey-900"
       />
     </div>
   );
 }
 
-// ─── Select type pill toggle ──────────────────────────────────────────────────
+function StyledSelect<T extends string>({
+  value,
+  onChange,
+  options,
+  placeholder,
+}: {
+  value: T | undefined;
+  onChange: (v: T) => void;
+  options: { value: T; label: string }[];
+  placeholder: string;
+}) {
+  return (
+    <div className="relative">
+      <select
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value as T)}
+        className={`w-full h-9 pl-3 pr-8 text-xs border border-bluegrey-300 rounded-sm bg-white appearance-none focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${!value ? "text-bluegrey-400" : "text-bluegrey-900"}`}
+      >
+        <option value="" disabled>{placeholder}</option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+      <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-bluegrey-400 pointer-events-none" />
+    </div>
+  );
+}
+
+function StaticCheckList({
+  pool,
+  selected,
+  onChange,
+}: {
+  pool: string[];
+  selected: string[];
+  onChange: (v: string[]) => void;
+}) {
+  if (pool.length === 0) {
+    return <p className="text-xs text-bluegrey-400 italic">No static values defined for this attribute.</p>;
+  }
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {pool.map((v) => {
+        const checked = selected.includes(v);
+        return (
+          <label key={v} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border cursor-pointer transition-colors select-none ${
+            checked ? "bg-blue-50 border-blue-400 text-blue-700" : "bg-white border-bluegrey-300 text-bluegrey-600 hover:border-blue-300"
+          }`}>
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() =>
+                onChange(checked ? selected.filter((x) => x !== v) : [...selected, v])
+              }
+              className="sr-only"
+            />
+            {v}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Source config panel ──────────────────────────────────────────────────────
+
+function SourceConfig({
+  cfg,
+  onChange,
+}: {
+  cfg: FilterAttributeConfig;
+  onChange: (patch: Partial<FilterAttributeConfig>) => void;
+}) {
+  const staticPool = getStaticPool(cfg.id);
+
+  // Determine available source types for this attribute
+  const availableSources: ValueSourceType[] = [
+    "user-defined",
+    ...(Object.keys(APP_OBJECT_LABELS).length > 0 ? ["app-object" as const] : []),
+    "external-system",
+    ...(staticPool.length > 0 ? ["static" as const] : []),
+  ];
+
+  return (
+    <div className="space-y-2">
+      {/* Source type picker */}
+      <SourcePill
+        value={cfg.valueSource}
+        onChange={(v) => onChange({ valueSource: v })}
+        availableSources={availableSources}
+      />
+
+      {/* Source-specific config */}
+      {cfg.valueSource === "user-defined" && (
+        <div className="space-y-1">
+          <TagInput
+            values={cfg.userDefinedValues ?? []}
+            onChange={(v) => onChange({ userDefinedValues: v })}
+            placeholder="Type values to pre-select, press Enter…"
+          />
+          <p className="text-[11px] text-bluegrey-400">
+            Pre-selected when the filter opens. Leave empty for no preset.
+          </p>
+        </div>
+      )}
+
+      {cfg.valueSource === "app-object" && (
+        <div className="space-y-1.5">
+          <StyledSelect<AppObjectRef>
+            value={cfg.appObjectRef}
+            onChange={(v) => onChange({ appObjectRef: v })}
+            options={Object.entries(APP_OBJECT_LABELS).map(([k, label]) => ({
+              value: k as AppObjectRef,
+              label,
+            }))}
+            placeholder="Select application object…"
+          />
+          <p className="text-[11px] text-bluegrey-400">
+            Filter options will be dynamically populated from the selected object at runtime.
+          </p>
+        </div>
+      )}
+
+      {cfg.valueSource === "external-system" && (
+        <div className="space-y-1.5">
+          <input
+            type="text"
+            value={cfg.externalSystemRef ?? ""}
+            onChange={(e) => onChange({ externalSystemRef: e.target.value })}
+            placeholder="e.g. IDS.roles.name or https://ids.example.com/values"
+            className="w-full h-9 px-3 text-xs border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+          />
+          <p className="text-[11px] text-bluegrey-400">
+            Attribute path or endpoint in the external identity system that provides the option list.
+          </p>
+        </div>
+      )}
+
+      {cfg.valueSource === "static" && (
+        <div className="space-y-1.5">
+          <p className="text-[11px] text-bluegrey-500 font-medium">
+            Check the values that should be pre-selected by default:
+          </p>
+          <StaticCheckList
+            pool={staticPool}
+            selected={cfg.selectedStaticValues ?? []}
+            onChange={(v) => onChange({ selectedStaticValues: v })}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Select type toggle ───────────────────────────────────────────────────────
 
 function SelectTypePill({
   value,
@@ -95,7 +332,7 @@ function SelectTypePill({
           onClick={() => onChange(opt)}
           className={`px-3 py-1.5 text-xs font-medium transition-colors capitalize ${
             value === opt
-              ? "bg-blue-600 text-white border-blue-600"
+              ? "bg-blue-600 text-white"
               : "bg-white text-bluegrey-600 hover:bg-bluegrey-50"
           }`}
         >
@@ -109,13 +346,12 @@ function SelectTypePill({
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface FilterConfigTabProps {
-  /** Live filterable attributes from the Overview matrix */
   filterableAttrs: AttributeCapability[];
   initial: FilterAttributeConfig[];
   onSave: (configs: FilterAttributeConfig[]) => void;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helper ───────────────────────────────────────────────────────────────────
 
 function buildInitialConfig(
   attrs: AttributeCapability[],
@@ -123,17 +359,25 @@ function buildInitialConfig(
 ): FilterAttributeConfig[] {
   return attrs.map((attr) => {
     const prev = existing.find((c) => c.id === attr.id);
-    return prev ?? {
+    if (prev) return { ...prev, label: attr.label };
+
+    // Pick a sensible default source based on the attribute
+    const hasStatic = getStaticPool(attr.id).length > 0;
+    const defaultSource: ValueSourceType = hasStatic ? "static" : "user-defined";
+
+    return {
       id: attr.id,
       label: attr.label,
-      defaultValues: [],
+      valueSource: defaultSource,
+      userDefinedValues: [],
+      selectedStaticValues: [],
       valueSelectType: "single",
       allowSingleFilterOnly: false,
     };
   });
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function FilterConfigTab({
   filterableAttrs,
@@ -145,8 +389,7 @@ export default function FilterConfigTab({
   );
   const [isDirty, setIsDirty] = useState(false);
 
-  // Keep in sync when filterableAttrs change (e.g. user enables/disables filterable in Overview)
-  const syncedConfigs = buildInitialConfig(filterableAttrs, configs);
+  const synced = buildInitialConfig(filterableAttrs, configs);
 
   function update(id: string, patch: Partial<FilterAttributeConfig>) {
     setConfigs((prev) =>
@@ -156,7 +399,7 @@ export default function FilterConfigTab({
   }
 
   function handleSave() {
-    onSave(syncedConfigs);
+    onSave(synced);
     setIsDirty(false);
   }
 
@@ -179,46 +422,41 @@ export default function FilterConfigTab({
       {/* Table */}
       <div className="border border-bluegrey-200 rounded-md overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[1fr_2fr_160px_160px] gap-4 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider items-center">
+        <div className="grid grid-cols-[180px_1fr_160px_160px] gap-4 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider items-center">
           <span>Attribute</span>
-          <span>Default values</span>
+          <span>Default value source &amp; configuration</span>
           <span className="text-center">Value select type</span>
           <span className="text-center">Single filter only</span>
         </div>
 
         {/* Rows */}
         <div className="divide-y divide-bluegrey-100">
-          {syncedConfigs.map((cfg) => (
+          {synced.map((cfg) => (
             <div
               key={cfg.id}
-              className="grid grid-cols-[1fr_2fr_160px_160px] gap-4 px-4 py-3.5 items-center bg-white hover:bg-bluegrey-25 transition-colors"
+              className="grid grid-cols-[180px_1fr_160px_160px] gap-4 px-4 py-4 items-start bg-white hover:bg-bluegrey-25 transition-colors"
             >
-              {/* Attribute label */}
-              <div>
+              {/* Attribute name */}
+              <div className="pt-1">
                 <span className="text-sm font-medium text-bluegrey-900">{cfg.label}</span>
-              </div>
-
-              {/* Default values tag input */}
-              <div>
-                <ValueTagInput
-                  values={cfg.defaultValues}
-                  onChange={(v) => update(cfg.id, { defaultValues: v })}
-                />
-                <p className="text-[11px] text-bluegrey-400 mt-1">
-                  Pre-selected values when the filter is opened. Leave empty for none.
+                <p className="text-[11px] text-bluegrey-400 mt-0.5">
+                  {SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.description}
                 </p>
               </div>
 
+              {/* Source config */}
+              <SourceConfig cfg={cfg} onChange={(patch) => update(cfg.id, patch)} />
+
               {/* Value select type */}
-              <div className="flex justify-center">
+              <div className="flex justify-center pt-1">
                 <SelectTypePill
                   value={cfg.valueSelectType}
                   onChange={(v) => update(cfg.id, { valueSelectType: v })}
                 />
               </div>
 
-              {/* Allow single filter only */}
-              <div className="flex flex-col items-center gap-1">
+              {/* Single filter only */}
+              <div className="flex flex-col items-center gap-1 pt-1">
                 <Switch
                   checked={cfg.allowSingleFilterOnly}
                   onCheckedChange={(v) => update(cfg.id, { allowSingleFilterOnly: v })}
@@ -234,20 +472,22 @@ export default function FilterConfigTab({
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-3 gap-3 text-xs text-bluegrey-500 px-1">
+      <div className="grid grid-cols-4 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
         <div>
-          <span className="font-semibold text-bluegrey-700">Default values</span>
-          <p className="mt-0.5">Values pre-selected when the filter panel opens. Users can change them.</p>
+          <span className="font-semibold text-bluegrey-700">User-defined</span>
+          <p className="mt-0.5">Admin types specific pre-selected values manually.</p>
         </div>
         <div>
-          <span className="font-semibold text-bluegrey-700">Value select type</span>
-          <p className="mt-0.5">
-            <strong>Single</strong> — only one value can be active. <strong>Multiple</strong> — multiple values can be combined.
-          </p>
+          <span className="font-semibold text-bluegrey-700">Application object</span>
+          <p className="mt-0.5">Options populated dynamically from an entity in the application (Access Roles, Organizations, etc.).</p>
         </div>
         <div>
-          <span className="font-semibold text-bluegrey-700">Single filter only</span>
-          <p className="mt-0.5">When ON, only this filter can be active at a time — all other filters are cleared.</p>
+          <span className="font-semibold text-bluegrey-700">External system (IDS)</span>
+          <p className="mt-0.5">Options fetched at runtime from an external identity data store via attribute path or endpoint.</p>
+        </div>
+        <div>
+          <span className="font-semibold text-bluegrey-700">Static values</span>
+          <p className="mt-0.5">Fixed enumerated values defined for this attribute (e.g. Status states). Check which are pre-selected by default.</p>
         </div>
       </div>
 
