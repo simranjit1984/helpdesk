@@ -9,8 +9,7 @@ import type { AttributeCapability } from "./OverviewConfigMatrix";
 export type ValueSourceType =
   | "user-defined"     // Admin types values manually
   | "app-object"       // Dynamically fetched from an application object
-  | "external-system"  // Fetched from an external system (e.g. IDS)
-  | "static";          // Picked from a fixed predefined list
+  | "external-system"; // Fetched from an external system (e.g. IDS)
 
 export type AppObjectRef =
   | "access-roles"
@@ -27,24 +26,10 @@ export interface FilterAttributeConfig {
   valueSource: ValueSourceType;
   appObjectRef?: AppObjectRef;       // when valueSource = "app-object"
   externalSystemRef?: string;        // when valueSource = "external-system"
-  selectedStaticValues?: string[];   // when valueSource = "static": chosen defaults
   userDefinedValues?: string[];      // when valueSource = "user-defined": typed defaults
   // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
   allowSingleFilterOnly: boolean;
-}
-
-// ─── Static value pool per attribute ─────────────────────────────────────────
-// Attributes known to have fixed enumerated values.
-
-const STATIC_POOLS: Record<string, string[]> = {
-  status:       ["Active", "Blocked", "Grace", "Inactive", "Invited", "Invitation expired", "Invitation withdrawn"],
-  role:         ["User Admin", "Helpdesk Admin", "Viewer", "Org Admin"],
-  organization: [], // handled via app-object instead
-};
-
-function getStaticPool(id: string): string[] {
-  return STATIC_POOLS[id] ?? [];
 }
 
 // ─── App object labels ────────────────────────────────────────────────────────
@@ -80,11 +65,6 @@ const SOURCE_TYPES: SourceDef[] = [
     label: "External system (IDS)",
     description: "Options are retrieved from an external identity data store at runtime.",
   },
-  {
-    value: "static",
-    label: "Static values",
-    description: "Options come from a fixed predefined list specific to this attribute.",
-  },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -92,15 +72,13 @@ const SOURCE_TYPES: SourceDef[] = [
 function SourcePill({
   value,
   onChange,
-  availableSources,
 }: {
   value: ValueSourceType;
   onChange: (v: ValueSourceType) => void;
-  availableSources: ValueSourceType[];
 }) {
   return (
     <div className="inline-flex flex-wrap gap-1">
-      {SOURCE_TYPES.filter((s) => availableSources.includes(s.value)).map((src) => (
+      {SOURCE_TYPES.map((src) => (
         <button
           key={src.value}
           type="button"
@@ -188,42 +166,6 @@ function StyledSelect<T extends string>({
   );
 }
 
-function StaticCheckList({
-  pool,
-  selected,
-  onChange,
-}: {
-  pool: string[];
-  selected: string[];
-  onChange: (v: string[]) => void;
-}) {
-  if (pool.length === 0) {
-    return <p className="text-xs text-bluegrey-400 italic">No static values defined for this attribute.</p>;
-  }
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {pool.map((v) => {
-        const checked = selected.includes(v);
-        return (
-          <label key={v} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border cursor-pointer transition-colors select-none ${
-            checked ? "bg-blue-50 border-blue-400 text-blue-700" : "bg-white border-bluegrey-300 text-bluegrey-600 hover:border-blue-300"
-          }`}>
-            <input
-              type="checkbox"
-              checked={checked}
-              onChange={() =>
-                onChange(checked ? selected.filter((x) => x !== v) : [...selected, v])
-              }
-              className="sr-only"
-            />
-            {v}
-          </label>
-        );
-      })}
-    </div>
-  );
-}
-
 // ─── Source config panel ──────────────────────────────────────────────────────
 
 function SourceConfig({
@@ -233,23 +175,12 @@ function SourceConfig({
   cfg: FilterAttributeConfig;
   onChange: (patch: Partial<FilterAttributeConfig>) => void;
 }) {
-  const staticPool = getStaticPool(cfg.id);
-
-  // Determine available source types for this attribute
-  const availableSources: ValueSourceType[] = [
-    "user-defined",
-    ...(Object.keys(APP_OBJECT_LABELS).length > 0 ? ["app-object" as const] : []),
-    "external-system",
-    ...(staticPool.length > 0 ? ["static" as const] : []),
-  ];
-
   return (
     <div className="space-y-2">
       {/* Source type picker */}
       <SourcePill
         value={cfg.valueSource}
         onChange={(v) => onChange({ valueSource: v })}
-        availableSources={availableSources}
       />
 
       {/* Source-specific config */}
@@ -295,19 +226,6 @@ function SourceConfig({
           <p className="text-[11px] text-bluegrey-400">
             Attribute path or endpoint in the external identity system that provides the option list.
           </p>
-        </div>
-      )}
-
-      {cfg.valueSource === "static" && (
-        <div className="space-y-1.5">
-          <p className="text-[11px] text-bluegrey-500 font-medium">
-            Check the values that should be pre-selected by default:
-          </p>
-          <StaticCheckList
-            pool={staticPool}
-            selected={cfg.selectedStaticValues ?? []}
-            onChange={(v) => onChange({ selectedStaticValues: v })}
-          />
         </div>
       )}
     </div>
@@ -361,16 +279,11 @@ function buildInitialConfig(
     const prev = existing.find((c) => c.id === attr.id);
     if (prev) return { ...prev, label: attr.label };
 
-    // Pick a sensible default source based on the attribute
-    const hasStatic = getStaticPool(attr.id).length > 0;
-    const defaultSource: ValueSourceType = hasStatic ? "static" : "user-defined";
-
     return {
       id: attr.id,
       label: attr.label,
-      valueSource: defaultSource,
+      valueSource: "user-defined" as ValueSourceType,
       userDefinedValues: [],
-      selectedStaticValues: [],
       valueSelectType: "single",
       allowSingleFilterOnly: false,
     };
@@ -472,7 +385,7 @@ export default function FilterConfigTab({
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-4 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
+      <div className="grid grid-cols-3 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
         <div>
           <span className="font-semibold text-bluegrey-700">User-defined</span>
           <p className="mt-0.5">Admin types specific pre-selected values manually.</p>
@@ -484,10 +397,6 @@ export default function FilterConfigTab({
         <div>
           <span className="font-semibold text-bluegrey-700">External system (IDS)</span>
           <p className="mt-0.5">Options fetched at runtime from an external identity data store via attribute path or endpoint.</p>
-        </div>
-        <div>
-          <span className="font-semibold text-bluegrey-700">Static values</span>
-          <p className="mt-0.5">Fixed enumerated values defined for this attribute (e.g. Status states). Check which are pre-selected by default.</p>
         </div>
       </div>
 
