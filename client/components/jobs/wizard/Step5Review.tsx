@@ -1,23 +1,21 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  CleanupStatus,
-  Frequency,
-  RetryConfig,
+  CleanupJobFormState,
   CLEANUP_STATUS_LABELS,
   FREQUENCY_LABELS,
+  JOB_TYPE_LABELS,
+  LAST_ORG_BEHAVIOR_LABELS,
+  LAST_ROLE_BEHAVIOR_LABELS,
+  MOCK_ACCESS_ROLE_OPTIONS,
+  MOCK_ORGANIZATIONS,
   RETRY_DELAY_OPTIONS,
   RETRY_ERROR_OPTIONS,
+  USER_STATUS_FILTER_LABELS,
   formatHour,
 } from "@/lib/jobsMockData";
 
 interface Props {
-  name: string;
-  status: CleanupStatus | null;
-  frequency: Frequency;
-  frequencyDays: string[];
-  frequencyDayOfMonth: number;
-  executionHour: number;
-  retry: RetryConfig;
+  form: CleanupJobFormState;
   confirmed: boolean;
   onConfirmChange: (v: boolean) => void;
   showError: boolean;
@@ -25,45 +23,86 @@ interface Props {
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[180px_1fr] gap-4 py-3 border-b border-bluegrey-100 last:border-0">
+    <div className="grid grid-cols-[200px_1fr] gap-4 py-3 border-b border-bluegrey-100 last:border-0">
       <span className="text-sm font-medium text-bluegrey-500">{label}</span>
       <span className="text-sm text-bluegrey-900">{value}</span>
     </div>
   );
 }
 
-function frequencyDisplay(
-  frequency: Frequency,
-  frequencyDays: string[],
-  frequencyDayOfMonth: number
-): string {
-  if (frequency === "daily") return "Daily";
-  if (frequency === "weekly") return `Weekly on ${frequencyDays[0] || "Monday"}`;
-  if (frequency === "twice-weekly")
-    return `Twice weekly — ${frequencyDays[0] || "Monday"} & ${frequencyDays[1] || "Thursday"}`;
-  if (frequency === "monthly") return `Monthly on day ${frequencyDayOfMonth}`;
-  return FREQUENCY_LABELS[frequency];
+function frequencyDisplay(form: CleanupJobFormState): string {
+  if (form.frequency === "daily") return "Daily";
+  if (form.frequency === "weekly")
+    return `Weekly on ${form.frequencyDays[0] || "Monday"}`;
+  if (form.frequency === "twice-weekly")
+    return `Twice weekly — ${form.frequencyDays[0] || "Monday"} & ${
+      form.frequencyDays[1] || "Thursday"
+    }`;
+  if (form.frequency === "monthly")
+    return `Monthly on day ${form.frequencyDayOfMonth}`;
+  return FREQUENCY_LABELS[form.frequency];
 }
 
 function delayLabel(seconds: number): string {
   return RETRY_DELAY_OPTIONS.find((o) => o.value === seconds)?.label ?? `${seconds}s`;
 }
 
-export default function Step5Review({
-  name,
-  status,
-  frequency,
-  frequencyDays,
-  frequencyDayOfMonth,
-  executionHour,
-  retry,
-  confirmed,
-  onConfirmChange,
-  showError,
-}: Props) {
-  const retryOnLabels = RETRY_ERROR_OPTIONS.filter((o) => retry.retryOn.includes(o.key)).map(
-    (o) => o.label
+function JobTypeBadge({ jobType }: { jobType: string }) {
+  const cls =
+    jobType === "org-membership-cleanup"
+      ? "bg-purple-100 text-purple-800"
+      : jobType === "access-role-cleanup"
+      ? "bg-teal-100 text-teal-800"
+      : "bg-blue-100 text-blue-800";
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cls}`}>
+      {JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType}
+    </span>
   );
+}
+
+export default function Step5Review({ form, confirmed, onConfirmChange, showError }: Props) {
+  const jobType = form.jobType ?? "user-status-cleanup";
+
+  const retryOnLabels = RETRY_ERROR_OPTIONS.filter((o) =>
+    form.retry.retryOn.includes(o.key)
+  ).map((o) => o.label);
+
+  const orgNames = form.includeAllOrgs
+    ? "All organizations"
+    : form.organizationIds.length === 0
+    ? "None selected"
+    : MOCK_ORGANIZATIONS.filter((o) => form.organizationIds.includes(o.id))
+        .map((o) => o.name)
+        .join(", ");
+
+  const roleNames = form.includeAllRoles
+    ? "All access roles"
+    : form.specificAccessRoles.length === 0
+    ? "None selected"
+    : MOCK_ACCESS_ROLE_OPTIONS.filter((r) => form.specificAccessRoles.includes(r.id))
+        .map((r) => r.name)
+        .join(", ");
+
+  const excludedRoleNames =
+    form.excludeRoles.length === 0
+      ? "None"
+      : MOCK_ACCESS_ROLE_OPTIONS.filter((r) => form.excludeRoles.includes(r.id))
+          .map((r) => r.name)
+          .join(", ");
+
+  const gracePeriodDays = form.gracePeriodDays;
+  const triggerCondition =
+    gracePeriodDays === 0
+      ? "end date ≤ today (immediate)"
+      : `end date + ${gracePeriodDays} day${gracePeriodDays !== 1 ? "s" : ""} ≤ today`;
+
+  const warningText =
+    jobType === "org-membership-cleanup"
+      ? "This job will repeatedly remove users from the selected organizations when their membership end date has passed."
+      : jobType === "access-role-cleanup"
+      ? "This job will repeatedly revoke access role assignments when the role's end date has passed."
+      : "This action will permanently and repeatedly delete users matching the selected status.";
 
   return (
     <div className="space-y-6">
@@ -85,27 +124,80 @@ export default function Step5Review({
         <div className="px-4">
           <Row
             label="Job name"
-            value={name || <span className="text-bluegrey-400 italic">Unnamed job</span>}
+            value={form.name || <span className="text-bluegrey-400 italic">Unnamed job</span>}
           />
-          <Row
-            label="Status to delete"
-            value={
-              status ? (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800">
-                  {CLEANUP_STATUS_LABELS[status]}
-                </span>
-              ) : (
-                <span className="text-bluegrey-400 italic">None selected</span>
-              )
-            }
-          />
-          <Row
-            label="Frequency"
-            value={frequencyDisplay(frequency, frequencyDays, frequencyDayOfMonth)}
-          />
-          <Row label="Execution schedule" value={`${formatHour(executionHour)} CET`} />
-          <Row label="Max retry attempts" value={retry.maxAttempts} />
-          <Row label="Retry delay" value={delayLabel(retry.delaySeconds)} />
+          <Row label="Job type" value={<JobTypeBadge jobType={jobType} />} />
+
+          {/* User status cleanup: show status */}
+          {jobType === "user-status-cleanup" && (
+            <Row
+              label="Status to delete"
+              value={
+                form.status ? (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800">
+                    {CLEANUP_STATUS_LABELS[form.status]}
+                  </span>
+                ) : (
+                  <span className="text-bluegrey-400 italic">None selected</span>
+                )
+              }
+            />
+          )}
+
+          {/* Org / Access Role: shared fields */}
+          {(jobType === "org-membership-cleanup" || jobType === "access-role-cleanup") && (
+            <>
+              <Row label="Target organizations" value={orgNames} />
+              <Row label="User status filter" value={USER_STATUS_FILTER_LABELS[form.userStatusFilter]} />
+              <Row label="Grace period" value={`${gracePeriodDays} day${gracePeriodDays !== 1 ? "s" : ""}`} />
+              <Row label="Trigger condition" value={triggerCondition} />
+            </>
+          )}
+
+          {/* Org Membership: specific fields */}
+          {jobType === "org-membership-cleanup" && (
+            <>
+              <Row
+                label="Revoke roles on removal"
+                value={form.orgBehavior.revokeAccessRoles ? "Yes" : "No"}
+              />
+              <Row
+                label="Send notification"
+                value={form.orgBehavior.sendNotification ? "Yes" : "No"}
+              />
+              <Row
+                label="If last organization"
+                value={LAST_ORG_BEHAVIOR_LABELS[form.orgBehavior.lastOrgBehavior]}
+              />
+            </>
+          )}
+
+          {/* Access Role: specific fields */}
+          {jobType === "access-role-cleanup" && (
+            <>
+              <Row label="Target roles" value={roleNames} />
+              {form.excludeRoles.length > 0 && (
+                <Row label="Excluded roles" value={excludedRoleNames} />
+              )}
+              <Row
+                label="Remove from entitlements"
+                value={form.roleBehavior.removeFromEntitlements ? "Yes" : "No"}
+              />
+              <Row
+                label="Send notification"
+                value={form.roleBehavior.sendNotification ? "Yes" : "No"}
+              />
+              <Row
+                label="If last role removed"
+                value={LAST_ROLE_BEHAVIOR_LABELS[form.roleBehavior.lastRoleBehavior]}
+              />
+            </>
+          )}
+
+          <Row label="Frequency" value={frequencyDisplay(form)} />
+          <Row label="Execution schedule" value={`${formatHour(form.executionHour)} CET`} />
+          <Row label="Max retry attempts" value={form.retry.maxAttempts} />
+          <Row label="Retry delay" value={delayLabel(form.retry.delaySeconds)} />
           <Row
             label="Retry on errors"
             value={
@@ -129,9 +221,7 @@ export default function Step5Review({
 
       {/* Confirmation */}
       <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 space-y-3">
-        <p className="text-sm font-medium text-amber-800">
-          ⚠ This action will permanently and repeatedly delete users matching the selected status.
-        </p>
+        <p className="text-sm font-medium text-amber-800">⚠ {warningText}</p>
         <label className="flex items-start gap-2 cursor-pointer">
           <Checkbox
             id="confirm-checkbox"
@@ -140,7 +230,7 @@ export default function Step5Review({
             className="mt-0.5"
           />
           <span className="text-sm text-amber-900">
-            I understand this will permanently and repeatedly delete selected users.
+            I understand and confirm this job's behavior.
           </span>
         </label>
         {showError && !confirmed && (

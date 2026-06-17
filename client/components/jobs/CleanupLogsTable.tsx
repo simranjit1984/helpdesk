@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogEntry, LogStatus, CleanupJob, CLEANUP_STATUS_LABELS } from "@/lib/jobsMockData";
+import {
+  LogEntry,
+  LogStatus,
+  CleanupJob,
+  JobType,
+  CLEANUP_STATUS_LABELS,
+  JOB_TYPE_LABELS,
+} from "@/lib/jobsMockData";
 
 interface Props {
   logs: LogEntry[];
@@ -23,43 +30,80 @@ function StatusBadge({ status }: { status: LogStatus }) {
       ? "bg-amber-100 text-amber-700"
       : "bg-red-100 text-red-700";
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${cls}`}>
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${cls}`}
+    >
       {LOG_STATUS_LABELS[status]}
+    </span>
+  );
+}
+
+function JobTypeBadge({ jobType }: { jobType: JobType }) {
+  const cls =
+    jobType === "org-membership-cleanup"
+      ? "bg-purple-100 text-purple-700"
+      : jobType === "access-role-cleanup"
+      ? "bg-teal-100 text-teal-700"
+      : "bg-blue-100 text-blue-700";
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${cls}`}
+    >
+      {JOB_TYPE_LABELS[jobType]}
     </span>
   );
 }
 
 function ExpandedDetails({ entry }: { entry: LogEntry }) {
   const d = entry.details;
+  const jobType = entry.jobType ?? "user-status-cleanup";
+
   return (
     <tr>
-      <td colSpan={8} className="p-0">
+      <td colSpan={9} className="p-0">
         <div className="bg-bluegrey-25 border-t border-bluegrey-200 px-6 py-4 space-y-4 text-sm">
           {/* Timing */}
           <div className="flex gap-6 flex-wrap">
             <div>
-              <span className="text-xs font-semibold text-bluegrey-500 uppercase block">Start</span>
+              <span className="text-xs font-semibold text-bluegrey-500 uppercase block">
+                Start
+              </span>
               <span className="text-bluegrey-800">{new Date(d.startTime).toLocaleString()}</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-bluegrey-500 uppercase block">End</span>
+              <span className="text-xs font-semibold text-bluegrey-500 uppercase block">
+                End
+              </span>
               <span className="text-bluegrey-800">{new Date(d.endTime).toLocaleString()}</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-bluegrey-500 uppercase block">Duration</span>
+              <span className="text-xs font-semibold text-bluegrey-500 uppercase block">
+                Duration
+              </span>
               <span className="text-bluegrey-800">{d.durationSeconds}s</span>
             </div>
+            {d.notificationsSent !== undefined && (
+              <div>
+                <span className="text-xs font-semibold text-bluegrey-500 uppercase block">
+                  Notifications sent
+                </span>
+                <span className="text-bluegrey-800">{d.notificationsSent}</span>
+              </div>
+            )}
           </div>
 
-          {/* Deleted users */}
-          {d.deletedUsers.length > 0 && (
+          {/* User Status Cleanup: deleted users */}
+          {jobType === "user-status-cleanup" && d.deletedUsers.length > 0 && (
             <div>
               <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
                 Deleted users ({d.deletedUsers.length})
               </span>
               <div className="flex flex-wrap gap-1">
                 {d.deletedUsers.map((u) => (
-                  <span key={u} className="inline-block px-2 py-0.5 rounded bg-green-100 text-green-800 text-xs">
+                  <span
+                    key={u}
+                    className="inline-block px-2 py-0.5 rounded bg-green-100 text-green-800 text-xs"
+                  >
                     {u}
                   </span>
                 ))}
@@ -67,7 +111,43 @@ function ExpandedDetails({ entry }: { entry: LogEntry }) {
             </div>
           )}
 
-          {/* Failed users */}
+          {/* Org Membership: removed from org */}
+          {jobType === "org-membership-cleanup" && d.removedFromOrg && d.removedFromOrg.length > 0 && (
+            <div>
+              <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
+                Removed from organizations ({d.removedFromOrg.length})
+              </span>
+              <div className="space-y-1">
+                {d.removedFromOrg.map((r, i) => (
+                  <div key={i} className="flex gap-3 items-center">
+                    <span className="text-xs text-purple-700 font-medium">{r.userId}</span>
+                    <span className="text-xs text-bluegrey-500">— {r.orgName}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Access Role: revoked roles */}
+          {jobType === "access-role-cleanup" && d.revokedRoles && d.revokedRoles.length > 0 && (
+            <div>
+              <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
+                Revoked roles ({d.revokedRoles.length})
+              </span>
+              <div className="space-y-1">
+                {d.revokedRoles.map((r, i) => (
+                  <div key={i} className="flex gap-3 items-center flex-wrap">
+                    <span className="text-xs text-teal-700 font-medium">{r.userId}</span>
+                    <span className="text-xs text-bluegrey-500">
+                      — {r.roleName} @ {r.orgName}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Failed records (all types) */}
           {d.failedUsers.length > 0 && (
             <div>
               <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
@@ -84,7 +164,7 @@ function ExpandedDetails({ entry }: { entry: LogEntry }) {
             </div>
           )}
 
-          {/* Retry log */}
+          {/* Retry log (all types) */}
           {d.retryLog.length > 0 && (
             <div>
               <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
@@ -94,7 +174,9 @@ function ExpandedDetails({ entry }: { entry: LogEntry }) {
                 {d.retryLog.map((r) => (
                   <div key={r.attempt} className="flex gap-3 items-center text-xs">
                     <span className="text-bluegrey-400">#{r.attempt}</span>
-                    <span className="text-bluegrey-600">{new Date(r.timestamp).toLocaleString()}</span>
+                    <span className="text-bluegrey-600">
+                      {new Date(r.timestamp).toLocaleString()}
+                    </span>
                     <span className="text-red-600">{r.error}</span>
                     <span className={r.success ? "text-green-600" : "text-red-500"}>
                       {r.success ? "✓ Recovered" : "✗ Failed"}
@@ -114,6 +196,7 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
   const { toast } = useToast();
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [statusFilter, setStatusFilter] = useState<LogStatus | "all">("all");
+  const [jobTypeFilter, setJobTypeFilter] = useState<JobType | "all">("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [jobFilter, setJobFilter] = useState<string>(filterJobId ?? "all");
@@ -130,8 +213,10 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
 
   const handleExport = (entry: LogEntry) => {
     const csv = [
-      "id,jobId,executionDate,executionTime,status,usersDeleted,failedRecords,retriesPerformed",
-      `${entry.id},${entry.jobId},${entry.executionDate},${entry.executionTime},${entry.status},${entry.usersDeleted},${entry.failedRecords},${entry.retriesPerformed}`,
+      "id,jobId,executionDate,executionTime,status,processed,failedRecords,retriesPerformed",
+      `${entry.id},${entry.jobId},${entry.executionDate},${entry.executionTime},${entry.status},${
+        entry.itemsProcessed ?? entry.usersDeleted
+      },${entry.failedRecords},${entry.retriesPerformed}`,
     ].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -146,6 +231,11 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
   const filtered = logs.filter((entry) => {
     if (statusFilter !== "all" && entry.status !== statusFilter) return false;
     if (jobFilter !== "all" && entry.jobId !== jobFilter) return false;
+    if (
+      jobTypeFilter !== "all" &&
+      (entry.jobType ?? "user-status-cleanup") !== jobTypeFilter
+    )
+      return false;
     if (search && !entry.id.toLowerCase().includes(search.toLowerCase())) return false;
     if (dateFrom && entry.executionDate < dateFrom) return false;
     if (dateTo && entry.executionDate > dateTo) return false;
@@ -156,7 +246,9 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
     <div className="space-y-4">
       <div>
         <h2 className="text-lg font-semibold text-bluegrey-900">Cleanup logs</h2>
-        <p className="text-sm text-bluegrey-500">Historical execution log for all cleanup jobs.</p>
+        <p className="text-sm text-bluegrey-500">
+          Historical execution log for all cleanup jobs.
+        </p>
       </div>
 
       {/* Filter bar */}
@@ -172,6 +264,20 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
             <option value="success">Success</option>
             <option value="partial-success">Partial success</option>
             <option value="failed">Failed</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-bluegrey-500">Job type</label>
+          <select
+            value={jobTypeFilter}
+            onChange={(e) => setJobTypeFilter(e.target.value as JobType | "all")}
+            className="border border-bluegrey-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="all">All types</option>
+            <option value="user-status-cleanup">User Status Cleanup</option>
+            <option value="org-membership-cleanup">Org Membership Cleanup</option>
+            <option value="access-role-cleanup">Access Role Cleanup</option>
           </select>
         </div>
 
@@ -235,20 +341,41 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-bluegrey-50 border-b border-bluegrey-200">
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Execution date</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Time (CET)</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Status</th>
-                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Deleted</th>
-                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Failed</th>
-                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Retries</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500">User statuses</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Actions</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Execution date
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Time (CET)
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Job type
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Status
+                </th>
+                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Processed
+                </th>
+                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Failed
+                </th>
+                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Retries
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500">
+                  User statuses
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((entry) => {
                 const isExpanded = expandedIds.has(entry.id);
-                const jobName = jobs.find((j) => j.id === entry.jobId)?.name ?? entry.jobId;
+                const jobName =
+                  jobs.find((j) => j.id === entry.jobId)?.name ?? entry.jobId;
+                const jobType = entry.jobType ?? "user-status-cleanup";
 
                 return (
                   <>
@@ -260,7 +387,10 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
                         <div className="text-sm font-medium text-bluegrey-900 whitespace-nowrap">
                           {entry.executionDate}
                         </div>
-                        <div className="text-xs text-bluegrey-400 mt-0.5 max-w-[160px] truncate" title={jobName}>
+                        <div
+                          className="text-xs text-bluegrey-400 mt-0.5 max-w-[160px] truncate"
+                          title={jobName}
+                        >
                           {jobName}
                         </div>
                         <div className="text-[10px] text-bluegrey-300">{entry.id}</div>
@@ -269,10 +399,13 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
                         {entry.executionTime}
                       </td>
                       <td className="px-4 py-3 align-top">
+                        <JobTypeBadge jobType={jobType} />
+                      </td>
+                      <td className="px-4 py-3 align-top">
                         <StatusBadge status={entry.status} />
                       </td>
                       <td className="px-4 py-3 align-top text-sm text-bluegrey-700 text-right whitespace-nowrap">
-                        {entry.usersDeleted}
+                        {entry.itemsProcessed ?? entry.usersDeleted}
                       </td>
                       <td className="px-4 py-3 align-top text-sm text-bluegrey-700 text-right whitespace-nowrap">
                         {entry.failedRecords}
@@ -281,16 +414,20 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
                         {entry.retriesPerformed}
                       </td>
                       <td className="px-4 py-3 align-top">
-                        <div className="flex flex-wrap gap-1">
-                          {entry.deletedStatuses.map((s) => (
-                            <span
-                              key={s}
-                              className="inline-block px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 whitespace-nowrap"
-                            >
-                              {CLEANUP_STATUS_LABELS[s]}
-                            </span>
-                          ))}
-                        </div>
+                        {jobType === "user-status-cleanup" ? (
+                          <div className="flex flex-wrap gap-1">
+                            {entry.deletedStatuses.map((s) => (
+                              <span
+                                key={s}
+                                className="inline-block px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 whitespace-nowrap"
+                              >
+                                {CLEANUP_STATUS_LABELS[s]}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-bluegrey-400 italic">N/A</span>
+                        )}
                       </td>
                       <td className="px-4 py-3 align-top">
                         <div className="flex items-center gap-1">
@@ -313,7 +450,9 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
                         </div>
                       </td>
                     </tr>
-                    {isExpanded && <ExpandedDetails key={`${entry.id}-details`} entry={entry} />}
+                    {isExpanded && (
+                      <ExpandedDetails key={`${entry.id}-details`} entry={entry} />
+                    )}
                   </>
                 );
               })}

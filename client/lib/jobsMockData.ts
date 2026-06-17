@@ -10,6 +10,39 @@ export type Frequency = "daily" | "weekly" | "twice-weekly" | "monthly";
 export type JobStatus = "active" | "disabled";
 export type LogStatus = "success" | "partial-success" | "failed";
 
+export type JobType =
+  | "user-status-cleanup"
+  | "org-membership-cleanup"
+  | "access-role-cleanup";
+
+export type UserStatusFilter = "active" | "all" | "custom";
+export type LastOrgBehavior = "keep" | "mark-pending" | "delete-user";
+export type LastRoleBehavior = "keep-in-org" | "mark-no-roles";
+
+export interface OrgMembershipBehavior {
+  revokeAccessRoles: boolean;
+  sendNotification: boolean;
+  logAuditTrail: boolean;
+  lastOrgBehavior: LastOrgBehavior;
+}
+
+export interface AccessRoleBehavior {
+  sendNotification: boolean;
+  logAuditTrail: boolean;
+  removeFromEntitlements: boolean;
+  lastRoleBehavior: LastRoleBehavior;
+}
+
+export interface MockOrganization {
+  id: string;
+  name: string;
+}
+
+export interface MockAccessRoleOption {
+  id: string;
+  name: string;
+}
+
 export interface RetryConfig {
   maxAttempts: number;
   delaySeconds: number;
@@ -31,6 +64,17 @@ export interface CleanupJob {
   createdAt: string;
   lastRun?: string;
   nextRun: string;
+  // New optional fields
+  jobType?: JobType;
+  organizationIds?: string[];
+  includeAllOrgs?: boolean;
+  userStatusFilter?: UserStatusFilter;
+  gracePeriodDays?: number;
+  specificAccessRoles?: string[];
+  excludeRoles?: string[];
+  includeAllRoles?: boolean;
+  orgMembershipBehavior?: OrgMembershipBehavior;
+  accessRoleBehavior?: AccessRoleBehavior;
 }
 
 export interface RetryLogEntry {
@@ -55,6 +99,10 @@ export interface LogDetails {
   startTime: string;
   endTime: string;
   durationSeconds: number;
+  // New optional fields
+  removedFromOrg?: { userId: string; orgName: string }[];
+  revokedRoles?: { userId: string; roleName: string; orgName: string }[];
+  notificationsSent?: number;
 }
 
 export interface LogEntry {
@@ -68,6 +116,32 @@ export interface LogEntry {
   retriesPerformed: number;
   deletedStatuses: CleanupStatus[];
   details: LogDetails;
+  // New optional fields
+  jobType?: JobType;
+  itemsProcessed?: number;
+  organizationsScanned?: string[];
+}
+
+// ─── Form state (shared by wizard and step components) ────────────────────────
+
+export interface CleanupJobFormState {
+  jobType: JobType | null;
+  status: CleanupStatus | null;
+  organizationIds: string[];
+  includeAllOrgs: boolean;
+  userStatusFilter: UserStatusFilter;
+  gracePeriodDays: number;
+  specificAccessRoles: string[];
+  includeAllRoles: boolean;
+  excludeRoles: string[];
+  name: string;
+  frequency: Frequency;
+  frequencyDays: string[];
+  frequencyDayOfMonth: number;
+  executionHour: number;
+  retry: RetryConfig;
+  orgBehavior: OrgMembershipBehavior;
+  roleBehavior: AccessRoleBehavior;
 }
 
 // ─── Seed jobs ────────────────────────────────────────────────────────────────
@@ -109,6 +183,68 @@ export const seedJobs: CleanupJob[] = [
     createdAt: "2024-12-15T14:30:00Z",
     lastRun: "2025-06-16T02:00:00Z",
     nextRun: "2025-06-23T02:00:00Z",
+  },
+  {
+    id: "job-003",
+    name: "Daily Org Membership Expiry Cleanup",
+    statuses: [],
+    jobType: "org-membership-cleanup",
+    organizationIds: ["org-1", "org-2", "org-3"],
+    includeAllOrgs: false,
+    userStatusFilter: "active",
+    gracePeriodDays: 7,
+    frequency: "daily",
+    executionHour: 1,
+    dryRunEnabled: false,
+    retry: {
+      maxAttempts: 3,
+      delaySeconds: 300,
+      retryOn: ["network", "db-timeout"],
+    },
+    status: "active",
+    createdBy: "admin@example.com",
+    createdAt: "2025-01-15T10:00:00Z",
+    lastRun: "2025-06-16T01:00:00Z",
+    nextRun: "2025-06-17T01:00:00Z",
+    orgMembershipBehavior: {
+      revokeAccessRoles: true,
+      sendNotification: true,
+      logAuditTrail: true,
+      lastOrgBehavior: "mark-pending",
+    },
+  },
+  {
+    id: "job-004",
+    name: "Weekly Access Role Expiry Revocation",
+    statuses: [],
+    jobType: "access-role-cleanup",
+    organizationIds: [],
+    includeAllOrgs: true,
+    userStatusFilter: "all",
+    gracePeriodDays: 0,
+    specificAccessRoles: [],
+    includeAllRoles: true,
+    excludeRoles: [],
+    frequency: "weekly",
+    frequencyDays: ["Wednesday"],
+    executionHour: 3,
+    dryRunEnabled: false,
+    retry: {
+      maxAttempts: 2,
+      delaySeconds: 60,
+      retryOn: ["network", "transient"],
+    },
+    status: "active",
+    createdBy: "admin@example.com",
+    createdAt: "2025-02-20T09:00:00Z",
+    lastRun: "2025-06-11T03:00:00Z",
+    nextRun: "2025-06-18T03:00:00Z",
+    accessRoleBehavior: {
+      sendNotification: true,
+      logAuditTrail: true,
+      removeFromEntitlements: true,
+      lastRoleBehavior: "keep-in-org",
+    },
   },
 ];
 
@@ -346,6 +482,122 @@ export const seedLogEntries: LogEntry[] = [
       durationSeconds: 402,
     },
   },
+  // ── New job-003 logs (org-membership-cleanup) ─────────────────────────────
+  {
+    id: "log-009",
+    jobId: "job-003",
+    jobType: "org-membership-cleanup",
+    executionDate: "2025-06-16",
+    executionTime: "01:00",
+    status: "success",
+    usersDeleted: 0,
+    itemsProcessed: 14,
+    failedRecords: 0,
+    retriesPerformed: 0,
+    deletedStatuses: [],
+    details: {
+      deletedUsers: [],
+      failedUsers: [],
+      retryLog: [],
+      removedFromOrg: [
+        { userId: "user-aba@example.com", orgName: "Acme Corp" },
+        { userId: "user-abb@example.com", orgName: "Tech Solutions" },
+        { userId: "user-abc@example.com", orgName: "Acme Corp" },
+      ],
+      notificationsSent: 14,
+      startTime: "2025-06-16T01:00:02Z",
+      endTime: "2025-06-16T01:02:18Z",
+      durationSeconds: 136,
+    },
+  },
+  {
+    id: "log-010",
+    jobId: "job-003",
+    jobType: "org-membership-cleanup",
+    executionDate: "2025-06-15",
+    executionTime: "01:00",
+    status: "partial-success",
+    usersDeleted: 0,
+    itemsProcessed: 9,
+    failedRecords: 2,
+    retriesPerformed: 1,
+    deletedStatuses: [],
+    details: {
+      deletedUsers: [],
+      failedUsers: [
+        { id: "user-abd@example.com", reason: "DB timeout" },
+        { id: "user-abe@example.com", reason: "Record locked" },
+      ],
+      retryLog: [
+        { attempt: 1, timestamp: "2025-06-15T01:05:00Z", error: "DB timeout", success: false },
+      ],
+      removedFromOrg: [
+        { userId: "user-abf@example.com", orgName: "Global Services" },
+        { userId: "user-abg@example.com", orgName: "Acme Corp" },
+      ],
+      notificationsSent: 9,
+      startTime: "2025-06-15T01:00:03Z",
+      endTime: "2025-06-15T01:07:44Z",
+      durationSeconds: 461,
+    },
+  },
+  // ── New job-004 logs (access-role-cleanup) ────────────────────────────────
+  {
+    id: "log-011",
+    jobId: "job-004",
+    jobType: "access-role-cleanup",
+    executionDate: "2025-06-11",
+    executionTime: "03:00",
+    status: "success",
+    usersDeleted: 0,
+    itemsProcessed: 23,
+    failedRecords: 0,
+    retriesPerformed: 0,
+    deletedStatuses: [],
+    details: {
+      deletedUsers: [],
+      failedUsers: [],
+      retryLog: [],
+      revokedRoles: [
+        { userId: "user-abh@example.com", roleName: "Claim Processor", orgName: "Acme Corp" },
+        { userId: "user-abi@example.com", roleName: "Sales General", orgName: "Tech Solutions" },
+        { userId: "user-abj@example.com", roleName: "Front Desk Person", orgName: "Global Services" },
+      ],
+      notificationsSent: 23,
+      startTime: "2025-06-11T03:00:01Z",
+      endTime: "2025-06-11T03:03:55Z",
+      durationSeconds: 234,
+    },
+  },
+  {
+    id: "log-012",
+    jobId: "job-004",
+    jobType: "access-role-cleanup",
+    executionDate: "2025-06-04",
+    executionTime: "03:00",
+    status: "failed",
+    usersDeleted: 0,
+    itemsProcessed: 0,
+    failedRecords: 31,
+    retriesPerformed: 2,
+    deletedStatuses: [],
+    details: {
+      deletedUsers: [],
+      failedUsers: [
+        { id: "user-abk@example.com", reason: "Network unreachable" },
+        { id: "user-abl@example.com", reason: "Network unreachable" },
+      ],
+      retryLog: [
+        { attempt: 1, timestamp: "2025-06-04T03:05:00Z", error: "Network unreachable", success: false },
+        { attempt: 2, timestamp: "2025-06-04T03:10:00Z", error: "Network unreachable", success: false },
+      ],
+      revokedRoles: [],
+      notificationsSent: 0,
+      startTime: "2025-06-04T03:00:02Z",
+      endTime: "2025-06-04T03:12:30Z",
+      durationSeconds: 748,
+    },
+  },
 ];
 
 // ─── Display helpers ──────────────────────────────────────────────────────────
@@ -363,6 +615,45 @@ export const FREQUENCY_LABELS: Record<Frequency, string> = {
   "twice-weekly": "Twice Weekly",
   monthly: "Monthly",
 };
+
+export const JOB_TYPE_LABELS: Record<JobType, string> = {
+  "user-status-cleanup": "User Status Cleanup",
+  "org-membership-cleanup": "Org Membership Cleanup",
+  "access-role-cleanup": "Access Role Cleanup",
+};
+
+export const USER_STATUS_FILTER_LABELS: Record<UserStatusFilter, string> = {
+  active: "Active users only",
+  all: "All statuses",
+  custom: "Custom filter",
+};
+
+export const LAST_ORG_BEHAVIOR_LABELS: Record<LastOrgBehavior, string> = {
+  keep: "Keep user in system (no organization)",
+  "mark-pending": "Mark user as \"Pending Removal\"",
+  "delete-user": "Delete user immediately",
+};
+
+export const LAST_ROLE_BEHAVIOR_LABELS: Record<LastRoleBehavior, string> = {
+  "keep-in-org": "Keep user in organization (no application access)",
+  "mark-no-roles": "Mark user as \"No Active Roles\"",
+};
+
+export const MOCK_ORGANIZATIONS: MockOrganization[] = [
+  { id: "org-1", name: "Acme Corp" },
+  { id: "org-2", name: "Tech Solutions" },
+  { id: "org-3", name: "Global Services" },
+  { id: "org-4", name: "Acme Europe" },
+  { id: "org-5", name: "Acme Americas" },
+];
+
+export const MOCK_ACCESS_ROLE_OPTIONS: MockAccessRoleOption[] = [
+  { id: "ar-1", name: "Claim Processor" },
+  { id: "ar-2", name: "Front Desk Person" },
+  { id: "ar-3", name: "Sales General" },
+  { id: "ar-4", name: "Manager" },
+  { id: "ar-5", name: "Viewer" },
+];
 
 export const ALLOWED_HOURS = [22, 23, 0, 1, 2, 3, 4, 5];
 

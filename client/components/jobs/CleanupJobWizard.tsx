@@ -4,29 +4,94 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import {
   CleanupJob,
+  CleanupJobFormState,
   CleanupStatus,
   Frequency,
-  RetryConfig,
+  JobType,
+  OrgMembershipBehavior,
+  AccessRoleBehavior,
 } from "@/lib/jobsMockData";
+import StepJobType from "./wizard/StepJobType";
 import Step1StatusSelection from "./wizard/Step1StatusSelection";
 import Step2Frequency from "./wizard/Step2Frequency";
 import Step3TimeWindow from "./wizard/Step3TimeWindow";
 import Step4RetryConfig from "./wizard/Step4DryRunRetry";
 import Step5Review from "./wizard/Step5Review";
+import StepOrgScope from "./wizard/StepOrgScope";
+import StepGracePeriod from "./wizard/StepGracePeriod";
+import StepBehaviorConfig from "./wizard/StepBehaviorConfig";
 
-export interface CleanupJobFormState {
-  name: string;
-  status: CleanupStatus | null;
-  frequency: Frequency;
-  frequencyDays: string[];
-  frequencyDayOfMonth: number;
-  executionHour: number;
-  retry: RetryConfig;
+// Re-export so existing consumers can still import from this module
+export type { CleanupJobFormState };
+
+// ─── Step routing ─────────────────────────────────────────────────────────────
+
+type WizardStep =
+  | "job-type"
+  | "user-status"
+  | "org-scope"
+  | "grace-period"
+  | "frequency"
+  | "time-window"
+  | "retry"
+  | "behavior"
+  | "review";
+
+function getStepSequence(jobType: JobType | null): WizardStep[] {
+  if (!jobType || jobType === "user-status-cleanup") {
+    return ["job-type", "user-status", "frequency", "time-window", "retry", "review"];
+  }
+  return [
+    "job-type",
+    "org-scope",
+    "grace-period",
+    "frequency",
+    "time-window",
+    "retry",
+    "behavior",
+    "review",
+  ];
 }
 
+const STEP_LABELS: Record<WizardStep, string> = {
+  "job-type": "Job type",
+  "user-status": "User status",
+  "org-scope": "Scope & target",
+  "grace-period": "End date & grace period",
+  frequency: "Frequency",
+  "time-window": "Time window",
+  retry: "Retry config",
+  behavior: "Behavior",
+  review: "Review & confirm",
+};
+
+// ─── Default form state ───────────────────────────────────────────────────────
+
+const DEFAULT_ORG_BEHAVIOR: OrgMembershipBehavior = {
+  revokeAccessRoles: true,
+  sendNotification: true,
+  logAuditTrail: true,
+  lastOrgBehavior: "keep",
+};
+
+const DEFAULT_ROLE_BEHAVIOR: AccessRoleBehavior = {
+  sendNotification: true,
+  logAuditTrail: true,
+  removeFromEntitlements: true,
+  lastRoleBehavior: "keep-in-org",
+};
+
 const DEFAULT_FORM: CleanupJobFormState = {
+  jobType: null,
   name: "",
   status: null,
+  organizationIds: [],
+  includeAllOrgs: false,
+  userStatusFilter: "active",
+  gracePeriodDays: 0,
+  specificAccessRoles: [],
+  includeAllRoles: true,
+  excludeRoles: [],
   frequency: "daily",
   frequencyDays: ["Monday"],
   frequencyDayOfMonth: 1,
@@ -36,15 +101,11 @@ const DEFAULT_FORM: CleanupJobFormState = {
     delaySeconds: 300,
     retryOn: ["network", "db-timeout", "transient"],
   },
+  orgBehavior: DEFAULT_ORG_BEHAVIOR,
+  roleBehavior: DEFAULT_ROLE_BEHAVIOR,
 };
 
-const STEP_TITLES = [
-  "Step 1 — User status",
-  "Step 2 — Execution frequency",
-  "Step 3 — Time window",
-  "Step 4 — Retry configuration",
-  "Step 5 — Review & confirm",
-];
+// ─── Component ────────────────────────────────────────────────────────────────
 
 interface Props {
   open: boolean;
@@ -55,30 +116,54 @@ interface Props {
 
 export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Props) {
   const { toast } = useToast();
-  const [step, setStep] = useState(1);
+  const [stepIndex, setStepIndex] = useState(0);
   const [showErrors, setShowErrors] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
   const buildInitialForm = (): CleanupJobFormState => {
     if (!editJob) return DEFAULT_FORM;
+    const jobType = editJob.jobType ?? "user-status-cleanup";
     return {
+      jobType,
       name: editJob.name,
       status: editJob.statuses[0] ?? null,
+      organizationIds: editJob.organizationIds ?? [],
+      includeAllOrgs: editJob.includeAllOrgs ?? false,
+      userStatusFilter: editJob.userStatusFilter ?? "active",
+      gracePeriodDays: editJob.gracePeriodDays ?? 0,
+      specificAccessRoles: editJob.specificAccessRoles ?? [],
+      includeAllRoles: editJob.includeAllRoles ?? true,
+      excludeRoles: editJob.excludeRoles ?? [],
       frequency: editJob.frequency,
       frequencyDays: editJob.frequencyDays ?? ["Monday"],
       frequencyDayOfMonth: editJob.frequencyDayOfMonth ?? 1,
       executionHour: editJob.executionHour,
       retry: { ...editJob.retry },
+      orgBehavior: editJob.orgMembershipBehavior ?? DEFAULT_ORG_BEHAVIOR,
+      roleBehavior: editJob.accessRoleBehavior ?? DEFAULT_ROLE_BEHAVIOR,
     };
   };
 
   const [form, setForm] = useState<CleanupJobFormState>(buildInitialForm);
 
-  const patch = (updates: Partial<CleanupJobFormState>) =>
-    setForm((prev) => ({ ...prev, ...updates }));
+  const patch = (updates: Partial<CleanupJobFormState>) => {
+    setForm((prev) => {
+      const next = { ...prev, ...updates };
+      // If jobType changes, reset step to 0 to avoid out-of-bounds on sequence change
+      if ("jobType" in updates && updates.jobType !== prev.jobType) {
+        setStepIndex(0);
+      }
+      return next;
+    });
+  };
+
+  const sequence = getStepSequence(form.jobType);
+  const currentStep = sequence[stepIndex];
+  const isLastStep = stepIndex === sequence.length - 1;
 
   // ── Validation ──────────────────────────────────────────────────────────────
-  const step2Errors = (() => {
+
+  const frequencyErrors = (() => {
     const errs: { twiceWeekly?: string } = {};
     if (
       form.frequency === "twice-weekly" &&
@@ -90,24 +175,40 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
   })();
 
   const canAdvance = (): boolean => {
-    if (step === 1) return form.status !== null;
-    if (step === 2) return Object.keys(step2Errors).length === 0;
-    if (step === 4) return form.retry.maxAttempts >= 1 && form.retry.maxAttempts <= 5;
-    if (step === 5) return confirmed;
-    return true;
+    switch (currentStep) {
+      case "job-type":
+        return form.jobType !== null;
+      case "user-status":
+        return form.status !== null;
+      case "org-scope":
+        return form.includeAllOrgs || form.organizationIds.length > 0;
+      case "grace-period":
+        return form.gracePeriodDays >= 0 && form.gracePeriodDays <= 30;
+      case "frequency":
+        return Object.keys(frequencyErrors).length === 0;
+      case "retry":
+        return form.retry.maxAttempts >= 1 && form.retry.maxAttempts <= 5;
+      case "review":
+        return confirmed;
+      default:
+        return true;
+    }
   };
 
   const handleNext = () => {
     setShowErrors(true);
     if (!canAdvance()) return;
     setShowErrors(false);
-    if (step < 5) setStep((s) => s + 1);
-    else handleSave();
+    if (isLastStep) {
+      handleSave();
+    } else {
+      setStepIndex((i) => i + 1);
+    }
   };
 
   const handleBack = () => {
     setShowErrors(false);
-    setStep((s) => s - 1);
+    setStepIndex((i) => i - 1);
   };
 
   const handleSave = () => {
@@ -115,33 +216,154 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
     nextRun.setHours(form.executionHour, 0, 0, 0);
     if (nextRun <= new Date()) nextRun.setDate(nextRun.getDate() + 1);
 
-    onSave({
+    const jobType = form.jobType ?? "user-status-cleanup";
+
+    const base = {
       name: form.name || "Unnamed cleanup job",
-      statuses: form.status ? [form.status] : [],
-      frequency: form.frequency,
+      statuses: jobType === "user-status-cleanup" && form.status ? [form.status] : ([] as CleanupStatus[]),
+      jobType,
+      frequency: form.frequency as Frequency,
       frequencyDays: form.frequencyDays,
       frequencyDayOfMonth: form.frequencyDayOfMonth,
       executionHour: form.executionHour,
-      dryRunEnabled: false,
+      dryRunEnabled: false as const,
       retry: form.retry,
-      status: "active",
+      status: "active" as const,
       lastRun: undefined,
-    });
+    };
+
+    if (jobType === "org-membership-cleanup") {
+      onSave({
+        ...base,
+        organizationIds: form.organizationIds,
+        includeAllOrgs: form.includeAllOrgs,
+        userStatusFilter: form.userStatusFilter,
+        gracePeriodDays: form.gracePeriodDays,
+        orgMembershipBehavior: form.orgBehavior,
+      });
+    } else if (jobType === "access-role-cleanup") {
+      onSave({
+        ...base,
+        organizationIds: form.organizationIds,
+        includeAllOrgs: form.includeAllOrgs,
+        userStatusFilter: form.userStatusFilter,
+        gracePeriodDays: form.gracePeriodDays,
+        specificAccessRoles: form.specificAccessRoles,
+        includeAllRoles: form.includeAllRoles,
+        excludeRoles: form.excludeRoles,
+        accessRoleBehavior: form.roleBehavior,
+      });
+    } else {
+      onSave(base);
+    }
 
     toast({
       title: editJob ? "Job updated" : "Job created",
-      description: `"${form.name || "Unnamed cleanup job"}" has been ${editJob ? "updated" : "created"} successfully.`,
+      description: `"${form.name || "Unnamed cleanup job"}" has been ${
+        editJob ? "updated" : "created"
+      } successfully.`,
     });
 
     handleClose();
   };
 
   const handleClose = () => {
-    setStep(1);
+    setStepIndex(0);
     setShowErrors(false);
     setConfirmed(false);
     setForm(DEFAULT_FORM);
     onClose();
+  };
+
+  // ── Step content ────────────────────────────────────────────────────────────
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case "job-type":
+        return (
+          <StepJobType
+            selected={form.jobType}
+            onChange={(type) => patch({ jobType: type })}
+            showError={showErrors}
+          />
+        );
+      case "user-status":
+        return (
+          <Step1StatusSelection
+            selected={form.status}
+            onChange={(s) => patch({ status: s })}
+            showError={showErrors}
+          />
+        );
+      case "org-scope":
+        return (
+          <StepOrgScope
+            jobType={form.jobType as JobType}
+            organizationIds={form.organizationIds}
+            includeAllOrgs={form.includeAllOrgs}
+            userStatusFilter={form.userStatusFilter}
+            specificAccessRoles={form.specificAccessRoles}
+            includeAllRoles={form.includeAllRoles}
+            excludeRoles={form.excludeRoles}
+            onChange={patch}
+            showErrors={showErrors}
+          />
+        );
+      case "grace-period":
+        return (
+          <StepGracePeriod
+            gracePeriodDays={form.gracePeriodDays}
+            onChange={(days) => patch({ gracePeriodDays: days })}
+            showErrors={showErrors}
+          />
+        );
+      case "frequency":
+        return (
+          <Step2Frequency
+            frequency={form.frequency}
+            frequencyDays={form.frequencyDays}
+            frequencyDayOfMonth={form.frequencyDayOfMonth}
+            onChange={(p) => patch(p)}
+            errors={frequencyErrors}
+            showErrors={showErrors}
+          />
+        );
+      case "time-window":
+        return (
+          <Step3TimeWindow
+            executionHour={form.executionHour}
+            onChange={(hour) => patch({ executionHour: hour })}
+          />
+        );
+      case "retry":
+        return (
+          <Step4RetryConfig
+            retry={form.retry}
+            onRetryChange={(p) => patch({ retry: { ...form.retry, ...p } })}
+            showErrors={showErrors}
+          />
+        );
+      case "behavior":
+        return (
+          <StepBehaviorConfig
+            jobType={form.jobType as "org-membership-cleanup" | "access-role-cleanup"}
+            orgBehavior={form.orgBehavior}
+            roleBehavior={form.roleBehavior}
+            onChange={patch}
+          />
+        );
+      case "review":
+        return (
+          <Step5Review
+            form={form}
+            confirmed={confirmed}
+            onConfirmChange={setConfirmed}
+            showError={showErrors}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -154,13 +376,12 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
         </DialogHeader>
 
         {/* Step progress indicator */}
-        <div className="flex items-center gap-1 mb-6">
-          {STEP_TITLES.map((_, i) => {
-            const num = i + 1;
-            const isActive = num === step;
-            const isDone = num < step;
+        <div className="flex items-center gap-1 mb-4">
+          {sequence.map((step, i) => {
+            const isActive = i === stepIndex;
+            const isDone = i < stepIndex;
             return (
-              <div key={num} className="flex items-center gap-1 flex-1">
+              <div key={step} className="flex items-center gap-1 flex-1">
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
                     isActive
@@ -170,9 +391,9 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
                       : "bg-bluegrey-200 text-bluegrey-500"
                   }`}
                 >
-                  {isDone ? "✓" : num}
+                  {isDone ? "✓" : i + 1}
                 </div>
-                {i < STEP_TITLES.length - 1 && (
+                {i < sequence.length - 1 && (
                   <div
                     className={`h-0.5 flex-1 ${isDone ? "bg-green-400" : "bg-bluegrey-200"}`}
                   />
@@ -183,11 +404,11 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
         </div>
 
         <p className="text-xs font-medium text-bluegrey-500 uppercase tracking-wide mb-4">
-          {STEP_TITLES[step - 1]}
+          Step {stepIndex + 1} — {STEP_LABELS[currentStep]}
         </p>
 
-        {/* Job name (step 1 only) */}
-        {step === 1 && (
+        {/* Job name field — shown only on first step */}
+        {stepIndex === 0 && (
           <div className="mb-4 space-y-1">
             <label className="block text-sm font-medium text-bluegrey-700">Job name</label>
             <input
@@ -201,66 +422,21 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
         )}
 
         {/* Step content */}
-        <div className="min-h-[260px]">
-          {step === 1 && (
-            <Step1StatusSelection
-              selected={form.status}
-              onChange={(s) => patch({ status: s })}
-              showError={showErrors}
-            />
-          )}
-          {step === 2 && (
-            <Step2Frequency
-              frequency={form.frequency}
-              frequencyDays={form.frequencyDays}
-              frequencyDayOfMonth={form.frequencyDayOfMonth}
-              onChange={(p) => patch(p)}
-              errors={step2Errors}
-              showErrors={showErrors}
-            />
-          )}
-          {step === 3 && (
-            <Step3TimeWindow
-              executionHour={form.executionHour}
-              onChange={(hour) => patch({ executionHour: hour })}
-            />
-          )}
-          {step === 4 && (
-            <Step4RetryConfig
-              retry={form.retry}
-              onRetryChange={(p) => patch({ retry: { ...form.retry, ...p } })}
-              showErrors={showErrors}
-            />
-          )}
-          {step === 5 && (
-            <Step5Review
-              name={form.name}
-              status={form.status}
-              frequency={form.frequency}
-              frequencyDays={form.frequencyDays}
-              frequencyDayOfMonth={form.frequencyDayOfMonth}
-              executionHour={form.executionHour}
-              retry={form.retry}
-              confirmed={confirmed}
-              onConfirmChange={setConfirmed}
-              showError={showErrors}
-            />
-          )}
-        </div>
+        <div className="min-h-[260px]">{renderStep()}</div>
 
-        {/* Navigation buttons */}
+        {/* Navigation */}
         <div className="flex items-center justify-between pt-4 border-t border-bluegrey-200 mt-6">
           <Button variant="ghost" onClick={handleClose}>
             Cancel
           </Button>
           <div className="flex gap-2">
-            {step > 1 && (
+            {stepIndex > 0 && (
               <Button variant="outline" onClick={handleBack}>
                 Back
               </Button>
             )}
             <Button onClick={handleNext}>
-              {step === 5 ? (editJob ? "Save changes" : "Create job") : "Next"}
+              {isLastStep ? (editJob ? "Save changes" : "Create job") : "Next"}
             </Button>
           </div>
         </div>
