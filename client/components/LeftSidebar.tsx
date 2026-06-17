@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -143,17 +143,11 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
   const isJobsActive =
     location.pathname === "/jobs" || location.pathname.startsWith("/jobs/");
 
-  const isDelegatedActive = location.pathname.startsWith("/settings");
-  const [isDelegatedExpanded, setIsDelegatedExpanded] = useState(isDelegatedActive);
 
   const isUsersActive = location.pathname === "/users" || location.pathname.startsWith("/users/");
   const navRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    if (isDelegatedActive && !isDelegatedExpanded) {
-      setIsDelegatedExpanded(true);
-    }
-  }, [location.pathname]);
+  useEffect(() => {}, [location.pathname]); // retained for future route-based effects
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== "ArrowUp" && e.key !== "ArrowDown") {
@@ -281,29 +275,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             label="Jobs and Reports"
             href="/jobs"
             active={isJobsActive}
-          />
-          <MenuItem
-            icon={
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="#131319"/>
-                <path d="M10 8h2v8h-2zM14 8h2v8h-2z" fill="none"/>
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l7 4.5-7 4.5z" fill="#131319" opacity="0"/>
-                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="#131319"/>
-              </svg>
-            }
-            label="Delegated user management"
-            href="/settings"
-            active={isDelegatedActive}
-            hasSubmenu={true}
-            isExpanded={isDelegatedExpanded}
-            onToggle={() => setIsDelegatedExpanded(!isDelegatedExpanded)}
-            submenuItems={[
-              {
-                label: "Settings",
-                href: "/settings",
-                active: location.pathname === "/settings",
-              },
-            ]}
           />
         </nav>
       </div>
