@@ -7,33 +7,30 @@ import {
   CleanupStatus,
   Frequency,
   RetryConfig,
-  ALLOWED_HOURS,
 } from "@/lib/jobsMockData";
 import Step1StatusSelection from "./wizard/Step1StatusSelection";
 import Step2Frequency from "./wizard/Step2Frequency";
 import Step3TimeWindow from "./wizard/Step3TimeWindow";
-import Step4DryRunRetry from "./wizard/Step4DryRunRetry";
+import Step4RetryConfig from "./wizard/Step4DryRunRetry";
 import Step5Review from "./wizard/Step5Review";
 
 export interface CleanupJobFormState {
   name: string;
-  statuses: CleanupStatus[];
+  status: CleanupStatus | null;
   frequency: Frequency;
   frequencyDays: string[];
   frequencyDayOfMonth: number;
   executionHour: number;
-  dryRunEnabled: boolean;
   retry: RetryConfig;
 }
 
 const DEFAULT_FORM: CleanupJobFormState = {
   name: "",
-  statuses: [],
+  status: null,
   frequency: "daily",
   frequencyDays: ["Monday"],
   frequencyDayOfMonth: 1,
   executionHour: 23,
-  dryRunEnabled: true,
   retry: {
     maxAttempts: 3,
     delaySeconds: 300,
@@ -42,10 +39,10 @@ const DEFAULT_FORM: CleanupJobFormState = {
 };
 
 const STEP_TITLES = [
-  "Step 1 — User statuses",
+  "Step 1 — User status",
   "Step 2 — Execution frequency",
   "Step 3 — Time window",
-  "Step 4 — Dry-run & retry",
+  "Step 4 — Retry configuration",
   "Step 5 — Review & confirm",
 ];
 
@@ -66,12 +63,11 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
     if (!editJob) return DEFAULT_FORM;
     return {
       name: editJob.name,
-      statuses: editJob.statuses,
+      status: editJob.statuses[0] ?? null,
       frequency: editJob.frequency,
       frequencyDays: editJob.frequencyDays ?? ["Monday"],
       frequencyDayOfMonth: editJob.frequencyDayOfMonth ?? 1,
       executionHour: editJob.executionHour,
-      dryRunEnabled: editJob.dryRunEnabled,
       retry: { ...editJob.retry },
     };
   };
@@ -83,7 +79,7 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
 
   // ── Validation ──────────────────────────────────────────────────────────────
   const step2Errors = (() => {
-    const errs: { twiceWeekly?: string; monthly?: string } = {};
+    const errs: { twiceWeekly?: string } = {};
     if (
       form.frequency === "twice-weekly" &&
       form.frequencyDays[0] === form.frequencyDays[1]
@@ -94,10 +90,9 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
   })();
 
   const canAdvance = (): boolean => {
-    if (step === 1) return form.statuses.length > 0;
+    if (step === 1) return form.status !== null;
     if (step === 2) return Object.keys(step2Errors).length === 0;
-    if (step === 4)
-      return form.retry.maxAttempts >= 1 && form.retry.maxAttempts <= 5;
+    if (step === 4) return form.retry.maxAttempts >= 1 && form.retry.maxAttempts <= 5;
     if (step === 5) return confirmed;
     return true;
   };
@@ -122,12 +117,12 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
 
     onSave({
       name: form.name || "Unnamed cleanup job",
-      statuses: form.statuses,
+      statuses: form.status ? [form.status] : [],
       frequency: form.frequency,
       frequencyDays: form.frequencyDays,
       frequencyDayOfMonth: form.frequencyDayOfMonth,
       executionHour: form.executionHour,
-      dryRunEnabled: form.dryRunEnabled,
+      dryRunEnabled: false,
       retry: form.retry,
       status: "active",
       lastRun: undefined,
@@ -191,7 +186,7 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
           {STEP_TITLES[step - 1]}
         </p>
 
-        {/* Job name (visible on all steps) */}
+        {/* Job name (step 1 only) */}
         {step === 1 && (
           <div className="mb-4 space-y-1">
             <label className="block text-sm font-medium text-bluegrey-700">Job name</label>
@@ -209,8 +204,8 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
         <div className="min-h-[260px]">
           {step === 1 && (
             <Step1StatusSelection
-              selected={form.statuses}
-              onChange={(statuses) => patch({ statuses })}
+              selected={form.status}
+              onChange={(s) => patch({ status: s })}
               showError={showErrors}
             />
           )}
@@ -231,10 +226,8 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
             />
           )}
           {step === 4 && (
-            <Step4DryRunRetry
-              dryRunEnabled={form.dryRunEnabled}
+            <Step4RetryConfig
               retry={form.retry}
-              onDryRunChange={(enabled) => patch({ dryRunEnabled: enabled })}
               onRetryChange={(p) => patch({ retry: { ...form.retry, ...p } })}
               showErrors={showErrors}
             />
@@ -242,12 +235,11 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
           {step === 5 && (
             <Step5Review
               name={form.name}
-              statuses={form.statuses}
+              status={form.status}
               frequency={form.frequency}
               frequencyDays={form.frequencyDays}
               frequencyDayOfMonth={form.frequencyDayOfMonth}
               executionHour={form.executionHour}
-              dryRunEnabled={form.dryRunEnabled}
               retry={form.retry}
               confirmed={confirmed}
               onConfirmChange={setConfirmed}

@@ -12,12 +12,11 @@ import {
 
 interface Props {
   name: string;
-  statuses: CleanupStatus[];
+  status: CleanupStatus | null;
   frequency: Frequency;
   frequencyDays: string[];
   frequencyDayOfMonth: number;
   executionHour: number;
-  dryRunEnabled: boolean;
   retry: RetryConfig;
   confirmed: boolean;
   onConfirmChange: (v: boolean) => void;
@@ -52,12 +51,11 @@ function delayLabel(seconds: number): string {
 
 export default function Step5Review({
   name,
-  statuses,
+  status,
   frequency,
   frequencyDays,
   frequencyDayOfMonth,
   executionHour,
-  dryRunEnabled,
   retry,
   confirmed,
   onConfirmChange,
@@ -85,21 +83,17 @@ export default function Step5Review({
           </span>
         </div>
         <div className="px-4">
-          <Row label="Job name" value={name || <span className="text-bluegrey-400 italic">Unnamed job</span>} />
           <Row
-            label="Statuses to delete"
+            label="Job name"
+            value={name || <span className="text-bluegrey-400 italic">Unnamed job</span>}
+          />
+          <Row
+            label="Status to delete"
             value={
-              statuses.length > 0 ? (
-                <div className="flex flex-wrap gap-1">
-                  {statuses.map((s) => (
-                    <span
-                      key={s}
-                      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800"
-                    >
-                      {CLEANUP_STATUS_LABELS[s]}
-                    </span>
-                  ))}
-                </div>
+              status ? (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800">
+                  {CLEANUP_STATUS_LABELS[status]}
+                </span>
               ) : (
                 <span className="text-bluegrey-400 italic">None selected</span>
               )
@@ -110,7 +104,6 @@ export default function Step5Review({
             value={frequencyDisplay(frequency, frequencyDays, frequencyDayOfMonth)}
           />
           <Row label="Execution schedule" value={`${formatHour(executionHour)} CET`} />
-          <Row label="Dry-run mode" value={dryRunEnabled ? "Enabled" : "Disabled"} />
           <Row label="Max retry attempts" value={retry.maxAttempts} />
           <Row label="Retry delay" value={delayLabel(retry.delaySeconds)} />
           <Row
@@ -137,8 +130,7 @@ export default function Step5Review({
       {/* Confirmation */}
       <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 space-y-3">
         <p className="text-sm font-medium text-amber-800">
-          ⚠ This action will permanently and repeatedly delete users matching the selected
-          criteria.
+          ⚠ This action will permanently and repeatedly delete users matching the selected status.
         </p>
         <label className="flex items-start gap-2 cursor-pointer">
           <Checkbox
@@ -152,9 +144,7 @@ export default function Step5Review({
           </span>
         </label>
         {showError && !confirmed && (
-          <p className="text-xs text-red-600">
-            Please check the confirmation box before saving.
-          </p>
+          <p className="text-xs text-red-600">Please check the confirmation box before saving.</p>
         )}
       </div>
     </div>

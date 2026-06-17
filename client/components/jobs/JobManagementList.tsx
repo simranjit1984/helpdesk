@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +15,6 @@ import {
   formatHour,
 } from "@/lib/jobsMockData";
 import CleanupJobWizard from "./CleanupJobWizard";
-import DryRunResultsModal from "./DryRunResultsModal";
 
 interface Props {
   jobs: CleanupJob[];
@@ -24,7 +22,7 @@ interface Props {
   onViewLogs: (jobId: string) => void;
 }
 
-function StatusBadge({ status }: { status: CleanupJob["status"] }) {
+function JobStatusBadge({ status }: { status: CleanupJob["status"] }) {
   return (
     <span
       className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -43,7 +41,6 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
   const [wizardOpen, setWizardOpen] = useState(false);
   const [editJob, setEditJob] = useState<CleanupJob | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<CleanupJob | null>(null);
-  const [dryRunJob, setDryRunJob] = useState<CleanupJob | null>(null);
 
   const handleCreate = () => {
     setEditJob(null);
@@ -65,13 +62,7 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
     if (editJob) {
       onJobsChange(
         jobs.map((j) =>
-          j.id === editJob.id
-            ? {
-                ...editJob,
-                ...jobData,
-                nextRun: nextRun.toISOString(),
-              }
-            : j
+          j.id === editJob.id ? { ...editJob, ...jobData, nextRun: nextRun.toISOString() } : j
         )
       );
     } else {
@@ -130,100 +121,101 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
           <Button onClick={handleCreate}>Create your first cleanup job</Button>
         </div>
       ) : (
-        <div className="rounded-lg border border-bluegrey-200 overflow-hidden">
-          {/* Header row */}
-          <div className="grid grid-cols-[2fr_1fr_80px_80px_80px_1fr_1fr_auto] gap-2 bg-bluegrey-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 border-b border-bluegrey-200">
-            <span>Job name</span>
-            <span>Frequency</span>
-            <span>Time</span>
-            <span>Dry-run</span>
-            <span>Retry</span>
-            <span>Last run</span>
-            <span>Next run</span>
-            <span>Actions</span>
-          </div>
-
-          {/* Data rows */}
-          {jobs.map((job) => (
-            <div
-              key={job.id}
-              className="grid grid-cols-[2fr_1fr_80px_80px_80px_1fr_1fr_auto] gap-2 px-4 py-3 border-b border-bluegrey-100 last:border-0 items-center hover:bg-bluegrey-25 transition-colors"
-            >
-              <div>
-                <div className="text-sm font-medium text-bluegrey-900 leading-tight">
-                  {job.name}
-                </div>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {job.statuses.slice(0, 2).map((s) => (
-                    <span
-                      key={s}
-                      className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700"
-                    >
-                      {CLEANUP_STATUS_LABELS[s]}
-                    </span>
-                  ))}
-                  {job.statuses.length > 2 && (
-                    <span className="text-[10px] text-bluegrey-400">
-                      +{job.statuses.length - 2} more
-                    </span>
-                  )}
-                </div>
-                <div className="mt-1">
-                  <StatusBadge status={job.status} />
-                </div>
-              </div>
-
-              <span className="text-sm text-bluegrey-700">{FREQUENCY_LABELS[job.frequency]}</span>
-              <span className="text-sm text-bluegrey-700">{formatHour(job.executionHour)} CET</span>
-              <span className="text-sm text-bluegrey-700">{job.dryRunEnabled ? "On" : "Off"}</span>
-              <span className="text-sm text-bluegrey-700">{job.retry.maxAttempts}x</span>
-              <span className="text-sm text-bluegrey-500">{formatDate(job.lastRun)}</span>
-              <span className="text-sm text-bluegrey-500">{formatDate(job.nextRun)}</span>
-
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs px-2"
-                  onClick={() => handleEdit(job)}
+        <div className="rounded-lg border border-bluegrey-200 overflow-hidden overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-bluegrey-50 border-b border-bluegrey-200">
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500">Job name</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Frequency</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Time (CET)</th>
+                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Retry</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Last run</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">Next run</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {jobs.map((job) => (
+                <tr
+                  key={job.id}
+                  className="border-b border-bluegrey-100 last:border-0 hover:bg-bluegrey-25 transition-colors"
                 >
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs px-2"
-                  onClick={() => handleToggleStatus(job)}
-                >
-                  {job.status === "active" ? "Disable" : "Enable"}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs px-2"
-                  onClick={() => onViewLogs(job.id)}
-                >
-                  Logs
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs px-2"
-                  onClick={() => setDryRunJob(job)}
-                >
-                  Dry-run
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={() => setDeleteTarget(job)}
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
-          ))}
+                  <td className="px-4 py-3 align-top">
+                    <div className="text-sm font-medium text-bluegrey-900 leading-tight">
+                      {job.name}
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {job.statuses.map((s) => (
+                        <span
+                          key={s}
+                          className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 whitespace-nowrap"
+                        >
+                          {CLEANUP_STATUS_LABELS[s]}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-1">
+                      <JobStatusBadge status={job.status} />
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 align-top text-sm text-bluegrey-700 whitespace-nowrap">
+                    {FREQUENCY_LABELS[job.frequency]}
+                    {job.frequencyDays && job.frequencyDays.length > 0 && (
+                      <div className="text-xs text-bluegrey-400">{job.frequencyDays.join(", ")}</div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 align-top text-sm text-bluegrey-700 whitespace-nowrap">
+                    {formatHour(job.executionHour)}
+                  </td>
+                  <td className="px-4 py-3 align-top text-sm text-bluegrey-700 text-right whitespace-nowrap">
+                    {job.retry.maxAttempts}x
+                  </td>
+                  <td className="px-4 py-3 align-top text-sm text-bluegrey-500 whitespace-nowrap">
+                    {formatDate(job.lastRun)}
+                  </td>
+                  <td className="px-4 py-3 align-top text-sm text-bluegrey-500 whitespace-nowrap">
+                    {formatDate(job.nextRun)}
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs px-2 h-7"
+                        onClick={() => handleEdit(job)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs px-2 h-7"
+                        onClick={() => handleToggleStatus(job)}
+                      >
+                        {job.status === "active" ? "Disable" : "Enable"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs px-2 h-7"
+                        onClick={() => onViewLogs(job.id)}
+                      >
+                        Logs
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs px-2 h-7 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => setDeleteTarget(job)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
@@ -256,23 +248,6 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Dry-run results modal */}
-      <DryRunResultsModal
-        open={!!dryRunJob}
-        job={dryRunJob}
-        onClose={() => setDryRunJob(null)}
-        onApprove={() => {
-          toast({ title: "Dry-run approved", description: "Job execution has been approved." });
-        }}
-        onEdit={() => {
-          if (dryRunJob) {
-            setEditJob(dryRunJob);
-            setWizardOpen(true);
-          }
-          setDryRunJob(null);
-        }}
-      />
     </div>
   );
 }

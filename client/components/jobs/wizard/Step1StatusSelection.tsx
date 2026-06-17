@@ -1,10 +1,8 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { CLEANUP_STATUS_LABELS, CleanupStatus } from "@/lib/jobsMockData";
 
 interface Props {
-  selected: CleanupStatus[];
-  onChange: (statuses: CleanupStatus[]) => void;
+  selected: CleanupStatus | null;
+  onChange: (status: CleanupStatus) => void;
   showError: boolean;
 }
 
@@ -23,23 +21,15 @@ const DESCRIPTIONS: Record<CleanupStatus, string> = {
 };
 
 export default function Step1StatusSelection({ selected, onChange, showError }: Props) {
-  const toggle = (status: CleanupStatus) => {
-    if (selected.includes(status)) {
-      onChange(selected.filter((s) => s !== status));
-    } else {
-      onChange([...selected, status]);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium text-bluegrey-900 mb-1">
-          Select user statuses to clean up
+          Select a user status to clean up
         </h3>
         <p className="text-sm text-bluegrey-600">
-          Users matching the selected statuses will be permanently deleted during each job
-          execution. Select at least one status.
+          Users matching the selected status will be permanently deleted during each job
+          execution. Select exactly one status.
         </p>
       </div>
 
@@ -47,13 +37,19 @@ export default function Step1StatusSelection({ selected, onChange, showError }: 
         {ALL_STATUSES.map((status) => (
           <label
             key={status}
-            className="flex items-start gap-3 p-4 rounded-lg border border-bluegrey-200 cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-colors"
+            className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
+              selected === status
+                ? "border-blue-500 bg-blue-50"
+                : "border-bluegrey-200 hover:border-blue-300 hover:bg-blue-50/30"
+            }`}
           >
-            <Checkbox
-              id={`status-${status}`}
-              checked={selected.includes(status)}
-              onCheckedChange={() => toggle(status)}
-              className="mt-0.5"
+            <input
+              type="radio"
+              name="cleanup-status"
+              value={status}
+              checked={selected === status}
+              onChange={() => onChange(status)}
+              className="mt-0.5 w-4 h-4 accent-blue-600 cursor-pointer"
             />
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium text-bluegrey-900">
@@ -65,10 +61,8 @@ export default function Step1StatusSelection({ selected, onChange, showError }: 
         ))}
       </div>
 
-      {showError && selected.length === 0 && (
-        <p className="text-xs text-red-600">
-          Please select at least one user status to continue.
-        </p>
+      {showError && selected === null && (
+        <p className="text-xs text-red-600">Please select a user status to continue.</p>
       )}
     </div>
   );
