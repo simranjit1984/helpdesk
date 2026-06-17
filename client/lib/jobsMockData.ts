@@ -150,7 +150,7 @@ export const seedJobs: CleanupJob[] = [
   {
     id: "job-001",
     name: "Nightly Expired Invitation Cleanup",
-    statuses: ["invitation-expired", "invitation-withdrawn"],
+    statuses: ["invitation-expired"],
     frequency: "daily",
     executionHour: 23,
     dryRunEnabled: false,
@@ -168,7 +168,7 @@ export const seedJobs: CleanupJob[] = [
   {
     id: "job-002",
     name: "Weekly Inactive & Blocked User Purge",
-    statuses: ["auth-blocked", "inactive"],
+    statuses: ["auth-blocked"],
     frequency: "weekly",
     frequencyDays: ["Monday"],
     executionHour: 2,
@@ -260,7 +260,7 @@ export const seedLogEntries: LogEntry[] = [
     usersDeleted: 47,
     failedRecords: 0,
     retriesPerformed: 0,
-    deletedStatuses: ["invitation-expired", "invitation-withdrawn"],
+    deletedStatuses: ["invitation-expired"],
     details: {
       deletedUsers: [
         "user-aa1@example.com",
@@ -322,7 +322,7 @@ export const seedLogEntries: LogEntry[] = [
     usersDeleted: 12,
     failedRecords: 0,
     retriesPerformed: 0,
-    deletedStatuses: ["auth-blocked", "inactive"],
+    deletedStatuses: ["auth-blocked"],
     details: {
       deletedUsers: ["user-mm3@example.com", "user-nn4@example.com", "user-oo5@example.com"],
       failedUsers: [],
@@ -352,7 +352,7 @@ export const seedLogEntries: LogEntry[] = [
     usersDeleted: 0,
     failedRecords: 58,
     retriesPerformed: 3,
-    deletedStatuses: ["invitation-expired", "invitation-withdrawn"],
+    deletedStatuses: ["invitation-expired"],
     details: {
       deletedUsers: [],
       failedUsers: [
@@ -433,7 +433,7 @@ export const seedLogEntries: LogEntry[] = [
     usersDeleted: 19,
     failedRecords: 0,
     retriesPerformed: 0,
-    deletedStatuses: ["invitation-expired", "invitation-withdrawn"],
+    deletedStatuses: ["invitation-expired"],
     details: {
       deletedUsers: ["user-yy5@example.com", "user-zz6@example.com"],
       failedUsers: [],
@@ -452,7 +452,7 @@ export const seedLogEntries: LogEntry[] = [
     usersDeleted: 0,
     failedRecords: 15,
     retriesPerformed: 5,
-    deletedStatuses: ["auth-blocked", "inactive"],
+    deletedStatuses: ["auth-blocked"],
     details: {
       deletedUsers: [],
       failedUsers: [
