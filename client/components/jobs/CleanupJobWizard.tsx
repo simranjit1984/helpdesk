@@ -15,7 +15,6 @@ import StepJobType from "./wizard/StepJobType";
 import Step1StatusSelection from "./wizard/Step1StatusSelection";
 import Step2Frequency from "./wizard/Step2Frequency";
 import Step3TimeWindow from "./wizard/Step3TimeWindow";
-import Step4RetryConfig from "./wizard/Step4DryRunRetry";
 import Step5Review from "./wizard/Step5Review";
 import StepOrgScope from "./wizard/StepOrgScope";
 import StepGracePeriod from "./wizard/StepGracePeriod";
@@ -33,13 +32,12 @@ type WizardStep =
   | "grace-period"
   | "frequency"
   | "time-window"
-  | "retry"
   | "behavior"
   | "review";
 
 function getStepSequence(jobType: JobType | null): WizardStep[] {
   if (!jobType || jobType === "user-status-cleanup") {
-    return ["job-type", "user-status", "frequency", "time-window", "retry", "review"];
+    return ["job-type", "user-status", "frequency", "time-window", "review"];
   }
   return [
     "job-type",
@@ -47,7 +45,6 @@ function getStepSequence(jobType: JobType | null): WizardStep[] {
     "grace-period",
     "frequency",
     "time-window",
-    "retry",
     "behavior",
     "review",
   ];
@@ -60,7 +57,6 @@ const STEP_LABELS: Record<WizardStep, string> = {
   "grace-period": "End date & grace period",
   frequency: "Frequency",
   "time-window": "Time window",
-  retry: "Retry config",
   behavior: "Behavior",
   review: "Review & confirm",
 };
@@ -96,11 +92,6 @@ const DEFAULT_FORM: CleanupJobFormState = {
   frequencyDays: ["Monday"],
   frequencyDayOfMonth: 1,
   executionHour: 23,
-  retry: {
-    maxAttempts: 3,
-    delaySeconds: 300,
-    retryOn: ["network", "db-timeout", "transient"],
-  },
   orgBehavior: DEFAULT_ORG_BEHAVIOR,
   roleBehavior: DEFAULT_ROLE_BEHAVIOR,
 };
@@ -138,7 +129,6 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
       frequencyDays: editJob.frequencyDays ?? ["Monday"],
       frequencyDayOfMonth: editJob.frequencyDayOfMonth ?? 1,
       executionHour: editJob.executionHour,
-      retry: { ...editJob.retry },
       orgBehavior: editJob.orgMembershipBehavior ?? DEFAULT_ORG_BEHAVIOR,
       roleBehavior: editJob.accessRoleBehavior ?? DEFAULT_ROLE_BEHAVIOR,
     };
@@ -186,8 +176,6 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
         return form.gracePeriodDays >= 0 && form.gracePeriodDays <= 30;
       case "frequency":
         return Object.keys(frequencyErrors).length === 0;
-      case "retry":
-        return form.retry.maxAttempts >= 1 && form.retry.maxAttempts <= 5;
       case "review":
         return confirmed;
       default:
@@ -227,7 +215,6 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
       frequencyDayOfMonth: form.frequencyDayOfMonth,
       executionHour: form.executionHour,
       dryRunEnabled: false as const,
-      retry: form.retry,
       status: "active" as const,
       lastRun: undefined,
     };
@@ -333,14 +320,6 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
           <Step3TimeWindow
             executionHour={form.executionHour}
             onChange={(hour) => patch({ executionHour: hour })}
-          />
-        );
-      case "retry":
-        return (
-          <Step4RetryConfig
-            retry={form.retry}
-            onRetryChange={(p) => patch({ retry: { ...form.retry, ...p } })}
-            showErrors={showErrors}
           />
         );
       case "behavior":

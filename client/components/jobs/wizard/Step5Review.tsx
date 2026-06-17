@@ -8,8 +8,6 @@ import {
   LAST_ROLE_BEHAVIOR_LABELS,
   MOCK_ACCESS_ROLE_OPTIONS,
   MOCK_ORGANIZATIONS,
-  RETRY_DELAY_OPTIONS,
-  RETRY_ERROR_OPTIONS,
   USER_STATUS_FILTER_LABELS,
   formatHour,
 } from "@/lib/jobsMockData";
@@ -43,10 +41,6 @@ function frequencyDisplay(form: CleanupJobFormState): string {
   return FREQUENCY_LABELS[form.frequency];
 }
 
-function delayLabel(seconds: number): string {
-  return RETRY_DELAY_OPTIONS.find((o) => o.value === seconds)?.label ?? `${seconds}s`;
-}
-
 function JobTypeBadge({ jobType }: { jobType: string }) {
   const cls =
     jobType === "org-membership-cleanup"
@@ -63,10 +57,6 @@ function JobTypeBadge({ jobType }: { jobType: string }) {
 
 export default function Step5Review({ form, confirmed, onConfirmChange, showError }: Props) {
   const jobType = form.jobType ?? "user-status-cleanup";
-
-  const retryOnLabels = RETRY_ERROR_OPTIONS.filter((o) =>
-    form.retry.retryOn.includes(o.key)
-  ).map((o) => o.label);
 
   const orgNames = form.includeAllOrgs
     ? "All organizations"
@@ -196,24 +186,6 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
 
           <Row label="Frequency" value={frequencyDisplay(form)} />
           <Row label="Execution schedule" value={`${formatHour(form.executionHour)} CET`} />
-          <Row label="Max retry attempts" value={form.retry.maxAttempts} />
-          <Row label="Retry delay" value={delayLabel(form.retry.delaySeconds)} />
-          <Row
-            label="Retry on errors"
-            value={
-              retryOnLabels.length > 0 ? (
-                <ul className="list-disc list-inside space-y-0.5">
-                  {retryOnLabels.map((l) => (
-                    <li key={l} className="text-sm text-bluegrey-800">
-                      {l}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <span className="text-bluegrey-400 italic">None</span>
-              )
-            }
-          />
           <Row label="Created by" value="admin@example.com" />
           <Row label="Created date" value={new Date().toLocaleDateString()} />
         </div>

@@ -246,9 +246,6 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
                 <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
                   Time (CET)
                 </th>
-                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
-                  Retry
-                </th>
                 <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
                   Last run
                 </th>
@@ -288,9 +285,6 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
                   </td>
                   <td className="px-4 py-3 align-top text-sm text-bluegrey-700 whitespace-nowrap">
                     {formatHour(job.executionHour)}
-                  </td>
-                  <td className="px-4 py-3 align-top text-sm text-bluegrey-700 text-right whitespace-nowrap">
-                    {job.retry.maxAttempts}x
                   </td>
                   <td className="px-4 py-3 align-top text-sm text-bluegrey-500 whitespace-nowrap">
                     {formatDate(job.lastRun)}

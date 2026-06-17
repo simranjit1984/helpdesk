@@ -60,7 +60,7 @@ function ExpandedDetails({ entry }: { entry: LogEntry }) {
 
   return (
     <tr>
-      <td colSpan={9} className="p-0">
+      <td colSpan={8} className="p-0">
         <div className="bg-bluegrey-25 border-t border-bluegrey-200 px-6 py-4 space-y-4 text-sm">
           {/* Timing */}
           <div className="flex gap-6 flex-wrap">
@@ -164,28 +164,6 @@ function ExpandedDetails({ entry }: { entry: LogEntry }) {
             </div>
           )}
 
-          {/* Retry log (all types) */}
-          {d.retryLog.length > 0 && (
-            <div>
-              <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
-                Retry log ({d.retryLog.length} attempt{d.retryLog.length !== 1 ? "s" : ""})
-              </span>
-              <div className="space-y-1">
-                {d.retryLog.map((r) => (
-                  <div key={r.attempt} className="flex gap-3 items-center text-xs">
-                    <span className="text-bluegrey-400">#{r.attempt}</span>
-                    <span className="text-bluegrey-600">
-                      {new Date(r.timestamp).toLocaleString()}
-                    </span>
-                    <span className="text-red-600">{r.error}</span>
-                    <span className={r.success ? "text-green-600" : "text-red-500"}>
-                      {r.success ? "✓ Recovered" : "✗ Failed"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </td>
     </tr>
@@ -213,10 +191,10 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
 
   const handleExport = (entry: LogEntry) => {
     const csv = [
-      "id,jobId,executionDate,executionTime,status,processed,failedRecords,retriesPerformed",
+      "id,jobId,executionDate,executionTime,status,processed,failedRecords",
       `${entry.id},${entry.jobId},${entry.executionDate},${entry.executionTime},${entry.status},${
         entry.itemsProcessed ?? entry.usersDeleted
-      },${entry.failedRecords},${entry.retriesPerformed}`,
+      },${entry.failedRecords}`,
     ].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -359,9 +337,6 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
                 <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
                   Failed
                 </th>
-                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
-                  Retries
-                </th>
                 <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500">
                   User statuses
                 </th>
@@ -409,9 +384,6 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
                       </td>
                       <td className="px-4 py-3 align-top text-sm text-bluegrey-700 text-right whitespace-nowrap">
                         {entry.failedRecords}
-                      </td>
-                      <td className="px-4 py-3 align-top text-sm text-bluegrey-700 text-right whitespace-nowrap">
-                        {entry.retriesPerformed}
                       </td>
                       <td className="px-4 py-3 align-top">
                         {jobType === "user-status-cleanup" ? (
