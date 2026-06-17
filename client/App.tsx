@@ -28,6 +28,7 @@ import AddAccessRolesToOrg from "./pages/AddAccessRolesToOrg";
 import Settings from "./pages/Settings";
 import OWAdminConsole from "./pages/OWAdminConsole";
 import SelfService from "./pages/SelfService";
+import Jobs from "./pages/Jobs";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ export const App = () => (
           <Route path="/administrators/roles/create" element={<AddAdminRole />} />
           <Route path="/administrators/scopes" element={<Scopes />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/jobs" element={<Jobs />} />
           <Route path="/invitations" element={<Navigate to="/users?tab=invitations" replace />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
