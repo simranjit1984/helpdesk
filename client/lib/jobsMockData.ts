@@ -16,7 +16,7 @@ export type JobType =
   | "access-role-cleanup";
 
 export type UserStatusFilter = "active" | "all" | "custom";
-export type LastOrgBehavior = "keep" | "mark-pending" | "delete-user";
+export type LastOrgBehavior = "orphan-org" | "delete-user" | "grace-state";
 export type LastRoleBehavior = "keep-in-org" | "mark-no-roles";
 
 export interface OrgMembershipBehavior {
@@ -178,7 +178,7 @@ export const seedJobs: CleanupJob[] = [
       revokeAccessRoles: true,
       sendNotification: true,
       logAuditTrail: true,
-      lastOrgBehavior: "mark-pending",
+      lastOrgBehavior: "orphan-org",
     },
   },
   {
@@ -538,9 +538,9 @@ export const USER_STATUS_FILTER_LABELS: Record<UserStatusFilter, string> = {
 };
 
 export const LAST_ORG_BEHAVIOR_LABELS: Record<LastOrgBehavior, string> = {
-  keep: "Keep user in system (no organization)",
-  "mark-pending": "Mark user as \"Pending Removal\"",
-  "delete-user": "Delete user immediately",
+  "orphan-org": "Move user to Orphan organization",
+  "delete-user": "Delete user permanently",
+  "grace-state": "Move user to GRACE state",
 };
 
 export const LAST_ROLE_BEHAVIOR_LABELS: Record<LastRoleBehavior, string> = {

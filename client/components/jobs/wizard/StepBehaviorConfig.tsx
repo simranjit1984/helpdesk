@@ -16,7 +16,7 @@ interface Props {
   onChange: (patch: Partial<CleanupJobFormState>) => void;
 }
 
-const LAST_ORG_OPTIONS: LastOrgBehavior[] = ["keep", "mark-pending", "delete-user"];
+const LAST_ORG_OPTIONS: LastOrgBehavior[] = ["orphan-org", "delete-user", "grace-state"];
 const LAST_ROLE_OPTIONS: LastRoleBehavior[] = ["keep-in-org", "mark-no-roles"];
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
@@ -41,19 +41,19 @@ function OrgBehaviorPanel({
       <div className="p-4 rounded-lg border border-bluegrey-200 space-y-3">
         <SectionHeader>On removal actions</SectionHeader>
         <div className="space-y-3">
-          <label className="flex items-start gap-2 cursor-pointer">
+          <label className="flex items-start gap-2">
             <Checkbox
               id="org-revoke-roles"
-              checked={orgBehavior.revokeAccessRoles}
-              onCheckedChange={(v) => patch({ revokeAccessRoles: v === true })}
-              className="mt-0.5"
+              checked={true}
+              disabled
+              className="mt-0.5 opacity-60"
             />
             <div>
-              <span className="text-sm text-bluegrey-800">
+              <span className="text-sm text-bluegrey-500">
                 Automatically revoke all access roles assigned in this organization
               </span>
               <p className="text-xs text-bluegrey-400 mt-0.5">
-                All roles tied to the organization will be immediately revoked upon membership removal.
+                Always enabled. All roles tied to this organization are immediately revoked upon membership removal.
               </p>
             </div>
           </label>

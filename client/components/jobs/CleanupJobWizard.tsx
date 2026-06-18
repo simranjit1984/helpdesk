@@ -67,7 +67,7 @@ const DEFAULT_ORG_BEHAVIOR: OrgMembershipBehavior = {
   revokeAccessRoles: true,
   sendNotification: true,
   logAuditTrail: true,
-  lastOrgBehavior: "keep",
+  lastOrgBehavior: "orphan-org",
 };
 
 const DEFAULT_ROLE_BEHAVIOR: AccessRoleBehavior = {
