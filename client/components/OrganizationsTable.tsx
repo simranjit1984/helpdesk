@@ -94,6 +94,20 @@ export const baseOrganizations: Organization[] = [
         status: "active" as const,
         parentId: "1",
       },
+      {
+        id: "1-3",
+        name: "Acme APAC",
+        referenceId: "ORG-2024-001-003",
+        status: "active" as const,
+        parentId: "1",
+      },
+      {
+        id: "1-4",
+        name: "Acme Middle East",
+        referenceId: "ORG-2024-001-004",
+        status: "active" as const,
+        parentId: "1",
+      },
     ],
   },
   {
