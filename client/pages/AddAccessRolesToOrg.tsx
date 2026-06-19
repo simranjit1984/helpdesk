@@ -19,9 +19,9 @@ import {
   TableEmptyState,
 } from "@/components/ui/table";
 import {
-  ALL_ACCESS_ROLES,
   ORG_ACCESS_ROLE_ASSIGNMENTS,
   getAssignedRoleIds,
+  getAvailableRolesForOrg,
 } from "@/components/organizations/accessRolesMockData";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 
@@ -48,14 +48,17 @@ export default function AddAccessRolesToOrg() {
     getAssignedRoleIds(orgId ?? ""),
   );
 
+  // Roles available for this org — child orgs are limited to parent's role catalogue
+  const availableRoles = getAvailableRolesForOrg(orgId ?? "", org?.parentId);
+
   const filtered = useMemo(
     () =>
-      ALL_ACCESS_ROLES.filter(
+      availableRoles.filter(
         (r) =>
           r.name.toLowerCase().includes(search.toLowerCase()) ||
           r.description.toLowerCase().includes(search.toLowerCase()),
       ),
-    [search],
+    [search, availableRoles],
   );
 
   const toggleRole = (roleId: string) => {
