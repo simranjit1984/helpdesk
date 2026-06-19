@@ -2,10 +2,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   CleanupJobFormState,
   JobType,
-  MOCK_ACCESS_ROLE_OPTIONS,
   MOCK_ORGANIZATIONS,
   USER_STATUS_FILTER_LABELS,
   UserStatusFilter,
+  getAvailableRolesForOrgs,
 } from "@/lib/jobsMockData";
 
 interface Props {
@@ -22,6 +22,11 @@ interface Props {
 
 const USER_STATUS_FILTERS: UserStatusFilter[] = ["active", "all", "custom"];
 
+/** Orgs that are children of another org (they inherit parent's roles) */
+const childOrgIds = new Set(
+  MOCK_ORGANIZATIONS.filter((o) => o.parentId).map((o) => o.id)
+);
+
 export default function StepOrgScope({
   jobType,
   organizationIds,
@@ -34,12 +39,17 @@ export default function StepOrgScope({
   showErrors,
 }: Props) {
   const toggleOrg = (id: string) => {
-    if (organizationIds.includes(id)) {
-      onChange({ organizationIds: organizationIds.filter((o) => o !== id) });
-    } else {
-      onChange({ organizationIds: [...organizationIds, id] });
-    }
+    const next = organizationIds.includes(id)
+      ? organizationIds.filter((o) => o !== id)
+      : [...organizationIds, id];
+    // When orgs change, clear any specific role selections that are no longer valid
+    onChange({ organizationIds: next, specificAccessRoles: [], excludeRoles: [] });
   };
+
+  // Roles available for the currently selected orgs (respects parent inheritance)
+  const availableRoles = includeAllOrgs
+    ? getAvailableRolesForOrgs([]) // all orgs → all roles
+    : getAvailableRolesForOrgs(organizationIds);
 
   const toggleRole = (id: string) => {
     if (specificAccessRoles.includes(id)) {
@@ -59,6 +69,13 @@ export default function StepOrgScope({
 
   const hasOrgError = showErrors && !includeAllOrgs && organizationIds.length === 0;
 
+  // Show inheritance note when child orgs are selected
+  const selectedChildOrgs = organizationIds.filter((id) => childOrgIds.has(id));
+  const showInheritanceNote = !includeAllOrgs && selectedChildOrgs.length > 0;
+  const childOrgNames = MOCK_ORGANIZATIONS.filter((o) =>
+    selectedChildOrgs.includes(o.id)
+  ).map((o) => o.name);
+
   return (
     <div className="space-y-6">
       <div>
@@ -77,7 +94,12 @@ export default function StepOrgScope({
             id="include-all-orgs"
             checked={includeAllOrgs}
             onCheckedChange={(v) =>
-              onChange({ includeAllOrgs: v === true, organizationIds: [] })
+              onChange({
+                includeAllOrgs: v === true,
+                organizationIds: [],
+                specificAccessRoles: [],
+                excludeRoles: [],
+              })
             }
           />
           <span className="text-sm text-bluegrey-800 font-medium">
@@ -86,22 +108,46 @@ export default function StepOrgScope({
         </label>
 
         {!includeAllOrgs && (
-          <div className="space-y-2 pl-6">
+          <div className="space-y-1 pl-6">
             {MOCK_ORGANIZATIONS.map((org) => (
-              <label key={org.id} className="flex items-center gap-2 cursor-pointer">
+              <label key={org.id} className="flex items-center gap-2 cursor-pointer py-1">
                 <Checkbox
                   id={`org-${org.id}`}
                   checked={organizationIds.includes(org.id)}
                   onCheckedChange={() => toggleOrg(org.id)}
                 />
-                <span className="text-sm text-bluegrey-800">{org.name}</span>
+                <span className="text-sm text-bluegrey-800 flex items-center gap-1.5">
+                  {org.parentId && (
+                    <span className="text-bluegrey-300 text-xs">└</span>
+                  )}
+                  {org.name}
+                  {org.parentId && (
+                    <span className="text-[10px] text-bluegrey-400 italic">
+                      (child of{" "}
+                      {MOCK_ORGANIZATIONS.find((o) => o.id === org.parentId)?.name})
+                    </span>
+                  )}
+                </span>
               </label>
             ))}
             {hasOrgError && (
-              <p className="text-xs text-red-600">
+              <p className="text-xs text-red-600 mt-1">
                 Select at least one organization or enable "Include all organizations".
               </p>
             )}
+          </div>
+        )}
+
+        {/* Inheritance note */}
+        {showInheritanceNote && (
+          <div className="rounded-md bg-blue-50 border border-blue-200 px-3 py-2 mt-1">
+            <p className="text-xs text-blue-700">
+              <span className="font-semibold">Role inheritance: </span>
+              {childOrgNames.join(" & ")}{" "}
+              {childOrgNames.length === 1 ? "is a" : "are"} child{" "}
+              {childOrgNames.length === 1 ? "organization" : "organizations"} — only access
+              roles defined in the parent organization are available.
+            </p>
           </div>
         )}
       </div>
@@ -138,7 +184,14 @@ export default function StepOrgScope({
       {/* Panel 3: Access roles to target (access-role-cleanup only) */}
       {jobType === "access-role-cleanup" && (
         <div className="p-4 rounded-lg border border-bluegrey-200 space-y-4">
-          <h4 className="text-sm font-semibold text-bluegrey-700">Access roles to target</h4>
+          <div>
+            <h4 className="text-sm font-semibold text-bluegrey-700">Access roles to target</h4>
+            {!includeAllOrgs && organizationIds.length > 0 && (
+              <p className="text-xs text-bluegrey-400 mt-0.5">
+                Showing roles available for the selected organization(s).
+              </p>
+            )}
+          </div>
 
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
@@ -158,16 +211,22 @@ export default function StepOrgScope({
               <p className="text-xs text-bluegrey-500 mb-2">
                 Select specific roles to target:
               </p>
-              {MOCK_ACCESS_ROLE_OPTIONS.map((role) => (
-                <label key={role.id} className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox
-                    id={`role-${role.id}`}
-                    checked={specificAccessRoles.includes(role.id)}
-                    onCheckedChange={() => toggleRole(role.id)}
-                  />
-                  <span className="text-sm text-bluegrey-800">{role.name}</span>
-                </label>
-              ))}
+              {availableRoles.length === 0 ? (
+                <p className="text-xs text-bluegrey-400 italic">
+                  No roles available for the selected organizations.
+                </p>
+              ) : (
+                availableRoles.map((role) => (
+                  <label key={role.id} className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox
+                      id={`role-${role.id}`}
+                      checked={specificAccessRoles.includes(role.id)}
+                      onCheckedChange={() => toggleRole(role.id)}
+                    />
+                    <span className="text-sm text-bluegrey-800">{role.name}</span>
+                  </label>
+                ))
+              )}
             </div>
           )}
 
@@ -180,7 +239,7 @@ export default function StepOrgScope({
               These roles will be skipped even if they match the target criteria.
             </p>
             <div className="space-y-2">
-              {MOCK_ACCESS_ROLE_OPTIONS.map((role) => (
+              {availableRoles.map((role) => (
                 <label key={role.id} className="flex items-center gap-2 cursor-pointer">
                   <Checkbox
                     id={`exclude-role-${role.id}`}

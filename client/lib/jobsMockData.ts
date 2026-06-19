@@ -36,11 +36,15 @@ export interface AccessRoleBehavior {
 export interface MockOrganization {
   id: string;
   name: string;
+  /** ID of the parent organization, if this is a child org */
+  parentId?: string;
 }
 
 export interface MockAccessRoleOption {
   id: string;
   name: string;
+  /** Org IDs this role is defined in. Child orgs inherit from their parent. */
+  availableInOrgs: string[];
 }
 
 export interface CleanupJob {
@@ -551,16 +555,46 @@ export const MOCK_ORGANIZATIONS: MockOrganization[] = [
   { id: "org-1", name: "Acme Corp" },
   { id: "org-2", name: "Tech Solutions" },
   { id: "org-3", name: "Global Services" },
-  { id: "org-4", name: "Acme Europe" },
-  { id: "org-5", name: "Acme Americas" },
+  // Children of Acme Corp — inherit its access roles
+  { id: "org-4", name: "Acme Europe", parentId: "org-1" },
+  { id: "org-5", name: "Acme Americas", parentId: "org-1" },
 ];
 
+/**
+ * Returns the effective org ID to use for role lookups.
+ * Child orgs resolve to their parent's role scope.
+ */
+export function resolveOrgForRoles(orgId: string): string {
+  const org = MOCK_ORGANIZATIONS.find((o) => o.id === orgId);
+  return org?.parentId ?? orgId;
+}
+
+/**
+ * Given a list of selected org IDs, returns the access roles
+ * available across all of them (union), respecting parent inheritance.
+ */
+export function getAvailableRolesForOrgs(orgIds: string[]): MockAccessRoleOption[] {
+  if (orgIds.length === 0) return MOCK_ACCESS_ROLE_OPTIONS;
+  const effectiveOrgIds = [...new Set(orgIds.map(resolveOrgForRoles))];
+  return MOCK_ACCESS_ROLE_OPTIONS.filter((role) =>
+    effectiveOrgIds.some((id) => role.availableInOrgs.includes(id))
+  );
+}
+
 export const MOCK_ACCESS_ROLE_OPTIONS: MockAccessRoleOption[] = [
-  { id: "ar-1", name: "Claim Processor" },
-  { id: "ar-2", name: "Front Desk Person" },
-  { id: "ar-3", name: "Sales General" },
-  { id: "ar-4", name: "Manager" },
-  { id: "ar-5", name: "Viewer" },
+  // Acme Corp roles (also inherited by Acme Europe & Acme Americas)
+  { id: "ar-1", name: "Claim Processor",  availableInOrgs: ["org-1"] },
+  { id: "ar-2", name: "Front Desk Person", availableInOrgs: ["org-1"] },
+  { id: "ar-3", name: "Sales General",    availableInOrgs: ["org-1"] },
+  { id: "ar-4", name: "Manager",          availableInOrgs: ["org-1"] },
+  // Tech Solutions roles
+  { id: "ar-6", name: "Support Agent",    availableInOrgs: ["org-2"] },
+  { id: "ar-7", name: "Project Lead",     availableInOrgs: ["org-2"] },
+  // Global Services roles
+  { id: "ar-8", name: "Field Officer",    availableInOrgs: ["org-3"] },
+  { id: "ar-9", name: "Compliance Analyst", availableInOrgs: ["org-3"] },
+  // Cross-org role (available everywhere)
+  { id: "ar-5", name: "Viewer",           availableInOrgs: ["org-1", "org-2", "org-3"] },
 ];
 
 export const ALLOWED_HOURS = [22, 23, 0, 1, 2, 3, 4, 5];
