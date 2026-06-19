@@ -16,7 +16,7 @@ interface Props {
   onChange: (patch: Partial<CleanupJobFormState>) => void;
 }
 
-const LAST_ORG_OPTIONS: LastOrgBehavior[] = ["orphan-org", "delete-user", "grace-state"];
+const LAST_ORG_OPTIONS: LastOrgBehavior[] = ["orphan-org", "delete-user"];
 const LAST_ROLE_OPTIONS: LastRoleBehavior[] = ["keep-in-org", "mark-no-roles"];
 
 function SectionHeader({ children }: { children: React.ReactNode }) {

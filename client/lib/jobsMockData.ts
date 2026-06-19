@@ -16,7 +16,7 @@ export type JobType =
   | "access-role-cleanup";
 
 export type UserStatusFilter = "active" | "all" | "custom";
-export type LastOrgBehavior = "orphan-org" | "delete-user" | "grace-state";
+export type LastOrgBehavior = "orphan-org" | "delete-user";
 export type LastRoleBehavior = "keep-in-org" | "mark-no-roles";
 
 export interface OrgMembershipBehavior {
@@ -540,7 +540,6 @@ export const USER_STATUS_FILTER_LABELS: Record<UserStatusFilter, string> = {
 export const LAST_ORG_BEHAVIOR_LABELS: Record<LastOrgBehavior, string> = {
   "orphan-org": "Move user to Orphan organization",
   "delete-user": "Delete user permanently",
-  "grace-state": "Move user to GRACE state",
 };
 
 export const LAST_ROLE_BEHAVIOR_LABELS: Record<LastRoleBehavior, string> = {
