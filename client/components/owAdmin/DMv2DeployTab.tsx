@@ -27,12 +27,6 @@ const INVITATION_JOURNEYS = [
   { value: "sso-provisioned", label: "SSO Auto-provisioned" },
 ];
 
-const DATE_FORMAT_OPTIONS = [
-  { value: "DD/MM/YYYY", label: "DD/MM/YYYY — Day first (European)" },
-  { value: "MM/DD/YYYY", label: "MM/DD/YYYY — Month first (US)" },
-  { value: "YYYY-MM-DD", label: "YYYY-MM-DD — ISO 8601 (international)" },
-];
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface BasicForm {
@@ -42,9 +36,11 @@ interface BasicForm {
   invitationJourney: string;
 }
 
+type LastOrgBehavior = "hard-delete" | "orphan-org";
+
 interface AdvancedForm {
-  dateFormat: string;
   allowDuplicateInvitation: boolean;
+  lastOrgBehavior: LastOrgBehavior;
 }
 
 interface FieldError {
@@ -52,7 +48,6 @@ interface FieldError {
   idp?: string;
   adminEmail?: string;
   invitationJourney?: string;
-  dateFormat?: string;
 }
 
 interface DMv2DeployTabProps {
@@ -132,8 +127,8 @@ export default function DMv2DeployTab({
 
   // Advanced form
   const [advanced, setAdvanced] = useState<AdvancedForm>({
-    dateFormat: "DD/MM/YYYY",
     allowDuplicateInvitation: false,
+    lastOrgBehavior: "orphan-org",
   });
 
   const [errors, setErrors] = useState<FieldError>({});
@@ -335,51 +330,94 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Advanced configuration"
-                description="Date formatting and invitation policy settings."
+                description="Invitation policy and user lifecycle behaviour settings."
                 expanded={advancedExpanded}
                 onToggle={() => setAdvancedExpanded((v) => !v)}
               />
             </div>
 
             {advancedExpanded && (
-              <div className="px-5 pb-6 pt-2">
+              <div className="px-5 pb-6 pt-4 space-y-6">
 
-                {/* Date format */}
-                <div className="mb-5">
-                  <p className="text-base font-semibold text-bluegrey-800 mb-3">Date format</p>
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="dateFormat"
-                      className="block text-sm font-medium text-bluegrey-700"
-                    >
-                      Display date format
-                    </label>
-                    <select
-                      id="dateFormat"
-                      value={advanced.dateFormat}
-                      onChange={(e) => updateAdvanced({ dateFormat: e.target.value })}
-                      className="w-full border border-bluegrey-300 rounded-md px-3 py-2 text-sm text-bluegrey-900 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
-                    >
-                      {DATE_FORMAT_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-bluegrey-500">
-                      Applies to all date fields displayed across the DM tenant UI.
-                    </p>
-                    <div className="flex items-center gap-2 pt-1">
-                      <span className="text-xs text-bluegrey-500">Preview:</span>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded bg-bluegrey-100 text-xs font-mono text-bluegrey-700">
-                        {formatDatePreview(advanced.dateFormat)}
-                      </span>
-                    </div>
+                {/* Last organization behavior */}
+                <div>
+                  <p className="text-sm font-semibold text-bluegrey-800 mb-0.5">
+                    Last organization removal behavior
+                  </p>
+                  <p className="text-xs text-bluegrey-500 mb-3">
+                    When a user is removed from their last organization (either by admin
+                    action or because the organization is deleted), define what happens
+                    to that user's account and all associated relationships.
+                  </p>
+                  <div className="space-y-2">
+                    {([
+                      {
+                        value: "hard-delete" as const,
+                        label: "User hard delete",
+                        description:
+                          "User and all remaining relationships are permanently removed. This action is irreversible.",
+                        badge: "Destructive",
+                        badgeCls: "bg-red-100 text-red-700",
+                      },
+                      {
+                        value: "orphan-org" as const,
+                        label: "Move user to orphan organization",
+                        description:
+                          "User is transferred to a system-managed orphan organization, preserving their account and data until manually reviewed.",
+                        badge: "Recoverable",
+                        badgeCls: "bg-green-100 text-green-700",
+                      },
+                    ] as const).map((opt) => (
+                      <label
+                        key={opt.value}
+                        className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-colors ${
+                          advanced.lastOrgBehavior === opt.value
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-bluegrey-200 hover:border-blue-300 hover:bg-blue-50/30"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="lastOrgBehavior"
+                          value={opt.value}
+                          checked={advanced.lastOrgBehavior === opt.value}
+                          onChange={() => updateAdvanced({ lastOrgBehavior: opt.value })}
+                          className="mt-0.5 w-4 h-4 accent-blue-600 cursor-pointer flex-shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-bluegrey-900">
+                              {opt.label}
+                            </span>
+                            <span
+                              className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                opt.badgeCls
+                              }`}
+                            >
+                              {opt.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-bluegrey-500 mt-0.5">
+                            {opt.description}
+                          </p>
+                        </div>
+                      </label>
+                    ))}
                   </div>
+
+                  {advanced.lastOrgBehavior === "hard-delete" && (
+                    <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 mt-2">
+                      <p className="text-xs text-red-700">
+                        <span className="font-semibold">Warning: </span>
+                        Hard delete is permanent. Ensure audit logs are exported before
+                        enabling this option in production.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Duplicate invitation */}
-                <div className="pt-4 border-t border-bluegrey-100">
+                <div className="pt-2 border-t border-bluegrey-100">
                   <p className="text-base font-semibold text-bluegrey-800 mb-3">Invitation policy</p>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
@@ -446,24 +484,4 @@ export default function DMv2DeployTab({
       </div>
     </div>
   );
-}
-
-// ─── Date preview helper ──────────────────────────────────────────────────────
-
-function formatDatePreview(format: string): string {
-  const d = new Date(2025, 5, 24); // fixed example date: 24 June 2025
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-
-  switch (format) {
-    case "DD/MM/YYYY":
-      return `${dd}/${mm}/${yyyy}`;
-    case "MM/DD/YYYY":
-      return `${mm}/${dd}/${yyyy}`;
-    case "YYYY-MM-DD":
-      return `${yyyy}-${mm}-${dd}`;
-    default:
-      return `${dd}/${mm}/${yyyy}`;
-  }
 }
