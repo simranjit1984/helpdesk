@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { LogOut, User, ArrowLeft, Settings } from "lucide-react";
+import { LogOut, User, ArrowLeft } from "lucide-react";
 import { ContentHeader, LeftNav, LeftNavMenuItem, Icon, Icons } from "@onewelcome/react-lib-components";
 import {
   DropdownMenu,
@@ -97,14 +97,6 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
       disabled: !uiConfigEnabled,
       iconComponent: <Icon icon={Icons.Grid} />,
     },
-    {
-      key: "settings",
-      path: "settings",
-      title: "System Settings",
-      active: activeSection === "settings",
-      disabled: true,
-      iconComponent: <Icon icon={Icons.Gearwheel} />,
-    },
   ];
 }
 
@@ -113,7 +105,6 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "DM Tenant settings",
   "ui-config": "UI Configuration",
-  settings: "System Settings",
 };
 
 // ─── Main page ────────────────────────────────────────────────────────────────
@@ -178,17 +169,6 @@ export default function OWAdminConsole() {
               />
             )}
             {activeSection === "ui-config" && <UIConfigurationTab />}
-            {activeSection === "settings" && (
-              <div className="flex-1 flex items-center justify-center min-h-[400px]">
-                <div className="text-center max-w-xs">
-                  <div className="w-14 h-14 rounded-2xl bg-bluegrey-50 flex items-center justify-center mx-auto mb-4">
-                    <Settings className="w-7 h-7 text-bluegrey-300" />
-                  </div>
-                  <h2 className="text-base font-semibold text-bluegrey-700 mb-2">System Settings</h2>
-                  <p className="text-sm text-bluegrey-400">This section is coming soon.</p>
-                </div>
-              </div>
-            )}
           </div>
         </main>
       </div>
