@@ -17,6 +17,7 @@ export interface PayloadMapping {
 }
 
 interface WorkflowEndpointState {
+  baseUrl: string;
   path: string;
   method: HttpMethod;
 }
@@ -24,6 +25,7 @@ interface WorkflowEndpointState {
 interface WorkflowAuthState {
   type: AuthType;
   oauthClientId: string;
+  oauthClientSecret: string;
   scopes: string[];
 }
 
@@ -57,18 +59,23 @@ const MOCK_OIDC_CLIENTS = [
 ];
 
 const MOCK_OAUTH_CLIENTS = [
-  { id: "oauth-webhooks",    label: "Webhook Service Client" },
-  { id: "oauth-notifications", label: "Notifications Client" },
-  { id: "oauth-api",         label: "Internal API Client" },
+  { id: "oauth-webhooks",       label: "Webhook Service Client",
+    scopes: ["invitation.send", "users.manage", "notifications.create"] },
+  { id: "oauth-notifications",  label: "Notifications Client",
+    scopes: ["notifications.create", "notifications.read", "org.read"] },
+  { id: "oauth-api",            label: "Internal API Client",
+    scopes: ["users.manage", "org.read", "audit.write", "password.reset"] },
 ];
 
-const TENANT_BASE_URL = "https://dmv2.customer.example.com";
-const REDIRECT_URI    = `${TENANT_BASE_URL}/oauth/callback`;
-
-const PREDEFINED_SCOPES = [
-  "invitation.send", "users.manage", "notifications.create",
-  "password.reset", "org.read", "audit.write",
+const MOCK_TENANT_URLS = [
+  "https://dmv2.customer.example.com",
+  "https://dmv2-eu.customer.example.com",
+  "https://dmv2-us.customer.example.com",
+  "https://dmv2-apac.customer.example.com",
 ];
+
+const DEFAULT_TENANT_BASE_URL = MOCK_TENANT_URLS[0];
+const REDIRECT_URI = `${DEFAULT_TENANT_BASE_URL}/oauth/callback`;
 
 // ─── Attribute catalog ────────────────────────────────────────────────────────
 
@@ -280,22 +287,27 @@ function SubSectionTitle({ title, description }: { title: string; description?: 
 // ─── Scope multi-select ───────────────────────────────────────────────────────
 
 function ScopeSelector({
-  selected, onChange,
+  selected, onChange, availableScopes,
 }: {
-  selected: string[]; onChange: (scopes: string[]) => void;
+  selected: string[];
+  onChange: (scopes: string[]) => void;
+  availableScopes: string[];
 }) {
-  const [custom, setCustom] = useState("");
   const toggle = (s: string) =>
     onChange(selected.includes(s) ? selected.filter((x) => x !== s) : [...selected, s]);
-  const addCustom = () => {
-    const v = custom.trim();
-    if (v && !selected.includes(v)) { onChange([...selected, v]); setCustom(""); }
-  };
+
+  if (availableScopes.length === 0) {
+    return (
+      <p className="text-xs text-bluegrey-400 italic">
+        Select an OAuth Client above to see available scopes.
+      </p>
+    );
+  }
 
   return (
     <div className="space-y-2">
       <div className="rounded-md border border-bluegrey-200 p-3 bg-white space-y-1.5">
-        {PREDEFINED_SCOPES.map((s) => (
+        {availableScopes.map((s) => (
           <label key={s} className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -306,24 +318,6 @@ function ScopeSelector({
             <span className="text-sm text-bluegrey-800 font-mono">{s}</span>
           </label>
         ))}
-      </div>
-      {/* Custom scope */}
-      <div className="flex gap-2">
-        <input
-          type="text"
-          placeholder="Add custom scope…"
-          value={custom}
-          onChange={(e) => setCustom(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
-          className="flex-1 border border-bluegrey-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-        />
-        <button
-          type="button"
-          onClick={addCustom}
-          className="px-3 py-1.5 text-xs font-medium rounded-md bg-bluegrey-100 hover:bg-bluegrey-200 text-bluegrey-700 transition-colors"
-        >
-          Add
-        </button>
       </div>
       {selected.length > 0 && (
         <div className="flex flex-wrap gap-1">
@@ -616,10 +610,8 @@ function WorkflowSection({
 }) {
   const [expanded, setExpanded] = useState(false);
 
-  const resultingUrl =
-    state.endpoint.path
-      ? `${TENANT_BASE_URL}${state.endpoint.path}`
-      : TENANT_BASE_URL + pathPlaceholder;
+  const baseUrl = state.endpoint.baseUrl || DEFAULT_TENANT_BASE_URL;
+  const resultingUrl = state.endpoint.path ? `${baseUrl}${state.endpoint.path}` : baseUrl + pathPlaceholder;
 
   const pathError =
     state.endpoint.path && !state.endpoint.path.startsWith("/")
@@ -631,8 +623,12 @@ function WorkflowSection({
     onDirty();
   };
 
+  // Scopes available for the currently selected OAuth client
+  const selectedClient = MOCK_OAUTH_CLIENTS.find((c) => c.id === state.auth.oauthClientId);
+  const clientScopes = selectedClient?.scopes ?? [];
+
   const collapsed_summary = state.endpoint.path
-    ? `${TENANT_BASE_URL}${state.endpoint.path} · ${state.auth.type === "oauth2" ? "OAuth 2.0" : "No auth"} · ${state.mappings.length} field${state.mappings.length !== 1 ? "s" : ""} mapped`
+    ? `${baseUrl}${state.endpoint.path} · ${state.auth.type === "oauth2" ? "OAuth 2.0" : "No auth"} · ${state.mappings.length} field${state.mappings.length !== 1 ? "s" : ""} mapped`
     : "Not configured";
 
   return (
@@ -664,12 +660,19 @@ function WorkflowSection({
           {/* Endpoint */}
           <SubSectionTitle title="Endpoint configuration" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <ReadOnlyField
-              label="Base URL"
-              value={TENANT_BASE_URL}
-              badge="Read-only"
-              helperText="Derived from tenant DNS configuration."
-            />
+            <div className="space-y-1">
+              <FieldLabel label="Base URL" required />
+              <SelectField
+                id={`${title}-baseurl`}
+                value={state.endpoint.baseUrl || DEFAULT_TENANT_BASE_URL}
+                onChange={(v) => patch("endpoint", { ...state.endpoint, baseUrl: v })}
+              >
+                {MOCK_TENANT_URLS.map((url) => (
+                  <option key={url} value={url}>{url}</option>
+                ))}
+              </SelectField>
+              <p className="text-xs text-bluegrey-500">Tenant DNS URLs configured in the platform.</p>
+            </div>
             <div className="space-y-1">
               <FieldLabel label="HTTP Method" />
               <div className="flex items-center h-10 px-3 rounded-md border border-bluegrey-200 bg-bluegrey-50 text-sm text-bluegrey-700">
@@ -719,10 +722,16 @@ function WorkflowSection({
                 <SelectField
                   id={`${title}-oauthclient`}
                   value={state.auth.oauthClientId}
-                  onChange={(v) => patch("auth", { ...state.auth, oauthClientId: v })}
+                  onChange={(v) =>
+                    patch("auth", {
+                      ...state.auth,
+                      oauthClientId: v,
+                      oauthClientSecret: "",
+                      scopes: [],
+                    })
+                  }
                   placeholder="Select an OAuth Client…"
                   required
-                  error={!state.auth.oauthClientId ? undefined : undefined}
                 >
                   {MOCK_OAUTH_CLIENTS.map((c) => (
                     <option key={c.id} value={c.id}>{c.label}</option>
@@ -732,11 +741,30 @@ function WorkflowSection({
                   DMv2 will use this client to obtain an access token before invoking the webhook.
                 </p>
               </div>
+              {state.auth.oauthClientId && (
+                <div className="space-y-1">
+                  <FieldLabel label="Client secret" required />
+                  <input
+                    type="password"
+                    value={state.auth.oauthClientSecret}
+                    onChange={(e) =>
+                      patch("auth", { ...state.auth, oauthClientSecret: e.target.value })
+                    }
+                    placeholder="Enter client secret…"
+                    autoComplete="new-password"
+                    className="w-full border border-bluegrey-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                  <p className="text-xs text-bluegrey-500">
+                    Stored encrypted. Never displayed after saving.
+                  </p>
+                </div>
+              )}
               <div className="space-y-1">
                 <FieldLabel label="Scopes" />
                 <ScopeSelector
                   selected={state.auth.scopes}
                   onChange={(scopes) => patch("auth", { ...state.auth, scopes })}
+                  availableScopes={clientScopes}
                 />
                 <p className="text-xs text-bluegrey-500">
                   Selected scopes will be included in the token request.
@@ -893,14 +921,14 @@ export default function LoginWorkflowConfig() {
   const [authDirty, setAuthDirty] = useState(false);
 
   const defaultWorkflow = (): WorkflowState => ({
-    endpoint: { path: "", method: "POST" },
-    auth: { type: "none", oauthClientId: "", scopes: [] },
+    endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "", method: "POST" },
+    auth: { type: "none", oauthClientId: "", oauthClientSecret: "", scopes: [] },
     mappings: [],
   });
 
   const [invState, setInvState] = useState<WorkflowState>(() => ({
     ...defaultWorkflow(),
-    endpoint: { path: "/api/invitations", method: "POST" },
+    endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "/api/invitations", method: "POST" },
     mappings: [
       { id: uid(), field: "email",          attribute: "user.email" },
       { id: uid(), field: "firstName",      attribute: "user.firstName" },
@@ -912,7 +940,7 @@ export default function LoginWorkflowConfig() {
 
   const [pwState, setPwState] = useState<WorkflowState>(() => ({
     ...defaultWorkflow(),
-    endpoint: { path: "/api/password-reset", method: "POST" },
+    endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "/api/password-reset", method: "POST" },
     mappings: [
       { id: uid(), field: "email",      attribute: "user.email" },
       { id: uid(), field: "firstName",  attribute: "user.firstName" },
