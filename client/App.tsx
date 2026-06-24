@@ -23,6 +23,7 @@ import Administrators from "./pages/Administrators";
 import AllAdministrators from "./pages/AllAdministrators";
 import AdministratorsRoles from "./pages/AdministratorsRoles";
 import Scopes from "./pages/Scopes";
+import ScopeDetail from "./pages/ScopeDetail";
 import AddAdminRole from "./pages/AddAdminRole";
 import AddAccessRolesToOrg from "./pages/AddAccessRolesToOrg";
 import Settings from "./pages/Settings";
@@ -64,6 +65,7 @@ export const App = () => (
           <Route path="/administrators/roles" element={<AdministratorsRoles />} />
           <Route path="/administrators/roles/create" element={<AddAdminRole />} />
           <Route path="/administrators/scopes" element={<Scopes />} />
+          <Route path="/administrators/scopes/:scopeId" element={<ScopeDetail />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/invitations" element={<Navigate to="/users?tab=invitations" replace />} />

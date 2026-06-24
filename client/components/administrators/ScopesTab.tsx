@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +37,7 @@ function accessRoleSummary(scope: Scope): string {
 }
 
 export default function ScopesTab() {
+  const navigate = useNavigate();
   const [scopes, setScopes] = useState<Scope[]>(MOCK_SCOPES);
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -55,8 +57,7 @@ export default function ScopesTab() {
   };
 
   const openEdit = (scope: Scope) => {
-    setEditingScope(scope);
-    setDrawerOpen(true);
+    navigate(`/administrators/scopes/${scope.id}`);
   };
 
   const handleSave = (data: Omit<Scope, "id">) => {
@@ -118,7 +119,7 @@ export default function ScopesTab() {
                     <TableCell>
                       <button
                         type="button"
-                        onClick={() => openEdit(scope)}
+                        onClick={() => navigate(`/administrators/scopes/${scope.id}`)}
                         className="font-medium text-bluegrey-900 hover:text-blue-600 transition-colors text-left underline-offset-2 hover:underline"
                       >
                         {scope.name}
