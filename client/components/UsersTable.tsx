@@ -503,6 +503,7 @@ const SEARCH_FIELDS = [
 
 const FILTER_COLUMNS = [
   { value: "organizations", label: "Organization" },
+  { value: "accessRoles", label: "Access role" },
   { value: "status", label: "Status" },
 ];
 
@@ -715,7 +716,17 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
   }, [searchQuery, searchField, filters, sortColumn, sortDir]);
 
   const statusOptions = deriveStatusOptions(allowedStatuses);
-  const columnOptions = { status: statusOptions };
+
+  // Derive unique access role options from all users
+  const accessRoleOptions = Array.from(
+    new Map(
+      users
+        .flatMap((u) => (u as User).accessRoles ?? [])
+        .map((r) => [r.name, { value: r.name, label: r.name }])
+    ).values()
+  ).sort((a, b) => a.label.localeCompare(b.label));
+
+  const columnOptions = { status: statusOptions, accessRoles: accessRoleOptions };
 
   const isInvitationsTab =
     allowedStatuses?.every(
@@ -768,6 +779,15 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
             user.organizations?.some((org) =>
               org.toLowerCase().includes(searchTerm),
             ) || false
+          );
+        }
+
+        if (columnKey === "accessRoles") {
+          const vals = filter.value.split(",").map((v) => v.toLowerCase());
+          return (
+            (user as User).accessRoles?.some((r) =>
+              vals.includes(r.name.toLowerCase())
+            ) ?? false
           );
         }
 
