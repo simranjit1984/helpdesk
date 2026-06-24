@@ -189,10 +189,6 @@ function SaveConfirmDialog({
             </h3>
             <p className="text-sm text-bluegrey-600">
               Updating this scope may affect all administrators and policies that reference it.
-              Users currently relying on this scope may gain or lose access immediately after
-              saving.
-            </p>
-            <p className="text-sm text-bluegrey-600 mt-2">
               Please review your changes carefully before proceeding.
             </p>
           </div>
