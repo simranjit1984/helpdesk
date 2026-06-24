@@ -37,8 +37,33 @@ interface BasicForm {
 }
 
 type LastOrgBehavior = "hard-delete" | "orphan-org";
+type TimeFormat = "12h" | "24h";
+
+const DATE_FORMAT_OPTIONS = [
+  { value: "DD/MM/YYYY", label: "DD/MM/YYYY", example: "25/01/2025" },
+  { value: "MM/DD/YYYY", label: "MM/DD/YYYY", example: "01/25/2025" },
+  { value: "YYYY-MM-DD", label: "YYYY-MM-DD", example: "2025-01-25" },
+  { value: "DD-MM-YYYY", label: "DD-MM-YYYY", example: "25-01-2025" },
+  { value: "DD MMM YYYY", label: "DD MMM YYYY", example: "25 Jan 2025" },
+];
+
+const TIMEZONE_OPTIONS = [
+  { value: "UTC",      label: "UTC — Coordinated Universal Time" },
+  { value: "CET",      label: "CET — Central European Time (UTC+1)" },
+  { value: "CEST",     label: "CEST — Central European Summer Time (UTC+2)" },
+  { value: "GMT",      label: "GMT — Greenwich Mean Time" },
+  { value: "EST",      label: "EST — Eastern Standard Time (UTC-5)" },
+  { value: "PST",      label: "PST — Pacific Standard Time (UTC-8)" },
+  { value: "IST",      label: "IST — India Standard Time (UTC+5:30)" },
+  { value: "CST_ASIA", label: "CST — China Standard Time (UTC+8)" },
+  { value: "JST",      label: "JST — Japan Standard Time (UTC+9)" },
+  { value: "AEST",     label: "AEST — Australian Eastern Time (UTC+10)" },
+];
 
 interface AdvancedForm {
+  dateFormat: string;
+  timeFormat: TimeFormat;
+  timezone: string;
   allowDuplicateInvitation: boolean;
   lastOrgBehavior: LastOrgBehavior;
 }
@@ -127,6 +152,9 @@ export default function DMv2DeployTab({
 
   // Advanced form
   const [advanced, setAdvanced] = useState<AdvancedForm>({
+    dateFormat: "DD/MM/YYYY",
+    timeFormat: "24h",
+    timezone: "CET",
     allowDuplicateInvitation: false,
     lastOrgBehavior: "orphan-org",
   });
@@ -330,7 +358,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Advanced configuration"
-                description="Invitation policy and user lifecycle behaviour settings."
+                description="Date & time, invitation policy, and user lifecycle behaviour settings."
                 expanded={advancedExpanded}
                 onToggle={() => setAdvancedExpanded((v) => !v)}
               />
@@ -338,6 +366,89 @@ export default function DMv2DeployTab({
 
             {advancedExpanded && (
               <div className="px-5 pb-6 pt-4 space-y-6">
+
+                {/* Date & time */}
+                <div>
+                  <p className="text-sm font-semibold text-bluegrey-800 mb-0.5">
+                    Date &amp; time
+                  </p>
+                  <p className="text-xs text-bluegrey-500 mb-3">
+                    Configure how dates and times are displayed across the DM tenant UI.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Date format */}
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="dateFormat"
+                        className="block text-xs font-medium text-bluegrey-600"
+                      >
+                        Date format
+                      </label>
+                      <select
+                        id="dateFormat"
+                        value={advanced.dateFormat}
+                        onChange={(e) => updateAdvanced({ dateFormat: e.target.value })}
+                        className="w-full border border-bluegrey-300 rounded-md px-3 py-2 text-sm text-bluegrey-900 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      >
+                        {DATE_FORMAT_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label} (e.g. {opt.example})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Timezone */}
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="timezone"
+                        className="block text-xs font-medium text-bluegrey-600"
+                      >
+                        Timezone
+                      </label>
+                      <select
+                        id="timezone"
+                        value={advanced.timezone}
+                        onChange={(e) => updateAdvanced({ timezone: e.target.value })}
+                        className="w-full border border-bluegrey-300 rounded-md px-3 py-2 text-sm text-bluegrey-900 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      >
+                        {TIMEZONE_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Time format */}
+                  <div className="mt-3">
+                    <p className="text-xs font-medium text-bluegrey-600 mb-2">Time format</p>
+                    <div className="flex gap-3">
+                      {(["24h", "12h"] as TimeFormat[]).map((fmt) => (
+                        <label
+                          key={fmt}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors text-sm ${
+                            advanced.timeFormat === fmt
+                              ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
+                              : "border-bluegrey-200 text-bluegrey-700 hover:border-blue-300 hover:bg-blue-50/30"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="timeFormat"
+                            value={fmt}
+                            checked={advanced.timeFormat === fmt}
+                            onChange={() => updateAdvanced({ timeFormat: fmt })}
+                            className="w-4 h-4 accent-blue-600"
+                          />
+                          {fmt === "24h" ? "24-hour (14:30)" : "12-hour (2:30 PM)"}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
                 {/* Last organization behavior */}
                 <div>
