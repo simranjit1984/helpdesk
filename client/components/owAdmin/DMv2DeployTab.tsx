@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
+import LoginWorkflowConfig from "./LoginWorkflowConfig";
 import {
   Fieldset,
   InputWrapper,
@@ -140,6 +141,7 @@ export default function DMv2DeployTab({
   // Section expand state
   const [basicExpanded, setBasicExpanded] = useState(true);
   const [advancedExpanded, setAdvancedExpanded] = useState(false);
+  const [workflowExpanded, setWorkflowExpanded] = useState(false);
 
   // ── Basic helpers ────────────────────────────────────────────────────────────
 
@@ -473,6 +475,23 @@ export default function DMv2DeployTab({
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── Login & Workflow Configuration ─────────────────── */}
+          <div className="rounded-lg border border-bluegrey-200 overflow-hidden bg-white">
+            <div className="px-5 py-4 border-b border-bluegrey-100">
+              <SectionHeader
+                title="Login & workflow configuration"
+                description="OIDC authentication, invitation webhook, and password reset webhook."
+                expanded={workflowExpanded}
+                onToggle={() => setWorkflowExpanded((v) => !v)}
+              />
+            </div>
+            {workflowExpanded && (
+              <div className="px-5 pb-6 pt-4">
+                <LoginWorkflowConfig />
               </div>
             )}
           </div>
