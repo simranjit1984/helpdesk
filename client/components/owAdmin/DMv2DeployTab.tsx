@@ -10,30 +10,10 @@ import {
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
-const IDP_OPTIONS = [
-  { value: "ow-idp-saml", label: "OneWelcome SAML IDP" },
-  { value: "ow-idp-oidc", label: "OneWelcome OIDC IDP" },
-  { value: "azure-ad", label: "Azure Active Directory" },
-  { value: "okta", label: "Okta" },
-  { value: "ping", label: "PingFederate" },
-  { value: "google", label: "Google Workspace" },
-];
-
-const INVITATION_JOURNEYS = [
-  { value: "standard-invite", label: "Standard Invitation" },
-  { value: "self-reg", label: "Self Registration" },
-  { value: "magic-link", label: "Magic Link" },
-  { value: "admin-created", label: "Admin Created Account" },
-  { value: "sso-provisioned", label: "SSO Auto-provisioned" },
-];
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface BasicForm {
   rootOrgName: string;
-  idp: string;
-  adminEmail: string;
-  invitationJourney: string;
 }
 
 type LastOrgBehavior = "hard-delete" | "orphan-org";
@@ -70,9 +50,6 @@ interface AdvancedForm {
 
 interface FieldError {
   rootOrgName?: string;
-  idp?: string;
-  adminEmail?: string;
-  invitationJourney?: string;
 }
 
 interface DMv2DeployTabProps {
@@ -145,9 +122,6 @@ export default function DMv2DeployTab({
   // Basic form
   const [basic, setBasic] = useState<BasicForm>({
     rootOrgName: "",
-    idp: "",
-    adminEmail: "",
-    invitationJourney: "",
   });
 
   // Advanced form
@@ -198,7 +172,6 @@ export default function DMv2DeployTab({
 
   function validate(): FieldError {
     const errs: FieldError = {};
-
     if (!basic.rootOrgName.trim()) {
       errs.rootOrgName = "Root organisation name is required.";
     } else if (/\s/.test(basic.rootOrgName)) {
@@ -206,17 +179,6 @@ export default function DMv2DeployTab({
     } else if (basic.rootOrgName.length > 8) {
       errs.rootOrgName = "Maximum 8 characters allowed.";
     }
-
-    if (!basic.idp) errs.idp = "Please select an Identity Provider.";
-    if (!basic.invitationJourney)
-      errs.invitationJourney = "Please select an invitation journey.";
-
-    if (!basic.adminEmail.trim()) {
-      errs.adminEmail = "Admin email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(basic.adminEmail)) {
-      errs.adminEmail = "Please enter a valid email address.";
-    }
-
     return errs;
   }
 
@@ -252,7 +214,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Basic configuration"
-                description="Core tenant identity, IDP connection, and super admin setup."
+                description="Core tenant root organisation identifier."
                 expanded={basicExpanded}
                 onToggle={() => setBasicExpanded((v) => !v)}
               />
@@ -292,63 +254,6 @@ export default function DMv2DeployTab({
                   </div>
                 </Fieldset>
 
-                {/* Identity */}
-                <Fieldset legend="Identity" legendStyle="h3" background="transparent">
-                  <SelectWrapper
-                    label="Identity Provider (IDP)"
-                    name="idp"
-                    value={basic.idp}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      updateBasic("idp")(e.target.value)
-                    }
-                    placeholder="Select an IDP from Access…"
-                    required
-                    error={!!errors.idp}
-                    errorMessage={errors.idp}
-                  >
-                    {IDP_OPTIONS.map((opt) => (
-                      <Option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </Option>
-                    ))}
-                  </SelectWrapper>
-
-                  <SelectWrapper
-                    label="Invitation journey"
-                    name="invitationJourney"
-                    value={basic.invitationJourney}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      updateBasic("invitationJourney")(e.target.value)
-                    }
-                    placeholder="Select a journey from Core flows…"
-                    required
-                    error={!!errors.invitationJourney}
-                    errorMessage={errors.invitationJourney}
-                  >
-                    {INVITATION_JOURNEYS.map((opt) => (
-                      <Option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </Option>
-                    ))}
-                  </SelectWrapper>
-                </Fieldset>
-
-                {/* Super Admin */}
-                <Fieldset legend="Super Admin" legendStyle="h3" background="transparent">
-                  <InputWrapper
-                    label="First super admin email"
-                    type="email"
-                    name="adminEmail"
-                    value={basic.adminEmail}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateBasic("adminEmail")(e.target.value)
-                    }
-                    required
-                    error={!!errors.adminEmail}
-                    errorMessage={errors.adminEmail}
-                    helperText="An invitation will be sent to this address to set up the super admin account."
-                  />
-                </Fieldset>
               </div>
             )}
           </div>
