@@ -116,7 +116,13 @@ export default function ScopesTab() {
                 filtered.map((scope) => (
                   <TableRow key={scope.id}>
                     <TableCell>
-                      <span className="font-medium text-bluegrey-900">{scope.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => openEdit(scope)}
+                        className="font-medium text-bluegrey-900 hover:text-blue-600 transition-colors text-left underline-offset-2 hover:underline"
+                      >
+                        {scope.name}
+                      </button>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-bluegrey-700">{scope.organization}</span>

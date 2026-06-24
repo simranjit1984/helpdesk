@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Search } from "lucide-react";
+import { X, Search, AlertTriangle } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -192,8 +192,18 @@ export default function ScopeDrawer({
     );
   };
 
-  const handleSave = () => {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const handleSaveClick = () => {
     if (!name.trim() || !selectedOrg) return;
+    if (isEditing) {
+      setConfirmOpen(true); // show warning before committing
+    } else {
+      commitSave();
+    }
+  };
+
+  const commitSave = () => {
     onSave({
       name: name.trim(),
       description: description.trim(),
@@ -202,6 +212,7 @@ export default function ScopeDrawer({
       accessRoleMode,
       accessRoleIds: accessRoleMode === "custom" ? accessRoleIds : [],
     });
+    setConfirmOpen(false);
     onOpenChange(false);
   };
 
@@ -317,11 +328,52 @@ export default function ScopeDrawer({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!canSave}>
+          <Button onClick={handleSaveClick} disabled={!canSave}>
             {isEditing ? "Save changes" : "Create Scope"}
           </Button>
         </SheetFooter>
       </SheetContent>
+
+      {/* Save confirmation dialog */}
+      {confirmOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setConfirmOpen(false)}
+          />
+          <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 space-y-5">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-bluegrey-900 mb-1">
+                  Confirm scope changes
+                </h3>
+                <p className="text-sm text-bluegrey-600">
+                  Updating the access roles in this scope may affect all administrators
+                  and policies that reference it. Users currently relying on this scope
+                  may gain or lose access immediately after saving.
+                </p>
+                <p className="text-sm text-bluegrey-600 mt-2">
+                  Please review your changes carefully before proceeding.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+                Go back
+              </Button>
+              <Button
+                className="bg-amber-600 hover:bg-amber-700 text-white"
+                onClick={commitSave}
+              >
+                I understand, save changes
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Sheet>
   );
 }
