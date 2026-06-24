@@ -6,7 +6,6 @@ import {
   SelectWrapper,
   Option,
   Button,
-  Toggle,
 } from "@onewelcome/react-lib-components";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -170,11 +169,9 @@ export default function DMv2DeployTab({
         setErrors((prev) => ({ ...prev, [field]: undefined }));
     };
 
-  const updateAdvanced =
-    <K extends keyof AdvancedForm>(field: K) =>
-    (value: AdvancedForm[K]) => {
-      setAdvanced((prev) => ({ ...prev, [field]: value }));
-    };
+  const updateAdvanced = (patch: Partial<AdvancedForm>) => {
+    setAdvanced((prev) => ({ ...prev, ...patch }));
+  };
 
   function validate(): FieldError {
     const errs: FieldError = {};
@@ -348,60 +345,72 @@ export default function DMv2DeployTab({
               <div className="px-5 pb-6 pt-2">
 
                 {/* Date format */}
-                <Fieldset legend="Date format" legendStyle="h3" background="transparent">
-                  <SelectWrapper
-                    label="Display date format"
-                    name="dateFormat"
-                    value={advanced.dateFormat}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      updateAdvanced("dateFormat")(e.target.value)
-                    }
-                    helperText="Applies to all date fields displayed across the DM tenant UI."
-                  >
-                    {DATE_FORMAT_OPTIONS.map((opt) => (
-                      <Option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </Option>
-                    ))}
-                  </SelectWrapper>
-
-                  {/* Preview */}
-                  <div className="mt-1 mb-4 flex items-center gap-2">
-                    <span className="text-xs text-bluegrey-500">Preview:</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded bg-bluegrey-100 text-xs font-mono text-bluegrey-700">
-                      {formatDatePreview(advanced.dateFormat)}
-                    </span>
+                <div className="mb-5">
+                  <p className="text-base font-semibold text-bluegrey-800 mb-3">Date format</p>
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="dateFormat"
+                      className="block text-sm font-medium text-bluegrey-700"
+                    >
+                      Display date format
+                    </label>
+                    <select
+                      id="dateFormat"
+                      value={advanced.dateFormat}
+                      onChange={(e) => updateAdvanced({ dateFormat: e.target.value })}
+                      className="w-full border border-bluegrey-300 rounded-md px-3 py-2 text-sm text-bluegrey-900 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                    >
+                      {DATE_FORMAT_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-bluegrey-500">
+                      Applies to all date fields displayed across the DM tenant UI.
+                    </p>
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-xs text-bluegrey-500">Preview:</span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded bg-bluegrey-100 text-xs font-mono text-bluegrey-700">
+                        {formatDatePreview(advanced.dateFormat)}
+                      </span>
+                    </div>
                   </div>
-                </Fieldset>
+                </div>
 
                 {/* Duplicate invitation */}
-                <Fieldset legend="Invitation policy" legendStyle="h3" background="transparent">
-                  <div className="flex items-start justify-between gap-4 py-2">
-                    <div>
-                      <p className="text-sm font-medium" style={{ color: "var(--color-dark)" }}>
+                <div className="pt-4 border-t border-bluegrey-100">
+                  <p className="text-base font-semibold text-bluegrey-800 mb-3">Invitation policy</p>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-bluegrey-800">
                         Allow duplicate invitations
                       </p>
-                      <p className="text-xs mt-1" style={{ color: "var(--color-medium)" }}>
-                        When enabled, a user can receive more than one pending invitation to
-                        the same organization. When disabled, the system blocks duplicate
-                        invitations and shows an error to the administrator.
+                      <p className="text-xs text-bluegrey-500 mt-1">
+                        When enabled, a user can receive more than one pending invitation
+                        to the same organization. When disabled, the system blocks
+                        duplicate invitations and shows an error to the administrator.
                       </p>
                     </div>
-                    <div style={{ flexShrink: 0 }}>
-                      <Toggle
+                    {/* Native toggle */}
+                    <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-0.5">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
                         checked={advanced.allowDuplicateInvitation}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          updateAdvanced("allowDuplicateInvitation")(e.target.checked)
+                        onChange={(e) =>
+                          updateAdvanced({ allowDuplicateInvitation: e.target.checked })
                         }
-                        label={advanced.allowDuplicateInvitation ? "Allowed" : "Not allowed"}
-                        labelPosition="right"
                       />
-                    </div>
+                      <div className="w-11 h-6 bg-bluegrey-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-bluegrey-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
+                      <span className="ml-2 text-sm font-medium text-bluegrey-700">
+                        {advanced.allowDuplicateInvitation ? "Allowed" : "Not allowed"}
+                      </span>
+                    </label>
                   </div>
 
-                  {/* Contextual note */}
                   {advanced.allowDuplicateInvitation && (
-                    <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 mt-2">
+                    <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 mt-3">
                       <p className="text-xs text-amber-700">
                         <span className="font-semibold">Note: </span>
                         Allowing duplicates may cause confusion if users receive multiple
@@ -409,7 +418,7 @@ export default function DMv2DeployTab({
                       </p>
                     </div>
                   )}
-                </Fieldset>
+                </div>
               </div>
             )}
           </div>
