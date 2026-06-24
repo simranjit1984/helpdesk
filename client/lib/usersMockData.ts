@@ -27,6 +27,7 @@ export interface User {
   status: StatusType;
   organizations: string[];
   accessRoles?: AccessRole[];
+  adminRole?: string; // name of admin role assigned, if any
 }
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -41,6 +42,7 @@ export const baseUsers: Partial<User>[] = [
     dateCreated: "2024-07-15 11:57:50",
     status: "active",
     organizations: ["Acme Corp", "Tech Solutions", "Global Services"],
+    adminRole: "User Admin",
   },
   {
     id: "2",
@@ -81,6 +83,7 @@ export const baseUsers: Partial<User>[] = [
     dateCreated: "2024-07-15 10:52:35",
     status: "active",
     organizations: ["Epsilon Group", "Zeta Enterprises"],
+    adminRole: "Helpdesk Admin",
   },
   {
     id: "6",
@@ -101,6 +104,7 @@ export const baseUsers: Partial<User>[] = [
     dateCreated: "2024-07-11 11:21:05",
     status: "active",
     organizations: ["Iota Solutions", "Kappa Tech", "Lambda Consulting", "Mu Digital"],
+    adminRole: "Viewer",
   },
   {
     id: "8",

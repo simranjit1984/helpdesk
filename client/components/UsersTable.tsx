@@ -30,6 +30,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { User, AccessRole } from "@/lib/usersMockData";
 import { users, getUserByUsername } from "@/lib/usersMockData";
+import { MOCK_ADMIN_ROLES } from "@/components/administrators/mockData";
 
 const PAGE_SIZE: PageSize = 25;
 
@@ -504,6 +505,7 @@ const SEARCH_FIELDS = [
 const FILTER_COLUMNS = [
   { value: "organizations", label: "Organization" },
   { value: "accessRoles", label: "Access role" },
+  { value: "adminRole", label: "Admin role" },
   { value: "status", label: "Status" },
 ];
 
@@ -717,6 +719,9 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
 
   const statusOptions = deriveStatusOptions(allowedStatuses);
 
+  // Admin role options sourced from the Administrators mock data
+  const adminRoleOptions = MOCK_ADMIN_ROLES.map((r) => ({ value: r.name, label: r.name }));
+
   // Derive unique access role options from all users
   const accessRoleOptions = Array.from(
     new Map(
@@ -726,7 +731,7 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
     ).values()
   ).sort((a, b) => a.label.localeCompare(b.label));
 
-  const columnOptions = { status: statusOptions, accessRoles: accessRoleOptions };
+  const columnOptions = { status: statusOptions, accessRoles: accessRoleOptions, adminRole: adminRoleOptions };
 
   const isInvitationsTab =
     allowedStatuses?.every(
@@ -789,6 +794,12 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
               vals.includes(r.name.toLowerCase())
             ) ?? false
           );
+        }
+
+        if (columnKey === "adminRole") {
+          const vals = filter.value.split(",").map((v) => v.toLowerCase());
+          const userAdminRole = ((user as User).adminRole ?? "").toLowerCase();
+          return vals.includes(userAdminRole);
         }
 
         const fieldValue = (user[columnKey as keyof typeof user] || "")
