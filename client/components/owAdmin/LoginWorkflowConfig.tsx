@@ -532,16 +532,154 @@ function PayloadMappingTable({
         <Plus className="w-3.5 h-3.5" /> Add row
       </button>
 
-      {/* JSON preview */}
+      {/* Payload structure */}
       {mappings.length > 0 && (
-        <div className="mt-3">
-          <p className="text-xs font-medium text-bluegrey-500 mb-1.5 uppercase tracking-wide">
-            Generated payload preview
-          </p>
-          <pre className="rounded-md bg-bluegrey-900 text-green-300 text-xs p-4 overflow-x-auto font-mono leading-relaxed">
-            {buildJsonPreview(mappings)}
-          </pre>
+        <PayloadStructureEditor mappings={mappings} />
+      )}
+    </div>
+  );
+}
+
+// ─── Payload structure editor ─────────────────────────────────────────────────
+
+function PayloadStructureEditor({ mappings }: { mappings: PayloadMapping[] }) {
+  const [customTemplate, setCustomTemplate] = useState<string | null>(null);
+  const [editingPayload, setEditingPayload] = useState(false);
+  const [payloadError, setPayloadError] = useState("");
+
+  const mappedAttrs = new Set(mappings.map((m) => m.attribute).filter(Boolean));
+  const autoJson = buildJsonPreview(mappings);
+  const displayJson = customTemplate !== null ? customTemplate : autoJson;
+
+  const validateTemplate = (text: string): string => {
+    const matches = text.match(/\{\{([^}]+)\}\}/g) ?? [];
+    const bad = matches.map((m) => m.slice(2, -2)).filter((a) => !mappedAttrs.has(a));
+    if (bad.length > 0)
+      return `Disallowed reference${bad.length > 1 ? "s" : ""}: ${bad.join(", ")}. Only mapped attributes may be used.`;
+    return "";
+  };
+
+  const handleTemplateChange = (value: string) => {
+    setCustomTemplate(value);
+    setPayloadError(validateTemplate(value));
+  };
+
+  const startEditing = () => {
+    if (customTemplate === null) setCustomTemplate(autoJson);
+    setEditingPayload(true);
+    setPayloadError("");
+  };
+
+  const doneEditing = () => {
+    if (payloadError) return;
+    setEditingPayload(false);
+  };
+
+  const resetToAuto = () => {
+    setCustomTemplate(null);
+    setEditingPayload(false);
+    setPayloadError("");
+  };
+
+  // Mappings whose attribute isn't referenced in the custom template
+  const missingInCustom =
+    customTemplate !== null
+      ? mappings
+          .filter((m) => m.attribute && !customTemplate.includes(`{{${m.attribute}}}`))
+          .map((m) => m.field || m.attribute)
+      : [];
+
+  return (
+    <div className="mt-3 space-y-2">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium text-bluegrey-500 uppercase tracking-wide">
+          Payload structure
+          {customTemplate !== null && (
+            <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700">
+              Custom
+            </span>
+          )}
+        </p>
+        <div className="flex items-center gap-3">
+          {customTemplate !== null && !editingPayload && (
+            <button
+              type="button"
+              onClick={resetToAuto}
+              className="text-xs text-bluegrey-500 hover:text-red-600 transition-colors"
+            >
+              Reset to auto
+            </button>
+          )}
+          {!editingPayload ? (
+            <button
+              type="button"
+              onClick={startEditing}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Edit structure
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={doneEditing}
+              disabled={!!payloadError}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Done
+            </button>
+          )}
         </div>
+      </div>
+
+      {/* Warning: mappings not yet reflected in custom template */}
+      {missingInCustom.length > 0 && (
+        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 flex items-start gap-1.5">
+          <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+          <span>
+            The following mapped fields are not referenced in your custom structure:{" "}
+            <strong>{missingInCustom.join(", ")}</strong>.
+          </span>
+        </div>
+      )}
+
+      {/* Editor or read-only view */}
+      {editingPayload ? (
+        <textarea
+          value={displayJson}
+          onChange={(e) => handleTemplateChange(e.target.value)}
+          spellCheck={false}
+          rows={Math.max(6, displayJson.split("\n").length + 1)}
+          className={`w-full rounded-md bg-bluegrey-900 text-green-300 text-xs p-4 font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 ${
+            payloadError ? "ring-2 ring-red-500" : "focus:ring-blue-500"
+          }`}
+        />
+      ) : (
+        <pre className="rounded-md bg-bluegrey-900 text-green-300 text-xs p-4 overflow-x-auto font-mono leading-relaxed">
+          {displayJson}
+        </pre>
+      )}
+
+      {/* Validation error */}
+      {payloadError && (
+        <p className="text-xs text-red-600 flex items-center gap-1">
+          <AlertCircle className="w-3 h-3" /> {payloadError}
+        </p>
+      )}
+
+      {/* Help text */}
+      {customTemplate === null ? (
+        <p className="text-[10px] text-bluegrey-400">
+          Auto-generated from the mapping table above. Click{" "}
+          <span className="font-medium">Edit structure</span> to wrap in arrays, add nesting,
+          or rename keys — only mapped attribute references may be used.
+        </p>
+      ) : (
+        <p className="text-[10px] text-bluegrey-400">
+          Custom structure active. Only{" "}
+          <span className="font-mono">{`{{attribute}}`}</span> references from the mapping
+          table above are allowed.
+        </p>
       )}
     </div>
   );
