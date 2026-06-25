@@ -122,7 +122,7 @@ export default function DMv2DeployTab({
 }: DMv2DeployTabProps) {
   // Basic form
   const [basic, setBasic] = useState<BasicForm>({
-    rootOrgName: "",
+    rootOrgName: "tgs-root",
   });
 
   // Advanced form
