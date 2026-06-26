@@ -18,7 +18,6 @@ interface BasicForm {
 }
 
 type LastOrgBehavior = "hard-delete" | "orphan-org";
-type TimeFormat = "12h" | "24h";
 
 const DATE_FORMAT_OPTIONS = [
   { value: "DD/MM/YYYY", label: "DD/MM/YYYY", example: "25/01/2025" },
@@ -43,7 +42,6 @@ const TIMEZONE_OPTIONS = [
 
 interface AdvancedForm {
   dateFormat: string;
-  timeFormat: TimeFormat;
   timezone: string;
   allowDuplicateInvitation: boolean;
   lastOrgBehavior: LastOrgBehavior;
@@ -128,7 +126,6 @@ export default function DMv2DeployTab({
   // Advanced form
   const [advanced, setAdvanced] = useState<AdvancedForm>({
     dateFormat: "DD/MM/YYYY",
-    timeFormat: "24h",
     timezone: "CET",
     allowDuplicateInvitation: false,
     lastOrgBehavior: "orphan-org",
@@ -277,10 +274,10 @@ export default function DMv2DeployTab({
                 {/* Date & time */}
                 <div>
                   <p className="text-sm font-semibold text-bluegrey-800 mb-0.5">
-                    Date &amp; time
+                    Date configuration
                   </p>
                   <p className="text-xs text-bluegrey-500 mb-3">
-                    Configure how dates and times are displayed across the DM tenant UI.
+                    Configure how dates are displayed across the DM tenant UI.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -329,32 +326,6 @@ export default function DMv2DeployTab({
                     </div>
                   </div>
 
-                  {/* Time format */}
-                  <div className="mt-3">
-                    <p className="text-xs font-medium text-bluegrey-600 mb-2">Time format</p>
-                    <div className="flex gap-3">
-                      {(["24h", "12h"] as TimeFormat[]).map((fmt) => (
-                        <label
-                          key={fmt}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors text-sm ${
-                            advanced.timeFormat === fmt
-                              ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
-                              : "border-bluegrey-200 text-bluegrey-700 hover:border-blue-300 hover:bg-blue-50/30"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name="timeFormat"
-                            value={fmt}
-                            checked={advanced.timeFormat === fmt}
-                            onChange={() => updateAdvanced({ timeFormat: fmt })}
-                            className="w-4 h-4 accent-blue-600"
-                          />
-                          {fmt === "24h" ? "24-hour (14:30)" : "12-hour (2:30 PM)"}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
                 </div>
 
                 {/* Last organization behavior */}
