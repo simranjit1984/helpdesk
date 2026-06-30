@@ -1,14 +1,15 @@
 import { Users, Building2, Shield, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
-import { MOCK_ADMIN_ROLES } from "@/components/administrators/mockData";
+import { MOCK_ADMIN_ROLES, MOCK_SCOPES } from "@/components/administrators/mockData";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 import type { ParsedUser } from "./Step1Upload";
+import type { AdminRoleAssignment } from "./Step4AdminRoles";
 
 interface Props {
   validUsers: ParsedUser[];
   orgId: string;
   accessRoleIds: string[];
-  adminRoleIds: string[];
+  adminRoleAssignments: AdminRoleAssignment[];
   fileName: string;
 }
 
@@ -35,10 +36,9 @@ function Row({ icon: Icon, label, value }: { icon: React.ElementType; label: str
   );
 }
 
-export default function Step5Review({ validUsers, orgId, accessRoleIds, adminRoleIds, fileName }: Props) {
+export default function Step5Review({ validUsers, orgId, accessRoleIds, adminRoleAssignments, fileName }: Props) {
   const orgName = findOrgName(orgId);
   const accessRoleNames = ALL_ACCESS_ROLES.filter((r) => accessRoleIds.includes(r.id)).map((r) => r.name);
-  const adminRoleNames = MOCK_ADMIN_ROLES.filter((r) => adminRoleIds.includes(r.id)).map((r) => r.name);
 
   return (
     <div className="space-y-6">
@@ -96,13 +96,29 @@ export default function Step5Review({ validUsers, orgId, accessRoleIds, adminRol
             icon={ShieldCheck}
             label="Admin roles"
             value={
-              adminRoleNames.length > 0 ? (
-                <div className="flex flex-wrap gap-1 mt-0.5">
-                  {adminRoleNames.map((n) => (
-                    <span key={n} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800">
-                      {n}
-                    </span>
-                  ))}
+              adminRoleAssignments.length > 0 ? (
+                <div className="space-y-1.5 mt-0.5">
+                  {adminRoleAssignments.map((a) => {
+                    const role = MOCK_ADMIN_ROLES.find((r) => r.id === a.roleId);
+                    const scope = MOCK_SCOPES.find((s) => s.id === a.scopeId);
+                    return (
+                      <div key={a.roleId} className="flex items-center gap-2 flex-wrap">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800">
+                          {role?.name ?? a.roleId}
+                        </span>
+                        {scope ? (
+                          <span className="text-xs text-bluegrey-500">@ {scope.name}</span>
+                        ) : (
+                          <span className="text-xs text-amber-600">⚠ No scope</span>
+                        )}
+                        {a.cascadable && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-blue-100 text-blue-700">
+                            Cascadable
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <span className="text-bluegrey-400 italic text-xs">None</span>

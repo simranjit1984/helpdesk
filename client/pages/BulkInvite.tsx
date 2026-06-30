@@ -10,7 +10,7 @@ import { MOCK_ADMIN_ROLES } from "@/components/administrators/mockData";
 import Step1Upload, { type ParsedUser, type UserValidationError } from "@/components/bulkInvite/Step1Upload";
 import Step2Organization from "@/components/bulkInvite/Step2Organization";
 import Step3AccessRoles from "@/components/bulkInvite/Step3AccessRoles";
-import Step4AdminRoles from "@/components/bulkInvite/Step4AdminRoles";
+import Step4AdminRoles, { type AdminRoleAssignment } from "@/components/bulkInvite/Step4AdminRoles";
 import Step5Review from "@/components/bulkInvite/Step5Review";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 
@@ -23,7 +23,7 @@ interface WizardState {
   orgId: string;
   orgName: string;
   accessRoleIds: string[];
-  adminRoleIds: string[];
+  adminRoleAssignments: AdminRoleAssignment[];
 }
 
 // ─── Step config ──────────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ export default function BulkInvite() {
     orgId: "",
     orgName: "",
     accessRoleIds: [],
-    adminRoleIds: [],
+    adminRoleAssignments: [],
   });
 
   const patch = (updates: Partial<WizardState>) => setForm((prev) => ({ ...prev, ...updates }));
@@ -155,7 +155,9 @@ export default function BulkInvite() {
 
   const handleSubmit = () => {
     const accessRoleNames = ALL_ACCESS_ROLES.filter((r) => form.accessRoleIds.includes(r.id)).map((r) => r.name);
-    const adminRoleNames = MOCK_ADMIN_ROLES.filter((r) => form.adminRoleIds.includes(r.id)).map((r) => r.name);
+    const adminRoleNames = MOCK_ADMIN_ROLES.filter((r) =>
+      form.adminRoleAssignments.some((a) => a.roleId === r.id)
+    ).map((r) => r.name);
 
     const job = createBulkJob(
       form.orgName,
@@ -249,8 +251,8 @@ export default function BulkInvite() {
                 )}
                 {step === 4 && (
                   <Step4AdminRoles
-                    selectedIds={form.adminRoleIds}
-                    onChange={(ids) => patch({ adminRoleIds: ids })}
+                    assignments={form.adminRoleAssignments}
+                    onChange={(assignments) => patch({ adminRoleAssignments: assignments })}
                   />
                 )}
                 {step === 5 && (
@@ -258,7 +260,7 @@ export default function BulkInvite() {
                     validUsers={form.validUsers}
                     orgId={form.orgId}
                     accessRoleIds={form.accessRoleIds}
-                    adminRoleIds={form.adminRoleIds}
+                    adminRoleAssignments={form.adminRoleAssignments}
                     fileName={form.fileName}
                   />
                 )}
