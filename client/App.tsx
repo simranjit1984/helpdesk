@@ -20,6 +20,9 @@ import AddApplication from "./pages/AddApplication";
 import ApplicationDetail from "./pages/ApplicationDetail";
 import AccessRoles from "./pages/AccessRoles";
 import AddAccessRole from "./pages/AddAccessRole";
+import BulkAccessRoleAssignment from "./pages/BulkAccessRoleAssignment";
+import BulkAccessRoleJobs from "./pages/BulkAccessRoleJobs";
+import BulkAccessRoleJobDetail from "./pages/BulkAccessRoleJobDetail";
 import Administrators from "./pages/Administrators";
 import AllAdministrators from "./pages/AllAdministrators";
 import AdministratorsRoles from "./pages/AdministratorsRoles";
@@ -64,6 +67,9 @@ export const App = () => (
           <Route path="/applications/:id" element={<ApplicationDetail />} />
           <Route path="/access-roles" element={<AccessRoles />} />
           <Route path="/access-roles/new" element={<AddAccessRole />} />
+          <Route path="/bulk-access-role-assignment" element={<BulkAccessRoleAssignment />} />
+          <Route path="/bulk-access-role-jobs" element={<BulkAccessRoleJobs />} />
+          <Route path="/bulk-access-role-jobs/:jobId" element={<BulkAccessRoleJobDetail />} />
           <Route path="/event-log" element={<EventLog />} />
           <Route path="/administrators" element={<Administrators />} />
           <Route path="/administrators/all" element={<AllAdministrators />} />

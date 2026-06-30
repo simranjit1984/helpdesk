@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Plus, MoreVertical, CheckCircle2 } from "lucide-react";
+import { Search, Plus, MoreVertical, CheckCircle2, Layers } from "lucide-react";
 import Layout from "@/components/Layout";
 import PageHeader from "@/components/PageHeader";
 import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
@@ -128,14 +128,32 @@ export default function AccessRoles() {
                 className="pl-9 pr-3 py-2 border border-bluegrey-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full"
               />
             </div>
-            <button
-              type="button"
-              onClick={() => navigate("/access-roles/new")}
-              className="flex items-center gap-1.5 px-4 py-2 bg-bluegrey-900 text-white text-sm font-medium rounded-md hover:bg-bluegrey-800 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              Add access role
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => navigate("/bulk-access-role-jobs")}
+                className="flex items-center gap-1.5 px-4 py-2 border border-bluegrey-300 text-bluegrey-700 text-sm font-medium rounded-md hover:bg-bluegrey-50 transition-colors"
+              >
+                <Layers className="w-4 h-4" />
+                Bulk assignment jobs
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/bulk-access-role-assignment")}
+                className="flex items-center gap-1.5 px-4 py-2 border border-blue-500 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-50 transition-colors"
+              >
+                <Layers className="w-4 h-4" />
+                Bulk assign
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/access-roles/new")}
+                className="flex items-center gap-1.5 px-4 py-2 bg-bluegrey-900 text-white text-sm font-medium rounded-md hover:bg-bluegrey-800 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add access role
+              </button>
+            </div>
           </div>
 
           {/* Table */}
