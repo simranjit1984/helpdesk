@@ -68,7 +68,7 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   return { headers, rows };
 }
 
-function validateUsers(rows: Record<string, string>[]): {
+function validateUsers(rows: Record<string, string>[], mode: "single-org" | "multi-org"): {
   valid: ParsedUser[];
   invalid: UserValidationError[];
 } {
@@ -81,7 +81,7 @@ function validateUsers(rows: Record<string, string>[]): {
     const email = row["Email"]?.trim() ?? "";
     const firstName = row["First Name"]?.trim() ?? "";
     const lastName = row["Last Name"]?.trim() ?? "";
-    const organizationId = row["Organization ID"]?.trim() ?? "";
+    const organizationId = mode === "multi-org" ? (row["Organization ID"]?.trim() ?? "") : "";
 
     if (!email) {
       errors.push("Email is required");
@@ -89,17 +89,21 @@ function validateUsers(rows: Record<string, string>[]): {
       errors.push("Invalid email format");
     }
 
-    if (!organizationId) {
-      errors.push("Organization ID is required");
-    } else if (!ORG_BY_ID.has(organizationId)) {
-      errors.push(`Unknown Organization ID: "${organizationId}"`);
+    if (mode === "multi-org") {
+      if (!organizationId) {
+        errors.push("Organization ID is required");
+      } else if (!ORG_BY_ID.has(organizationId)) {
+        errors.push(`Unknown Organization ID: "${organizationId}"`);
+      }
     }
 
-    const dedupeKey = `${email.toLowerCase()}|${organizationId}`;
-    if (email && organizationId && seen.has(dedupeKey)) {
-      errors.push("Duplicate email + organization combination");
+    const dedupeKey = mode === "multi-org"
+      ? `${email.toLowerCase()}|${organizationId}`
+      : email.toLowerCase();
+    if (email && seen.has(dedupeKey)) {
+      errors.push(mode === "multi-org" ? "Duplicate email + organization combination" : "Duplicate email address");
     }
-    if (email && organizationId) seen.add(dedupeKey);
+    if (email) seen.add(dedupeKey);
 
     const orgInfo = ORG_BY_ID.get(organizationId);
     const rowNumber = i + 2;
@@ -162,13 +166,14 @@ function downloadErrorReport(invalidUsers: UserValidationError[]) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 interface Props {
+  mode: "single-org" | "multi-org";
   onValidated: (valid: ParsedUser[], invalid: UserValidationError[], fileName: string) => void;
   initialValid?: ParsedUser[];
   initialInvalid?: UserValidationError[];
   initialFileName?: string;
 }
 
-export default function Step1Upload({ onValidated, initialValid, initialInvalid, initialFileName }: Props) {
+export default function Step1Upload({ mode, onValidated, initialValid, initialInvalid, initialFileName }: Props) {
   const [fileName, setFileName] = useState(initialFileName ?? "");
   const [valid, setValid] = useState<ParsedUser[]>(initialValid ?? []);
   const [invalid, setInvalid] = useState<UserValidationError[]>(initialInvalid ?? []);
@@ -196,11 +201,11 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
         setParseError('Missing required column: "Email". Please use the provided template.');
         return;
       }
-      if (!headers.includes("Organization ID")) {
+      if (mode === "multi-org" && !headers.includes("Organization ID")) {
         setParseError('Missing required column: "Organization ID". Please use the latest template.');
         return;
       }
-      const { valid: v, invalid: iv } = validateUsers(rows);
+      const { valid: v, invalid: iv } = validateUsers(rows, mode);
       setFileName(file.name);
       setValid(v);
       setInvalid(iv);
@@ -244,8 +249,9 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
       <div>
         <h2 className="text-lg font-semibold text-bluegrey-900">Upload users</h2>
         <p className="text-sm text-bluegrey-500 mt-1">
-          Upload a CSV file containing users and their target organizations. Each user row must
-          include an Organization ID from the organizations list.
+          {mode === "single-org"
+            ? "Upload a CSV file with the users you want to invite. Download the template below to get started."
+            : "Upload a CSV file containing users and their target organizations. Each user row must include an Organization ID from the organizations list."}
         </p>
       </div>
 
@@ -260,18 +266,22 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
           <Download className="w-4 h-4" />
           Download User CSV Template
         </button>
-        <button
-          type="button"
-          onClick={downloadOrgsCsv}
-          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Download Organizations CSV
-        </button>
-        <p className="text-xs text-bluegrey-500 mt-1">
-          Use the <strong>Organization ID</strong> from the Organizations CSV in the{" "}
-          <strong>Organization ID</strong> column of the user import file.
-        </p>
+        {mode === "multi-org" && (
+          <>
+            <button
+              type="button"
+              onClick={downloadOrgsCsv}
+              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Download Organizations CSV
+            </button>
+            <p className="text-xs text-bluegrey-500 mt-1">
+              Use the <strong>Organization ID</strong> from the Organizations CSV in the{" "}
+              <strong>Organization ID</strong> column of the user import file.
+            </p>
+          </>
+        )}
       </div>
 
       {/* Drop zone */}
