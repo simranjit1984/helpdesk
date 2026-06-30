@@ -347,9 +347,9 @@ export default function StepConfigureOrgs({ validUsers, orgConfigs, onChange, sh
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-bluegrey-900">Configure Organizations</h2>
+        <h2 className="text-lg font-semibold text-bluegrey-900">Role Assignment</h2>
         <p className="text-sm text-bluegrey-500 mt-1">
-          The following organizations were detected in your CSV. Configure access roles and admin
+          The following organizations were detected in your CSV. Select access roles and admin
           roles for each organization before proceeding.
         </p>
       </div>
@@ -417,7 +417,7 @@ export default function StepConfigureOrgs({ validUsers, orgConfigs, onChange, sh
                   onClick={() => setEditingOrgId(org.orgId)}
                   className="gap-1.5 whitespace-nowrap"
                 >
-                  {org.configured ? "Edit" : "Configure"}
+                  {org.configured ? "Edit roles" : "Select roles"}
                   <ChevronRight className="w-3.5 h-3.5" />
                 </Button>
               </div>

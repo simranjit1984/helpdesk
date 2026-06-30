@@ -34,7 +34,7 @@ interface WizardState {
 
 const STEPS = [
   { label: "Upload users" },
-  { label: "Configure organizations" },
+  { label: "Role assignment" },
   { label: "Review" },
 ];
 
