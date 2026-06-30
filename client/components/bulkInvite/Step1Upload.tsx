@@ -116,7 +116,7 @@ function validateUsers(rows: Record<string, string>[], mode: "single-org" | "mul
         firstName,
         lastName,
         organizationId,
-        organizationName: orgInfo!.name,
+        organizationName: orgInfo?.name ?? "",
         rowNumber,
       });
     }
@@ -127,11 +127,10 @@ function validateUsers(rows: Record<string, string>[], mode: "single-org" | "mul
 
 // ─── CSV downloads ────────────────────────────────────────────────────────────
 
-function downloadUserTemplate() {
-  const csv =
-    "Email,First Name,Last Name,Organization ID\n" +
-    "john.doe@example.com,John,Doe,1\n" +
-    "jane.smith@example.com,Jane,Smith,1-1\n";
+function downloadUserTemplate(mode: "single-org" | "multi-org") {
+  const csv = mode === "single-org"
+    ? "Email,First Name,Last Name\njohn.doe@example.com,John,Doe\njane.smith@example.com,Jane,Smith\n"
+    : "Email,First Name,Last Name,Organization ID\njohn.doe@example.com,John,Doe,1\njane.smith@example.com,Jane,Smith,1-1\n";
   triggerDownload(csv, "bulk-invite-template.csv");
 }
 
@@ -260,7 +259,7 @@ export default function Step1Upload({ mode, onValidated, initialValid, initialIn
         <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide mb-1">Download templates</p>
         <button
           type="button"
-          onClick={downloadUserTemplate}
+          onClick={() => downloadUserTemplate(mode)}
           className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
         >
           <Download className="w-4 h-4" />
