@@ -370,6 +370,16 @@ export default function Step1Upload({ mode, onValidated, initialValid, initialIn
                   </div>
                 ))}
               </div>
+              {mode === "single-org" && (
+                <div className="px-4 py-2 border-t border-bluegrey-100">
+                  <button
+                    type="button"
+                    className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    Change organization
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
