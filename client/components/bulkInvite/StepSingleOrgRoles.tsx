@@ -21,6 +21,7 @@ function flattenOrgs(): FlatOrg[] {
 }
 
 const FLAT_ORGS = flattenOrgs();
+void FLAT_ORGS; // used via selectedOrg lookup
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -48,12 +49,7 @@ export default function StepSingleOrgRoles({
   onChange,
   showErrors,
 }: Props) {
-  const [orgSearch, setOrgSearch] = useState("");
   const [roleSearch, setRoleSearch] = useState("");
-
-  const filteredOrgs = FLAT_ORGS.filter((o) =>
-    o.name.toLowerCase().includes(orgSearch.toLowerCase())
-  );
 
   const selectedOrg = FLAT_ORGS.find((o) => o.id === orgId);
   const availableRoles = orgId
@@ -92,73 +88,24 @@ export default function StepSingleOrgRoles({
 
   const missingScopeCount = adminRoleAssignments.filter((a) => !a.scopeId).length;
 
-  const handleSelectOrg = (id: string, name: string) => {
-    // Reset roles when org changes
-    onChange({ orgId: id, orgName: name, accessRoleIds: [], adminRoleAssignments: [] });
-  };
-
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-lg font-semibold text-bluegrey-900">Role Assignment</h2>
         <p className="text-sm text-bluegrey-500 mt-1">
-          Select the organization and assign access roles and admin roles. Every uploaded user will
-          be invited into the selected organization with the chosen roles.
+          Assign access roles and admin roles for <strong>{orgName}</strong>. Every uploaded user
+          will be invited into this organization with the chosen roles.
         </p>
       </div>
 
-      {/* Section 1: Organization */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Building2 className="w-4 h-4 text-bluegrey-600" />
-          <h3 className="text-sm font-semibold text-bluegrey-900">Organization</h3>
-        </div>
-
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bluegrey-400" />
-          <input
-            type="text"
-            placeholder="Search organizations…"
-            value={orgSearch}
-            onChange={(e) => setOrgSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 border border-bluegrey-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-          />
-        </div>
-
-        <div className={`rounded-md border overflow-hidden max-h-48 overflow-y-auto ${showErrors && !orgId ? "border-red-400" : "border-bluegrey-200"}`}>
-          {filteredOrgs.length === 0 ? (
-            <div className="px-4 py-6 text-center text-sm text-bluegrey-400 italic">No organizations match.</div>
-          ) : (
-            <div className="divide-y divide-bluegrey-100">
-              {filteredOrgs.map((org) => (
-                <label
-                  key={org.id}
-                  className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                    orgId === org.id ? "bg-blue-50 border-l-2 border-l-blue-500" : "hover:bg-bluegrey-25"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="single-org-select"
-                    checked={orgId === org.id}
-                    onChange={() => handleSelectOrg(org.id, org.name)}
-                    className="w-4 h-4 accent-blue-600 flex-shrink-0"
-                  />
-                  <span className="text-sm text-bluegrey-900">{org.name}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {showErrors && !orgId && (
-          <p className="text-xs text-red-600 flex items-center gap-1">
-            <AlertCircle className="w-3.5 h-3.5" /> Please select an organization
-          </p>
-        )}
+      {/* Organization badge (read-only — set from admin scope) */}
+      <div className="flex items-center gap-2 px-3 py-2 bg-bluegrey-50 border border-bluegrey-200 rounded-md w-fit">
+        <Building2 className="w-4 h-4 text-bluegrey-500" />
+        <span className="text-sm font-medium text-bluegrey-800">{orgName}</span>
+        <span className="text-xs text-bluegrey-400">— your organization</span>
       </div>
 
-      {/* Section 2: Access Roles */}
+      {/* Section: Access Roles */}
       {orgId && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">

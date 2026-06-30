@@ -234,13 +234,18 @@ export default function Step1Upload({ mode, onValidated, initialValid, initialIn
     onValidated([], [], "");
   };
 
-  // Derive unique orgs from valid users
+  // Derive unique orgs from valid users (multi-org) or use fixed org (single-org)
+  const SINGLE_ORG = { id: "1", name: "Acme Corp" };
   const orgsSeen = new Map<string, { name: string; count: number }>();
-  valid.forEach((u) => {
-    const existing = orgsSeen.get(u.organizationId);
-    if (existing) existing.count++;
-    else orgsSeen.set(u.organizationId, { name: u.organizationName, count: 1 });
-  });
+  if (mode === "single-org") {
+    orgsSeen.set(SINGLE_ORG.id, { name: SINGLE_ORG.name, count: valid.length });
+  } else {
+    valid.forEach((u) => {
+      const existing = orgsSeen.get(u.organizationId);
+      if (existing) existing.count++;
+      else orgsSeen.set(u.organizationId, { name: u.organizationName, count: 1 });
+    });
+  }
   const orgsFound = Array.from(orgsSeen.entries()).map(([id, v]) => ({ id, ...v }));
 
   return (
@@ -354,7 +359,7 @@ export default function Step1Upload({ mode, onValidated, initialValid, initialIn
               <div className="px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-bluegrey-500" />
                 <span className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
-                  {orgsFound.length} Organization{orgsFound.length !== 1 ? "s" : ""} found
+                  {mode === "single-org" ? "Target organization" : `${orgsFound.length} Organization${orgsFound.length !== 1 ? "s" : ""} found`}
                 </span>
               </div>
               <div className="divide-y divide-bluegrey-100">

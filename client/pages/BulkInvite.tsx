@@ -220,9 +220,14 @@ export default function BulkInvite() {
   const patch = (updates: Partial<WizardState>) =>
     setForm((prev) => ({ ...prev, ...updates }));
 
+  const SINGLE_ORG = { id: "1", name: "Acme Corp" };
+
   const handleSelectMode = (selected: InviteMode) => {
     setMode(selected);
     setStep(1);
+    if (selected === "single-org") {
+      patch({ orgId: SINGLE_ORG.id, orgName: SINGLE_ORG.name });
+    }
   };
 
   // ── Validation per step ────────────────────────────────────────────────────
