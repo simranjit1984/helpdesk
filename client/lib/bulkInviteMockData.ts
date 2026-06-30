@@ -8,14 +8,6 @@ export type BulkJobStatus =
   | "failed"
   | "cancelled";
 
-export type InvitationStatus =
-  | "pending"
-  | "sent"
-  | "accepted"
-  | "expired"
-  | "cancelled"
-  | "failed";
-
 export type ProcessingResult = "success" | "failed" | "pending";
 
 export interface BulkInvitedUser {
@@ -23,7 +15,6 @@ export interface BulkInvitedUser {
   firstName: string;
   lastName: string;
   userStatus: "pending" | "active" | "failed";
-  invitationStatus: InvitationStatus;
   accessRoles: string[];
   adminRoles: string[];
   processingResult: ProcessingResult;
@@ -65,9 +56,9 @@ export const BULK_INVITE_JOBS: BulkInvitationJob[] = [
     selectedAccessRoles: ["Claim Processor", "Viewer"],
     selectedAdminRoles: [],
     users: [
-      { email: "alice.smith@acme.com", firstName: "Alice", lastName: "Smith", userStatus: "active", invitationStatus: "accepted", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
-      { email: "bob.jones@acme.com",  firstName: "Bob",   lastName: "Jones", userStatus: "active", invitationStatus: "sent",     accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
-      { email: "carol.white@acme.com",firstName: "Carol", lastName: "White", userStatus: "active", invitationStatus: "accepted", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
+      { email: "alice.smith@acme.com", firstName: "Alice", lastName: "Smith", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
+      { email: "bob.jones@acme.com",  firstName: "Bob",   lastName: "Jones", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
+      { email: "carol.white@acme.com",firstName: "Carol", lastName: "White", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
     ],
   },
   {
@@ -85,10 +76,10 @@ export const BULK_INVITE_JOBS: BulkInvitationJob[] = [
     selectedAccessRoles: ["Support Agent"],
     selectedAdminRoles: ["Helpdesk Admin"],
     users: [
-      { email: "dave.green@techsol.com",  firstName: "Dave",  lastName: "Green",  userStatus: "active", invitationStatus: "sent", accessRoles: ["Support Agent"], adminRoles: ["Helpdesk Admin"], processingResult: "success" },
-      { email: "eve.black@techsol.com",   firstName: "Eve",   lastName: "Black",  userStatus: "failed", invitationStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "Email domain not allowed" },
-      { email: "frank.gray@techsol.com",  firstName: "Frank", lastName: "Gray",   userStatus: "active", invitationStatus: "sent", accessRoles: ["Support Agent"], adminRoles: ["Helpdesk Admin"], processingResult: "success" },
-      { email: "grace.blue@techsol.com",  firstName: "Grace", lastName: "Blue",   userStatus: "failed", invitationStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "User already exists" },
+      { email: "dave.green@techsol.com",  firstName: "Dave",  lastName: "Green",  userStatus: "active", accessRoles: ["Support Agent"], adminRoles: ["Helpdesk Admin"], processingResult: "success" },
+      { email: "eve.black@techsol.com",   firstName: "Eve",   lastName: "Black",  userStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "Email domain not allowed" },
+      { email: "frank.gray@techsol.com",  firstName: "Frank", lastName: "Gray",   userStatus: "active", accessRoles: ["Support Agent"], adminRoles: ["Helpdesk Admin"], processingResult: "success" },
+      { email: "grace.blue@techsol.com",  firstName: "Grace", lastName: "Blue",   userStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "User already exists" },
     ],
   },
   {
@@ -169,7 +160,6 @@ export function createBulkJob(
     users: users.map((u) => ({
       ...u,
       userStatus: "pending",
-      invitationStatus: "pending",
       accessRoles,
       adminRoles,
       processingResult: "pending",
@@ -197,13 +187,4 @@ export const JOB_STATUS_COLORS: Record<BulkJobStatus, string> = {
   "completed-with-errors": "bg-amber-100 text-amber-700",
   failed: "bg-red-100 text-red-700",
   cancelled: "bg-bluegrey-100 text-bluegrey-500",
-};
-
-export const INVITATION_STATUS_LABELS: Record<InvitationStatus, string> = {
-  pending: "Pending",
-  sent: "Invitation Sent",
-  accepted: "Accepted",
-  expired: "Expired",
-  cancelled: "Cancelled",
-  failed: "Failed",
 };

@@ -7,7 +7,6 @@ import {
   getBulkJobById,
   JOB_STATUS_LABELS,
   JOB_STATUS_COLORS,
-  INVITATION_STATUS_LABELS,
   type BulkInvitedUser,
 } from "@/lib/bulkInviteMockData";
 
@@ -49,23 +48,6 @@ function JobStatusBadge({ status }: { status: string }) {
   const label = JOB_STATUS_LABELS[status as keyof typeof JOB_STATUS_LABELS] ?? status;
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${colors}`}>
-      {label}
-    </span>
-  );
-}
-
-function InvStatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    pending: "bg-bluegrey-100 text-bluegrey-600",
-    sent: "bg-blue-100 text-blue-700",
-    accepted: "bg-green-100 text-green-700",
-    expired: "bg-amber-100 text-amber-700",
-    cancelled: "bg-bluegrey-100 text-bluegrey-500",
-    failed: "bg-red-100 text-red-700",
-  };
-  const label = INVITATION_STATUS_LABELS[status as keyof typeof INVITATION_STATUS_LABELS] ?? status;
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${map[status] ?? "bg-bluegrey-100 text-bluegrey-600"}`}>
       {label}
     </span>
   );
@@ -255,7 +237,7 @@ export default function BulkInvitationJobDetail() {
                 <table className="w-full border-collapse text-sm">
                   <thead>
                     <tr className="bg-bluegrey-50 border-b border-bluegrey-200">
-                      {["Email", "First name", "Last name", "Invitation status", "Result", "Error"].map((h) => (
+                      {["Email", "First name", "Last name", "Result", "Error"].map((h) => (
                         <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
                           {h}
                         </th>
@@ -265,7 +247,7 @@ export default function BulkInvitationJobDetail() {
                   <tbody>
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-8 text-center text-sm text-bluegrey-400 italic">
+                        <td colSpan={5} className="px-4 py-8 text-center text-sm text-bluegrey-400 italic">
                           No users match the current filters.
                         </td>
                       </tr>
@@ -275,7 +257,6 @@ export default function BulkInvitationJobDetail() {
                           <td className="px-4 py-3 font-mono text-xs text-bluegrey-800">{u.email}</td>
                           <td className="px-4 py-3 text-bluegrey-700">{u.firstName || "—"}</td>
                           <td className="px-4 py-3 text-bluegrey-700">{u.lastName || "—"}</td>
-                          <td className="px-4 py-3"><InvStatusBadge status={u.invitationStatus} /></td>
                           <td className="px-4 py-3"><ResultBadge result={u.processingResult} /></td>
                           <td className="px-4 py-3 text-xs text-red-600">{u.errorMessage ?? "—"}</td>
                         </tr>
