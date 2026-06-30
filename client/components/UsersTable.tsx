@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Send, MoreVertical, PlusCircle, X, Search } from "lucide-react";
 import {
   DataGrid,
@@ -989,8 +989,14 @@ export default function UsersTable({ allowedStatuses }: UsersTableProps) {
           />
         </div>
 
-        {/* Right: Invite user pushed to far right */}
-        <div className="ml-auto">
+        {/* Right: actions pushed to far right */}
+        <div className="ml-auto flex items-center gap-2">
+          <Link to="/bulk-invite">
+            <Button variant="outline" className="gap-2">
+              <PlusCircle className="w-4 h-4" />
+              Bulk invite users
+            </Button>
+          </Link>
           <Button className="gap-2">
             <Send className="w-4 h-4" />
             Invite user

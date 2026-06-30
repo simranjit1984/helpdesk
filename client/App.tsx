@@ -30,6 +30,9 @@ import Settings from "./pages/Settings";
 import OWAdminConsole from "./pages/OWAdminConsole";
 import SelfService from "./pages/SelfService";
 import Jobs from "./pages/Jobs";
+import BulkInvite from "./pages/BulkInvite";
+import BulkInvitationJobs from "./pages/BulkInvitationJobs";
+import BulkInvitationJobDetail from "./pages/BulkInvitationJobDetail";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +71,9 @@ export const App = () => (
           <Route path="/administrators/scopes/:scopeId" element={<ScopeDetail />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/bulk-invite" element={<BulkInvite />} />
+          <Route path="/bulk-invite-jobs" element={<BulkInvitationJobs />} />
+          <Route path="/bulk-invite-jobs/:jobId" element={<BulkInvitationJobDetail />} />
           <Route path="/invitations" element={<Navigate to="/users?tab=invitations" replace />} />
           <Route path="/users/:id" element={<UserDetail />} />
           <Route path="/tooltip-demo" element={<TooltipDemo />} />
