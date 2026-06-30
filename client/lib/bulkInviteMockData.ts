@@ -10,10 +10,19 @@ export type BulkJobStatus =
 
 export type ProcessingResult = "success" | "failed" | "pending";
 
+export interface OrgInviteConfig {
+  orgId: string;
+  orgName: string;
+  accessRoles: string[];  // role names
+  adminRoles: { name: string; scopeName: string; cascadable: boolean }[];
+}
+
 export interface BulkInvitedUser {
   email: string;
   firstName: string;
   lastName: string;
+  organizationId?: string;
+  organizationName?: string;
   userStatus: "pending" | "active" | "failed";
   accessRoles: string[];
   adminRoles: string[];
@@ -24,7 +33,9 @@ export interface BulkInvitedUser {
 export interface BulkInvitationJob {
   id: string;
   status: BulkJobStatus;
-  organization: string;
+  organization: string;       // "Multiple organizations" or single org name
+  organizations?: string[];   // list of org names involved (multi-org jobs)
+  orgConfigs?: OrgInviteConfig[];
   createdBy: string;
   createdDate: string;
   startedDate?: string;
@@ -56,15 +67,20 @@ export const BULK_INVITE_JOBS: BulkInvitationJob[] = [
     selectedAccessRoles: ["Claim Processor", "Viewer"],
     selectedAdminRoles: [],
     users: [
-      { email: "alice.smith@acme.com", firstName: "Alice", lastName: "Smith", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
-      { email: "bob.jones@acme.com",  firstName: "Bob",   lastName: "Jones", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
-      { email: "carol.white@acme.com",firstName: "Carol", lastName: "White", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
+      { email: "alice.smith@acme.com", firstName: "Alice", lastName: "Smith", organizationId: "1", organizationName: "Acme Corp", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
+      { email: "bob.jones@acme.com",   firstName: "Bob",   lastName: "Jones", organizationId: "1", organizationName: "Acme Corp", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
+      { email: "carol.white@acme.com", firstName: "Carol", lastName: "White", organizationId: "1", organizationName: "Acme Corp", userStatus: "active", accessRoles: ["Claim Processor", "Viewer"], adminRoles: [], processingResult: "success" },
     ],
   },
   {
     id: "BIJ-002",
     status: "completed-with-errors",
-    organization: "Tech Solutions",
+    organization: "Multiple organizations",
+    organizations: ["Acme Europe", "Tech Solutions"],
+    orgConfigs: [
+      { orgId: "1-1", orgName: "Acme Europe", accessRoles: ["General Partner User", "Finance group"], adminRoles: [{ name: "User Admin", scopeName: "Acme Corp Scope", cascadable: true }] },
+      { orgId: "2",   orgName: "Tech Solutions", accessRoles: ["Support Agent"], adminRoles: [] },
+    ],
     createdBy: "admin@example.com",
     createdDate: "2025-06-22T14:00:00Z",
     startedDate: "2025-06-22T14:00:08Z",
@@ -73,13 +89,13 @@ export const BULK_INVITE_JOBS: BulkInvitationJob[] = [
     processedUsers: 20,
     successfulUsers: 17,
     failedUsers: 3,
-    selectedAccessRoles: ["Support Agent"],
-    selectedAdminRoles: ["Helpdesk Admin"],
+    selectedAccessRoles: [],
+    selectedAdminRoles: [],
     users: [
-      { email: "dave.green@techsol.com",  firstName: "Dave",  lastName: "Green",  userStatus: "active", accessRoles: ["Support Agent"], adminRoles: ["Helpdesk Admin"], processingResult: "success" },
-      { email: "eve.black@techsol.com",   firstName: "Eve",   lastName: "Black",  userStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "Email domain not allowed" },
-      { email: "frank.gray@techsol.com",  firstName: "Frank", lastName: "Gray",   userStatus: "active", accessRoles: ["Support Agent"], adminRoles: ["Helpdesk Admin"], processingResult: "success" },
-      { email: "grace.blue@techsol.com",  firstName: "Grace", lastName: "Blue",   userStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "User already exists" },
+      { email: "dave.green@acmeeu.com",  firstName: "Dave",  lastName: "Green",  organizationId: "1-1", organizationName: "Acme Europe",   userStatus: "active", accessRoles: ["General Partner User"], adminRoles: ["User Admin"], processingResult: "success" },
+      { email: "eve.black@techsol.com",  firstName: "Eve",   lastName: "Black",  organizationId: "2",   organizationName: "Tech Solutions", userStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "Email domain not allowed" },
+      { email: "frank.gray@acmeeu.com",  firstName: "Frank", lastName: "Gray",   organizationId: "1-1", organizationName: "Acme Europe",   userStatus: "active", accessRoles: ["General Partner User"], adminRoles: ["User Admin"], processingResult: "success" },
+      { email: "grace.blue@techsol.com", firstName: "Grace", lastName: "Blue",   organizationId: "2",   organizationName: "Tech Solutions", userStatus: "failed", accessRoles: [], adminRoles: [], processingResult: "failed", errorMessage: "User already exists" },
     ],
   },
   {
@@ -139,31 +155,42 @@ export function getBulkJobById(id: string): BulkInvitationJob | undefined {
   return BULK_INVITE_JOBS.find((j) => j.id === id);
 }
 
-export function createBulkJob(
-  org: string,
-  accessRoles: string[],
-  adminRoles: string[],
-  users: { email: string; firstName: string; lastName: string }[]
-): BulkInvitationJob {
+export function createBulkJob(params: {
+  orgConfigs: OrgInviteConfig[];
+  users: { email: string; firstName: string; lastName: string; organizationId: string; organizationName: string }[];
+}): BulkInvitationJob {
+  const { orgConfigs, users } = params;
+  const orgNames = orgConfigs.map((c) => c.orgName);
+  const isMultiOrg = orgConfigs.length > 1;
+
   const newJob: BulkInvitationJob = {
     id: `BIJ-${String(BULK_INVITE_JOBS.length + 1).padStart(3, "0")}`,
     status: "queued",
-    organization: org,
+    organization: isMultiOrg ? "Multiple organizations" : (orgNames[0] ?? "Unknown"),
+    organizations: isMultiOrg ? orgNames : undefined,
+    orgConfigs,
     createdBy: "admin@example.com",
     createdDate: new Date().toISOString(),
     totalUsers: users.length,
     processedUsers: 0,
     successfulUsers: 0,
     failedUsers: 0,
-    selectedAccessRoles: accessRoles,
-    selectedAdminRoles: adminRoles,
-    users: users.map((u) => ({
-      ...u,
-      userStatus: "pending",
-      accessRoles,
-      adminRoles,
-      processingResult: "pending",
-    })),
+    selectedAccessRoles: [],
+    selectedAdminRoles: [],
+    users: users.map((u) => {
+      const cfg = orgConfigs.find((c) => c.orgId === u.organizationId);
+      return {
+        email: u.email,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        organizationId: u.organizationId,
+        organizationName: u.organizationName,
+        userStatus: "pending",
+        accessRoles: cfg?.accessRoles ?? [],
+        adminRoles: cfg?.adminRoles.map((r) => r.name) ?? [],
+        processingResult: "pending",
+      };
+    }),
   };
   BULK_INVITE_JOBS.unshift(newJob);
   return newJob;

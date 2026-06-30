@@ -1,24 +1,54 @@
 import { useState, useRef } from "react";
-import { Upload, Download, FileText, AlertCircle, CheckCircle2, X } from "lucide-react";
+import { Upload, Download, FileText, AlertCircle, CheckCircle2, X, Building2 } from "lucide-react";
+import { baseOrganizations } from "@/components/OrganizationsTable";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ParsedUser {
   email: string;
   firstName: string;
   lastName: string;
+  organizationId: string;
+  organizationName: string;
   rowNumber: number;
 }
 
 export interface UserValidationError {
-  user: ParsedUser;
+  row: Partial<ParsedUser> & { rowNumber: number };
   errors: string[];
 }
 
-interface Props {
-  onValidated: (valid: ParsedUser[], invalid: UserValidationError[], fileName: string) => void;
-  initialValid?: ParsedUser[];
-  initialInvalid?: UserValidationError[];
-  initialFileName?: string;
+// ─── Org helpers ──────────────────────────────────────────────────────────────
+
+interface FlatOrg {
+  id: string;
+  name: string;
+  referenceId: string;
+  parentName?: string;
+  path?: string;
 }
+
+function buildFlatOrgs(): FlatOrg[] {
+  const result: FlatOrg[] = [];
+  baseOrganizations.forEach((org) => {
+    result.push({ id: org.id, name: org.name, referenceId: org.referenceId });
+    org.children?.forEach((child) => {
+      result.push({
+        id: child.id,
+        name: child.name,
+        referenceId: child.referenceId,
+        parentName: org.name,
+        path: org.name,
+      });
+    });
+  });
+  return result;
+}
+
+const FLAT_ORGS = buildFlatOrgs();
+const ORG_BY_ID = new Map(FLAT_ORGS.map((o) => [o.id, o]));
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const MAX_USERS = 10_000;
 const MAX_FILE_SIZE_MB = 10;
@@ -42,7 +72,7 @@ function validateUsers(rows: Record<string, string>[]): {
   valid: ParsedUser[];
   invalid: UserValidationError[];
 } {
-  const emailSeen = new Set<string>();
+  const seen = new Set<string>(); // email+orgId
   const valid: ParsedUser[] = [];
   const invalid: UserValidationError[] = [];
 
@@ -51,53 +81,92 @@ function validateUsers(rows: Record<string, string>[]): {
     const email = row["Email"]?.trim() ?? "";
     const firstName = row["First Name"]?.trim() ?? "";
     const lastName = row["Last Name"]?.trim() ?? "";
+    const organizationId = row["Organization ID"]?.trim() ?? "";
 
     if (!email) {
       errors.push("Email is required");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.push("Invalid email format");
-    } else if (emailSeen.has(email.toLowerCase())) {
-      errors.push("Duplicate email address");
     }
 
-    if (email) emailSeen.add(email.toLowerCase());
+    if (!organizationId) {
+      errors.push("Organization ID is required");
+    } else if (!ORG_BY_ID.has(organizationId)) {
+      errors.push(`Unknown Organization ID: "${organizationId}"`);
+    }
 
-    const user: ParsedUser = { email, firstName, lastName, rowNumber: i + 2 };
-    if (errors.length > 0) invalid.push({ user, errors });
-    else valid.push(user);
+    const dedupeKey = `${email.toLowerCase()}|${organizationId}`;
+    if (email && organizationId && seen.has(dedupeKey)) {
+      errors.push("Duplicate email + organization combination");
+    }
+    if (email && organizationId) seen.add(dedupeKey);
+
+    const orgInfo = ORG_BY_ID.get(organizationId);
+    const rowNumber = i + 2;
+
+    if (errors.length > 0) {
+      invalid.push({ row: { email, firstName, lastName, organizationId, rowNumber }, errors });
+    } else {
+      valid.push({
+        email,
+        firstName,
+        lastName,
+        organizationId,
+        organizationName: orgInfo!.name,
+        rowNumber,
+      });
+    }
   });
 
   return { valid, invalid };
 }
 
-function downloadTemplate() {
-  const csv = "Email,First Name,Last Name\njohn.doe@example.com,John,Doe\njane.smith@example.com,Jane,Smith\n";
-  const blob = new Blob([csv], { type: "text/csv" });
+// ─── CSV downloads ────────────────────────────────────────────────────────────
+
+function downloadUserTemplate() {
+  const csv =
+    "Email,First Name,Last Name,Organization ID\n" +
+    "john.doe@example.com,John,Doe,1\n" +
+    "jane.smith@example.com,Jane,Smith,1-1\n";
+  triggerDownload(csv, "bulk-invite-template.csv");
+}
+
+function downloadOrgsCsv() {
+  const header = "Organization ID,Organization Name,Organization Path,Parent Organization\n";
+  const rows = FLAT_ORGS.map((o) =>
+    `${o.id},"${o.name}","${o.path ?? ""}","${o.parentName ?? ""}"`
+  ).join("\n");
+  triggerDownload(header + rows, "organizations.csv");
+}
+
+function triggerDownload(content: string, filename: string) {
+  const blob = new Blob([content], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "bulk-invite-template.csv";
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
 }
 
 function downloadErrorReport(invalidUsers: UserValidationError[]) {
-  const header = "Row,Email,First Name,Last Name,Errors\n";
+  const header = "Row,Email,First Name,Last Name,Organization ID,Errors\n";
   const rows = invalidUsers
-    .map(({ user, errors }) =>
-      `${user.rowNumber},"${user.email}","${user.firstName}","${user.lastName}","${errors.join("; ")}"`
+    .map(({ row, errors }) =>
+      `${row.rowNumber},"${row.email ?? ""}","${row.firstName ?? ""}","${row.lastName ?? ""}","${row.organizationId ?? ""}","${errors.join("; ")}"`
     )
     .join("\n");
-  const blob = new Blob([header + rows], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "bulk-invite-errors.csv";
-  a.click();
-  URL.revokeObjectURL(url);
+  triggerDownload(header + rows, "bulk-invite-errors.csv");
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
+
+interface Props {
+  onValidated: (valid: ParsedUser[], invalid: UserValidationError[], fileName: string) => void;
+  initialValid?: ParsedUser[];
+  initialInvalid?: UserValidationError[];
+  initialFileName?: string;
+}
 
 export default function Step1Upload({ onValidated, initialValid, initialInvalid, initialFileName }: Props) {
   const [fileName, setFileName] = useState(initialFileName ?? "");
@@ -125,6 +194,10 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
       const { headers, rows } = parseCSV(text);
       if (!headers.includes("Email")) {
         setParseError('Missing required column: "Email". Please use the provided template.');
+        return;
+      }
+      if (!headers.includes("Organization ID")) {
+        setParseError('Missing required column: "Organization ID". Please use the latest template.');
         return;
       }
       const { valid: v, invalid: iv } = validateUsers(rows);
@@ -157,25 +230,49 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
     onValidated([], [], "");
   };
 
+  // Derive unique orgs from valid users
+  const orgsSeen = new Map<string, { name: string; count: number }>();
+  valid.forEach((u) => {
+    const existing = orgsSeen.get(u.organizationId);
+    if (existing) existing.count++;
+    else orgsSeen.set(u.organizationId, { name: u.organizationName, count: 1 });
+  });
+  const orgsFound = Array.from(orgsSeen.entries()).map(([id, v]) => ({ id, ...v }));
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-bluegrey-900">Upload users</h2>
         <p className="text-sm text-bluegrey-500 mt-1">
-          Upload a CSV file with the users you want to invite. Download the template below to get
-          started.
+          Upload a CSV file containing users and their target organizations. Each user row must
+          include an Organization ID from the organizations list.
         </p>
       </div>
 
-      {/* Download template */}
-      <button
-        type="button"
-        onClick={downloadTemplate}
-        className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
-      >
-        <Download className="w-4 h-4" />
-        Download CSV template
-      </button>
+      {/* Download links */}
+      <div className="rounded-md border border-bluegrey-200 bg-bluegrey-50 px-4 py-3 space-y-2">
+        <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide mb-1">Download templates</p>
+        <button
+          type="button"
+          onClick={downloadUserTemplate}
+          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          Download User CSV Template
+        </button>
+        <button
+          type="button"
+          onClick={downloadOrgsCsv}
+          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          Download Organizations CSV
+        </button>
+        <p className="text-xs text-bluegrey-500 mt-1">
+          Use the <strong>Organization ID</strong> from the Organizations CSV in the{" "}
+          <strong>Organization ID</strong> column of the user import file.
+        </p>
+      </div>
 
       {/* Drop zone */}
       {!hasResult && (
@@ -231,9 +328,9 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
           {/* Summary cards */}
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Total users",   value: valid.length + invalid.length, color: "text-bluegrey-900" },
-              { label: "Valid",         value: valid.length,                  color: "text-green-700"    },
-              { label: "Invalid",       value: invalid.length,                color: invalid.length > 0 ? "text-red-600" : "text-bluegrey-400" },
+              { label: "Total users",  value: valid.length + invalid.length, color: "text-bluegrey-900" },
+              { label: "Valid",        value: valid.length,                  color: "text-green-700"    },
+              { label: "Invalid",      value: invalid.length,                color: invalid.length > 0 ? "text-red-600" : "text-bluegrey-400" },
             ].map(({ label, value, color }) => (
               <div key={label} className="rounded-lg border border-bluegrey-200 bg-white px-4 py-3 text-center">
                 <p className={`text-2xl font-bold ${color}`}>{value}</p>
@@ -241,6 +338,26 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
               </div>
             ))}
           </div>
+
+          {/* Organizations found */}
+          {orgsFound.length > 0 && (
+            <div className="rounded-md border border-bluegrey-200 bg-white overflow-hidden">
+              <div className="px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-bluegrey-500" />
+                <span className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">
+                  {orgsFound.length} Organization{orgsFound.length !== 1 ? "s" : ""} found
+                </span>
+              </div>
+              <div className="divide-y divide-bluegrey-100">
+                {orgsFound.map((org) => (
+                  <div key={org.id} className="flex items-center justify-between px-4 py-2.5">
+                    <span className="text-sm text-bluegrey-800 font-medium">{org.name}</span>
+                    <span className="text-xs text-bluegrey-500">{org.count} user{org.count !== 1 ? "s" : ""}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* All valid banner */}
           {invalid.length === 0 && (
@@ -274,14 +391,16 @@ export default function Step1Upload({ onValidated, initialValid, initialInvalid,
                     <tr className="bg-red-50 border-b border-red-200">
                       <th className="text-left px-3 py-2 font-semibold text-red-700">Row</th>
                       <th className="text-left px-3 py-2 font-semibold text-red-700">Email</th>
+                      <th className="text-left px-3 py-2 font-semibold text-red-700">Org ID</th>
                       <th className="text-left px-3 py-2 font-semibold text-red-700">Errors</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-red-100">
-                    {invalid.map(({ user, errors }) => (
-                      <tr key={user.rowNumber} className="bg-white">
-                        <td className="px-3 py-2 text-bluegrey-500">{user.rowNumber}</td>
-                        <td className="px-3 py-2 font-mono text-bluegrey-800">{user.email || "—"}</td>
+                    {invalid.map(({ row, errors }) => (
+                      <tr key={row.rowNumber} className="bg-white">
+                        <td className="px-3 py-2 text-bluegrey-500">{row.rowNumber}</td>
+                        <td className="px-3 py-2 font-mono text-bluegrey-800">{row.email || "—"}</td>
+                        <td className="px-3 py-2 font-mono text-bluegrey-800">{row.organizationId || "—"}</td>
                         <td className="px-3 py-2 text-red-600">{errors.join("; ")}</td>
                       </tr>
                     ))}

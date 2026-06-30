@@ -5,14 +5,21 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { createBulkJob } from "@/lib/bulkInviteMockData";
-import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
-import { MOCK_ADMIN_ROLES } from "@/components/administrators/mockData";
-import Step1Upload, { type ParsedUser, type UserValidationError } from "@/components/bulkInvite/Step1Upload";
-import Step2Organization from "@/components/bulkInvite/Step2Organization";
-import Step3AccessRoles from "@/components/bulkInvite/Step3AccessRoles";
-import Step4AdminRoles, { type AdminRoleAssignment } from "@/components/bulkInvite/Step4AdminRoles";
-import Step5Review from "@/components/bulkInvite/Step5Review";
+import { MOCK_ADMIN_ROLES, MOCK_SCOPES } from "@/components/administrators/mockData";
+import { getAvailableRolesForOrg } from "@/components/organizations/accessRolesMockData";
 import { baseOrganizations } from "@/components/OrganizationsTable";
+import Step1Upload, { type ParsedUser, type UserValidationError } from "@/components/bulkInvite/Step1Upload";
+import StepConfigureOrgs, { type OrgConfig } from "@/components/bulkInvite/StepConfigureOrgs";
+import StepReview from "@/components/bulkInvite/StepReview";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getParentId(orgId: string): string | undefined {
+  for (const org of baseOrganizations) {
+    if (org.children?.some((c) => c.id === orgId)) return org.id;
+  }
+  return undefined;
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -20,19 +27,14 @@ interface WizardState {
   fileName: string;
   validUsers: ParsedUser[];
   invalidUsers: UserValidationError[];
-  orgId: string;
-  orgName: string;
-  accessRoleIds: string[];
-  adminRoleAssignments: AdminRoleAssignment[];
+  orgConfigs: Record<string, OrgConfig>;
 }
 
 // ─── Step config ──────────────────────────────────────────────────────────────
 
 const STEPS = [
   { label: "Upload users" },
-  { label: "Organization" },
-  { label: "Access roles" },
-  { label: "Admin roles" },
+  { label: "Configure organizations" },
   { label: "Review" },
 ];
 
@@ -49,7 +51,11 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
           <div key={num} className="flex items-center gap-1 flex-1">
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
-                isActive ? "bg-blue-600 text-white" : isDone ? "bg-green-500 text-white" : "bg-bluegrey-200 text-bluegrey-500"
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : isDone
+                  ? "bg-green-500 text-white"
+                  : "bg-bluegrey-200 text-bluegrey-500"
               }`}
             >
               {isDone ? "✓" : num}
@@ -91,16 +97,10 @@ function SuccessScreen({ jobId }: { jobId: string }) {
         <p className="text-lg font-bold text-bluegrey-900 font-mono">{jobId}</p>
       </div>
       <div className="flex gap-3">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/users")}
-        >
+        <Button variant="outline" onClick={() => navigate("/users")}>
           Back to Users
         </Button>
-        <Button
-          onClick={() => navigate(`/bulk-invite-jobs/${jobId}`)}
-          className="gap-2"
-        >
+        <Button onClick={() => navigate(`/bulk-invite-jobs/${jobId}`)} className="gap-2">
           <ExternalLink className="w-4 h-4" />
           View job progress
         </Button>
@@ -122,61 +122,74 @@ export default function BulkInvite() {
     fileName: "",
     validUsers: [],
     invalidUsers: [],
-    orgId: "",
-    orgName: "",
-    accessRoleIds: [],
-    adminRoleAssignments: [],
+    orgConfigs: {},
   });
 
-  const patch = (updates: Partial<WizardState>) => setForm((prev) => ({ ...prev, ...updates }));
+  const patch = (updates: Partial<WizardState>) =>
+    setForm((prev) => ({ ...prev, ...updates }));
 
   // ── Validation per step ────────────────────────────────────────────────────
   const canAdvance = (): boolean => {
     if (step === 1) return form.validUsers.length > 0;
-    if (step === 2) return !!form.orgId;
-    if (step === 3) return true; // access roles optional
-    if (step === 4) return true; // admin roles optional
+    if (step === 2) {
+      const orgIds = [...new Set(form.validUsers.map((u) => u.organizationId))];
+      return orgIds.length > 0 && orgIds.every((id) => form.orgConfigs[id]?.configured);
+    }
     return true;
   };
 
   const stepError = (): string | null => {
-    if (step === 1 && form.validUsers.length === 0) return "Please upload a CSV file with at least one valid user.";
-    if (step === 2 && !form.orgId) return "Please select an organization.";
+    if (step === 1 && form.validUsers.length === 0)
+      return "Please upload a CSV file with at least one valid user.";
+    if (step === 2) {
+      const orgIds = [...new Set(form.validUsers.map((u) => u.organizationId))];
+      const unconfigured = orgIds.filter((id) => !form.orgConfigs[id]?.configured);
+      if (unconfigured.length > 0)
+        return `${unconfigured.length} organization${unconfigured.length !== 1 ? "s" : ""} still require configuration.`;
+    }
     return null;
   };
 
   const handleNext = () => {
-    if (!canAdvance()) { setShowErrors(true); return; }
+    if (!canAdvance()) {
+      setShowErrors(true);
+      return;
+    }
     setShowErrors(false);
     setStep((s) => s + 1);
   };
 
-  const handleBack = () => { setShowErrors(false); setStep((s) => s - 1); };
-
-  const handleSubmit = () => {
-    const accessRoleNames = ALL_ACCESS_ROLES.filter((r) => form.accessRoleIds.includes(r.id)).map((r) => r.name);
-    const adminRoleNames = MOCK_ADMIN_ROLES.filter((r) =>
-      form.adminRoleAssignments.some((a) => a.roleId === r.id)
-    ).map((r) => r.name);
-
-    const job = createBulkJob(
-      form.orgName,
-      accessRoleNames,
-      adminRoleNames,
-      form.validUsers
-    );
-
-    toast({ title: "Job queued", description: `Bulk invitation job ${job.id} has been created.` });
-    setSubmittedJobId(job.id);
+  const handleBack = () => {
+    setShowErrors(false);
+    setStep((s) => s - 1);
   };
 
-  const findOrgName = (id: string): string => {
-    for (const org of baseOrganizations) {
-      if (org.id === id) return org.name;
-      const child = org.children?.find((c) => c.id === id);
-      if (child) return `${org.name} › ${child.name}`;
-    }
-    return id;
+  const handleSubmit = () => {
+    const orgConfigs = Object.values(form.orgConfigs).map((cfg) => {
+      const parentId = getParentId(cfg.orgId);
+      const availableRoles = getAvailableRolesForOrg(cfg.orgId, parentId);
+      const accessRoles = availableRoles
+        .filter((r) => cfg.accessRoleIds.includes(r.id))
+        .map((r) => r.name);
+      const adminRoles = cfg.adminRoleAssignments.map((a) => {
+        const role = MOCK_ADMIN_ROLES.find((r) => r.id === a.roleId);
+        const scope = MOCK_SCOPES.find((s) => s.id === a.scopeId);
+        return {
+          name: role?.name ?? a.roleId,
+          scopeName: scope?.name ?? "",
+          cascadable: a.cascadable,
+        };
+      });
+      return { orgId: cfg.orgId, orgName: cfg.orgName, accessRoles, adminRoles };
+    });
+
+    const job = createBulkJob({ orgConfigs, users: form.validUsers });
+
+    toast({
+      title: "Job queued",
+      description: `Bulk invitation job ${job.id} has been created.`,
+    });
+    setSubmittedJobId(job.id);
   };
 
   const error = showErrors ? stepError() : null;
@@ -206,7 +219,7 @@ export default function BulkInvite() {
             {!submittedJobId && (
               <button
                 type="button"
-                onClick={() => navigate("/bulk-invite-jobs")}
+                onClick={() => navigate("/users?tab=bulk-invitation")}
                 className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -237,30 +250,17 @@ export default function BulkInvite() {
                   />
                 )}
                 {step === 2 && (
-                  <Step2Organization
-                    selectedOrgId={form.orgId}
-                    onChange={(id) => patch({ orgId: id, orgName: findOrgName(id) })}
+                  <StepConfigureOrgs
+                    validUsers={form.validUsers}
+                    orgConfigs={form.orgConfigs}
+                    onChange={(configs) => patch({ orgConfigs: configs })}
+                    showErrors={showErrors}
                   />
                 )}
                 {step === 3 && (
-                  <Step3AccessRoles
-                    selectedOrgId={form.orgId}
-                    selectedIds={form.accessRoleIds}
-                    onChange={(ids) => patch({ accessRoleIds: ids })}
-                  />
-                )}
-                {step === 4 && (
-                  <Step4AdminRoles
-                    assignments={form.adminRoleAssignments}
-                    onChange={(assignments) => patch({ adminRoleAssignments: assignments })}
-                  />
-                )}
-                {step === 5 && (
-                  <Step5Review
+                  <StepReview
                     validUsers={form.validUsers}
-                    orgId={form.orgId}
-                    accessRoleIds={form.accessRoleIds}
-                    adminRoleAssignments={form.adminRoleAssignments}
+                    orgConfigs={form.orgConfigs}
                     fileName={form.fileName}
                   />
                 )}
