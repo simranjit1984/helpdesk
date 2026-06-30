@@ -145,7 +145,6 @@ export default function BulkInvitationJobsTab() {
                     "Job ID",
                     "Status",
                     "Organization",
-                    "Created by",
                     "Created date",
                     "Total",
                     "Success",
@@ -177,9 +176,6 @@ export default function BulkInvitationJobsTab() {
                     </td>
                     <td className="px-4 py-3 text-bluegrey-800 whitespace-nowrap">
                       {job.organization}
-                    </td>
-                    <td className="px-4 py-3 text-bluegrey-600 whitespace-nowrap text-xs">
-                      {job.createdBy}
                     </td>
                     <td className="px-4 py-3 text-bluegrey-500 whitespace-nowrap text-xs">
                       {formatDate(job.createdDate)}
