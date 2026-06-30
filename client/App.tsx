@@ -19,6 +19,7 @@ import Applications from "./pages/Applications";
 import AddApplication from "./pages/AddApplication";
 import ApplicationDetail from "./pages/ApplicationDetail";
 import AccessRoles from "./pages/AccessRoles";
+import AddAccessRole from "./pages/AddAccessRole";
 import Administrators from "./pages/Administrators";
 import AllAdministrators from "./pages/AllAdministrators";
 import AdministratorsRoles from "./pages/AdministratorsRoles";
@@ -62,6 +63,7 @@ export const App = () => (
           <Route path="/applications/new" element={<AddApplication />} />
           <Route path="/applications/:id" element={<ApplicationDetail />} />
           <Route path="/access-roles" element={<AccessRoles />} />
+          <Route path="/access-roles/new" element={<AddAccessRole />} />
           <Route path="/event-log" element={<EventLog />} />
           <Route path="/administrators" element={<Administrators />} />
           <Route path="/administrators/all" element={<AllAdministrators />} />

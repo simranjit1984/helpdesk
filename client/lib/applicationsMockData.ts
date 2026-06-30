@@ -49,6 +49,19 @@ const COMMON_PERMISSIONS: Permission[] = [
   },
 ];
 
+const CRM_PERMISSIONS: Permission[] = [
+  { id: "crm-p-1", displayName: "View accounts",  description: "Read-only access to accounts", identifier: "view_accounts"  },
+  { id: "crm-p-2", displayName: "Edit accounts",  description: "Create and update accounts",   identifier: "edit_accounts"  },
+  { id: "crm-p-3", displayName: "Delete accounts",description: "Permanently remove accounts",  identifier: "delete_accounts"},
+  { id: "crm-p-4", displayName: "View reports",   description: "Access CRM reports",           identifier: "view_reports"   },
+];
+
+const DMV2_PERMISSIONS: Permission[] = [
+  { id: "dmv2-p-1", displayName: "View users",    description: "Read-only access to users",    identifier: "view_users"    },
+  { id: "dmv2-p-2", displayName: "Manage users",  description: "Create, update and deactivate users", identifier: "manage_users" },
+  { id: "dmv2-p-3", displayName: "View audit log",description: "Access audit logs",            identifier: "view_audit"    },
+];
+
 // ─── Mock applications ────────────────────────────────────────────────────────
 
 export const MOCK_APPLICATIONS: Application[] = [
@@ -61,7 +74,7 @@ export const MOCK_APPLICATIONS: Application[] = [
     description: "",
     externalId: "",
     status: "active",
-    permissions: COMMON_PERMISSIONS,
+    permissions: CRM_PERMISSIONS,
   },
   {
     id: "app-2",
@@ -72,7 +85,7 @@ export const MOCK_APPLICATIONS: Application[] = [
     description: "The DMv2 application",
     externalId: "",
     status: "active",
-    permissions: COMMON_PERMISSIONS,
+    permissions: DMV2_PERMISSIONS,
   },
   {
     id: "app-3",
