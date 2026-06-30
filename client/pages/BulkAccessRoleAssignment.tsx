@@ -74,7 +74,7 @@ interface WizardState {
 }
 
 const INITIAL: WizardState = {
-  operation: null, scope: null, userSource: "select",
+  operation: null, scope: "single-org", userSource: "select",
   orgId: "", orgName: "", selectedUserIds: [],
   fileName: "", validUsers: [], invalidUsers: [],
   accessRoleIds: [], orgConfigs: {},
@@ -82,7 +82,7 @@ const INITIAL: WizardState = {
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
 
-const STEP_LABELS = ["Select operation", "Select scope", "Select users", "Configure roles", "Review"];
+const STEP_LABELS = ["Select operation", "User selection method", "Select users", "Configure roles", "Review"];
 
 function StepIndicator({ step, total }: { step: number; total: number }) {
   return (
@@ -137,57 +137,32 @@ function Step1({ operation, onChange }: { operation: BulkAccessOperation | null;
   );
 }
 
-// ─── Step 2: Select Scope ─────────────────────────────────────────────────────
+// ─── Step 2: Select user source ──────────────────────────────────────────────
 
-function Step2({ scope, userSource, onChange }: {
-  scope: BulkAccessScope | null;
+function Step2({ userSource, onChange }: {
   userSource: "select" | "csv";
-  onChange: (s: BulkAccessScope, src: "select" | "csv") => void;
+  onChange: (src: "select" | "csv") => void;
 }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-bluegrey-900">Select scope</h2>
-        <p className="text-sm text-bluegrey-500 mt-1">Choose how users should be targeted for this operation.</p>
+        <h2 className="text-lg font-semibold text-bluegrey-900">How should users be selected?</h2>
+        <p className="text-sm text-bluegrey-500 mt-1">Choose how to provide the list of users for this bulk operation.</p>
       </div>
-
-      <div className="grid sm:grid-cols-2 gap-4">
+      <div className="space-y-3">
         {([
-          { value: "single-org" as BulkAccessScope, icon: Building2, label: "Single Organization", desc: "Assign Access Roles to users belonging to one organization." },
-          { value: "multi-org" as BulkAccessScope, icon: Layers, label: "Multiple Organizations", desc: "Assign Access Roles across multiple organizations within one background job." },
-        ] as const).map(({ value, icon: Icon, label, desc }) => (
-          <button key={value} type="button" onClick={() => onChange(value, scope === value ? userSource : "select")}
-            className={`text-left rounded-xl border-2 p-5 transition-all ${scope === value ? "border-blue-500 bg-blue-50" : "border-bluegrey-200 hover:border-bluegrey-300"}`}>
-            <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${scope === value ? "bg-blue-100" : "bg-bluegrey-100"}`}>
-                <Icon className={`w-5 h-5 ${scope === value ? "text-blue-600" : "text-bluegrey-500"}`} />
-              </div>
-              <div>
-                <p className="font-semibold text-bluegrey-900">{label}</p>
-                <p className="text-sm text-bluegrey-500 mt-1">{desc}</p>
-              </div>
+          { value: "select" as const, label: "Select users from the UI", desc: "Manually search and select users from the chosen organization." },
+          { value: "csv" as const, label: "Upload CSV", desc: "Upload a CSV file containing user identifiers." },
+        ]).map((src) => (
+          <label key={src.value} className={`flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${userSource === src.value ? "border-blue-500 bg-blue-50" : "border-bluegrey-200 hover:border-bluegrey-300"}`}>
+            <input type="radio" name="usersource" checked={userSource === src.value} onChange={() => onChange(src.value)} className="mt-1 w-4 h-4 accent-blue-600 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-bluegrey-900">{src.label}</p>
+              <p className="text-sm text-bluegrey-500 mt-0.5">{src.desc}</p>
             </div>
-          </button>
+          </label>
         ))}
       </div>
-
-      {scope === "single-org" && (
-        <div className="space-y-3">
-          <p className="text-sm font-semibold text-bluegrey-700">How should users be selected?</p>
-          {([
-            { value: "select" as const, label: "Select users from the UI", desc: "Manually search and select users from the chosen organization." },
-            { value: "csv" as const, label: "Upload CSV", desc: "Upload a CSV file containing user identifiers." },
-          ]).map((src) => (
-            <label key={src.value} className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${userSource === src.value && scope === "single-org" ? "border-blue-400 bg-blue-50" : "border-bluegrey-200 hover:border-bluegrey-300"}`}>
-              <input type="radio" name="usersource" checked={userSource === src.value} onChange={() => onChange(scope, src.value)} className="mt-0.5 w-4 h-4 accent-blue-600 flex-shrink-0" />
-              <div>
-                <p className="text-sm font-medium text-bluegrey-900">{src.label}</p>
-                <p className="text-xs text-bluegrey-500">{src.desc}</p>
-              </div>
-            </label>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -743,7 +718,7 @@ export default function BulkAccessRoleAssignment() {
 
   const canAdvance = (): boolean => {
     if (step === 1) return !!form.operation;
-    if (step === 2) return !!form.scope;
+    if (step === 2) return true; // user source always has a default selection
     if (step === 3) {
       if (form.scope === "single-org") {
         if (!form.orgId) return false;
@@ -762,7 +737,7 @@ export default function BulkAccessRoleAssignment() {
 
   const stepError = (): string | null => {
     if (step === 1 && !form.operation) return "Please select an operation.";
-    if (step === 2 && !form.scope) return "Please select a scope.";
+    // step 2 always valid — user source defaults to "select"
     if (step === 3) {
       if (form.scope === "single-org") {
         if (!form.orgId) return "Please select an organization.";
@@ -831,7 +806,7 @@ export default function BulkAccessRoleAssignment() {
               <StepIndicator step={step} total={5} />
               <div className="bg-white rounded-lg border border-bluegrey-200 p-6 min-h-[320px]">
                 {step === 1 && <Step1 operation={form.operation} onChange={(op) => patch({ operation: op })} />}
-                {step === 2 && <Step2 scope={form.scope} userSource={form.userSource} onChange={(s, src) => patch({ scope: s, userSource: src })} />}
+                {step === 2 && <Step2 userSource={form.userSource} onChange={(src) => patch({ userSource: src })} />}
                 {step === 3 && <Step3 form={form} onChange={patch} />}
                 {step === 4 && <Step4 form={form} onChange={patch} />}
                 {step === 5 && <Step5 form={form} />}
