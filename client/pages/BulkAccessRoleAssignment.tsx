@@ -75,7 +75,7 @@ interface WizardState {
 
 const INITIAL: WizardState = {
   operation: null, scope: "single-org", userSource: "select",
-  orgId: "", orgName: "", selectedUserIds: [],
+  orgId: "1", orgName: "Acme Corp", selectedUserIds: [],
   fileName: "", validUsers: [], invalidUsers: [],
   accessRoleIds: [], orgConfigs: {},
 };
@@ -169,25 +169,20 @@ function Step2({ userSource, onChange }: {
 
 // ─── Step 3: Select Users ─────────────────────────────────────────────────────
 
-function OrgSelector({ orgId, onSelect }: { orgId: string; onSelect: (id: string, name: string) => void }) {
-  const [search, setSearch] = useState("");
-  const filtered = FLAT_ORGS.filter((o) => o.name.toLowerCase().includes(search.toLowerCase()));
+const FIXED_ORG = { id: "1", name: "Acme Corp" };
+
+function OrgDisplay() {
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-bluegrey-700">Organization <span className="text-red-500">*</span></label>
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bluegrey-400" />
-        <input type="text" placeholder="Search organizations…" value={search} onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-3 py-2 border border-bluegrey-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
+    <div className="space-y-1">
+      <label className="block text-sm font-medium text-bluegrey-700">Organization</label>
+      <div className="flex items-center gap-2 px-3 py-2 bg-bluegrey-50 border border-bluegrey-200 rounded-md w-fit">
+        <Building2 className="w-4 h-4 text-bluegrey-500" />
+        <span className="text-sm font-medium text-bluegrey-800">{FIXED_ORG.name}</span>
+        <span className="text-xs text-bluegrey-400">— your organization</span>
       </div>
-      <div className="rounded-md border border-bluegrey-200 overflow-hidden max-h-40 overflow-y-auto">
-        {filtered.map((org) => (
-          <label key={org.id} className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer transition-colors ${orgId === org.id ? "bg-blue-50 border-l-2 border-l-blue-500" : "hover:bg-bluegrey-25"}`}>
-            <input type="radio" name="org-sel" checked={orgId === org.id} onChange={() => onSelect(org.id, org.name)} className="w-4 h-4 accent-blue-600 flex-shrink-0" />
-            <span className="text-sm text-bluegrey-900">{org.name}</span>
-          </label>
-        ))}
-      </div>
+      <button type="button" className="text-xs text-blue-600 hover:text-blue-800 transition-colors">
+        Change organization
+      </button>
     </div>
   );
 }
@@ -435,12 +430,12 @@ function Step3({ form, onChange }: { form: WizardState; onChange: (p: Partial<Wi
         <p className="text-sm text-bluegrey-500 mt-1">{isSingle ? (userSource === "select" ? "Search and select users from the chosen organization." : "Upload a CSV file with user identifiers.") : "Upload a CSV file with Organization ID and user identifier columns."}</p>
       </div>
       {isSingle && (
-        <OrgSelector orgId={orgId} onSelect={(id, name) => onChange({ orgId: id, orgName: name, selectedUserIds: [], validUsers: [], fileName: "" })} />
+        <OrgDisplay />
       )}
-      {isSingle && orgId && userSource === "select" && (
+      {isSingle && userSource === "select" && (
         <UserSelectList orgId={orgId} selectedIds={selectedUserIds} onChange={(ids) => onChange({ selectedUserIds: ids })} />
       )}
-      {isSingle && orgId && userSource === "csv" && (
+      {isSingle && userSource === "csv" && (
         <CsvUploadSingle orgId={orgId} orgName={orgName} fileName={fileName} validUsers={validUsers} onChange={(v, fn) => onChange({ validUsers: v, fileName: fn })} />
       )}
       {!isSingle && (
