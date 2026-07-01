@@ -1138,48 +1138,45 @@ function AuthSection({
             <div>
               <FieldLabel label="Scopes" />
               <p className="text-xs text-bluegrey-500 mt-0.5">
-                <strong>openid</strong> is mandatory and always included. Select any additional scopes to request.
+                <strong>openid</strong> is mandatory and always included. Add additional scopes from those configured in the selected client.
               </p>
             </div>
-            {/* Mandatory scope chip — green if in client, red if missing */}
-            <div className="flex flex-wrap gap-2">
-              {(() => {
-                const openidInClient = !selectedClient || selectedClient.allowedScopes.includes("openid");
-                return (
-                  <>
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                      openidInClient
-                        ? "bg-blue-100 text-blue-800 border-blue-200"
-                        : "bg-red-50 text-red-700 border-red-300"
-                    }`}>
-                      {openidInClient
-                        ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                        : <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                      }
-                      openid
-                      <span className={`text-[10px] font-semibold ${
-                        openidInClient ? "text-blue-600" : "text-red-600"
-                      }`}>required</span>
-                    </span>
-                    {!openidInClient && (
-                      <div className="w-full mt-1 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 flex items-start gap-2">
-                        <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                        <span><strong>openid</strong> scope is not configured in this OIDC Client. This scope is mandatory for DMv2 authentication. Add it in the Access client settings before proceeding.</span>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
-              {(state.scopes ?? []).map((s) => {
-                const inClient = selectedClient?.allowedScopes.includes(s) ?? false;
-                return (
-                  <span key={s} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                    inClient ? "bg-green-50 text-green-800 border-green-300" : "bg-red-50 text-red-700 border-red-200"
-                  }`}>
-                    {inClient
-                      ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                      : <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    }
+
+            {/* ── Selected scopes ───────────────────────────────────────── */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Selected scopes</p>
+              <div className="flex flex-wrap gap-2">
+                {/* openid — mandatory, check if in client */}
+                {(() => {
+                  const openidInClient = !selectedClient || selectedClient.allowedScopes.includes("openid");
+                  return (
+                    <>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
+                        openidInClient ? "bg-blue-100 text-blue-800 border-blue-200" : "bg-red-50 text-red-700 border-red-300"
+                      }`}>
+                        {openidInClient
+                          ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                          : <AlertCircle className="w-3 h-3 flex-shrink-0" />}
+                        openid
+                        <span className={`text-[10px] font-semibold ${openidInClient ? "text-blue-600" : "text-red-500"}`}>required</span>
+                      </span>
+                      {!openidInClient && (
+                        <div className="w-full rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 flex items-start gap-2">
+                          <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                          <span><strong>openid</strong> is not configured in this client. Add it in Access before proceeding.</span>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+
+                {/* additional selected scopes */}
+                {(state.scopes ?? []).length === 0 && (
+                  <span className="text-xs text-bluegrey-400 italic self-center">No additional scopes selected.</span>
+                )}
+                {(state.scopes ?? []).map((s) => (
+                  <span key={s} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-green-50 text-green-800 border-green-300">
+                    <CheckCircle className="w-3 h-3 flex-shrink-0" />
                     {s}
                     <button
                       type="button"
@@ -1190,39 +1187,37 @@ function AuthSection({
                       ×
                     </button>
                   </span>
-                );
-              })}
+                ))}
+              </div>
             </div>
-            {/* Optional scope buttons — colour-coded by client availability */}
-            <div className="flex flex-wrap gap-1.5">
-              {OIDC_OPTIONAL_SCOPES.filter((s) => !(state.scopes ?? []).includes(s)).map((s) => {
-                const inClient = selectedClient?.allowedScopes.includes(s) ?? false;
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => toggleScope(s)}
-                    title={inClient ? `${s} is configured in this client` : `${s} is not configured in this client`}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border transition-colors ${
-                      inClient
-                        ? "border-green-300 bg-green-50 text-green-700 hover:bg-green-100"
-                        : "border-red-200 bg-red-50 text-red-600 hover:bg-red-100"
-                    }`}
-                  >
-                    {inClient
-                      ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                      : <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    }
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
+
+            {/* ── Available scopes (from client only) ───────────────────── */}
             {selectedClient && (
-              <p className="text-[11px] text-bluegrey-400 flex items-center gap-3">
-                <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-600" />Available in client</span>
-                <span className="flex items-center gap-1"><AlertCircle className="w-3 h-3 text-red-500" />Not in client — add scope in Access first</span>
-              </p>
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Available in client</p>
+                {(() => {
+                  const available = selectedClient.allowedScopes.filter(
+                    (s) => s !== "openid" && !(state.scopes ?? []).includes(s)
+                  );
+                  return available.length === 0 ? (
+                    <p className="text-xs text-bluegrey-400 italic">All available scopes have been selected.</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5">
+                      {available.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => toggleScope(s)}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-dashed border-green-400 bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+                        >
+                          <Plus className="w-3 h-3 flex-shrink-0" />
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </div>
             )}
           </div>
         </div>
