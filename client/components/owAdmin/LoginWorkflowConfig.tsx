@@ -53,9 +53,9 @@ interface TestResult {
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
 const MOCK_OIDC_CLIENTS = [
-  { id: "oidc-dmv2-admin",  label: "DMv2 Admin Client",       redirectUriConfigured: true,  pkceConfigured: true  },
-  { id: "oidc-portal",      label: "Customer Portal OIDC",    redirectUriConfigured: false, pkceConfigured: true  },
-  { id: "oidc-backoffice",  label: "Back-Office OIDC Client", redirectUriConfigured: true,  pkceConfigured: false },
+  { id: "oidc-dmv2-admin",  label: "DMv2 Admin Client",       redirectUriConfigured: true,  pkceConfigured: true,  allowedScopes: ["openid", "profile", "email", "roles", "offline_access"] },
+  { id: "oidc-portal",      label: "Customer Portal OIDC",    redirectUriConfigured: false, pkceConfigured: true,  allowedScopes: ["openid", "profile", "email"] },
+  { id: "oidc-backoffice",  label: "Back-Office OIDC Client", redirectUriConfigured: true,  pkceConfigured: false, allowedScopes: ["openid", "roles"] },
 ];
 
 const OIDC_OPTIONAL_SCOPES = ["profile", "email", "roles", "offline_access", "phone", "address"];
@@ -1147,33 +1147,60 @@ function AuthSection({
                 openid
                 <span className="text-blue-600 text-[10px] font-semibold">required</span>
               </span>
-              {(state.scopes ?? []).map((s) => (
-                <span key={s} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700 border border-bluegrey-200">
-                  {s}
+              {(state.scopes ?? []).map((s) => {
+                const inClient = selectedClient?.allowedScopes.includes(s) ?? false;
+                return (
+                  <span key={s} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
+                    inClient ? "bg-green-50 text-green-800 border-green-300" : "bg-red-50 text-red-700 border-red-200"
+                  }`}>
+                    {inClient
+                      ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                      : <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                    }
+                    {s}
+                    <button
+                      type="button"
+                      onClick={() => toggleScope(s)}
+                      className="opacity-60 hover:opacity-100 transition-opacity ml-0.5"
+                      title={`Remove ${s}`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+            {/* Optional scope buttons — colour-coded by client availability */}
+            <div className="flex flex-wrap gap-1.5">
+              {OIDC_OPTIONAL_SCOPES.filter((s) => !(state.scopes ?? []).includes(s)).map((s) => {
+                const inClient = selectedClient?.allowedScopes.includes(s) ?? false;
+                return (
                   <button
+                    key={s}
                     type="button"
                     onClick={() => toggleScope(s)}
-                    className="text-bluegrey-400 hover:text-red-500 transition-colors ml-0.5"
-                    title={`Remove ${s}`}
+                    title={inClient ? `${s} is configured in this client` : `${s} is not configured in this client`}
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border transition-colors ${
+                      inClient
+                        ? "border-green-300 bg-green-50 text-green-700 hover:bg-green-100"
+                        : "border-red-200 bg-red-50 text-red-600 hover:bg-red-100"
+                    }`}
                   >
-                    ×
+                    {inClient
+                      ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
+                      : <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                    }
+                    {s}
                   </button>
-                </span>
-              ))}
+                );
+              })}
             </div>
-            {/* Optional scope buttons */}
-            <div className="flex flex-wrap gap-1.5">
-              {OIDC_OPTIONAL_SCOPES.filter((s) => !(state.scopes ?? []).includes(s)).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => toggleScope(s)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-dashed border-bluegrey-300 text-bluegrey-500 hover:border-blue-400 hover:text-blue-600 transition-colors"
-                >
-                  + {s}
-                </button>
-              ))}
-            </div>
+            {selectedClient && (
+              <p className="text-[11px] text-bluegrey-400 flex items-center gap-3">
+                <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-600" />Available in client</span>
+                <span className="flex items-center gap-1"><AlertCircle className="w-3 h-3 text-red-500" />Not in client — add scope in Access first</span>
+              </p>
+            )}
           </div>
         </div>
       )}
