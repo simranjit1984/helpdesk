@@ -690,102 +690,254 @@ function PayloadStructureEditor({ mappings }: { mappings: PayloadMapping[] }) {
 
 // ─── Test webhook panel ───────────────────────────────────────────────────────
 
+interface CallResult {
+  name: string;
+  statusCode: number;
+  success: boolean;
+  /** shown only when success=false, OR for webhook success */
+  body?: string;
+  /** payload sent (webhook call only) */
+  payload?: string;
+}
+
+function sampleAttrValue(attr: string): string {
+  const a = attr.toLowerCase();
+  if (a.includes("email"))  return "john.doe@example.com";
+  if (a.includes("first"))  return "John";
+  if (a.includes("last"))   return "Doe";
+  if (a.includes("phone"))  return "+44 123 456 789";
+  if (a.includes("org"))    return "Acme Corp";
+  if (a.includes("url") || a.includes("link")) return "https://example.com/invite/abc123";
+  if (a.includes("id"))     return "user-abc-123";
+  return `sample-${attr.split(".").pop()}`;
+}
+
+function CallResultCard({ call, index }: { call: CallResult; index: number }) {
+  const [expanded, setExpanded] = useState(true);
+  const statusColor = call.success ? "text-green-700" : "text-red-600";
+  const borderColor = call.success ? "border-green-200" : "border-red-200";
+  const headerBg   = call.success ? "bg-green-50"    : "bg-red-50";
+
+  return (
+    <div className={`rounded-md border ${borderColor} overflow-hidden text-xs`}>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className={`w-full flex items-center justify-between gap-2 px-3 py-2 ${headerBg} text-left`}
+      >
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-bluegrey-500 uppercase tracking-wide">
+            Call {index + 1}: {call.name}
+          </span>
+          <span className={`font-bold ${statusColor}`}>
+            {call.statusCode} {call.success ? "OK" : "Error"}
+          </span>
+          {call.success
+            ? <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+            : <AlertCircle className="w-3.5 h-3.5 text-red-500" />}
+        </div>
+        {expanded ? <ChevronDownIcon className="w-3.5 h-3.5 text-bluegrey-400" /> : <ChevronRight className="w-3.5 h-3.5 text-bluegrey-400" />}
+      </button>
+
+      {expanded && (
+        <div className="divide-y divide-bluegrey-100 bg-white">
+          {/* Success auth: show status only, no body */}
+          {call.success && !call.body && !call.payload && (
+            <div className="px-3 py-2.5 text-green-700 flex items-center gap-1.5">
+              <CheckCircle className="w-3.5 h-3.5" />
+              Token acquired successfully. Token details are not shown for security.
+            </div>
+          )}
+
+          {/* Payload (webhook call) */}
+          {call.payload && (
+            <div className="px-3 py-2">
+              <p className="font-medium text-bluegrey-500 mb-1">Request payload</p>
+              <pre className="rounded bg-bluegrey-900 text-green-300 p-2 overflow-x-auto font-mono text-[11px]">
+                {call.payload}
+              </pre>
+            </div>
+          )}
+
+          {/* Response body (webhook success or any failure) */}
+          {call.body && (
+            <div className="px-3 py-2">
+              <p className={`font-medium mb-1 ${call.success ? "text-bluegrey-500" : "text-red-600"}`}>
+                Response body
+              </p>
+              <pre className={`rounded border p-2 font-mono text-[11px] overflow-x-auto ${
+                call.success
+                  ? "bg-bluegrey-50 border-bluegrey-200 text-bluegrey-800"
+                  : "bg-red-50 border-red-200 text-red-800"
+              }`}>
+                {call.body}
+              </pre>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TestWebhookPanel({
   url, method, authType, scopes, mappings,
 }: {
   url: string; method: string; authType: AuthType; scopes: string[]; mappings: PayloadMapping[];
 }) {
-  const [testing, setTesting] = useState(false);
-  const [result, setResult] = useState<TestResult | null>(null);
+  const attributes = [...new Set(mappings.map((m) => m.attribute))].sort();
+  const [phase, setPhase] = useState<"idle" | "fill" | "running" | "done">("idle");
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [callResults, setCallResults] = useState<CallResult[]>([]);
+  const [simulateFail, setSimulateFail] = useState(false);
 
-  const runTest = async () => {
-    setTesting(true);
-    setResult(null);
-    await new Promise((r) => setTimeout(r, 1800));
-    setResult({
-      url,
-      method,
-      scopes,
-      tokenStatus: authType === "oauth2" ? "✓ Token acquired (mock)" : "N/A — no authentication",
-      payload: buildJsonPreview(
-        mappings.map((m) => ({
-          ...m,
-          attribute: m.attribute.replace(/\./g, "."),
-        }))
-      ),
-      statusCode: 200,
-      responseHeaders: { "Content-Type": "application/json", "X-Request-ID": "mock-req-001" },
-      responseBody: '{"status":"accepted","reference":"inv_mock_1234"}',
-    });
-    setTesting(false);
+  const handleClickTest = () => {
+    setCallResults([]);
+    // Pre-fill with sensible defaults
+    const defaults: Record<string, string> = {};
+    attributes.forEach((attr) => { defaults[attr] = fieldValues[attr] ?? sampleAttrValue(attr); });
+    setFieldValues(defaults);
+    setPhase("fill");
   };
 
-  return (
-    <div className="space-y-3">
-      <p className="text-xs text-bluegrey-500">
-        Sends a test request with sample data to verify the endpoint and authentication are
-        correctly configured.
-      </p>
-      <button
-        type="button"
-        onClick={runTest}
-        disabled={testing || !url}
-        className="flex items-center gap-2 h-9 px-4 rounded-md bg-bluegrey-800 hover:bg-bluegrey-900 text-white text-sm font-medium disabled:opacity-50 transition-colors"
-      >
-        {testing ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <Terminal className="w-4 h-4" />
-        )}
-        {testing ? "Sending…" : "Test Webhook"}
-      </button>
+  const runTest = async () => {
+    setPhase("running");
+    const results: CallResult[] = [];
 
-      {result && (
-        <div className="rounded-md border border-bluegrey-200 overflow-hidden text-xs">
-          <div className="bg-bluegrey-50 px-3 py-2 border-b border-bluegrey-200 font-semibold text-bluegrey-600 uppercase tracking-wide">
-            Test result
+    if (authType === "oauth2") {
+      await new Promise((r) => setTimeout(r, 900));
+      const ok = !simulateFail;
+      results.push({
+        name: "Token acquisition (OAuth 2.0)",
+        statusCode: ok ? 200 : 401,
+        success: ok,
+        body: ok ? undefined : '{\n  "error": "invalid_client",\n  "error_description": "Client authentication failed — check client credentials"\n}',
+      });
+      setCallResults([...results]);
+      if (!ok) { setPhase("done"); return; } // stop here if auth failed
+    }
+
+    await new Promise((r) => setTimeout(r, 1100));
+    // Build payload substituting field values
+    let payload = buildJsonPreview(mappings);
+    attributes.forEach((attr) => {
+      payload = payload.replace(new RegExp(`"{{${attr}}}"`, "g"), `"${fieldValues[attr] ?? sampleAttrValue(attr)}"`);
+      payload = payload.replace(new RegExp(`{{${attr}}}`, "g"), fieldValues[attr] ?? sampleAttrValue(attr));
+    });
+    const webhookOk = !simulateFail;
+    results.push({
+      name: "Webhook call",
+      statusCode: webhookOk ? 200 : 500,
+      success: webhookOk,
+      payload,
+      body: webhookOk
+        ? '{\n  "status": "accepted",\n  "reference": "inv_mock_1234",\n  "timestamp": "2025-06-30T12:00:00Z"\n}'
+        : '{\n  "error": "internal_server_error",\n  "message": "Failed to process request — endpoint returned an unexpected response"\n}',
+    });
+
+    setCallResults([...results]);
+    setPhase("done");
+  };
+
+  const reset = () => { setPhase("idle"); setCallResults([]); };
+
+  return (
+    <div className="space-y-4">
+      <p className="text-xs text-bluegrey-500">
+        Sends a test request to verify the endpoint and authentication are correctly configured.
+        {authType === "oauth2" && <span className="font-medium"> Two calls will be made: token acquisition, then the webhook.</span>}
+      </p>
+
+      {/* Idle: show Test Webhook button */}
+      {phase === "idle" && (
+        <button
+          type="button"
+          onClick={handleClickTest}
+          disabled={!url}
+          className="flex items-center gap-2 h-9 px-4 rounded-md bg-bluegrey-800 hover:bg-bluegrey-900 text-white text-sm font-medium disabled:opacity-50 transition-colors"
+        >
+          <Terminal className="w-4 h-4" />
+          Test Webhook
+        </button>
+      )}
+
+      {/* Fill fields */}
+      {phase === "fill" && (
+        <div className="rounded-md border border-bluegrey-200 bg-bluegrey-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-bluegrey-200 bg-white">
+            <p className="text-sm font-semibold text-bluegrey-800">Provide test field values</p>
+            <p className="text-xs text-bluegrey-500 mt-0.5">
+              Enter representative values for the mapped fields. These will be substituted into the payload before sending.
+            </p>
           </div>
-          <div className="divide-y divide-bluegrey-100">
-            {[
-              { label: "Request URL",           value: result.url },
-              { label: "HTTP Method",            value: result.method },
-              { label: "Requested Scopes",       value: result.scopes.join(", ") || "—" },
-              { label: "Token Acquisition",      value: result.tokenStatus },
-            ].map(({ label, value }) => (
-              <div key={label} className="grid grid-cols-[160px_1fr] gap-2 px-3 py-2">
-                <span className="font-medium text-bluegrey-500">{label}</span>
-                <span className="font-mono text-bluegrey-800 break-all">{value}</span>
-              </div>
-            ))}
-            <div className="px-3 py-2">
-              <p className="font-medium text-bluegrey-500 mb-1">Generated Payload</p>
-              <pre className="rounded bg-bluegrey-900 text-green-300 p-2 overflow-x-auto font-mono text-[11px]">
-                {result.payload}
-              </pre>
-            </div>
-            <div className="grid grid-cols-[160px_1fr] gap-2 px-3 py-2">
-              <span className="font-medium text-bluegrey-500">Response Status</span>
-              <span className={`font-semibold ${result.statusCode < 300 ? "text-green-700" : "text-red-600"}`}>
-                {result.statusCode} {result.statusCode === 200 ? "OK" : "Error"}
-              </span>
-            </div>
-            <div className="px-3 py-2">
-              <p className="font-medium text-bluegrey-500 mb-1">Response Headers</p>
-              <div className="space-y-0.5">
-                {Object.entries(result.responseHeaders).map(([k, v]) => (
-                  <div key={k} className="font-mono text-bluegrey-700">
-                    <span className="text-blue-600">{k}</span>: {v}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="px-3 py-2">
-              <p className="font-medium text-bluegrey-500 mb-1">Response Body</p>
-              <pre className="rounded bg-bluegrey-50 border border-bluegrey-200 p-2 font-mono text-[11px] text-bluegrey-800">
-                {result.responseBody}
-              </pre>
-            </div>
+          <div className="px-4 py-4 space-y-3">
+            {attributes.length === 0 ? (
+              <p className="text-xs text-bluegrey-400 italic">No fields mapped — using empty payload.</p>
+            ) : (
+              attributes.map((attr) => (
+                <div key={attr} className="grid grid-cols-[180px_1fr] items-center gap-3">
+                  <label className="text-xs font-medium text-bluegrey-600 font-mono truncate" title={attr}>
+                    {attr}
+                  </label>
+                  <input
+                    type="text"
+                    value={fieldValues[attr] ?? ""}
+                    onChange={(e) => setFieldValues((prev) => ({ ...prev, [attr]: e.target.value }))}
+                    className="w-full px-2.5 py-1.5 border border-bluegrey-300 rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                    placeholder={sampleAttrValue(attr)}
+                  />
+                </div>
+              ))
+            )}
+            {/* Simulate failure toggle */}
+            <label className="flex items-center gap-2 mt-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={simulateFail}
+                onChange={(e) => setSimulateFail(e.target.checked)}
+                className="w-3.5 h-3.5 accent-red-600"
+              />
+              <span className="text-xs text-bluegrey-500">Simulate failure response (for testing error display)</span>
+            </label>
           </div>
+          <div className="px-4 pb-4 flex gap-2">
+            <button
+              type="button"
+              onClick={runTest}
+              className="flex items-center gap-2 h-8 px-4 rounded-md bg-bluegrey-800 hover:bg-bluegrey-900 text-white text-xs font-medium transition-colors"
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              Run test
+            </button>
+            <button type="button" onClick={reset} className="h-8 px-3 rounded-md text-xs text-bluegrey-500 hover:text-bluegrey-800 transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Running spinner */}
+      {phase === "running" && (
+        <div className="flex items-center gap-2 text-xs text-bluegrey-500">
+          <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+          {callResults.length === 0 && authType === "oauth2"
+            ? "Acquiring token…"
+            : "Calling webhook…"}
+        </div>
+      )}
+
+      {/* Results */}
+      {(phase === "running" || phase === "done") && callResults.length > 0 && (
+        <div className="space-y-3">
+          <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Test results</p>
+          {callResults.map((call, i) => (
+            <CallResultCard key={i} call={call} index={i} />
+          ))}
+          {phase === "done" && (
+            <button type="button" onClick={reset} className="text-xs text-blue-600 hover:underline">
+              Run again
+            </button>
+          )}
         </div>
       )}
     </div>
