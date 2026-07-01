@@ -61,11 +61,11 @@ const MOCK_OIDC_CLIENTS = [
 const OIDC_OPTIONAL_SCOPES = ["profile", "email", "roles", "offline_access", "phone", "address"];
 
 const MOCK_OAUTH_CLIENTS = [
-  { id: "oauth-webhooks",       label: "Webhook Service Client",
+  { id: "oauth-webhooks",       label: "Webhook Service Client",   privateKeyJwtEnabled: true,  publicKeyUrlConfigured: true,
     scopes: ["invitation.send", "users.manage", "notifications.create"] },
-  { id: "oauth-notifications",  label: "Notifications Client",
+  { id: "oauth-notifications",  label: "Notifications Client",     privateKeyJwtEnabled: false, publicKeyUrlConfigured: false,
     scopes: ["notifications.create", "notifications.read", "org.read"] },
-  { id: "oauth-api",            label: "Internal API Client",
+  { id: "oauth-api",            label: "Internal API Client",      privateKeyJwtEnabled: true,  publicKeyUrlConfigured: false,
     scopes: ["users.manage", "org.read", "audit.write", "password.reset"] },
 ];
 
@@ -1089,8 +1089,24 @@ function WorkflowSection({
                   DMv2 will use this client to obtain an access token before invoking the webhook.
                 </p>
               </div>
-              {state.auth.oauthClientId && (
-                <PrivateKeyJwtInfo />
+              {selectedClient && (
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Configuration status</p>
+                  <ConfigStatusCard
+                    ok={selectedClient.privateKeyJwtEnabled}
+                    okTitle="Private Key JWT enabled"
+                    okBody="This client uses Private Key JWT (RFC 7523) — the required authentication method for DMv2 webhook calls."
+                    failTitle="Private Key JWT not enabled"
+                    failBody="This client does not use Private Key JWT. In Access, go to Clients → Authentication and set the method to Private Key JWT. Client secrets are not supported."
+                  />
+                  <ConfigStatusCard
+                    ok={selectedClient.publicKeyUrlConfigured}
+                    okTitle="DMv2 public key URL registered"
+                    okBody={`The DMv2 JWKS endpoint is registered in this client: ${DMV2_PUBLIC_KEY_URL}`}
+                    failTitle="DMv2 public key URL not registered"
+                    failBody={`The DMv2 public key URL is not registered. In Access, go to Clients → Keys and add the following JWKS URI: ${DMV2_PUBLIC_KEY_URL}`}
+                  />
+                </div>
               )}
               <div className="space-y-1">
                 <FieldLabel label="Scopes" />
