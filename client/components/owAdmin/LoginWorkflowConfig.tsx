@@ -1102,9 +1102,9 @@ function WorkflowSection({
                   <ConfigStatusCard
                     ok={selectedClient.publicKeyUrlConfigured}
                     okTitle="DMv2 public key URL registered"
-                    okBody={`The DMv2 JWKS endpoint is registered in this client: ${DMV2_PUBLIC_KEY_URL}`}
+                    okBody={<>The DMv2 JWKS endpoint is registered in this client.<CopyableUrl url={DMV2_PUBLIC_KEY_URL} theme="green" /></>}
                     failTitle="DMv2 public key URL not registered"
-                    failBody={`The DMv2 public key URL is not registered. In Access, go to Clients → Keys and add the following JWKS URI: ${DMV2_PUBLIC_KEY_URL}`}
+                    failBody={<>In Access, go to <strong>Clients → Keys</strong> and add the following JWKS URI:<CopyableUrl url={DMV2_PUBLIC_KEY_URL} theme="red" /></>}
                   />
                 </div>
               )}
@@ -1157,22 +1157,42 @@ function WorkflowSection({
 
 // ─── DMv2 Authentication section ─────────────────────────────────────────────
 
+function CopyableUrl({ url, theme = "red" }: { url: string; theme?: "red" | "green" }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(url).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  const border = theme === "red" ? "border-red-300 bg-white" : "border-green-300 bg-white";
+  const btn   = theme === "red" ? "border-red-300 hover:bg-red-100 text-red-600" : "border-green-300 hover:bg-green-100 text-green-700";
+  return (
+    <div className="flex items-center gap-2 mt-1.5">
+      <div className={`flex-1 border ${border} rounded-md px-2.5 py-1.5 font-mono text-[11px] truncate`}>{url}</div>
+      <button type="button" onClick={copy} title="Copy URL"
+        className={`flex-shrink-0 h-7 w-7 flex items-center justify-center rounded-md border ${btn} transition-colors`}>
+        {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+      </button>
+    </div>
+  );
+}
+
 function ConfigStatusCard({
   ok, okTitle, okBody, failTitle, failBody,
 }: {
   ok: boolean;
   okTitle: string;
-  okBody: string;
+  okBody: React.ReactNode;
   failTitle: string;
-  failBody: string;
+  failBody: React.ReactNode;
 }) {
   if (ok) {
     return (
       <div className="rounded-md border border-green-200 bg-green-50 px-3 py-2.5 flex items-start gap-2.5">
         <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-        <div>
+        <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold text-green-800">{okTitle}</p>
-          <p className="text-xs text-green-700 mt-0.5">{okBody}</p>
+          <div className="text-xs text-green-700 mt-0.5">{okBody}</div>
         </div>
       </div>
     );
@@ -1180,9 +1200,9 @@ function ConfigStatusCard({
   return (
     <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2.5 flex items-start gap-2.5">
       <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-      <div>
+      <div className="min-w-0 flex-1">
         <p className="text-xs font-semibold text-red-800">{failTitle}</p>
-        <p className="text-xs text-red-700 mt-0.5">{failBody}</p>
+        <div className="text-xs text-red-700 mt-0.5">{failBody}</div>
       </div>
     </div>
   );
