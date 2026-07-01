@@ -336,7 +336,7 @@ export default function DMv2DeployTab({
                   <p className="text-xs text-bluegrey-500 mb-3">
                     When a user is removed from their last organization (either by admin
                     action or because the organization is deleted), define what happens
-                    to that user's account and all associated relationships.
+                    to that user's account.
                   </p>
                   <div className="space-y-2">
                     {([
