@@ -126,8 +126,6 @@ const PASSWORD_RESET_ATTRS: { group: string; options: AttrOption[] }[] = [
   {
     group: "Password Reset",
     options: [
-      { label: "Reset Token",       value: "reset.token" },
-      { label: "Reset URL",         value: "reset.url" },
       { label: "Reset Expiry Date", value: "reset.expiryDate" },
     ],
   },
@@ -1408,8 +1406,6 @@ export default function LoginWorkflowConfig() {
     mappings: [
       { id: uid(), field: "email",      attribute: "user.email" },
       { id: uid(), field: "firstName",  attribute: "user.firstName" },
-      { id: uid(), field: "resetToken", attribute: "reset.token" },
-      { id: uid(), field: "resetUrl",   attribute: "reset.url" },
     ],
   }));
   const [pwDirty, setPwDirty] = useState(false);
