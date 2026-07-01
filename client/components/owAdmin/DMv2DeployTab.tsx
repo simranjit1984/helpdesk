@@ -352,7 +352,7 @@ export default function DMv2DeployTab({
                         value: "orphan-org" as const,
                         label: "Move user to orphan organization",
                         description:
-                          "User is transferred to a system-managed orphan organization, preserving their account and data until manually reviewed.",
+                          "User is moved to an orphan organization. All his access and relationships will still be removed but the account will be retained.",
                         badge: "Recoverable",
                         badgeCls: "bg-green-100 text-green-700",
                       },
