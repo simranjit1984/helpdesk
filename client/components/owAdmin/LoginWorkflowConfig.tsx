@@ -1323,7 +1323,10 @@ function AuthSection({
                     Add this JWKS URL to the client's Private Key JWT configuration:
                     <CopyableUrl url={DMV2_PUBLIC_KEY_URL} theme="red" />
                   </li>
-                  <li>Redirect URI: <span className="font-mono">{REDIRECT_URI}</span></li>
+                  <li>
+                    Add this Redirect URI to the client's allowed redirect URIs:
+                    <CopyableUrl url={REDIRECT_URI} theme="red" />
+                  </li>
                   <li>Scopes: {DMV2_ADMIN_CLIENT_SCOPES.map((s) => <code key={s} className="mx-0.5">{s}</code>)}</li>
                   <li>Audiences: {DMV2_ADMIN_CLIENT_AUDIENCES.map((a) => <code key={a} className="mx-0.5">{a}</code>)}</li>
                 </ul>
