@@ -35,8 +35,7 @@ interface WorkflowState {
 }
 
 interface AuthSectionState {
-  oidcClientId: string;
-  scopes: string[];
+  idpId: string;
 }
 
 interface TestResult {
@@ -52,13 +51,26 @@ interface TestResult {
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
-const MOCK_OIDC_CLIENTS = [
-  { id: "oidc-dmv2-admin",  label: "DMv2 Admin Client",       redirectUriConfigured: true,  pkceConfigured: true,  allowedScopes: ["openid", "profile", "email", "roles", "offline_access"] },
-  { id: "oidc-portal",      label: "Customer Portal OIDC",    redirectUriConfigured: false, pkceConfigured: true,  allowedScopes: ["openid", "profile", "email"] },
-  { id: "oidc-backoffice",  label: "Back-Office OIDC Client", redirectUriConfigured: true,  pkceConfigured: false, allowedScopes: ["profile", "roles"] },  // openid missing — demo
-];
+// The DMv2 Administrator OIDC Client always uses this fixed, well-known name.
+// It can either be created automatically by DMv2, or manually by a tenant admin
+// following the instructions surfaced in the UI — either way, the name must match
+// exactly for DMv2 to detect and use it.
+const DMV2_ADMIN_CLIENT_NAME = "DMv2Admin Client";
+const DMV2_ADMIN_CLIENT_ID = "dmv2admin-client";
+const DMV2_ADMIN_CLIENT_SCOPES = ["openid", "profile", "email", "roles", "offline_access"];
+const DMV2_ADMIN_CLIENT_AUDIENCES = ["dmv2-admin-api", "dmv2-management-api"];
 
-const OIDC_OPTIONAL_SCOPES = ["profile", "email", "roles", "offline_access", "phone", "address"];
+// Simulated tenant lookup: whether a client named "DMv2Admin Client" already
+// exists in Access. In this prototype this starts as "not found" so the new
+// create/instructions flow is visible; the "Auto-create client" action flips it.
+const DMV2_ADMIN_CLIENT_INITIALLY_EXISTS = false;
+
+const MOCK_IDPS = [
+  { id: "idp-corporate-ad", label: "Corporate Active Directory" },
+  { id: "idp-azure-ad-b2b", label: "Azure AD B2B" },
+  { id: "idp-okta-workforce", label: "Okta Workforce" },
+  { id: "idp-onewelcome-local", label: "OneWelcome Local Directory" },
+];
 
 const MOCK_OAUTH_CLIENTS = [
   { id: "oauth-webhooks",       label: "Webhook Service Client",   privateKeyJwtEnabled: true,  publicKeyUrlConfigured: true,
@@ -1217,21 +1229,24 @@ function AuthSection({
   onDirty: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [clientStatus, setClientStatus] = useState<"not_found" | "creating" | "found">(
+    DMV2_ADMIN_CLIENT_INITIALLY_EXISTS ? "found" : "not_found",
+  );
+  const [showInstructions, setShowInstructions] = useState(false);
 
-  const selectedClient = MOCK_OIDC_CLIENTS.find((c) => c.id === state.oidcClientId);
-  const oidcError = expanded && !state.oidcClientId ? "An OIDC Client must be selected." : undefined;
+  const selectedIdp = MOCK_IDPS.find((i) => i.id === state.idpId);
+  const idpError = expanded && !state.idpId ? "An IdP must be selected." : undefined;
 
-  const collapsed_summary = selectedClient
-    ? `${selectedClient.label} · Authorization Code + PKCE`
-    : "Not configured";
+  const collapsed_summary =
+    clientStatus !== "found"
+      ? "Client not found — action required"
+      : selectedIdp
+        ? `${DMV2_ADMIN_CLIENT_NAME} · IdP: ${selectedIdp.label}`
+        : `${DMV2_ADMIN_CLIENT_NAME} · IdP not selected`;
 
-  const toggleScope = (scope: string) => {
-    const current = state.scopes ?? [];
-    const next = current.includes(scope)
-      ? current.filter((s) => s !== scope)
-      : [...current, scope];
-    onChange({ ...state, scopes: next });
-    onDirty();
+  const handleAutoCreate = () => {
+    setClientStatus("creating");
+    setTimeout(() => setClientStatus("found"), 900);
   };
 
   return (
@@ -1245,10 +1260,15 @@ function AuthSection({
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-bluegrey-900">DMv2 Administrator Authentication</p>
             {dirty && <span className="w-2 h-2 rounded-full bg-amber-400" title="Unsaved changes" />}
+            {clientStatus !== "found" && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700">
+                Action required
+              </span>
+            )}
           </div>
           <p className="text-xs text-bluegrey-500 mt-0.5">
             {expanded
-              ? "Configure the OIDC Client used for administrator authentication into DMv2."
+              ? "DMv2 uses a fixed, well-known OIDC Client for administrator authentication."
               : collapsed_summary}
           </p>
         </div>
@@ -1261,150 +1281,104 @@ function AuthSection({
         <div className="px-4 pb-5 pt-1 space-y-5 border-t border-bluegrey-100">
           <InfoBox>
             DMv2 only supports <strong>Authorization Code Flow with PKCE</strong> for administrator
-            authentication. Ensure the OIDC Client is configured accordingly.
+            authentication, using a single dedicated OIDC Client shared across the tenant.
           </InfoBox>
 
-          {/* OIDC Client */}
-          <div className="space-y-1">
-            <FieldLabel label="OIDC Client" required />
-            <SelectField
-              id="oidcClient"
-              value={state.oidcClientId}
-              onChange={(v) => { onChange({ ...state, oidcClientId: v }); onDirty(); }}
-              placeholder="Select an OIDC Client…"
-              required
-              error={oidcError}
-            >
-              {MOCK_OIDC_CLIENTS.map((c) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
-              ))}
-            </SelectField>
-          </div>
-
-          {/* Auto-validation cards — shown immediately when client is selected */}
-          {selectedClient && (
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Configuration status</p>
-              <ConfigStatusCard
-                ok={selectedClient.redirectUriConfigured}
-                okTitle="Redirect URI configured"
-                okBody={`${REDIRECT_URI} is whitelisted in this OIDC Client's allowed redirect URIs.`}
-                failTitle="Redirect URI not configured"
-                failBody={`${REDIRECT_URI} is not in this client's allowed redirect URIs. Add it in the OIDC Client settings before using DMv2 authentication.`}
-              />
-              <ConfigStatusCard
-                ok={selectedClient.pkceConfigured}
-                okTitle="Public authentication (PKCE) enabled"
-                okBody="This client uses Authorization Code Flow with PKCE — the only supported flow for DMv2 administrator authentication."
-                failTitle="PKCE not enabled"
-                failBody="This client is not configured for Authorization Code Flow with PKCE. Update the client authentication settings in Access to enable public authentication."
-              />
-            </div>
-          )}
-
-          {/* Redirect URI */}
-          <ReadOnlyField
-            label="Redirect URI"
-            value={REDIRECT_URI}
-            copyable
-            badge="Auto-generated"
-            helperText="This URI must be added to the selected OIDC Client's allowed redirect URIs."
-          />
-
-          {/* Authorization flow — read-only */}
-          <div className="space-y-1">
-            <FieldLabel label="Authorization flow" />
-            <div className="flex items-center h-10 px-3 rounded-md border border-bluegrey-200 bg-bluegrey-50 text-sm text-bluegrey-700">
-              Authorization Code + PKCE
-            </div>
-          </div>
-
-          {/* Scopes */}
+          {/* Client identity + status */}
           <div className="space-y-2">
-            <div>
-              <FieldLabel label="Scopes" />
-              <p className="text-xs text-bluegrey-500 mt-0.5">
-                <strong>openid</strong> is mandatory and always included. Add additional scopes from those configured in the selected client.
-              </p>
+            <div className="flex items-center gap-1.5">
+              <FieldLabel label="OIDC Client" />
+              <button
+                type="button"
+                onClick={() => setShowInstructions((v) => !v)}
+                title="How is this client created?"
+                className="text-bluegrey-400 hover:text-blue-600 transition-colors"
+              >
+                <Info className="w-3.5 h-3.5" />
+              </button>
             </div>
 
-            {/* ── Selected scopes ───────────────────────────────────────── */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Selected scopes</p>
-              <div className="flex flex-wrap gap-2">
-                {/* openid — mandatory, check if in client */}
-                {(() => {
-                  const openidInClient = !selectedClient || selectedClient.allowedScopes.includes("openid");
-                  return (
-                    <>
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                        openidInClient ? "bg-blue-100 text-blue-800 border-blue-200" : "bg-red-50 text-red-700 border-red-300"
-                      }`}>
-                        {openidInClient
-                          ? <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                          : <AlertCircle className="w-3 h-3 flex-shrink-0" />}
-                        openid
-                        <span className={`text-[10px] font-semibold ${openidInClient ? "text-blue-600" : "text-red-500"}`}>required</span>
-                      </span>
-                      {!openidInClient && (
-                        <div className="w-full rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 flex items-start gap-2">
-                          <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                          <span><strong>openid</strong> is not configured in this client. Add it in Access before proceeding.</span>
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
-
-                {/* additional selected scopes */}
-                {(state.scopes ?? []).length === 0 && (
-                  <span className="text-xs text-bluegrey-400 italic self-center">No additional scopes selected.</span>
-                )}
-                {(state.scopes ?? []).map((s) => (
-                  <span key={s} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-green-50 text-green-800 border-green-300">
-                    <CheckCircle className="w-3 h-3 flex-shrink-0" />
-                    {s}
-                    <button
-                      type="button"
-                      onClick={() => toggleScope(s)}
-                      className="opacity-60 hover:opacity-100 transition-opacity ml-0.5"
-                      title={`Remove ${s}`}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
+            <div className="flex items-center h-10 px-3 rounded-md border border-bluegrey-200 bg-bluegrey-50 text-sm text-bluegrey-700 font-mono">
+              {DMV2_ADMIN_CLIENT_NAME}
             </div>
 
-            {/* ── Available scopes (from client only) ───────────────────── */}
-            {selectedClient && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Available in client</p>
-                {(() => {
-                  const available = selectedClient.allowedScopes.filter(
-                    (s) => s !== "openid" && !(state.scopes ?? []).includes(s)
-                  );
-                  return available.length === 0 ? (
-                    <p className="text-xs text-bluegrey-400 italic">All available scopes have been selected.</p>
-                  ) : (
-                    <div className="flex flex-wrap gap-1.5">
-                      {available.map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => toggleScope(s)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-dashed border-green-400 bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
-                        >
-                          <Plus className="w-3 h-3 flex-shrink-0" />
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  );
-                })()}
+            {showInstructions && (
+              <div className="rounded-md border border-bluegrey-200 bg-bluegrey-25 px-3 py-2.5 text-xs text-bluegrey-600 space-y-1.5">
+                <p className="font-semibold text-bluegrey-700">
+                  This client can be created automatically, or manually in Access:
+                </p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Client name must be exactly <strong>{DMV2_ADMIN_CLIENT_NAME}</strong></li>
+                  <li>Flow: <strong>Authorization Code + PKCE</strong> (public client, no client secret)</li>
+                  <li>Redirect URI: <span className="font-mono">{REDIRECT_URI}</span></li>
+                  <li>Scopes: {DMV2_ADMIN_CLIENT_SCOPES.map((s) => <code key={s} className="mx-0.5">{s}</code>)}</li>
+                  <li>Audiences: {DMV2_ADMIN_CLIENT_AUDIENCES.map((a) => <code key={a} className="mx-0.5">{a}</code>)}</li>
+                </ul>
               </div>
             )}
+
+            {clientStatus === "found" && (
+              <ConfigStatusCard
+                ok
+                okTitle={`"${DMV2_ADMIN_CLIENT_NAME}" found`}
+                okBody={
+                  <div className="space-y-1">
+                    <p>Detected in Access with the required configuration — no further setup needed.</p>
+                    <p className="font-mono text-[11px] text-green-800/80">Client ID: {DMV2_ADMIN_CLIENT_ID}</p>
+                    <p>Redirect URI, scopes and audiences are managed automatically.</p>
+                  </div>
+                }
+                failTitle=""
+                failBody={null}
+              />
+            )}
+
+            {clientStatus !== "found" && (
+              <ConfigStatusCard
+                ok={false}
+                okTitle=""
+                okBody={null}
+                failTitle={`"${DMV2_ADMIN_CLIENT_NAME}" not found`}
+                failBody={
+                  <div className="space-y-2">
+                    <p>
+                      No OIDC Client named <strong>{DMV2_ADMIN_CLIENT_NAME}</strong> exists in this tenant yet.
+                      Create it automatically, or follow the instructions above to create it manually.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleAutoCreate}
+                      disabled={clientStatus === "creating"}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-60"
+                    >
+                      {clientStatus === "creating" && <Loader2 className="w-3 h-3 animate-spin" />}
+                      {clientStatus === "creating" ? "Creating client…" : "Auto-create client"}
+                    </button>
+                  </div>
+                }
+              />
+            )}
+          </div>
+
+          {/* IdP selection — the only manual configuration left */}
+          <div className="space-y-1">
+            <FieldLabel label="Identity Provider (IdP)" required />
+            <p className="text-xs text-bluegrey-500 mb-1">
+              This OIDC Client can be linked to multiple IdPs — select which one administrators
+              should authenticate against for DMv2.
+            </p>
+            <SelectField
+              id="dmv2AdminIdp"
+              value={state.idpId}
+              onChange={(v) => { onChange({ ...state, idpId: v }); onDirty(); }}
+              placeholder="Select an IdP…"
+              required
+              error={idpError}
+            >
+              {MOCK_IDPS.map((i) => (
+                <option key={i.id} value={i.id}>{i.label}</option>
+              ))}
+            </SelectField>
           </div>
         </div>
       )}
@@ -1415,7 +1389,7 @@ function AuthSection({
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 export default function LoginWorkflowConfig() {
-  const [authState, setAuthState] = useState<AuthSectionState>({ oidcClientId: "", scopes: [] });
+  const [authState, setAuthState] = useState<AuthSectionState>({ idpId: "" });
   const [authDirty, setAuthDirty] = useState(false);
 
   const defaultWorkflow = (): WorkflowState => ({
