@@ -1229,10 +1229,9 @@ function AuthSection({
   onDirty: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [clientStatus, setClientStatus] = useState<"not_found" | "creating" | "found">(
+  const [clientStatus, setClientStatus] = useState<"not_found" | "found">(
     DMV2_ADMIN_CLIENT_INITIALLY_EXISTS ? "found" : "not_found",
   );
-  const [showInstructions, setShowInstructions] = useState(false);
 
   const selectedIdp = MOCK_IDPS.find((i) => i.id === state.idpId);
   const idpError = expanded && !state.idpId ? "An IdP must be selected." : undefined;
@@ -1243,11 +1242,6 @@ function AuthSection({
       : selectedIdp
         ? `${DMV2_ADMIN_CLIENT_NAME} · IdP: ${selectedIdp.label}`
         : `${DMV2_ADMIN_CLIENT_NAME} · IdP not selected`;
-
-  const handleAutoCreate = () => {
-    setClientStatus("creating");
-    setTimeout(() => setClientStatus("found"), 900);
-  };
 
   return (
     <div className="rounded-lg border border-bluegrey-200 bg-white overflow-hidden">
@@ -1286,36 +1280,11 @@ function AuthSection({
 
           {/* Client identity + status */}
           <div className="space-y-2">
-            <div className="flex items-center gap-1.5">
-              <FieldLabel label="OIDC Client" />
-              <button
-                type="button"
-                onClick={() => setShowInstructions((v) => !v)}
-                title="How is this client created?"
-                className="text-bluegrey-400 hover:text-blue-600 transition-colors"
-              >
-                <Info className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            <FieldLabel label="OIDC Client" />
 
             <div className="flex items-center h-10 px-3 rounded-md border border-bluegrey-200 bg-bluegrey-50 text-sm text-bluegrey-700 font-mono">
               {DMV2_ADMIN_CLIENT_NAME}
             </div>
-
-            {showInstructions && (
-              <div className="rounded-md border border-bluegrey-200 bg-bluegrey-25 px-3 py-2.5 text-xs text-bluegrey-600 space-y-1.5">
-                <p className="font-semibold text-bluegrey-700">
-                  This client can be created automatically, or manually in Access:
-                </p>
-                <ul className="list-disc pl-4 space-y-1">
-                  <li>Client name must be exactly <strong>{DMV2_ADMIN_CLIENT_NAME}</strong></li>
-                  <li>Flow: <strong>Authorization Code + PKCE</strong> (public client, no client secret)</li>
-                  <li>Redirect URI: <span className="font-mono">{REDIRECT_URI}</span></li>
-                  <li>Scopes: {DMV2_ADMIN_CLIENT_SCOPES.map((s) => <code key={s} className="mx-0.5">{s}</code>)}</li>
-                  <li>Audiences: {DMV2_ADMIN_CLIENT_AUDIENCES.map((a) => <code key={a} className="mx-0.5">{a}</code>)}</li>
-                </ul>
-              </div>
-            )}
 
             {clientStatus === "found" && (
               <ConfigStatusCard
@@ -1334,29 +1303,36 @@ function AuthSection({
             )}
 
             {clientStatus !== "found" && (
-              <ConfigStatusCard
-                ok={false}
-                okTitle=""
-                okBody={null}
-                failTitle={`"${DMV2_ADMIN_CLIENT_NAME}" not found`}
-                failBody={
-                  <div className="space-y-2">
-                    <p>
+              <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2.5 space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-red-800">{`"${DMV2_ADMIN_CLIENT_NAME}" not found`}</p>
+                    <p className="text-xs text-red-700 mt-0.5">
                       No OIDC Client named <strong>{DMV2_ADMIN_CLIENT_NAME}</strong> exists in this tenant yet.
-                      Create it automatically, or follow the instructions above to create it manually.
+                      Follow these manual steps in Access to create it:
                     </p>
-                    <button
-                      type="button"
-                      onClick={handleAutoCreate}
-                      disabled={clientStatus === "creating"}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-60"
-                    >
-                      {clientStatus === "creating" && <Loader2 className="w-3 h-3 animate-spin" />}
-                      {clientStatus === "creating" ? "Creating client…" : "Auto-create client"}
-                    </button>
                   </div>
-                }
-              />
+                </div>
+
+                <ul className="list-disc pl-8 space-y-1 text-xs text-red-700">
+                  <li>Client name must be exactly <strong>{DMV2_ADMIN_CLIENT_NAME}</strong></li>
+                  <li>Flow: <strong>Authorization Code + PKCE</strong> (public client, no client secret)</li>
+                  <li>Redirect URI: <span className="font-mono">{REDIRECT_URI}</span></li>
+                  <li>Scopes: {DMV2_ADMIN_CLIENT_SCOPES.map((s) => <code key={s} className="mx-0.5">{s}</code>)}</li>
+                  <li>Audiences: {DMV2_ADMIN_CLIENT_AUDIENCES.map((a) => <code key={a} className="mx-0.5">{a}</code>)}</li>
+                </ul>
+
+                <div className="pl-8">
+                  <button
+                    type="button"
+                    onClick={() => setClientStatus("found")}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors"
+                  >
+                    Done — I've created the client
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
