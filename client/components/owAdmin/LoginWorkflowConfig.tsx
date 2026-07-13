@@ -1294,7 +1294,7 @@ function AuthSection({
                   <div className="space-y-1">
                     <p>Detected in Access with the required configuration — no further setup needed.</p>
                     <p className="font-mono text-[11px] text-green-800/80">Client ID: {DMV2_ADMIN_CLIENT_ID}</p>
-                    <p>Redirect URI, scopes and audiences are managed automatically.</p>
+                    <p>Authentication method: <strong>Private Key JWT</strong>. Redirect URI, JWKS URL, scopes and audiences are managed automatically.</p>
                   </div>
                 }
                 failTitle=""
@@ -1315,9 +1315,14 @@ function AuthSection({
                   </div>
                 </div>
 
-                <ul className="list-disc pl-8 space-y-1 text-xs text-red-700">
+                <ul className="list-disc pl-8 space-y-1.5 text-xs text-red-700">
                   <li>Client name must be exactly <strong>{DMV2_ADMIN_CLIENT_NAME}</strong></li>
                   <li>Flow: <strong>Authorization Code + PKCE</strong> (public client, no client secret)</li>
+                  <li>Authentication method: <strong>Private Key JWT</strong></li>
+                  <li>
+                    Add this JWKS URL to the client's Private Key JWT configuration:
+                    <CopyableUrl url={DMV2_PUBLIC_KEY_URL} theme="red" />
+                  </li>
                   <li>Redirect URI: <span className="font-mono">{REDIRECT_URI}</span></li>
                   <li>Scopes: {DMV2_ADMIN_CLIENT_SCOPES.map((s) => <code key={s} className="mx-0.5">{s}</code>)}</li>
                   <li>Audiences: {DMV2_ADMIN_CLIENT_AUDIENCES.map((a) => <code key={a} className="mx-0.5">{a}</code>)}</li>
