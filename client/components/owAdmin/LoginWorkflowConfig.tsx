@@ -1318,11 +1318,6 @@ function AuthSection({
                 <ul className="list-disc pl-8 space-y-1.5 text-xs text-red-700">
                   <li>Client name must be exactly <strong>{DMV2_ADMIN_CLIENT_NAME}</strong></li>
                   <li>Flow: <strong>Authorization Code + PKCE</strong> (public client, no client secret)</li>
-                  <li>Authentication method: <strong>Private Key JWT</strong></li>
-                  <li>
-                    Add this JWKS URL to the client's Private Key JWT configuration:
-                    <CopyableUrl url={DMV2_PUBLIC_KEY_URL} theme="red" />
-                  </li>
                   <li>
                     Add this Redirect URI to the client's allowed redirect URIs:
                     <CopyableUrl url={REDIRECT_URI} theme="red" />
