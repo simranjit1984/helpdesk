@@ -1324,6 +1324,7 @@ function AuthSection({
                   </li>
                   <li>Scopes: {DMV2_ADMIN_CLIENT_SCOPES.map((s) => <code key={s} className="mx-0.5">{s}</code>)}</li>
                   <li>Audiences: {DMV2_ADMIN_CLIENT_AUDIENCES.map((a) => <code key={a} className="mx-0.5">{a}</code>)}</li>
+                  <li>Please configure the IdP and specify it under the <strong>{DMV2_ADMIN_CLIENT_NAME}</strong></li>
                 </ul>
 
                 <div className="pl-8">
