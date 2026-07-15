@@ -1234,14 +1234,13 @@ function AuthSection({
   );
 
   const selectedIdp = MOCK_IDPS.find((i) => i.id === state.idpId);
-  const idpError = expanded && !state.idpId ? "An IdP must be selected." : undefined;
 
   const collapsed_summary =
     clientStatus !== "found"
       ? "Client not found — action required"
       : selectedIdp
         ? `${DMV2_ADMIN_CLIENT_NAME} · IdP: ${selectedIdp.label}`
-        : `${DMV2_ADMIN_CLIENT_NAME} · IdP not selected`;
+        : `${DMV2_ADMIN_CLIENT_NAME} · using client default IdP`;
 
   return (
     <div className="rounded-lg border border-bluegrey-200 bg-white overflow-hidden">
@@ -1340,20 +1339,18 @@ function AuthSection({
             )}
           </div>
 
-          {/* IdP selection — the only manual configuration left */}
+          {/* IdP selection — optional, only needed to override the client's default IdP */}
           <div className="space-y-1">
-            <FieldLabel label="Identity Provider (IdP)" required />
+            <FieldLabel label="Identity Provider (IdP)" />
             <p className="text-xs text-bluegrey-500 mb-1">
-              This OIDC Client can be linked to multiple IdPs — select which one administrators
-              should authenticate against for DMv2.
+              This OIDC Client can be linked to multiple IdPs. Selecting one is optional — if left
+              empty, DMv2 will use the default Identity Provider configured on the client.
             </p>
             <SelectField
               id="dmv2AdminIdp"
               value={state.idpId}
               onChange={(v) => { onChange({ ...state, idpId: v }); onDirty(); }}
-              placeholder="Select an IdP…"
-              required
-              error={idpError}
+              placeholder="Use client default IdP"
             >
               {MOCK_IDPS.map((i) => (
                 <option key={i.id} value={i.id}>{i.label}</option>
