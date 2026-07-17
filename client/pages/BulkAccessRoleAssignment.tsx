@@ -252,7 +252,7 @@ function CsvUploadSingle({ orgId, orgName, fileName, validUsers, onChange }: {
   const users = getUsersForOrg(orgId);
 
   const downloadTemplate = () => {
-    const csv = "Email\n" + users.slice(0, 3).map((u) => u.email).join("\n") + "\n";
+    const csv = "User ID\n" + users.slice(0, 3).map((u) => u.id).join("\n") + "\n";
     const blob = new Blob([csv], { type: "text/csv" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "bulk-access-template.csv"; a.click();
   };
@@ -269,8 +269,8 @@ function CsvUploadSingle({ orgId, orgName, fileName, validUsers, onChange }: {
       const lines = (e.target?.result as string).trim().split(/\r?\n/).slice(1);
       const valid: ParsedBulkUser[] = [];
       lines.forEach((line) => {
-        const email = line.trim().replace(/^"|"$/g, "");
-        const u = users.find((x) => x.email.toLowerCase() === email.toLowerCase());
+        const userId = line.trim().replace(/^"|"$/g, "");
+        const u = users.find((x) => x.id === userId);
         if (u) valid.push({ email: u.email, displayName: u.displayName, organizationId: orgId, organizationName: orgName });
       });
       onChange(valid, file.name);
