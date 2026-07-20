@@ -1293,7 +1293,7 @@ function AuthSection({
                   <div className="space-y-1">
                     <p>Detected in Access with the required configuration — no further setup needed.</p>
                     <p className="font-mono text-[11px] text-green-800/80">Client ID: {DMV2_ADMIN_CLIENT_ID}</p>
-                    <p>Authentication method: <strong>Private Key JWT</strong>. Redirect URI, JWKS URL, scopes and audiences are managed automatically.</p>
+                    <p>Authentication method: <strong>Public (No Authentication, PKCE)</strong>. Redirect URI, scopes and audiences are managed automatically.</p>
                   </div>
                 }
                 failTitle=""
