@@ -4,9 +4,16 @@ export interface AccessRole {
   description: string;
 }
 
+export interface RoleInheritanceConfig {
+  enabled: boolean;
+  /** IDs of the descendant organizations this role is propagated to. */
+  targetOrgIds: string[];
+}
+
 export interface OrgAccessRoleAssignment {
   roleId: string;
   status: "active" | "inactive";
+  inheritance?: RoleInheritanceConfig;
 }
 
 // All access roles defined in the system
