@@ -237,7 +237,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Advanced configuration"
-                description="Date & time, invitation policy, and user lifecycle behaviour settings."
+                description="Invitation policy and user lifecycle behaviour settings."
                 expanded={advancedExpanded}
                 onToggle={() => setAdvancedExpanded((v) => !v)}
               />
