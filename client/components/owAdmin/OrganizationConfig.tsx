@@ -163,6 +163,7 @@ export default function OrganizationConfig() {
           onSave={setDetailAttrs}
           showCreateColumn={true}
           showCategoryColumn={false}
+          showMandatoryColumn={false}
           onReset={() => {
             const defaults = toDetailAttrs(orgAttrs);
             setDetailAttrs(defaults);

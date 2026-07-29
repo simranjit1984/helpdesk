@@ -30,6 +30,14 @@ interface DetailViewConfigProps {
   onReset: () => DetailAttribute[];
   showCreateColumn?: boolean;
   showCategoryColumn?: boolean;
+  showMandatoryColumn?: boolean;
+}
+
+function gridColsClass(showCategoryColumn: boolean, showCreateColumn: boolean, showLastColumn: boolean) {
+  if (showCategoryColumn && showCreateColumn && showLastColumn) return "grid-cols-[40px_1fr_150px_100px_100px]";
+  if (showCategoryColumn) return "grid-cols-[40px_1fr_150px_100px]";
+  if (showCreateColumn && showLastColumn) return "grid-cols-[40px_1fr_100px_100px]";
+  return "grid-cols-[40px_1fr_100px]";
 }
 
 // ─── Live preview ─────────────────────────────────────────────────────────────
@@ -103,12 +111,13 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true }: DetailViewConfigProps) {
+export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true, showMandatoryColumn = true }: DetailViewConfigProps) {
   const [rows, setRows] = useState<DetailAttribute[]>(attributes);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const showLastColumn = !showCreateColumn || showMandatoryColumn;
 
   const toggleCreate = (id: string) => {
     setRows((prev) => prev.map((r) => {
@@ -195,12 +204,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
         {/* Attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden">
           {/* Header */}
-          <div className={`grid ${
-            showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" :
-            showCategoryColumn && !showCreateColumn ? "grid-cols-[40px_1fr_150px_100px]" :
-            !showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_100px_100px]" :
-            "grid-cols-[40px_1fr_100px]"
-          } bg-bluegrey-50 border-b border-bluegrey-200`}>
+          <div className={`grid ${gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn)} bg-bluegrey-50 border-b border-bluegrey-200`}>
             <div className="px-3 py-3" />
             <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Attribute</div>
             {showCategoryColumn && (
@@ -209,9 +213,11 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
             {showCreateColumn && (
               <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create / View</div>
             )}
-            <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
-              {showCreateColumn ? "Mandatory attribute" : "View"}
-            </div>
+            {showLastColumn && (
+              <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
+                {showCreateColumn ? "Mandatory attribute" : "View"}
+              </div>
+            )}
           </div>
 
           {rows.map((row) => {
@@ -227,10 +233,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 onDrop={(e) => handleDrop(e, row.id)}
                 onDragEnd={handleDragEnd}
                 className={`grid ${
-                  showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" :
-                  showCategoryColumn && !showCreateColumn ? "grid-cols-[40px_1fr_150px_100px]" :
-                  !showCategoryColumn && showCreateColumn ? "grid-cols-[40px_1fr_100px_100px]" :
-                  "grid-cols-[40px_1fr_100px]"
+                  gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn)
                 } border-b border-bluegrey-100 last:border-b-0 transition-colors ${
                   isDragging ? "opacity-40 bg-bluegrey-50"
                   : isOver   ? "bg-blue-50 border-l-2 border-l-blue-400"
@@ -268,14 +271,16 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 )}
 
                 {/* Mandatory / View toggle */}
-                <div className="px-4 py-3 flex items-center justify-center">
-                  <Switch
-                    checked={showCreateColumn ? (row.view && row.create) : row.view}
-                    onCheckedChange={() => toggleView(row.id)}
-                    disabled={showCreateColumn && !row.create}
-                    aria-label={showCreateColumn ? `${row.label} mandatory` : `${row.label} view`}
-                  />
-                </div>
+                {showLastColumn && (
+                  <div className="px-4 py-3 flex items-center justify-center">
+                    <Switch
+                      checked={showCreateColumn ? (row.view && row.create) : row.view}
+                      onCheckedChange={() => toggleView(row.id)}
+                      disabled={showCreateColumn && !row.create}
+                      aria-label={showCreateColumn ? `${row.label} mandatory` : `${row.label} view`}
+                    />
+                  </div>
+                )}
               </div>
             );
           })}
