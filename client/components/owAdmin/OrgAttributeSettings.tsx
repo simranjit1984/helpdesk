@@ -73,6 +73,25 @@ const BOOLEAN_POSSIBLE_VALUES = ["TRUE", "FALSE"];
 
 export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
   {
+    id: "orgId",
+    defaultLabel: "Organization ID",
+    description: "System generated unique identifier for the organization.",
+    isSystem: true,
+    type: "string",
+    accessLevel: "immutable",
+    identifier: true,
+    required: true,
+    unique: true,
+    caseSensitive: true,
+    possibleValues: [],
+    minLength: "",
+    maxLength: "",
+    regex: "",
+    translations: [],
+    validationTranslations: [],
+    formatTranslations: [],
+  },
+  {
     id: "orgName", defaultLabel: "Organization Name",
     description: "The organization's display name.",
     isSystem: true,
@@ -782,7 +801,7 @@ export default function OrgAttributeSettings({ attributes, onChange, onReset }: 
   return (
     <div className="px-6 py-6 space-y-5">
       <p className="text-sm text-bluegrey-500 max-w-2xl">
-        Configure attributes for the Organization entity. System attributes (Organization Name, Description) are always present and cannot be removed. Add custom attributes and configure their validation rules, translations and error messages.
+        Configure attributes for the Organization entity. System attributes (Organization ID, Organization Name, Description) are always present and cannot be removed. Add custom attributes and configure their validation rules, translations and error messages.
       </p>
 
       <div className="grid grid-cols-[220px_1fr] gap-5">
