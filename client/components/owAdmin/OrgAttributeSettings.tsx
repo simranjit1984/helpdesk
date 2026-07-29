@@ -31,12 +31,15 @@ interface FormatTranslation {
 
 export type AttributeType = "string" | "number" | "boolean" | "datetime";
 
+export type AccessLevel = "immutable" | "readOnly" | "readWrite" | "writeOnly";
+
 export interface OrgAttribute {
   id: string;
   defaultLabel: string;
   description: string;
   isSystem: boolean;
   type: AttributeType;
+  accessLevel: AccessLevel;
   identifier: boolean;
   required: boolean;
   unique: boolean;
@@ -57,6 +60,13 @@ const ATTRIBUTE_TYPES: { value: AttributeType; label: string; icon: React.Elemen
   { value: "datetime", label: "Date/Time", icon: CalendarClock, description: "Date and/or time value" },
 ];
 
+const ACCESS_LEVELS: { value: AccessLevel; label: string; description: string }[] = [
+  { value: "immutable", label: "immutable", description: "Set once and can never be changed afterwards." },
+  { value: "readOnly",  label: "readOnly",  description: "Value can be viewed but never written by users." },
+  { value: "readWrite", label: "readWrite", description: "Value can be viewed and updated." },
+  { value: "writeOnly", label: "writeOnly", description: "Value can be set but not read back." },
+];
+
 const BOOLEAN_POSSIBLE_VALUES = ["TRUE", "FALSE"];
 
 // ─── Static data ──────────────────────────────────────────────────────────────
@@ -66,7 +76,7 @@ export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
     id: "orgName", defaultLabel: "Organization Name",
     description: "The organization's display name.",
     isSystem: true,
-    type: "string", identifier: false, required: true, unique: true, caseSensitive: false,
+    type: "string", accessLevel: "readWrite", identifier: false, required: true, unique: true, caseSensitive: false,
     possibleValues: [], minLength: 2, maxLength: 100, regex: "",
     translations: [], validationTranslations: [], formatTranslations: [],
   },
@@ -74,7 +84,7 @@ export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
     id: "description", defaultLabel: "Description",
     description: "A short free-text description of the organization.",
     isSystem: true,
-    type: "string", identifier: false, required: false, unique: false, caseSensitive: false,
+    type: "string", accessLevel: "readWrite", identifier: false, required: false, unique: false, caseSensitive: false,
     possibleValues: [], minLength: "", maxLength: 500, regex: "",
     translations: [], validationTranslations: [], formatTranslations: [],
   },
@@ -475,6 +485,30 @@ function AttributePanel({ attr, onChange, onDelete }: {
             </Select>
           </div>
 
+          {/* Access level */}
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium text-bluegrey-900">Access level</p>
+            <p className="text-xs text-bluegrey-500">Controls whether this attribute can be read and/or written.</p>
+            <Select
+              value={attr.accessLevel}
+              onValueChange={(v) => onChange({ ...attr, accessLevel: v as AccessLevel })}
+            >
+              <SelectTrigger className="w-full h-9 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ACCESS_LEVELS.map(({ value, label, description }) => (
+                  <SelectItem key={value} value={value}>
+                    <span className="flex flex-col">
+                      <span>{label}</span>
+                      <span className="text-xs text-bluegrey-400">{description}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="border-t border-bluegrey-100" />
 
           {/* Restrictions */}
@@ -672,7 +706,7 @@ function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
     const id = trimmed.replace(/\s+(.)/g, (_, c) => c.toUpperCase()).replace(/\s/g, "").replace(/^./, (c) => c.toLowerCase());
     onAdd({
       id, defaultLabel: trimmed, description: description.trim(), isSystem: false,
-      type: "string", identifier: false, required: false, unique: false, caseSensitive: false,
+      type: "string", accessLevel: "readWrite", identifier: false, required: false, unique: false, caseSensitive: false,
       possibleValues: [], minLength: "", maxLength: "", regex: "",
       translations: [], validationTranslations: [], formatTranslations: [],
     });
