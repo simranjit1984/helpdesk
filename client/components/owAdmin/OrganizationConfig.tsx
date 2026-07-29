@@ -6,6 +6,7 @@ import OrgAttributeSettings, {
 } from "./OrgAttributeSettings";
 import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatrix";
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
+import FilterConfigTab, { FilterAttributeConfig } from "./FilterConfigTab";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -52,6 +53,10 @@ export default function OrganizationConfig() {
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(
     toDetailAttrs(SYSTEM_ORG_ATTRIBUTES)
   );
+  const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>([]);
+
+  // Derive filterable attributes live from the overview matrix state
+  const filterableAttrs = overviewAttrs.filter((a) => a.filterable);
 
   // When attribute settings change, merge into overview/detail (preserving
   // existing toggle values for attributes that already exist)
@@ -93,6 +98,9 @@ export default function OrganizationConfig() {
           <TabsTrigger value="overview" className={TAB_CLASS}>
             Overview (Table View)
           </TabsTrigger>
+          <TabsTrigger value="filter-config" className={TAB_CLASS}>
+            Filter Configuration
+          </TabsTrigger>
           <TabsTrigger value="createview" className={TAB_CLASS}>
             Create / View
           </TabsTrigger>
@@ -124,6 +132,21 @@ export default function OrganizationConfig() {
             setOverviewAttrs(defaults);
             return defaults;
           }}
+        />
+      </TabsContent>
+
+      {/* ── Filter Configuration ── */}
+      <TabsContent value="filter-config" className="mt-0 px-6 py-6">
+        <div className="mb-4">
+          <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
+          <p className="text-sm text-bluegrey-500 mt-1">
+            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab. Set default pre-selected values and whether users can select one or many values.
+          </p>
+        </div>
+        <FilterConfigTab
+          filterableAttrs={filterableAttrs}
+          initial={filterConfigs}
+          onSave={setFilterConfigs}
         />
       </TabsContent>
 

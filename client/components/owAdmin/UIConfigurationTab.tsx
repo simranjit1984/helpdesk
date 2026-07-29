@@ -65,7 +65,6 @@ const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
     appObjectRef: "access-roles",
     appObjectAttribute: "name",
     valueSelectType: "multiple",
-    allowSingleFilterOnly: false,
   },
   {
     id: "organization",
@@ -74,7 +73,6 @@ const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
     appObjectRef: "organizations",
     appObjectAttribute: "name",
     valueSelectType: "single",
-    allowSingleFilterOnly: false,
   },
   {
     id: "status",
@@ -83,7 +81,6 @@ const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
     externalSystemAttribute: "userStatus",
     externalSystemFallback: [],
     valueSelectType: "single",
-    allowSingleFilterOnly: true,
   },
 ];
 
