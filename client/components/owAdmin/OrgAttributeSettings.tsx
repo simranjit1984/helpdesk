@@ -1,10 +1,10 @@
 import { useState } from "react";
 import {
   Plus, Trash2, RotateCcw, Globe, AlertCircle,
-  Lock, Check, X, Code, ToggleLeft, Hash, Type,
+  Lock, Check, X, Code, ToggleLeft, Hash, Type, CalendarClock, ListChecks,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -29,15 +29,19 @@ interface FormatTranslation {
   message: string;
 }
 
-export type AttributeType = "string" | "number" | "boolean";
+export type AttributeType = "string" | "number" | "boolean" | "datetime";
 
 export interface OrgAttribute {
   id: string;
   defaultLabel: string;
+  description: string;
   isSystem: boolean;
   type: AttributeType;
+  identifier: boolean;
   required: boolean;
   unique: boolean;
+  caseSensitive: boolean;
+  possibleValues: string[];
   minLength: number | "";
   maxLength: number | "";
   regex: string;
@@ -47,22 +51,31 @@ export interface OrgAttribute {
 }
 
 const ATTRIBUTE_TYPES: { value: AttributeType; label: string; icon: React.ElementType; description: string }[] = [
-  { value: "string",  label: "String",  icon: Type,        description: "Text value" },
-  { value: "number",  label: "Number",  icon: Hash,        description: "Numeric value" },
-  { value: "boolean", label: "Boolean", icon: ToggleLeft,  description: "True / false toggle" },
+  { value: "string",   label: "String",    icon: Type,          description: "Text value" },
+  { value: "number",   label: "Number",    icon: Hash,          description: "Numeric value" },
+  { value: "boolean",  label: "Boolean",   icon: ToggleLeft,    description: "True / false toggle" },
+  { value: "datetime", label: "Date/Time", icon: CalendarClock, description: "Date and/or time value" },
 ];
+
+const BOOLEAN_POSSIBLE_VALUES = ["TRUE", "FALSE"];
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 export const SYSTEM_ORG_ATTRIBUTES: OrgAttribute[] = [
   {
-    id: "orgName", defaultLabel: "Organization Name", isSystem: true,
-    type: "string", required: true, unique: true, minLength: 2, maxLength: 100, regex: "",
+    id: "orgName", defaultLabel: "Organization Name",
+    description: "The organization's display name.",
+    isSystem: true,
+    type: "string", identifier: false, required: true, unique: true, caseSensitive: false,
+    possibleValues: [], minLength: 2, maxLength: 100, regex: "",
     translations: [], validationTranslations: [], formatTranslations: [],
   },
   {
-    id: "description", defaultLabel: "Description", isSystem: true,
-    type: "string", required: false, unique: false, minLength: "", maxLength: 500, regex: "",
+    id: "description", defaultLabel: "Description",
+    description: "A short free-text description of the organization.",
+    isSystem: true,
+    type: "string", identifier: false, required: false, unique: false, caseSensitive: false,
+    possibleValues: [], minLength: "", maxLength: 500, regex: "",
     translations: [], validationTranslations: [], formatTranslations: [],
   },
 ];
@@ -85,6 +98,37 @@ const ENGLISH_DEFAULTS = {
   maxLength: (n: number | "") => `Must be no more than ${n} characters.`,
   format:    "The value does not match the expected format.",
 };
+
+// ─── Restrictions ─────────────────────────────────────────────────────────────
+
+const RESTRICTIONS: {
+  key: "identifier" | "required" | "unique" | "caseSensitive";
+  label: string;
+  description: string;
+  stringOnly?: boolean;
+}[] = [
+  {
+    key: "identifier",
+    label: "Identifier",
+    description: "The attribute must be a unique identifier, such as a user ID or email address.",
+  },
+  {
+    key: "required",
+    label: "Required",
+    description: "The attribute must have a value, which prevents empty entries.",
+  },
+  {
+    key: "unique",
+    label: "Unique",
+    description: "The value must be unique across all organizations.",
+  },
+  {
+    key: "caseSensitive",
+    label: "Case sensitive",
+    description: "Attribute values are case-sensitive. For example, \"onewelcome\" and \"OneWelcome\" are different values.",
+    stringOnly: true,
+  },
+];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -244,6 +288,95 @@ function EnglishDefaultRow({ ruleKey, text }: { ruleKey: string; text: string })
   );
 }
 
+// ─── Restrictions checkbox row ────────────────────────────────────────────────
+
+function RestrictionRow({
+  label, description, checked, disabled, onChange,
+}: {
+  label: string; description: string; checked: boolean; disabled?: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className={`flex items-start gap-2.5 ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}>
+      <Checkbox
+        checked={checked}
+        disabled={disabled}
+        onCheckedChange={(v) => onChange(v === true)}
+        className="mt-0.5"
+      />
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-bluegrey-900">{label}</p>
+        <p className="text-xs text-bluegrey-500">{description}</p>
+      </div>
+    </label>
+  );
+}
+
+// ─── Possible values editor ───────────────────────────────────────────────────
+
+function PossibleValuesEditor({ attr, onChange }: {
+  attr: OrgAttribute; onChange: (values: string[]) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  const isBoolean = attr.type === "boolean";
+  const values = isBoolean ? BOOLEAN_POSSIBLE_VALUES : attr.possibleValues;
+
+  const addValue = () => {
+    const trimmed = draft.trim();
+    if (!trimmed || values.includes(trimmed)) return;
+    onChange([...attr.possibleValues, trimmed]);
+    setDraft("");
+  };
+  const removeValue = (v: string) => onChange(attr.possibleValues.filter((x) => x !== v));
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5">
+        <ListChecks className="w-3.5 h-3.5 text-bluegrey-500" />
+        <p className="text-sm font-medium text-bluegrey-900">Possible values</p>
+        <span className="text-[10px] text-bluegrey-400 ml-auto">optional</span>
+      </div>
+      <p className="text-xs text-bluegrey-500">
+        {isBoolean
+          ? "Boolean attributes automatically accept these two values."
+          : "Restrict this attribute to a specific set of values, e.g. ACTIVE, INACTIVE, DISABLED. Leave empty to accept any value."}
+      </p>
+
+      <div className="flex flex-wrap gap-1.5">
+        {values.length === 0 && (
+          <span className="text-xs text-bluegrey-400 italic">Any value is accepted.</span>
+        )}
+        {values.map((v) => (
+          <span key={v} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700">
+            {v}
+            {!isBoolean && (
+              <button type="button" onClick={() => removeValue(v)} className="text-bluegrey-400 hover:text-red-500 transition-colors">
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </span>
+        ))}
+      </div>
+
+      {!isBoolean && (
+        <div className="flex items-center gap-2">
+          <input
+            type="text" value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addValue(); } }}
+            placeholder="Add a value and press Enter…"
+            className="flex-1 h-8 px-3 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+          <button type="button" onClick={addValue} disabled={!draft.trim()}
+            className="p-1.5 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Config panel ─────────────────────────────────────────────────────────────
 
 function AttributePanel({ attr, onChange, onDelete }: {
@@ -268,7 +401,7 @@ function AttributePanel({ attr, onChange, onDelete }: {
   const addValidation = () => {
     const next = LANGUAGES.find((l) => !usedValidLangs.includes(l.code));
     if (!next) return;
-    onChange({ ...attr, validationTranslations: [...attr.validationTranslations, { language: next.code, requiredMessage: "", uniqueMessage: "", minLengthMessage: "", maxLengthMessage: "", formatMessage: "" }] });
+    onChange({ ...attr, validationTranslations: [...attr.validationTranslations, { language: next.code, requiredMessage: "", uniqueMessage: "", minLengthMessage: "", maxLengthMessage: "" }] });
   };
   const updateValidation = (i: number, r: ValidationTranslation) => {
     const next = [...attr.validationTranslations]; next[i] = r;
@@ -298,35 +431,69 @@ function AttributePanel({ attr, onChange, onDelete }: {
 
       <div className="px-4 py-5 space-y-5 overflow-y-auto max-h-[calc(100vh-280px)]">
 
+        {/* ── Description ── */}
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium text-bluegrey-900">Attribute description</p>
+          <textarea
+            value={attr.description}
+            onChange={(e) => onChange({ ...attr, description: e.target.value })}
+            placeholder="Describe what this attribute is used for…"
+            rows={2}
+            className="w-full px-3 py-2 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
+          />
+        </div>
+
+        <div className="border-t border-bluegrey-100" />
+
         {/* ── Validation constraints ── */}
         <div className="space-y-3">
           <p className="text-xs font-semibold text-bluegrey-500 uppercase tracking-wide">Validation constraints</p>
 
-          {/* Type selector */}
+          {/* Type selector — dropdown */}
           <div className="space-y-1.5">
             <p className="text-sm font-medium text-bluegrey-900">Attribute type</p>
             <p className="text-xs text-bluegrey-500">Determines what kind of value this attribute holds.</p>
-            <div className="flex gap-2">
-              {ATTRIBUTE_TYPES.map(({ value, label, icon: Icon, description }) => {
-                const isActive = attr.type === value;
-                const isDisabled = attr.isSystem;
+            <Select
+              value={attr.type}
+              disabled={attr.isSystem}
+              onValueChange={(v) => onChange({ ...attr, type: v as AttributeType, minLength: "", maxLength: "", regex: "", possibleValues: [] })}
+            >
+              <SelectTrigger className="w-full h-9 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ATTRIBUTE_TYPES.map(({ value, label, icon: Icon, description }) => (
+                  <SelectItem key={value} value={value}>
+                    <span className="flex items-center gap-2">
+                      <Icon className="w-3.5 h-3.5 text-bluegrey-500" />
+                      {label}
+                      <span className="text-xs text-bluegrey-400">— {description}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="border-t border-bluegrey-100" />
+
+          {/* Restrictions */}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-bluegrey-900">Restrictions</p>
+            <div className="space-y-3">
+              {RESTRICTIONS.map((r) => {
+                const disabled =
+                  (r.stringOnly && attr.type !== "string") ||
+                  (r.key === "required" && attr.isSystem && attr.id === "orgName");
                 return (
-                  <button
-                    key={value} type="button"
-                    disabled={isDisabled}
-                    onClick={() => onChange({ ...attr, type: value, minLength: "", maxLength: "", regex: "" })}
-                    className={`flex-1 flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-md border-2 text-xs font-medium transition-colors ${
-                      isDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
-                    } ${
-                      isActive
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-bluegrey-200 bg-white text-bluegrey-600 hover:border-bluegrey-400"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{label}</span>
-                    <span className={`text-[10px] font-normal ${isActive ? "text-blue-500" : "text-bluegrey-400"}`}>{description}</span>
-                  </button>
+                  <RestrictionRow
+                    key={r.key}
+                    label={r.label}
+                    description={r.description}
+                    checked={r.stringOnly && attr.type !== "string" ? false : attr[r.key]}
+                    disabled={disabled}
+                    onChange={(v) => onChange({ ...attr, [r.key]: v })}
+                  />
                 );
               })}
             </div>
@@ -334,26 +501,11 @@ function AttributePanel({ attr, onChange, onDelete }: {
 
           <div className="border-t border-bluegrey-100" />
 
-          {/* Required */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-bluegrey-900">Required</p>
-              <p className="text-xs text-bluegrey-500">Field must be filled when creating an organization</p>
-            </div>
-            <Switch checked={attr.required}
-              onCheckedChange={(v) => onChange({ ...attr, required: v })}
-              disabled={attr.isSystem && attr.id === "orgName"}
-            />
-          </div>
-
-          {/* Unique */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-bluegrey-900">Unique</p>
-              <p className="text-xs text-bluegrey-500">Value must be unique across all organizations</p>
-            </div>
-            <Switch checked={attr.unique} onCheckedChange={(v) => onChange({ ...attr, unique: v })} />
-          </div>
+          {/* Possible values */}
+          <PossibleValuesEditor
+            attr={attr}
+            onChange={(values) => onChange({ ...attr, possibleValues: values })}
+          />
 
           {/* Min / Max length — string only */}
           {attr.type === "string" && (
@@ -512,13 +664,20 @@ function AttributePanel({ attr, onChange, onDelete }: {
 function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleAdd = () => {
     const trimmed = label.trim();
     if (!trimmed) return;
     const id = trimmed.replace(/\s+(.)/g, (_, c) => c.toUpperCase()).replace(/\s/g, "").replace(/^./, (c) => c.toLowerCase());
-    onAdd({ id, defaultLabel: trimmed, isSystem: false, type: "string", required: false, unique: false, minLength: "", maxLength: "", regex: "", translations: [], validationTranslations: [], formatTranslations: [] });
+    onAdd({
+      id, defaultLabel: trimmed, description: description.trim(), isSystem: false,
+      type: "string", identifier: false, required: false, unique: false, caseSensitive: false,
+      possibleValues: [], minLength: "", maxLength: "", regex: "",
+      translations: [], validationTranslations: [], formatTranslations: [],
+    });
     setLabel("");
+    setDescription("");
     setOpen(false);
   };
 
@@ -532,21 +691,29 @@ function AddAttributeForm({ onAdd }: { onAdd: (a: OrgAttribute) => void }) {
   }
 
   return (
-    <div className="px-3 py-2.5 border-t border-bluegrey-100 flex items-center gap-2">
+    <div className="px-3 py-2.5 border-t border-bluegrey-100 space-y-2">
       <input autoFocus type="text" value={label}
         onChange={(e) => setLabel(e.target.value)}
-        onKeyDown={(e) => { if (e.key === "Enter") handleAdd(); if (e.key === "Escape") setOpen(false); }}
+        onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
         placeholder="Attribute label…"
-        className="flex-1 h-8 px-3 text-sm border border-blue-400 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full h-8 px-3 text-sm border border-blue-400 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
-      <button type="button" onClick={handleAdd} disabled={!label.trim()}
-        className="p-1.5 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-        <Check className="w-3.5 h-3.5" />
-      </button>
-      <button type="button" onClick={() => { setLabel(""); setOpen(false); }}
-        className="p-1.5 rounded border border-bluegrey-200 text-bluegrey-500 hover:bg-bluegrey-50 transition-colors">
-        <X className="w-3.5 h-3.5" />
-      </button>
+      <textarea value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Attribute description…"
+        rows={2}
+        className="w-full px-3 py-2 text-sm border border-bluegrey-200 rounded-md bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+      />
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={handleAdd} disabled={!label.trim()}
+          className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <Check className="w-3.5 h-3.5" />Add
+        </button>
+        <button type="button" onClick={() => { setLabel(""); setDescription(""); setOpen(false); }}
+          className="p-1.5 h-8 w-8 flex items-center justify-center rounded border border-bluegrey-200 text-bluegrey-500 hover:bg-bluegrey-50 transition-colors">
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
   );
 }
