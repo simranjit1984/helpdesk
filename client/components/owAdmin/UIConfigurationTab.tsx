@@ -10,7 +10,6 @@ import {
 import { Users, Mail, Shield, AppWindow, Key, ChevronDown } from "lucide-react";
 import OverviewConfigMatrix, { AttributeCapability } from "./OverviewConfigMatrix";
 import DetailViewConfig, { DetailAttribute } from "./DetailViewConfig";
-import AttributeGlobalConfig from "./AttributeGlobalConfig";
 import OrganizationConfig from "./OrganizationConfig";
 import FilterConfigTab, { FilterAttributeConfig } from "./FilterConfigTab";
 
@@ -193,13 +192,10 @@ const PANEL_TAB_CLASS =
 
 function UsersAndInvitationsPanel() {
   return (
-    <Tabs defaultValue="attributes" className="w-full">
+    <Tabs defaultValue="users" className="w-full">
       {/* Top-level section tabs */}
       <div className="bg-white border-b border-bluegrey-200 px-6">
         <TabsList className="h-auto bg-transparent p-0 gap-8 -mb-px">
-          <TabsTrigger value="attributes" className={PANEL_TAB_CLASS}>
-            Attribute Settings
-          </TabsTrigger>
           <TabsTrigger value="users" className={PANEL_TAB_CLASS}>
             Users
           </TabsTrigger>
@@ -208,11 +204,6 @@ function UsersAndInvitationsPanel() {
           </TabsTrigger>
         </TabsList>
       </div>
-
-      {/* Attribute-level global config */}
-      <TabsContent value="attributes" className="mt-0">
-        <AttributeGlobalConfig />
-      </TabsContent>
 
       {/* Entity-specific config */}
       <TabsContent value="users" className="mt-0">
