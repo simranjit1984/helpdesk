@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Save, X, Filter, ChevronDown, Plus } from "lucide-react";
 import type { AttributeCapability } from "./OverviewConfigMatrix";
@@ -34,7 +33,6 @@ export interface FilterAttributeConfig {
   userDefinedValues?: string[];
   // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
-  allowSingleFilterOnly: boolean;
 }
 
 // ─── App object attribute catalogue ──────────────────────────────────────────
@@ -451,7 +449,6 @@ function buildInitialConfig(
       valueSource: "user-defined" as ValueSourceType,
       userDefinedValues: [],
       valueSelectType: "single",
-      allowSingleFilterOnly: false,
     };
   });
 }
@@ -501,11 +498,10 @@ export default function FilterConfigTab({
       {/* Table */}
       <div className="border border-bluegrey-200 rounded-md overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[180px_1fr_160px_160px] gap-4 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider items-center">
+        <div className="grid grid-cols-[180px_1fr_160px] gap-4 px-4 py-2.5 bg-bluegrey-50 border-b border-bluegrey-200 text-xs font-semibold text-bluegrey-500 uppercase tracking-wider items-center">
           <span>Attribute</span>
           <span>Default value source &amp; configuration</span>
           <span className="text-center">Value select type</span>
-          <span className="text-center">Single filter only</span>
         </div>
 
         {/* Rows */}
@@ -513,7 +509,7 @@ export default function FilterConfigTab({
           {synced.map((cfg) => (
             <div
               key={cfg.id}
-              className="grid grid-cols-[180px_1fr_160px_160px] gap-4 px-4 py-4 items-start bg-white hover:bg-bluegrey-25 transition-colors"
+              className="grid grid-cols-[180px_1fr_160px] gap-4 px-4 py-4 items-start bg-white hover:bg-bluegrey-25 transition-colors"
             >
               {/* Attribute name */}
               <div className="pt-1">
@@ -532,18 +528,6 @@ export default function FilterConfigTab({
                   value={cfg.valueSelectType}
                   onChange={(v) => update(cfg.id, { valueSelectType: v })}
                 />
-              </div>
-
-              {/* Single filter only */}
-              <div className="flex flex-col items-center gap-1 pt-1">
-                <Switch
-                  checked={cfg.allowSingleFilterOnly}
-                  onCheckedChange={(v) => update(cfg.id, { allowSingleFilterOnly: v })}
-                  aria-label={`${cfg.label} single filter only`}
-                />
-                <span className="text-[10px] text-bluegrey-400">
-                  {cfg.allowSingleFilterOnly ? "On" : "Off"}
-                </span>
               </div>
             </div>
           ))}
