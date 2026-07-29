@@ -140,13 +140,15 @@ export default function OrganizationConfig() {
         <div className="mb-4">
           <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
           <p className="text-sm text-bluegrey-500 mt-1">
-            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab. Set default pre-selected values and whether users can select one or many values.
+            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab. Filter values come automatically from each attribute's configuration, and users can select whether one or many values may be picked.
           </p>
         </div>
         <FilterConfigTab
           filterableAttrs={filterableAttrs}
           initial={filterConfigs}
           onSave={setFilterConfigs}
+          autoValueSource
+          attributePossibleValues={Object.fromEntries(orgAttrs.map((a) => [a.id, a.possibleValues]))}
         />
       </TabsContent>
 

@@ -271,16 +271,50 @@ function PredefinedChecklist({
   );
 }
 
+// ─── Auto-derived source (Organizations) ──────────────────────────────────────
+
+function AutoSourceConfig({ possibleValues }: { possibleValues: string[] }) {
+  if (possibleValues.length === 0) {
+    return (
+      <p className="text-xs text-bluegrey-500 italic">
+        No fixed possible values are configured for this attribute. Filter values will be fetched dynamically at runtime.
+      </p>
+    );
+  }
+  return (
+    <div className="space-y-1.5">
+      <p className="text-[11px] text-bluegrey-500">
+        Values come from this attribute&apos;s <span className="font-medium text-bluegrey-700">Possible values</span> (configured in Attribute Settings):
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {possibleValues.map((v) => (
+          <span key={v} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700">
+            {v}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Source config panel ──────────────────────────────────────────────────────
 
 function SourceConfig({
   cfg,
   onChange,
+  autoValueSource,
+  possibleValues,
 }: {
   cfg: FilterAttributeConfig;
   onChange: (patch: Partial<FilterAttributeConfig>) => void;
+  autoValueSource?: boolean;
+  possibleValues?: string[];
 }) {
   const selectedIdsAttr = IDS_ATTRIBUTES.find((a) => a.value === cfg.externalSystemAttribute);
+
+  if (autoValueSource) {
+    return <AutoSourceConfig possibleValues={possibleValues ?? []} />;
+  }
 
   return (
     <div className="space-y-2">
@@ -431,6 +465,8 @@ interface FilterConfigTabProps {
   filterableAttrs: AttributeCapability[];
   initial: FilterAttributeConfig[];
   onSave: (configs: FilterAttributeConfig[]) => void;
+  autoValueSource?: boolean;
+  attributePossibleValues?: Record<string, string[]>;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -459,6 +495,8 @@ export default function FilterConfigTab({
   filterableAttrs,
   initial,
   onSave,
+  autoValueSource = false,
+  attributePossibleValues = {},
 }: FilterConfigTabProps) {
   const [configs, setConfigs] = useState<FilterAttributeConfig[]>(() =>
     buildInitialConfig(filterableAttrs, initial)
@@ -514,13 +552,20 @@ export default function FilterConfigTab({
               {/* Attribute name */}
               <div className="pt-1">
                 <span className="text-sm font-medium text-bluegrey-900">{cfg.label}</span>
-                <p className="text-[11px] text-bluegrey-400 mt-0.5">
-                  {SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.label}
-                </p>
+                {!autoValueSource && (
+                  <p className="text-[11px] text-bluegrey-400 mt-0.5">
+                    {SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.label}
+                  </p>
+                )}
               </div>
 
               {/* Source config */}
-              <SourceConfig cfg={cfg} onChange={(patch) => update(cfg.id, patch)} />
+              <SourceConfig
+                cfg={cfg}
+                onChange={(patch) => update(cfg.id, patch)}
+                autoValueSource={autoValueSource}
+                possibleValues={attributePossibleValues[cfg.id]}
+              />
 
               {/* Value select type */}
               <div className="flex justify-center pt-1">
@@ -535,20 +580,26 @@ export default function FilterConfigTab({
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-3 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
-        <div>
-          <span className="font-semibold text-bluegrey-700">User-defined</span>
-          <p className="mt-0.5">Admin types specific pre-selected values manually.</p>
+      {autoValueSource ? (
+        <p className="text-xs text-bluegrey-500 px-1 pt-1">
+          Filter values are derived automatically from each attribute&apos;s configuration: attributes with <strong>Possible values</strong> defined show those as options; others fetch their values dynamically at runtime.
+        </p>
+      ) : (
+        <div className="grid grid-cols-3 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
+          <div>
+            <span className="font-semibold text-bluegrey-700">User-defined</span>
+            <p className="mt-0.5">Admin types specific pre-selected values manually.</p>
+          </div>
+          <div>
+            <span className="font-semibold text-bluegrey-700">Application object</span>
+            <p className="mt-0.5">Values are an attribute of an entity in the system (Access Role Name, Org ID, etc.).</p>
+          </div>
+          <div>
+            <span className="font-semibold text-bluegrey-700">External system (IDS)</span>
+            <p className="mt-0.5">Values come from an IDS attribute. Predefined or admin-configured fallbacks apply if IDS returns nothing.</p>
+          </div>
         </div>
-        <div>
-          <span className="font-semibold text-bluegrey-700">Application object</span>
-          <p className="mt-0.5">Values are an attribute of an entity in the system (Access Role Name, Org ID, etc.).</p>
-        </div>
-        <div>
-          <span className="font-semibold text-bluegrey-700">External system (IDS)</span>
-          <p className="mt-0.5">Values come from an IDS attribute. Predefined or admin-configured fallbacks apply if IDS returns nothing.</p>
-        </div>
-      </div>
+      )}
 
       {/* Actions */}
       <div className="flex items-center gap-3 pt-2">
