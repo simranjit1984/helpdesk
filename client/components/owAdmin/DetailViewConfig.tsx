@@ -9,6 +9,7 @@ export interface DetailAttribute {
   category: string;
   create: boolean;  // visible when creating / inviting
   view: boolean;    // visible when viewing the record
+  createDisabled?: boolean; // system-generated attribute — Create toggle is locked off
 }
 
 // Colour map for category badges — matches AttributeGlobalConfig
@@ -31,9 +32,13 @@ interface DetailViewConfigProps {
   showCreateColumn?: boolean;
   showCategoryColumn?: boolean;
   showMandatoryColumn?: boolean;
+  // When true, Create and View render as two fully independent columns —
+  // toggling one never affects the other (unlike the coupled Create/View mode).
+  independentCreateView?: boolean;
 }
 
-function gridColsClass(showCategoryColumn: boolean, showCreateColumn: boolean, showLastColumn: boolean) {
+function gridColsClass(showCategoryColumn: boolean, showCreateColumn: boolean, showLastColumn: boolean, independentCreateView = false) {
+  if (independentCreateView) return showCategoryColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" : "grid-cols-[40px_1fr_100px_100px]";
   if (showCategoryColumn && showCreateColumn && showLastColumn) return "grid-cols-[40px_1fr_150px_100px_100px]";
   if (showCategoryColumn) return "grid-cols-[40px_1fr_150px_100px]";
   if (showCreateColumn && showLastColumn) return "grid-cols-[40px_1fr_100px_100px]";
@@ -111,7 +116,7 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true, showMandatoryColumn = true }: DetailViewConfigProps) {
+export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true, showMandatoryColumn = true, independentCreateView = false }: DetailViewConfigProps) {
   const [rows, setRows] = useState<DetailAttribute[]>(attributes);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -131,6 +136,15 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
 
   const toggleView = (id: string) => {
     setRows((prev) => prev.map((r) => r.id === id ? { ...r, view: !r.view } : r));
+    setIsDirty(true);
+  };
+
+  // Independent mode: Create toggles on its own, never touches View.
+  const toggleCreateIndependent = (id: string) => {
+    setRows((prev) => prev.map((r) => {
+      if (r.id !== id || r.createDisabled) return r;
+      return { ...r, create: !r.create };
+    }));
     setIsDirty(true);
   };
 
@@ -210,19 +224,28 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
         {/* Attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden">
           {/* Header */}
-          <div className={`grid ${gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn)} bg-bluegrey-50 border-b border-bluegrey-200`}>
+          <div className={`grid ${gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn, independentCreateView)} bg-bluegrey-50 border-b border-bluegrey-200`}>
             <div className="px-3 py-3" />
             <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Attribute</div>
             {showCategoryColumn && (
               <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Category</div>
             )}
-            {showCreateColumn && (
-              <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create / View</div>
-            )}
-            {showLastColumn && (
-              <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
-                {showCreateColumn ? "Mandatory attribute" : "View"}
-              </div>
+            {independentCreateView ? (
+              <>
+                <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create</div>
+                <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">View</div>
+              </>
+            ) : (
+              <>
+                {showCreateColumn && (
+                  <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create / View</div>
+                )}
+                {showLastColumn && (
+                  <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">
+                    {showCreateColumn ? "Mandatory attribute" : "View"}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -239,7 +262,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 onDrop={(e) => handleDrop(e, row.id)}
                 onDragEnd={handleDragEnd}
                 className={`grid ${
-                  gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn)
+                  gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn, independentCreateView)
                 } border-b border-bluegrey-100 last:border-b-0 transition-colors ${
                   isDragging ? "opacity-40 bg-bluegrey-50"
                   : isOver   ? "bg-blue-50 border-l-2 border-l-blue-400"
@@ -265,27 +288,56 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                   </div>
                 )}
 
-                {/* Create toggle — Invitations only */}
-                {showCreateColumn && (
-                  <div className="px-4 py-3 flex items-center justify-center">
-                    <Switch
-                      checked={row.create}
-                      onCheckedChange={() => toggleCreate(row.id)}
-                      aria-label={`${row.label} create`}
-                    />
-                  </div>
+                {independentCreateView && (
+                  <>
+                    {/* Create toggle — independent, locked for system-generated attrs */}
+                    <div className="px-4 py-3 flex flex-col items-center justify-center gap-1">
+                      <Switch
+                        checked={row.create}
+                        onCheckedChange={() => toggleCreateIndependent(row.id)}
+                        disabled={row.createDisabled}
+                        aria-label={`${row.label} create`}
+                      />
+                      {row.createDisabled && (
+                        <span className="text-[10px] text-bluegrey-400">System</span>
+                      )}
+                    </div>
+                    {/* View toggle — fully independent of Create */}
+                    <div className="px-4 py-3 flex items-center justify-center">
+                      <Switch
+                        checked={row.view}
+                        onCheckedChange={() => toggleView(row.id)}
+                        aria-label={`${row.label} view`}
+                      />
+                    </div>
+                  </>
                 )}
 
-                {/* Mandatory / View toggle */}
-                {showLastColumn && (
-                  <div className="px-4 py-3 flex items-center justify-center">
-                    <Switch
-                      checked={showCreateColumn ? (row.view && row.create) : row.view}
-                      onCheckedChange={() => toggleView(row.id)}
-                      disabled={showCreateColumn && !row.create}
-                      aria-label={showCreateColumn ? `${row.label} mandatory` : `${row.label} view`}
-                    />
-                  </div>
+                {!independentCreateView && (
+                  <>
+                    {/* Create toggle — Invitations only */}
+                    {showCreateColumn && (
+                      <div className="px-4 py-3 flex items-center justify-center">
+                        <Switch
+                          checked={row.create}
+                          onCheckedChange={() => toggleCreate(row.id)}
+                          aria-label={`${row.label} create`}
+                        />
+                      </div>
+                    )}
+
+                    {/* Mandatory / View toggle */}
+                    {showLastColumn && (
+                      <div className="px-4 py-3 flex items-center justify-center">
+                        <Switch
+                          checked={showCreateColumn ? (row.view && row.create) : row.view}
+                          onCheckedChange={() => toggleView(row.id)}
+                          disabled={showCreateColumn && !row.create}
+                          aria-label={showCreateColumn ? `${row.label} mandatory` : `${row.label} view`}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             );

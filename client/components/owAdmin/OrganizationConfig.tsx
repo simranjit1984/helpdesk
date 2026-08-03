@@ -22,13 +22,19 @@ function toOverviewAttrs(attrs: OrgAttribute[]): AttributeCapability[] {
 }
 
 function toDetailAttrs(attrs: OrgAttribute[]): DetailAttribute[] {
-  return attrs.map((a) => ({
-    id: a.id,
-    label: a.defaultLabel,
-    category: "",
-    create: true,
-    view: true,
-  }));
+  return attrs.map((a) => {
+    // System-generated attributes (e.g. Organization ID) can't be set on
+    // create, so lock the Create toggle off for them.
+    const createDisabled = a.accessLevel === "immutable";
+    return {
+      id: a.id,
+      label: a.defaultLabel,
+      category: "",
+      create: !createDisabled,
+      view: true,
+      createDisabled,
+    };
+  });
 }
 
 // ─── Tab style ────────────────────────────────────────────────────────────────
@@ -74,10 +80,11 @@ export default function OrganizationConfig() {
 
     setDetailAttrs((prev) =>
       next.map((a) => {
+        const createDisabled = a.accessLevel === "immutable";
         const existing = prev.find((p) => p.id === a.id);
         return existing
-          ? { ...existing, label: a.defaultLabel }
-          : { id: a.id, label: a.defaultLabel, category: "", create: true, view: true };
+          ? { ...existing, label: a.defaultLabel, createDisabled, create: createDisabled ? false : existing.create }
+          : { id: a.id, label: a.defaultLabel, category: "", create: !createDisabled, view: true, createDisabled };
       })
     );
   };
@@ -163,9 +170,8 @@ export default function OrganizationConfig() {
         <DetailViewConfig
           attributes={detailAttrs}
           onSave={setDetailAttrs}
-          showCreateColumn={true}
           showCategoryColumn={false}
-          showMandatoryColumn={false}
+          independentCreateView={true}
           onReset={() => {
             const defaults = toDetailAttrs(orgAttrs);
             setDetailAttrs(defaults);
