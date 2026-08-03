@@ -24,11 +24,13 @@ import {
 } from "@/components/ui/table";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import ScopeDrawerV2 from "./ScopeDrawerV2";
-import { type Scope, MOCK_SCOPES } from "./mockData";
+import { type Scope, MOCK_SCOPES_V2 } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
 
 function accessRoleSummary(scope: Scope): string {
-  if (scope.accessRoleMode === "all") return "All access roles";
+  if (scope.accessRoleMode === "all") {
+    return scope.accessRoleContext === "any" ? "Any access role" : "All access roles";
+  }
   if (scope.accessRoleIds.length === 0) return "None selected";
   const names = scope.accessRoleIds
     .map((id) => ALL_ACCESS_ROLES.find((r) => r.id === id)?.name ?? id)
@@ -38,7 +40,7 @@ function accessRoleSummary(scope: Scope): string {
 
 export default function ScopesTabV2() {
   const navigate = useNavigate();
-  const [scopes, setScopes] = useState<Scope[]>(MOCK_SCOPES);
+  const [scopes, setScopes] = useState<Scope[]>(MOCK_SCOPES_V2);
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingScope, setEditingScope] = useState<Scope | null>(null);

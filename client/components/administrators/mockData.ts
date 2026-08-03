@@ -123,6 +123,79 @@ export const SCOPE_ORG_OPTIONS = [
   { value: "delta-org", label: "Delta Organization" },
 ];
 
+// ─── Scopes V2 ───────────────────────────────────────────────────────────────
+// Sample data illustrating the new "Org context" and "Access role context"
+// configuration options introduced in Scopes V2.
+
+export const MOCK_SCOPES_V2: Scope[] = [
+  {
+    id: "scope-v2-1",
+    name: "My Org — Full Access",
+    description: "Every admin gets this scope automatically for their own organization, with unrestricted role access.",
+    organization: "User's membership organization",
+    inclusionMode: "only",
+    orgContextMode: "user-membership",
+    accessRoleContext: "org",
+    accessRoleMode: "all",
+    accessRoleIds: [],
+  },
+  {
+    id: "scope-v2-2",
+    name: "Acme Corp — All Roles",
+    description: "Covers Acme Corp and every organization beneath it, with all access roles in scope.",
+    organization: "Acme Corp",
+    inclusionMode: "all-children",
+    orgContextMode: "select",
+    accessRoleContext: "org",
+    accessRoleMode: "all",
+    accessRoleIds: [],
+  },
+  {
+    id: "scope-v2-3",
+    name: "Beta Ltd — Finance & Admin",
+    description: "Restricted to Beta Ltd only, limited to the Finance group and Admin Access roles.",
+    organization: "Beta Ltd",
+    inclusionMode: "only",
+    orgContextMode: "select",
+    accessRoleContext: "org",
+    accessRoleMode: "custom",
+    accessRoleIds: ["ar-4", "ar-6"],
+  },
+  {
+    id: "scope-v2-4",
+    name: "My Org — Support Roles Only",
+    description: "Scoped to the admin's own organization, but limited to a hand-picked set of support-related roles from anywhere in the system.",
+    organization: "User's membership organization",
+    inclusionMode: "only",
+    orgContextMode: "user-membership",
+    accessRoleContext: "any",
+    accessRoleMode: "custom",
+    accessRoleIds: ["ar-5", "ar-7"],
+  },
+  {
+    id: "scope-v2-5",
+    name: "Gamma Inc — Any Access Role",
+    description: "Gamma Inc and its direct children, open to any access role defined anywhere in the system.",
+    organization: "Gamma Inc",
+    inclusionMode: "direct-children",
+    orgContextMode: "select",
+    accessRoleContext: "any",
+    accessRoleMode: "all",
+    accessRoleIds: [],
+  },
+  {
+    id: "scope-v2-6",
+    name: "Delta Organization — Sales & Read Only",
+    description: "Delta Organization scope with a system-wide, hand-picked role selection unrelated to org membership.",
+    organization: "Delta Organization",
+    inclusionMode: "all-children-excluding",
+    orgContextMode: "select",
+    accessRoleContext: "any",
+    accessRoleMode: "custom",
+    accessRoleIds: ["ar-3", "ar-7"],
+  },
+];
+
 // ─── Assignable Policies ─────────────────────────────────────────────────────
 
 export interface AssignablePolicy {
