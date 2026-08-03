@@ -23,7 +23,7 @@ import {
   TableEmptyState,
 } from "@/components/ui/table";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import ScopeDrawer from "./ScopeDrawer";
+import ScopeDrawerV2 from "./ScopeDrawerV2";
 import { type Scope, MOCK_SCOPES } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
 
@@ -169,7 +169,7 @@ export default function ScopesTabV2() {
         </TableScroll>
       </Table>
 
-      <ScopeDrawer
+      <ScopeDrawerV2
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         scope={editingScope}

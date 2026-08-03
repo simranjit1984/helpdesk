@@ -68,6 +68,8 @@ export type ScopeInclusionMode =
   | "direct-children-excluding"
   | "all-children-excluding";
 
+export type ScopeOrgContextMode = "user-membership" | "select";
+
 export interface Scope {
   id: string;
   name: string;
@@ -76,6 +78,8 @@ export interface Scope {
   inclusionMode: ScopeInclusionMode;
   accessRoleMode: "all" | "custom";
   accessRoleIds: string[];       // populated when accessRoleMode === "custom"
+  /** Scopes V2 only: how the org context for this scope is determined. */
+  orgContextMode?: ScopeOrgContextMode;
 }
 
 export const MOCK_SCOPES: Scope[] = [
