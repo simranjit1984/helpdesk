@@ -186,8 +186,14 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
       {/* Toolbar */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-bluegrey-600">
-          Drag attributes to reorder. The category shown is sourced from{" "}
-          <span className="font-medium text-bluegrey-800">Attribute Settings</span>.
+          {showCategoryColumn ? (
+            <>
+              Drag attributes to reorder. The category shown is sourced from{" "}
+              <span className="font-medium text-bluegrey-800">Attribute Settings</span>.
+            </>
+          ) : (
+            "Drag attributes to reorder."
+          )}
         </p>
         <Button
           variant={showPreview ? "default" : "outline"}

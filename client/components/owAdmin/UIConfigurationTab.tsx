@@ -174,6 +174,7 @@ function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], d
           onSave={setDetailAttrs}
           onReset={() => { setDetailAttrs(detailDefaults); return detailDefaults; }}
           showCreateColumn={showDetailCreateColumn}
+          showCategoryColumn={false}
         />
       </TabsContent>
     </Tabs>
