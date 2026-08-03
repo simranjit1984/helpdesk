@@ -64,6 +64,7 @@ function AccessRolesSection({
   onToggle,
   allowCustom,
   lockedMessage,
+  sourceNote,
 }: {
   mode: "all" | "custom";
   selectedIds: string[];
@@ -71,6 +72,7 @@ function AccessRolesSection({
   onToggle: (id: string) => void;
   allowCustom: boolean;
   lockedMessage: string;
+  sourceNote?: string;
 }) {
   const [roleSearch, setRoleSearch] = useState("");
 
@@ -94,7 +96,10 @@ function AccessRolesSection({
 
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium text-bluegrey-900">Access roles in scope</p>
+      <div>
+        <p className="text-sm font-medium text-bluegrey-900">Access roles in scope</p>
+        {sourceNote && <p className="text-xs text-bluegrey-500 mt-0.5">{sourceNote}</p>}
+      </div>
 
       <RadioGroup
         value={mode}
@@ -212,10 +217,13 @@ export default function ScopeDrawerV2({
     }
   }, [open, scope]);
 
-  // Access roles can only be custom-selected when scoped to a specific,
-  // manually-selected organization. In every other case only "All access
-  // roles" is meaningful, so force that mode automatically.
-  const allowCustomAccessRoles = accessRoleContext === "org" && orgContextMode === "select";
+  // Access roles can be custom-selected either when scoped to a specific,
+  // manually-selected organization, or when the context is "Any access
+  // role" (system-wide list, not tied to an organization). Only when the
+  // org context is the user's own membership org is custom selection not
+  // meaningful, so we force "All access roles" in that case.
+  const allowCustomAccessRoles =
+    accessRoleContext === "any" || (accessRoleContext === "org" && orgContextMode === "select");
   useEffect(() => {
     if (!allowCustomAccessRoles && accessRoleMode !== "all") {
       setAccessRoleMode("all");
@@ -404,33 +412,24 @@ export default function ScopeDrawerV2({
           </div>
 
           {/* Access roles in scope */}
-          {accessRoleContext === "any" ? (
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-bluegrey-900">Access roles in scope</p>
-              <div className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-bluegrey-25 px-3 py-2.5">
-                <Info className="w-4 h-4 text-bluegrey-400 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-bluegrey-600">
-                  All access roles that exist in the system.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <AccessRolesSection
-              mode={accessRoleMode}
-              selectedIds={accessRoleIds}
-              onModeChange={(m) => {
-                setAccessRoleMode(m);
-                if (m === "all") setAccessRoleIds([]);
-              }}
-              onToggle={toggleRole}
-              allowCustom={allowCustomAccessRoles}
-              lockedMessage={
-                orgContextMode === "user-membership"
-                  ? "All access roles available within the user's membership organization."
-                  : "All access roles available within the selected organization."
-              }
-            />
-          )}
+          <AccessRolesSection
+            mode={accessRoleMode}
+            selectedIds={accessRoleIds}
+            onModeChange={(m) => {
+              setAccessRoleMode(m);
+              if (m === "all") setAccessRoleIds([]);
+            }}
+            onToggle={toggleRole}
+            allowCustom={allowCustomAccessRoles}
+            lockedMessage="All access roles available within the user's membership organization."
+            sourceNote={
+              accessRoleContext === "any"
+                ? "Showing every access role in the system — not limited to an organization."
+                : orgContextMode === "select"
+                  ? `Showing access roles available in ${selectedOrgLabel || "the selected organization"}.`
+                  : undefined
+            }
+          />
 
           {/* Description */}
           <div className="space-y-1.5">
