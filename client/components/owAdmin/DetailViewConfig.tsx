@@ -159,7 +159,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
   // View invitation is fully independent and handled by toggleView.
   const toggleCreateThreeColumn = (id: string) => {
     setRows((prev) => prev.map((r) => {
-      if (r.id !== id) return r;
+      if (r.id !== id || r.createDisabled) return r;
       const next = !r.create;
       return { ...r, create: next, mandatory: next ? r.mandatory : false };
     }));
@@ -322,12 +322,16 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 {threeColumnMode && (
                   <>
                     {/* Create Invitation toggle — independent, clears Mandatory when off */}
-                    <div className="px-4 py-3 flex items-center justify-center">
+                    <div className="px-4 py-3 flex flex-col items-center justify-center gap-1">
                       <Switch
                         checked={row.create}
                         onCheckedChange={() => toggleCreateThreeColumn(row.id)}
+                        disabled={row.createDisabled}
                         aria-label={`${row.label} create invitation`}
                       />
+                      {row.createDisabled && (
+                        <span className="text-[10px] text-bluegrey-400">System</span>
+                      )}
                     </div>
                     {/* Mandatory attribute in invitation — only editable when Create is on */}
                     <div className="px-4 py-3 flex items-center justify-center">

@@ -49,8 +49,8 @@ const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
   { id: "phoneNumber", label: "Phone Number", category: "Contact Info", create: false, mandatory: false, view: true },
   { id: "accessRoles", label: "Access Roles", category: "Access Info",  create: true,  mandatory: true,  view: true },
   { id: "adminRoles",  label: "Admin Roles",  category: "Access Info",  create: false, mandatory: false, view: true },
-  { id: "status",      label: "Status",       category: "System",       create: false, mandatory: false, view: true },
-  { id: "invitedBy",   label: "Invited By",   category: "Access Info",  create: false, mandatory: false, view: true },
+  { id: "status",      label: "Status",       category: "System",       create: false, mandatory: false, view: true, createDisabled: true },
+  { id: "invitedBy",   label: "Invited By",   category: "Access Info",  create: false, mandatory: false, view: true, createDisabled: true },
   { id: "expiryDate",  label: "Expiry Date",  category: "System",       create: true,  mandatory: true,  view: true },
 ];
 
