@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Search, AlertTriangle } from "lucide-react";
+import { X, Search, AlertTriangle, Info } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -23,6 +23,7 @@ import {
   type Scope,
   type ScopeInclusionMode,
   type ScopeOrgContextMode,
+  type ScopeAccessRoleContext,
   SCOPE_ORG_OPTIONS,
 } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
@@ -61,11 +62,15 @@ function AccessRolesSection({
   selectedIds,
   onModeChange,
   onToggle,
+  allowCustom,
+  lockedMessage,
 }: {
   mode: "all" | "custom";
   selectedIds: string[];
   onModeChange: (m: "all" | "custom") => void;
   onToggle: (id: string) => void;
+  allowCustom: boolean;
+  lockedMessage: string;
 }) {
   const [roleSearch, setRoleSearch] = useState("");
 
@@ -74,6 +79,18 @@ function AccessRolesSection({
       r.name.toLowerCase().includes(roleSearch.toLowerCase()) ||
       r.description.toLowerCase().includes(roleSearch.toLowerCase()),
   );
+
+  if (!allowCustom) {
+    return (
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-bluegrey-900">Access roles in scope</p>
+        <div className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-bluegrey-25 px-3 py-2.5">
+          <Info className="w-4 h-4 text-bluegrey-400 mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-bluegrey-600">{lockedMessage}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -174,6 +191,7 @@ export default function ScopeDrawerV2({
   const [orgContextMode, setOrgContextMode] = useState<ScopeOrgContextMode>("user-membership");
   const [selectedOrg, setSelectedOrg] = useState("");
   const [inclusionMode, setInclusionMode] = useState<ScopeInclusionMode>("only");
+  const [accessRoleContext, setAccessRoleContext] = useState<ScopeAccessRoleContext>("org");
   const [accessRoleMode, setAccessRoleMode] = useState<"all" | "custom">("all");
   const [accessRoleIds, setAccessRoleIds] = useState<string[]>([]);
 
@@ -188,10 +206,22 @@ export default function ScopeDrawerV2({
           : "",
       );
       setInclusionMode(scope?.inclusionMode ?? "only");
+      setAccessRoleContext(scope?.accessRoleContext ?? "org");
       setAccessRoleMode(scope?.accessRoleMode ?? "all");
       setAccessRoleIds(scope?.accessRoleIds ?? []);
     }
   }, [open, scope]);
+
+  // Access roles can only be custom-selected when scoped to a specific,
+  // manually-selected organization. In every other case only "All access
+  // roles" is meaningful, so force that mode automatically.
+  const allowCustomAccessRoles = accessRoleContext === "org" && orgContextMode === "select";
+  useEffect(() => {
+    if (!allowCustomAccessRoles && accessRoleMode !== "all") {
+      setAccessRoleMode("all");
+      setAccessRoleIds([]);
+    }
+  }, [allowCustomAccessRoles, accessRoleMode]);
 
   const selectedOrgLabel = SCOPE_ORG_OPTIONS.find((o) => o.value === selectedOrg)?.label ?? "";
 
@@ -224,6 +254,7 @@ export default function ScopeDrawerV2({
       accessRoleMode,
       accessRoleIds: accessRoleMode === "custom" ? accessRoleIds : [],
       orgContextMode,
+      accessRoleContext,
     });
     setConfirmOpen(false);
     onOpenChange(false);
@@ -341,16 +372,65 @@ export default function ScopeDrawerV2({
             </div>
           )}
 
+          {/* Access role context */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-bluegrey-900">
+              Access role context <span className="text-red-500">*</span>
+            </Label>
+            <RadioGroup
+              value={accessRoleContext}
+              onValueChange={(v) => setAccessRoleContext(v as ScopeAccessRoleContext)}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="org" id="access-role-context-org" />
+                <Label
+                  htmlFor="access-role-context-org"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  Access role from organization
+                </Label>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="any" id="access-role-context-any" />
+                <Label
+                  htmlFor="access-role-context-any"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  Any access role
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
           {/* Access roles in scope */}
-          <AccessRolesSection
-            mode={accessRoleMode}
-            selectedIds={accessRoleIds}
-            onModeChange={(m) => {
-              setAccessRoleMode(m);
-              if (m === "all") setAccessRoleIds([]);
-            }}
-            onToggle={toggleRole}
-          />
+          {accessRoleContext === "any" ? (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-bluegrey-900">Access roles in scope</p>
+              <div className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-bluegrey-25 px-3 py-2.5">
+                <Info className="w-4 h-4 text-bluegrey-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-bluegrey-600">
+                  All access roles that exist in the system.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <AccessRolesSection
+              mode={accessRoleMode}
+              selectedIds={accessRoleIds}
+              onModeChange={(m) => {
+                setAccessRoleMode(m);
+                if (m === "all") setAccessRoleIds([]);
+              }}
+              onToggle={toggleRole}
+              allowCustom={allowCustomAccessRoles}
+              lockedMessage={
+                orgContextMode === "user-membership"
+                  ? "All access roles available within the user's membership organization."
+                  : "All access roles available within the selected organization."
+              }
+            />
+          )}
 
           {/* Description */}
           <div className="space-y-1.5">
