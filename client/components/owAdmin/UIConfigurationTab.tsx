@@ -16,9 +16,9 @@ import FilterConfigTab, { FilterAttributeConfig } from "./FilterConfigTab";
 // ─── Default data ─────────────────────────────────────────────────────────────
 
 const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
-  { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
-  { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
-  { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
+  { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: false, sortable: true },
+  { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: false, sortable: true },
+  { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: false, sortable: true },
   { id: "role",        label: "Access roles", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
