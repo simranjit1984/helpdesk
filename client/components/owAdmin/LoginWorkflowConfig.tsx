@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  Copy, Check, Plus, Trash2, ChevronUp, ChevronDown,
+  Copy, Check,
   Terminal, Loader2, ChevronRight, ChevronDown as ChevronDownIcon,
   AlertCircle, Info, CheckCircle,
 } from "lucide-react";
@@ -9,12 +9,6 @@ import {
 
 type AuthType = "none" | "oauth2";
 type HttpMethod = "POST";
-
-export interface PayloadMapping {
-  id: string;
-  field: string;
-  attribute: string;
-}
 
 interface WorkflowEndpointState {
   baseUrl: string;
@@ -31,7 +25,7 @@ interface WorkflowAuthState {
 interface WorkflowState {
   endpoint: WorkflowEndpointState;
   auth: WorkflowAuthState;
-  mappings: PayloadMapping[];
+  payloadTemplate: string;
 }
 
 interface AuthSectionState {
@@ -145,17 +139,10 @@ const PASSWORD_RESET_ATTRS: { group: string; options: AttrOption[] }[] = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function uid(): string {
-  return Math.random().toString(36).slice(2, 9);
-}
-
-function buildJsonPreview(mappings: PayloadMapping[]): string {
-  if (mappings.length === 0) return "{}";
-  const obj: Record<string, string> = {};
-  mappings.forEach((m) => {
-    if (m.field && m.attribute) obj[m.field] = `{{${m.attribute}}}`;
-  });
-  return JSON.stringify(obj, null, 2);
+/** Extracts every `{{attribute}}` reference used inside a payload template. */
+function extractTemplateAttrs(template: string): string[] {
+  const matches = template.match(/\{\{([^}]+)\}\}/g) ?? [];
+  return [...new Set(matches.map((m) => m.slice(2, -2).trim()))];
 }
 
 // ─── Shared small components ──────────────────────────────────────────────────
@@ -406,148 +393,67 @@ function ScopeSelector({
 
 // ─── Payload mapping table ────────────────────────────────────────────────────
 
-function PayloadMappingTable({
-  mappings, onChange, attrGroups,
+function AttributeReferencePanel({
+  attrGroups,
 }: {
-  mappings: PayloadMapping[];
-  onChange: (m: PayloadMapping[]) => void;
   attrGroups: { group: string; options: AttrOption[] }[];
 }) {
-  const addRow = () =>
-    onChange([...mappings, { id: uid(), field: "", attribute: "" }]);
+  const [expanded, setExpanded] = useState(false);
+  const [copiedValue, setCopiedValue] = useState<string | null>(null);
 
-  const removeRow = (id: string) => onChange(mappings.filter((m) => m.id !== id));
-
-  const updateRow = (id: string, patch: Partial<PayloadMapping>) =>
-    onChange(mappings.map((m) => (m.id === id ? { ...m, ...patch } : m)));
-
-  const move = (id: string, dir: -1 | 1) => {
-    const idx = mappings.findIndex((m) => m.id === id);
-    const next = idx + dir;
-    if (next < 0 || next >= mappings.length) return;
-    const arr = [...mappings];
-    [arr[idx], arr[next]] = [arr[next], arr[idx]];
-    onChange(arr);
+  const copyCode = (value: string) => {
+    const code = `{{${value}}}`;
+    navigator.clipboard.writeText(code).catch(() => {});
+    setCopiedValue(value);
+    setTimeout(() => setCopiedValue((v) => (v === value ? null : v)), 1500);
   };
 
-  // Duplicate field validation
-  const fieldCounts: Record<string, number> = {};
-  mappings.forEach((m) => { if (m.field) fieldCounts[m.field] = (fieldCounts[m.field] ?? 0) + 1; });
-
   return (
-    <div className="space-y-2">
-      {/* Table */}
-      <div className="rounded-md border border-bluegrey-200 overflow-hidden">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-bluegrey-50 border-b border-bluegrey-200">
-              <th className="text-left px-3 py-2 text-xs font-semibold text-bluegrey-500 uppercase tracking-wide">
-                Payload field
-              </th>
-              <th className="text-left px-3 py-2 text-xs font-semibold text-bluegrey-500 uppercase tracking-wide">
-                Source attribute
-              </th>
-              <th className="w-24" />
-            </tr>
-          </thead>
-          <tbody>
-            {mappings.length === 0 && (
-              <tr>
-                <td colSpan={3} className="px-3 py-6 text-center text-xs text-bluegrey-400 italic">
-                  No mappings configured. Add a row to begin.
-                </td>
-              </tr>
-            )}
-            {mappings.map((m, idx) => {
-              const isDuplicate = m.field && fieldCounts[m.field] > 1;
-              return (
-                <tr key={m.id} className="border-b border-bluegrey-100 last:border-0">
-                  <td className="px-3 py-2 align-top">
-                    <input
-                      type="text"
-                      value={m.field}
-                      placeholder="e.g. email"
-                      onChange={(e) => updateRow(m.id, { field: e.target.value })}
-                      className={`w-full border rounded px-2 py-1 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-300 ${
-                        isDuplicate ? "border-red-400 bg-red-50" : "border-bluegrey-300"
-                      }`}
-                    />
-                    {isDuplicate && (
-                      <p className="text-[10px] text-red-600 mt-0.5">Duplicate field name</p>
-                    )}
-                    {!m.field && m.attribute && (
-                      <p className="text-[10px] text-red-600 mt-0.5">Field name required</p>
-                    )}
-                  </td>
-                  <td className="px-3 py-2 align-top">
-                    <select
-                      value={m.attribute}
-                      onChange={(e) => updateRow(m.id, { attribute: e.target.value })}
-                      className={`w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-300 bg-white ${
-                        m.field && !m.attribute ? "border-red-400" : "border-bluegrey-300"
-                      }`}
-                    >
-                      <option value="">Select attribute…</option>
-                      {attrGroups.map((g) => (
-                        <optgroup key={g.group} label={g.group}>
-                          {g.options.map((opt) => (
-                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
-                    {m.field && !m.attribute && (
-                      <p className="text-[10px] text-red-600 mt-0.5">Attribute required</p>
-                    )}
-                  </td>
-                  <td className="px-2 py-2 align-top">
-                    <div className="flex items-center gap-0.5">
-                      <button
-                        type="button"
-                        onClick={() => move(m.id, -1)}
-                        disabled={idx === 0}
-                        className="h-7 w-7 flex items-center justify-center rounded hover:bg-bluegrey-100 disabled:opacity-30 transition-colors"
-                        title="Move up"
-                      >
-                        <ChevronUp className="w-3.5 h-3.5 text-bluegrey-500" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => move(m.id, 1)}
-                        disabled={idx === mappings.length - 1}
-                        className="h-7 w-7 flex items-center justify-center rounded hover:bg-bluegrey-100 disabled:opacity-30 transition-colors"
-                        title="Move down"
-                      >
-                        <ChevronDown className="w-3.5 h-3.5 text-bluegrey-500" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeRow(m.id)}
-                        className="h-7 w-7 flex items-center justify-center rounded hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors"
-                        title="Remove row"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
+    <div className="rounded-md border border-bluegrey-200 overflow-hidden">
       <button
         type="button"
-        onClick={addRow}
-        className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 bg-bluegrey-50 hover:bg-bluegrey-100 transition-colors text-left"
       >
-        <Plus className="w-3.5 h-3.5" /> Add row
+        <span className="text-xs font-semibold text-blue-600">
+          {expanded ? "Hide" : "Show"} available attribute codes
+        </span>
+        {expanded ? <ChevronDownIcon className="w-3.5 h-3.5 text-bluegrey-400" /> : <ChevronRight className="w-3.5 h-3.5 text-bluegrey-400" />}
       </button>
 
-      {/* Payload structure */}
-      {mappings.length > 0 && (
-        <PayloadStructureEditor mappings={mappings} />
+      {expanded && (
+        <div className="px-3 py-3 space-y-3 bg-white">
+          <p className="text-[11px] text-bluegrey-500">
+            Reference any of the following codes directly inside the payload structure below.
+          </p>
+          {attrGroups.map((g) => (
+            <div key={g.group} className="space-y-1">
+              <p className="text-[10px] font-semibold text-bluegrey-400 uppercase tracking-wide">{g.group}</p>
+              <div className="space-y-1">
+                {g.options.map((opt) => (
+                  <div
+                    key={opt.value}
+                    className="flex items-center justify-between gap-2 rounded px-2 py-1 hover:bg-bluegrey-50 transition-colors"
+                  >
+                    <span className="text-xs text-bluegrey-700">
+                      {opt.label} — <code className="font-mono text-[11px] text-blue-700">{`{{${opt.value}}}`}</code>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => copyCode(opt.value)}
+                      title="Copy code"
+                      className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded hover:bg-bluegrey-200 text-bluegrey-500 transition-colors"
+                    >
+                      {copiedValue === opt.value
+                        ? <Check className="w-3 h-3 text-green-600" />
+                        : <Copy className="w-3 h-3" />}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -555,75 +461,53 @@ function PayloadMappingTable({
 
 // ─── Payload structure editor ─────────────────────────────────────────────────
 
-function PayloadStructureEditor({ mappings }: { mappings: PayloadMapping[] }) {
-  const [customTemplate, setCustomTemplate] = useState<string | null>(null);
+function PayloadStructureEditor({
+  template, onChange, attrGroups,
+}: {
+  template: string;
+  onChange: (value: string) => void;
+  attrGroups: { group: string; options: AttrOption[] }[];
+}) {
   const [editingPayload, setEditingPayload] = useState(false);
+  const [draft, setDraft] = useState(template);
   const [payloadError, setPayloadError] = useState("");
 
-  const mappedAttrs = new Set(mappings.map((m) => m.attribute).filter(Boolean));
-  const autoJson = buildJsonPreview(mappings);
-  const displayJson = customTemplate !== null ? customTemplate : autoJson;
+  const validAttrs = new Set(attrGroups.flatMap((g) => g.options.map((o) => o.value)));
 
   const validateTemplate = (text: string): string => {
-    const matches = text.match(/\{\{([^}]+)\}\}/g) ?? [];
-    const bad = matches.map((m) => m.slice(2, -2)).filter((a) => !mappedAttrs.has(a));
+    const bad = extractTemplateAttrs(text).filter((a) => !validAttrs.has(a));
     if (bad.length > 0)
-      return `Disallowed reference${bad.length > 1 ? "s" : ""}: ${bad.join(", ")}. Only mapped attributes may be used.`;
+      return `Unknown attribute reference${bad.length > 1 ? "s" : ""}: ${bad.join(", ")}. Only attributes from the reference list above may be used.`;
     return "";
   };
 
-  const handleTemplateChange = (value: string) => {
-    setCustomTemplate(value);
-    setPayloadError(validateTemplate(value));
+  const startEditing = () => {
+    setDraft(template);
+    setPayloadError("");
+    setEditingPayload(true);
   };
 
-  const startEditing = () => {
-    if (customTemplate === null) setCustomTemplate(autoJson);
-    setEditingPayload(true);
-    setPayloadError("");
+  const handleDraftChange = (value: string) => {
+    setDraft(value);
+    setPayloadError(validateTemplate(value));
   };
 
   const doneEditing = () => {
     if (payloadError) return;
+    onChange(draft);
     setEditingPayload(false);
   };
 
-  const resetToAuto = () => {
-    setCustomTemplate(null);
-    setEditingPayload(false);
-    setPayloadError("");
-  };
-
-  // Mappings whose attribute isn't referenced in the custom template
-  const missingInCustom =
-    customTemplate !== null
-      ? mappings
-          .filter((m) => m.attribute && !customTemplate.includes(`{{${m.attribute}}}`))
-          .map((m) => m.field || m.attribute)
-      : [];
+  const displayJson = editingPayload ? draft : template;
 
   return (
-    <div className="mt-3 space-y-2">
+    <div className="space-y-2">
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-xs font-medium text-bluegrey-500 uppercase tracking-wide">
           Payload structure
-          {customTemplate !== null && (
-            <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700">
-              Custom
-            </span>
-          )}
         </p>
         <div className="flex items-center gap-3">
-          {customTemplate !== null && !editingPayload && (
-            <button
-              type="button"
-              onClick={resetToAuto}
-              className="text-xs text-bluegrey-500 hover:text-red-600 transition-colors"
-            >
-              Reset to auto
-            </button>
-          )}
           {!editingPayload ? (
             <button
               type="button"
@@ -645,22 +529,11 @@ function PayloadStructureEditor({ mappings }: { mappings: PayloadMapping[] }) {
         </div>
       </div>
 
-      {/* Warning: mappings not yet reflected in custom template */}
-      {missingInCustom.length > 0 && (
-        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 flex items-start gap-1.5">
-          <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-          <span>
-            The following mapped fields are not referenced in your custom structure:{" "}
-            <strong>{missingInCustom.join(", ")}</strong>.
-          </span>
-        </div>
-      )}
-
       {/* Editor or read-only view */}
       {editingPayload ? (
         <textarea
           value={displayJson}
-          onChange={(e) => handleTemplateChange(e.target.value)}
+          onChange={(e) => handleDraftChange(e.target.value)}
           spellCheck={false}
           rows={Math.max(6, displayJson.split("\n").length + 1)}
           className={`w-full rounded-md bg-bluegrey-900 text-green-300 text-xs p-4 font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 ${
@@ -669,7 +542,7 @@ function PayloadStructureEditor({ mappings }: { mappings: PayloadMapping[] }) {
         />
       ) : (
         <pre className="rounded-md bg-bluegrey-900 text-green-300 text-xs p-4 overflow-x-auto font-mono leading-relaxed">
-          {displayJson}
+          {displayJson || "{}"}
         </pre>
       )}
 
@@ -681,19 +554,11 @@ function PayloadStructureEditor({ mappings }: { mappings: PayloadMapping[] }) {
       )}
 
       {/* Help text */}
-      {customTemplate === null ? (
-        <p className="text-[10px] text-bluegrey-400">
-          Auto-generated from the mapping table above. Click{" "}
-          <span className="font-medium">Edit structure</span> to wrap in arrays, add nesting,
-          or rename keys — only mapped attribute references may be used.
-        </p>
-      ) : (
-        <p className="text-[10px] text-bluegrey-400">
-          Custom structure active. Only{" "}
-          <span className="font-mono">{`{{attribute}}`}</span> references from the mapping
-          table above are allowed.
-        </p>
-      )}
+      <p className="text-[10px] text-bluegrey-400">
+        Define the exact JSON structure sent to the webhook. Wrap values in arrays, add nesting,
+        or rename keys as needed — only <span className="font-mono">{`{{attribute}}`}</span>{" "}
+        codes from the reference list above are allowed.
+      </p>
     </div>
   );
 }
@@ -791,11 +656,11 @@ function CallResultCard({ call, index }: { call: CallResult; index: number }) {
 }
 
 function TestWebhookPanel({
-  url, method, authType, scopes, mappings,
+  url, method, authType, scopes, payloadTemplate,
 }: {
-  url: string; method: string; authType: AuthType; scopes: string[]; mappings: PayloadMapping[];
+  url: string; method: string; authType: AuthType; scopes: string[]; payloadTemplate: string;
 }) {
-  const attributes = [...new Set(mappings.map((m) => m.attribute))].sort();
+  const attributes = extractTemplateAttrs(payloadTemplate).sort();
   const [phase, setPhase] = useState<"idle" | "fill" | "running" | "done">("idle");
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [callResults, setCallResults] = useState<CallResult[]>([]);
@@ -829,7 +694,7 @@ function TestWebhookPanel({
 
     await new Promise((r) => setTimeout(r, 1100));
     // Build payload substituting field values
-    let payload = buildJsonPreview(mappings);
+    let payload = payloadTemplate || "{}";
     attributes.forEach((attr) => {
       payload = payload.replace(new RegExp(`"{{${attr}}}"`, "g"), `"${fieldValues[attr] ?? sampleAttrValue(attr)}"`);
       payload = payload.replace(new RegExp(`{{${attr}}}`, "g"), fieldValues[attr] ?? sampleAttrValue(attr));
@@ -988,8 +853,9 @@ function WorkflowSection({
   const selectedClient = MOCK_OAUTH_CLIENTS.find((c) => c.id === state.auth.oauthClientId);
   const clientScopes = selectedClient?.scopes ?? [];
 
+  const templateFieldCount = extractTemplateAttrs(state.payloadTemplate).length;
   const collapsed_summary = state.endpoint.path
-    ? `${baseUrl}${state.endpoint.path} · ${state.auth.type === "oauth2" ? "OAuth 2.0" : "No auth"} · ${state.mappings.length} field${state.mappings.length !== 1 ? "s" : ""} mapped`
+    ? `${baseUrl}${state.endpoint.path} · ${state.auth.type === "oauth2" ? "OAuth 2.0" : "No auth"} · ${templateFieldCount} field${templateFieldCount !== 1 ? "s" : ""} in payload`
     : "Not configured";
 
   return (
@@ -1137,15 +1003,16 @@ function WorkflowSection({
           {/* Payload */}
           <SubSectionTitle
             title="Payload configuration"
-            description="Map approved DMv2 attributes to webhook payload fields. Arbitrary variables are not supported."
+            description="Define the webhook payload structure using approved DMv2 attribute codes. Arbitrary variables are not supported."
           />
           <InfoBox>
-            Only attributes from the approved catalog below may be used. Passwords, secrets, and
+            Only attributes from the reference list below may be used. Passwords, secrets, and
             sensitive security attributes are not available.
           </InfoBox>
-          <PayloadMappingTable
-            mappings={state.mappings}
-            onChange={(m) => patch("mappings", m)}
+          <AttributeReferencePanel attrGroups={attrGroups} />
+          <PayloadStructureEditor
+            template={state.payloadTemplate}
+            onChange={(v) => patch("payloadTemplate", v)}
             attrGroups={attrGroups}
           />
 
@@ -1159,7 +1026,7 @@ function WorkflowSection({
             method="POST"
             authType={state.auth.type}
             scopes={state.auth.scopes}
-            mappings={state.mappings}
+            payloadTemplate={state.payloadTemplate}
           />
         </div>
       )}
@@ -1372,28 +1239,36 @@ export default function LoginWorkflowConfig() {
   const defaultWorkflow = (): WorkflowState => ({
     endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "", method: "POST" },
     auth: { type: "none", oauthClientId: "", scopes: [] },
-    mappings: [],
+    payloadTemplate: "{}",
   });
 
   const [invState, setInvState] = useState<WorkflowState>(() => ({
     ...defaultWorkflow(),
     endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "/api/invitations", method: "POST" },
-    mappings: [
-      { id: uid(), field: "email",          attribute: "user.email" },
-      { id: uid(), field: "firstName",      attribute: "user.firstName" },
-      { id: uid(), field: "organizationId", attribute: "organization.id" },
-      { id: uid(), field: "invitationId",   attribute: "invitation.id" },
-    ],
+    payloadTemplate: JSON.stringify(
+      {
+        email: "{{user.email}}",
+        firstName: "{{user.firstName}}",
+        organizationId: "{{organization.id}}",
+        invitationId: "{{invitation.id}}",
+      },
+      null,
+      2,
+    ),
   }));
   const [invDirty, setInvDirty] = useState(false);
 
   const [pwState, setPwState] = useState<WorkflowState>(() => ({
     ...defaultWorkflow(),
     endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "/api/password-reset", method: "POST" },
-    mappings: [
-      { id: uid(), field: "email",      attribute: "user.email" },
-      { id: uid(), field: "firstName",  attribute: "user.firstName" },
-    ],
+    payloadTemplate: JSON.stringify(
+      {
+        email: "{{user.email}}",
+        firstName: "{{user.firstName}}",
+      },
+      null,
+      2,
+    ),
   }));
   const [pwDirty, setPwDirty] = useState(false);
 
