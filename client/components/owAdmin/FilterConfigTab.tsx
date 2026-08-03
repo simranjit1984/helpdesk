@@ -604,21 +604,10 @@ export default function FilterConfigTab({
       </div>
 
       {/* Legend */}
-      {autoValueSource ? (
+      {autoValueSource && (
         <p className="text-xs text-bluegrey-500 px-1 pt-1">
           Filter values are derived automatically from each attribute&apos;s configuration: attributes with <strong>Possible values</strong> defined show those as options; others fetch their values dynamically at runtime.
         </p>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
-          <div>
-            <span className="font-semibold text-bluegrey-700">Application object</span>
-            <p className="mt-0.5">Values are an attribute of an entity in the system (Access Role Name, Org ID, etc.).</p>
-          </div>
-          <div>
-            <span className="font-semibold text-bluegrey-700">External system (IDS)</span>
-            <p className="mt-0.5">Values come from an IDS attribute. Predefined or admin-configured fallbacks apply if IDS returns nothing.</p>
-          </div>
-        </div>
       )}
 
       {/* Actions */}
