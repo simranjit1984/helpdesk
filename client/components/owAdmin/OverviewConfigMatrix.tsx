@@ -27,8 +27,18 @@ const CAPABILITIES: Array<{ key: keyof AttributeCapability; label: string }> = [
   { key: "sortable", label: "Sortable" },
 ];
 
+// An attribute that isn't visible in the overview can't meaningfully be
+// searched, filtered, or sorted on there, so those capabilities are forced
+// off whenever visibility is off. This keeps the saved config internally
+// consistent and prevents a hidden column from still being offered as a
+// filter/search/sort option elsewhere in the app.
+function sanitizeRow(row: AttributeCapability): AttributeCapability {
+  if (row.visible) return row;
+  return { ...row, searchable: false, filterable: false, sortable: false };
+}
+
 export default function OverviewConfigMatrix({ attributes, onSave, onReset }: OverviewConfigMatrixProps) {
-  const [rows, setRows] = useState<AttributeCapability[]>(attributes);
+  const [rows, setRows] = useState<AttributeCapability[]>(() => attributes.map(sanitizeRow));
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDirty, setIsDirty] = useState(false);
 
@@ -40,7 +50,8 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
     setRows((prev) =>
       prev.map((row) => {
         if (row.id !== id) return row;
-        return { ...row, [cap]: !row[cap as string] };
+        const next = { ...row, [cap]: !row[cap as string] };
+        return cap === "visible" ? sanitizeRow(next) : next;
       })
     );
     setIsDirty(true);
@@ -68,6 +79,8 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
       prev.map((row) => {
         if (!selectedIds.has(row.id)) return row;
         if (row.disabledCaps?.includes(cap as any)) return row;
+        // Searchable/Filterable/Sortable can't be turned on for a hidden attribute.
+        if (value && cap !== "visible" && !row.visible) return row;
         return { ...row, [cap]: value };
       })
     );
@@ -113,7 +126,7 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
 
   const handleReset = () => {
     const defaults = onReset();
-    setRows(defaults);
+    setRows(defaults.map(sanitizeRow));
     setSelectedIds(new Set());
     setIsDirty(false);
   };
