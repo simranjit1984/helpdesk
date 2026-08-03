@@ -86,6 +86,45 @@ const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
   },
 ];
 
+// Invitations can only be filtered by Status, Organization and Access role —
+// fixed system filters, matching the Users pattern. These aren't part of the
+// Invitations Overview matrix, so they're supplied as a static list.
+const DEFAULT_INVITATIONS_FILTER_ATTRS: AttributeCapability[] = [
+  { id: "status", label: "Status", visible: true, searchable: true, filterable: true, sortable: true },
+  { id: "organization", label: "Organization", visible: true, searchable: false, filterable: true, sortable: false },
+  { id: "role", label: "Access roles", visible: true, searchable: false, filterable: true, sortable: false },
+];
+
+const DEFAULT_INVITATIONS_FILTER: FilterAttributeConfig[] = [
+  {
+    id: "status",
+    label: "Status",
+    valueSource: "external-system",
+    externalSystemAttribute: "userStatus",
+    externalSystemFallback: [],
+    valueSelectType: "single",
+    locked: true,
+  },
+  {
+    id: "organization",
+    label: "Organization",
+    valueSource: "app-object",
+    appObjectRef: "organizations",
+    appObjectAttribute: "name",
+    valueSelectType: "single",
+    locked: true,
+  },
+  {
+    id: "role",
+    label: "Access roles",
+    valueSource: "app-object",
+    appObjectRef: "access-roles",
+    appObjectAttribute: "name",
+    valueSelectType: "multiple",
+    locked: true,
+  },
+];
+
 // ─── Sub-tab style ─────────────────────────────────────────────────────────
 
 const SUB_TAB_CLASS =
@@ -111,15 +150,21 @@ interface EntityConfigProps {
   detailTabLabel?: string;
   detailDescription?: string;
   detailThreeColumnMode?: boolean;
+  // Fixed set of filterable attributes (e.g. Status/Organization/Access role
+  // for Invitations) that don't come from the Overview matrix's Filterable
+  // toggle. When provided, this replaces the dynamic derivation.
+  filterAttrsOverride?: AttributeCapability[];
+  filterDescription?: string;
 }
 
-function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", detailThreeColumnMode = false }: EntityConfigProps) {
+function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", detailThreeColumnMode = false, filterAttrsOverride, filterDescription = "Configure filter behaviour for each attribute that has Filterable enabled in the Overview tab." }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
   const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>(filterDefaults);
 
-  // Derive filterable attributes live from overview state
-  const filterableAttrs = overviewAttrs.filter((a) => a.filterable);
+  // Derive filterable attributes live from overview state, unless a fixed
+  // static list is provided instead.
+  const filterableAttrs = filterAttrsOverride ?? overviewAttrs.filter((a) => a.filterable);
 
   return (
     <Tabs defaultValue="overview">
@@ -155,7 +200,7 @@ function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], d
         <div className="mb-4">
           <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
           <p className="text-sm text-bluegrey-500 mt-1">
-            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab.
+            {filterDescription}
           </p>
         </div>
         <FilterConfigTab
@@ -224,6 +269,9 @@ function UsersAndInvitationsPanel() {
           detailTabLabel="Invite / View"
           detailDescription="Configure which fields will be available for create invite, mandatory on invite, and view invite."
           detailThreeColumnMode={true}
+          filterDefaults={DEFAULT_INVITATIONS_FILTER}
+          filterAttrsOverride={DEFAULT_INVITATIONS_FILTER_ATTRS}
+          filterDescription="Invitations can be filtered by Status, Organization and Access role only. These are fixed system filters — admins can only configure whether a single or multiple values may be selected."
         />
       </TabsContent>
     </Tabs>
