@@ -6,7 +6,6 @@ import type { AttributeCapability } from "./OverviewConfigMatrix";
 // ─── Value source types ───────────────────────────────────────────────────────
 
 export type ValueSourceType =
-  | "user-defined"     // Admin types values manually
   | "app-object"       // Dynamically fetched from an application object
   | "external-system"; // Fetched from an external system (e.g. IDS)
 
@@ -29,8 +28,6 @@ export interface FilterAttributeConfig {
   // external-system
   externalSystemAttribute?: string;   // IDS attribute key, e.g. "userStatus"
   externalSystemFallback?: string[];  // admin-configured fallback values
-  // user-defined
-  userDefinedValues?: string[];
   // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
 }
@@ -113,11 +110,6 @@ interface SourceDef {
 }
 
 const SOURCE_TYPES: SourceDef[] = [
-  {
-    value: "user-defined",
-    label: "User-defined",
-    description: "Admin types specific values to pre-select when the filter opens.",
-  },
   {
     value: "app-object",
     label: "Application object",
@@ -324,20 +316,6 @@ function SourceConfig({
         onChange={(v) => onChange({ valueSource: v })}
       />
 
-      {/* ── User-defined ── */}
-      {cfg.valueSource === "user-defined" && (
-        <div className="space-y-1">
-          <TagInput
-            values={cfg.userDefinedValues ?? []}
-            onChange={(v) => onChange({ userDefinedValues: v })}
-            placeholder="Type values to pre-select, press Enter…"
-          />
-          <p className="text-[11px] text-bluegrey-400">
-            Pre-selected when the filter opens. Leave empty for no preset.
-          </p>
-        </div>
-      )}
-
       {/* ── Application object ── */}
       {cfg.valueSource === "app-object" && (
         <div className="space-y-2">
@@ -482,8 +460,7 @@ function buildInitialConfig(
     return {
       id: attr.id,
       label: attr.label,
-      valueSource: "user-defined" as ValueSourceType,
-      userDefinedValues: [],
+      valueSource: "app-object" as ValueSourceType,
       valueSelectType: "single",
     };
   });
@@ -585,11 +562,7 @@ export default function FilterConfigTab({
           Filter values are derived automatically from each attribute&apos;s configuration: attributes with <strong>Possible values</strong> defined show those as options; others fetch their values dynamically at runtime.
         </p>
       ) : (
-        <div className="grid grid-cols-3 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
-          <div>
-            <span className="font-semibold text-bluegrey-700">User-defined</span>
-            <p className="mt-0.5">Admin types specific pre-selected values manually.</p>
-          </div>
+        <div className="grid grid-cols-2 gap-4 text-xs text-bluegrey-500 px-1 pt-1">
           <div>
             <span className="font-semibold text-bluegrey-700">Application object</span>
             <p className="mt-0.5">Values are an attribute of an entity in the system (Access Role Name, Org ID, etc.).</p>
