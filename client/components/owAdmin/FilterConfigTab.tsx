@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Save, X, Filter, ChevronDown, Plus } from "lucide-react";
+import { Save, X, Filter, ChevronDown, Plus, Lock } from "lucide-react";
 import type { AttributeCapability } from "./OverviewConfigMatrix";
 
 // ─── Value source types ───────────────────────────────────────────────────────
@@ -30,6 +30,8 @@ export interface FilterAttributeConfig {
   externalSystemFallback?: string[];  // admin-configured fallback values
   // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
+  /** System attributes have a fixed source config that admins cannot edit. */
+  locked?: boolean;
 }
 
 // ─── App object attribute catalogue ──────────────────────────────────────────
@@ -289,6 +291,47 @@ function AutoSourceConfig({ possibleValues }: { possibleValues: string[] }) {
   );
 }
 
+// ─── Locked source summary (system attributes) ────────────────────────────────
+
+function LockedSourceSummary({ cfg }: { cfg: FilterAttributeConfig }) {
+  const selectedIdsAttr = IDS_ATTRIBUTES.find((a) => a.value === cfg.externalSystemAttribute);
+  const attrLabel = cfg.appObjectRef
+    ? APP_OBJECT_ATTRIBUTES[cfg.appObjectRef].find((a) => a.value === cfg.appObjectAttribute)?.label
+    : undefined;
+  const fallbackValues = selectedIdsAttr?.predefinedValues ?? cfg.externalSystemFallback ?? [];
+
+  return (
+    <div className="space-y-1.5">
+      <p className="text-[11px] text-bluegrey-500 flex items-center gap-1">
+        <Lock className="w-3 h-3" />
+        Fixed for this system attribute, not editable.
+      </p>
+
+      {cfg.valueSource === "app-object" && cfg.appObjectRef && (
+        <p className="text-xs text-bluegrey-700">
+          <span className="font-medium">{APP_OBJECT_LABELS[cfg.appObjectRef]}</span>
+          {attrLabel ? " - " + attrLabel : ""}
+        </p>
+      )}
+
+      {cfg.valueSource === "external-system" && selectedIdsAttr && (
+        <div className="space-y-1.5">
+          <p className="text-xs text-bluegrey-700 font-medium">{selectedIdsAttr.label}</p>
+          {fallbackValues.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {fallbackValues.map((v) => (
+                <span key={v} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700">
+                  {v}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Source config panel ──────────────────────────────────────────────────────
 
 function SourceConfig({
@@ -306,6 +349,10 @@ function SourceConfig({
 
   if (autoValueSource) {
     return <AutoSourceConfig possibleValues={possibleValues ?? []} />;
+  }
+
+  if (cfg.locked) {
+    return <LockedSourceSummary cfg={cfg} />;
   }
 
   return (
