@@ -19,7 +19,7 @@ const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
   { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
   { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
   { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
-  { id: "role",        label: "Role",         visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
+  { id: "role",        label: "Access roles", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
 ];
@@ -30,7 +30,7 @@ const DEFAULT_USERS_DETAIL: DetailAttribute[] = [
   { id: "email",        label: "Email",        category: "Contact Info",      create: true,  view: true  },
   { id: "phoneNumber",  label: "Phone Number", category: "Contact Info",      create: false, view: false },
   { id: "status",       label: "Status",       category: "System",            create: false, view: true  },
-  { id: "role",         label: "Role",         category: "Access Info",       create: true,  view: true  },
+  { id: "role",         label: "Access roles", category: "Access Info",       create: true,  view: true  },
   { id: "organization", label: "Organization", category: "Organization Info", create: true,  view: true  },
 ];
 
@@ -59,7 +59,7 @@ const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
 const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
   {
     id: "role",
-    label: "Role",
+    label: "Access roles",
     valueSource: "app-object",
     appObjectRef: "access-roles",
     appObjectAttribute: "name",
