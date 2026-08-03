@@ -70,6 +70,7 @@ export type ScopeInclusionMode =
 
 export type ScopeOrgContextMode = "user-membership" | "select";
 export type ScopeAccessRoleContext = "org" | "any" | "none";
+export type ScopeApplicationContext = "specific" | "at-assignment" | "none";
 
 export interface Scope {
   id: string;
@@ -83,6 +84,10 @@ export interface Scope {
   orgContextMode?: ScopeOrgContextMode;
   /** Scopes V2 only: whether access roles are limited to the org context or open to any role in the system. */
   accessRoleContext?: ScopeAccessRoleContext;
+  /** Scopes V2 only: how the application context for this scope is determined. */
+  applicationContext?: ScopeApplicationContext;
+  /** Scopes V2 only: populated when applicationContext === "specific". */
+  applicationId?: string;
 }
 
 export const MOCK_SCOPES: Scope[] = [
@@ -138,6 +143,8 @@ export const MOCK_SCOPES_V2: Scope[] = [
     accessRoleContext: "org",
     accessRoleMode: "all",
     accessRoleIds: [],
+    applicationContext: "specific",
+    applicationId: "app-2",
   },
   {
     id: "scope-v2-2",
@@ -149,6 +156,7 @@ export const MOCK_SCOPES_V2: Scope[] = [
     accessRoleContext: "org",
     accessRoleMode: "all",
     accessRoleIds: [],
+    applicationContext: "at-assignment",
   },
   {
     id: "scope-v2-3",
@@ -160,6 +168,8 @@ export const MOCK_SCOPES_V2: Scope[] = [
     accessRoleContext: "org",
     accessRoleMode: "custom",
     accessRoleIds: ["ar-4", "ar-6"],
+    applicationContext: "specific",
+    applicationId: "app-1",
   },
   {
     id: "scope-v2-4",
@@ -171,6 +181,7 @@ export const MOCK_SCOPES_V2: Scope[] = [
     accessRoleContext: "any",
     accessRoleMode: "custom",
     accessRoleIds: ["ar-5", "ar-7"],
+    applicationContext: "none",
   },
   {
     id: "scope-v2-5",
@@ -182,6 +193,7 @@ export const MOCK_SCOPES_V2: Scope[] = [
     accessRoleContext: "any",
     accessRoleMode: "all",
     accessRoleIds: [],
+    applicationContext: "at-assignment",
   },
   {
     id: "scope-v2-6",
@@ -193,6 +205,8 @@ export const MOCK_SCOPES_V2: Scope[] = [
     accessRoleContext: "any",
     accessRoleMode: "custom",
     accessRoleIds: ["ar-3", "ar-7"],
+    applicationContext: "specific",
+    applicationId: "app-4",
   },
 ];
 

@@ -24,9 +24,11 @@ import {
   type ScopeInclusionMode,
   type ScopeOrgContextMode,
   type ScopeAccessRoleContext,
+  type ScopeApplicationContext,
   SCOPE_ORG_OPTIONS,
 } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
+import { MOCK_APPLICATIONS } from "@/lib/applicationsMockData";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -199,6 +201,8 @@ export default function ScopeDrawerV2({
   const [accessRoleContext, setAccessRoleContext] = useState<ScopeAccessRoleContext>("org");
   const [accessRoleMode, setAccessRoleMode] = useState<"all" | "custom">("all");
   const [accessRoleIds, setAccessRoleIds] = useState<string[]>([]);
+  const [applicationContext, setApplicationContext] = useState<ScopeApplicationContext>("at-assignment");
+  const [applicationId, setApplicationId] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -214,8 +218,18 @@ export default function ScopeDrawerV2({
       setAccessRoleContext(scope?.accessRoleContext ?? "org");
       setAccessRoleMode(scope?.accessRoleMode ?? "all");
       setAccessRoleIds(scope?.accessRoleIds ?? []);
+      setApplicationContext(scope?.applicationContext ?? "at-assignment");
+      setApplicationId(scope?.applicationId ?? "");
     }
   }, [open, scope]);
+
+  // Clear the selected application whenever the application context moves
+  // away from "specific".
+  useEffect(() => {
+    if (applicationContext !== "specific" && applicationId) {
+      setApplicationId("");
+    }
+  }, [applicationContext, applicationId]);
 
   // Access roles can be custom-selected either when scoped to a specific,
   // manually-selected organization, or when the context is "Any access
@@ -250,7 +264,9 @@ export default function ScopeDrawerV2({
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const canSave =
-    name.trim() && (orgContextMode === "user-membership" || selectedOrg);
+    name.trim() &&
+    (orgContextMode === "user-membership" || selectedOrg) &&
+    (applicationContext !== "specific" || applicationId);
 
   const handleSaveClick = () => {
     if (!canSave) return;
@@ -271,6 +287,8 @@ export default function ScopeDrawerV2({
       accessRoleIds: accessRoleMode === "custom" ? accessRoleIds : [],
       orgContextMode,
       accessRoleContext,
+      applicationContext,
+      applicationId: applicationContext === "specific" ? applicationId : undefined,
     });
     setConfirmOpen(false);
     onOpenChange(false);
@@ -458,6 +476,67 @@ export default function ScopeDrawerV2({
                     : undefined
               }
             />
+          )}
+
+          {/* Application context */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-bluegrey-900">
+              Application context <span className="text-red-500">*</span>
+            </Label>
+            <RadioGroup
+              value={applicationContext}
+              onValueChange={(v) => setApplicationContext(v as ScopeApplicationContext)}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="specific" id="application-context-specific" />
+                <Label
+                  htmlFor="application-context-specific"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  Add a specific application
+                </Label>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="at-assignment" id="application-context-at-assignment" />
+                <Label
+                  htmlFor="application-context-at-assignment"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  Application assigned at the time of assignment
+                </Label>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="none" id="application-context-none" />
+                <Label
+                  htmlFor="application-context-none"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  No application
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Application — only shown when a specific application is chosen */}
+          {applicationContext === "specific" && (
+            <div className="space-y-1.5">
+              <Label htmlFor="scope-application" className="text-sm font-medium text-bluegrey-900">
+                Application <span className="text-red-500">*</span>
+              </Label>
+              <Select value={applicationId} onValueChange={setApplicationId}>
+                <SelectTrigger id="scope-application">
+                  <SelectValue placeholder="Select application" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOCK_APPLICATIONS.map((app) => (
+                    <SelectItem key={app.id} value={app.id}>
+                      {app.displayName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           {/* Description */}
