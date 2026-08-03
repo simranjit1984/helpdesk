@@ -37,6 +37,37 @@ function toDetailAttrs(attrs: OrgAttribute[]): DetailAttribute[] {
   });
 }
 
+// ─── Static filter configuration ───────────────────────────────────────────
+// Organizations can only be filtered by Status and Organization Name — these
+// are fixed, system-defined filters (not derived from the Overview matrix or
+// Attribute Settings), matching the locked-source pattern used for Users.
+
+const ORG_FILTER_ATTRS: AttributeCapability[] = [
+  { id: "orgName", label: "Organization Name", visible: true, searchable: true, filterable: true, sortable: true },
+  { id: "status", label: "Status", visible: true, searchable: true, filterable: true, sortable: true },
+];
+
+const DEFAULT_ORG_FILTER: FilterAttributeConfig[] = [
+  {
+    id: "orgName",
+    label: "Organization Name",
+    valueSource: "app-object",
+    appObjectRef: "organizations",
+    appObjectAttribute: "name",
+    valueSelectType: "single",
+    locked: true,
+  },
+  {
+    id: "status",
+    label: "Status",
+    valueSource: "app-object",
+    appObjectRef: "organizations",
+    appObjectAttribute: "status",
+    valueSelectType: "single",
+    locked: true,
+  },
+];
+
 // ─── Tab style ────────────────────────────────────────────────────────────────
 
 const TAB_CLASS =
@@ -59,10 +90,7 @@ export default function OrganizationConfig() {
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(
     toDetailAttrs(SYSTEM_ORG_ATTRIBUTES)
   );
-  const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>([]);
-
-  // Derive filterable attributes live from the overview matrix state
-  const filterableAttrs = overviewAttrs.filter((a) => a.filterable);
+  const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>(DEFAULT_ORG_FILTER);
 
   // When attribute settings change, merge into overview/detail (preserving
   // existing toggle values for attributes that already exist)
@@ -147,15 +175,13 @@ export default function OrganizationConfig() {
         <div className="mb-4">
           <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
           <p className="text-sm text-bluegrey-500 mt-1">
-            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab. Filter values come automatically from each attribute's configuration, and users can select whether one or many values may be picked.
+            Organizations can be filtered by <strong>Status</strong> and <strong>Organization Name</strong> only. These are fixed system filters — admins can only configure whether a single or multiple values may be selected.
           </p>
         </div>
         <FilterConfigTab
-          filterableAttrs={filterableAttrs}
+          filterableAttrs={ORG_FILTER_ATTRS}
           initial={filterConfigs}
           onSave={setFilterConfigs}
-          autoValueSource
-          attributePossibleValues={Object.fromEntries(orgAttrs.map((a) => [a.id, a.possibleValues]))}
         />
       </TabsContent>
 
