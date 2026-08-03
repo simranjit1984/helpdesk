@@ -5,6 +5,7 @@ import { AIAssistant } from "@/components/aiAssistant/AIAssistant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminRolesTab from "@/components/administrators/AdminRolesTab";
 import ScopesTab from "@/components/administrators/ScopesTab";
+import ScopesTabV2 from "@/components/administrators/ScopesTabV2";
 
 const TAB_TRIGGER_CLASS =
   "h-auto py-3 px-0 rounded-none bg-transparent text-sm font-medium " +
@@ -39,6 +40,9 @@ export default function AllAdministrators() {
               <TabsTrigger value="scopes" className={TAB_TRIGGER_CLASS}>
                 Scopes
               </TabsTrigger>
+              <TabsTrigger value="scopes-v2" className={TAB_TRIGGER_CLASS}>
+                Scopes V2
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -48,6 +52,9 @@ export default function AllAdministrators() {
           </TabsContent>
           <TabsContent value="scopes" className="mt-0">
             <ScopesTab />
+          </TabsContent>
+          <TabsContent value="scopes-v2" className="mt-0">
+            <ScopesTabV2 />
           </TabsContent>
         </Tabs>
       </Layout>
