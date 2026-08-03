@@ -155,7 +155,7 @@ function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], d
         <div className="mb-4">
           <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
           <p className="text-sm text-bluegrey-500 mt-1">
-            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab. Set default pre-selected values, whether users can select one or many values, and whether activating this filter clears all others.
+            Configure filter behaviour for each attribute that has <strong>Filterable</strong> enabled in the Overview tab.
           </p>
         </div>
         <FilterConfigTab
