@@ -53,7 +53,7 @@ const INCLUSION_MODES: ScopeInclusionMode[] = [
   "all-children-excluding",
 ];
 
-const USER_MEMBERSHIP_ORG_LABEL = "User's membership organization";
+const USER_MEMBERSHIP_ORG_LABEL = "User membership org";
 
 // ─── Access roles picker ──────────────────────────────────────────────────────
 
