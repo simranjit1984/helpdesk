@@ -19,7 +19,7 @@ const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
   { id: "firstName",   label: "First Name",   visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
   { id: "lastName",    label: "Last Name",    visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
   { id: "email",       label: "Email",        visible: true,  searchable: true,  filterable: false, sortable: true,  disabledCaps: ["filterable"] },
-  { id: "role",        label: "Role",         visible: true,  searchable: true,  filterable: true,  sortable: false, disabledCaps: ["sortable"] },
+  { id: "role",        label: "Role",         visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["sortable"] },
 ];
