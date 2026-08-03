@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { X, Search, AlertTriangle, Info } from "lucide-react";
 import {
   Sheet,
@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import {
   type Scope,
   type ScopeInclusionMode,
@@ -56,6 +57,30 @@ const INCLUSION_MODES: ScopeInclusionMode[] = [
 ];
 
 const USER_MEMBERSHIP_ORG_LABEL = "User membership org";
+
+// ─── Field label with click-to-reveal info ────────────────────────────────────
+
+function InfoLabel({ text, children }: { text: string; children: ReactNode }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <Label className="text-sm font-medium text-bluegrey-900">{children}</Label>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className="text-bluegrey-400 hover:text-bluegrey-600 transition-colors"
+            aria-label="More information"
+          >
+            <Info className="w-3.5 h-3.5" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64 text-sm text-bluegrey-700 py-2 px-3">
+          {text}
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}
 
 // ─── Access roles picker ──────────────────────────────────────────────────────
 
@@ -408,9 +433,9 @@ export default function ScopeDrawerV2({
 
           {/* Access role context */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium text-bluegrey-900">
+            <InfoLabel text="The access role you can manage">
               Access role context <span className="text-red-500">*</span>
-            </Label>
+            </InfoLabel>
             <RadioGroup
               value={accessRoleContext}
               onValueChange={(v) => setAccessRoleContext(v as ScopeAccessRoleContext)}
@@ -480,9 +505,9 @@ export default function ScopeDrawerV2({
 
           {/* Application context */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium text-bluegrey-900">
+            <InfoLabel text="The applications you can manage">
               Application context <span className="text-red-500">*</span>
-            </Label>
+            </InfoLabel>
             <RadioGroup
               value={applicationContext}
               onValueChange={(v) => setApplicationContext(v as ScopeApplicationContext)}
