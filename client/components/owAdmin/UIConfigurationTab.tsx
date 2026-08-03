@@ -43,15 +43,15 @@ const DEFAULT_INVITATIONS_OVERVIEW: AttributeCapability[] = [
 ];
 
 const DEFAULT_INVITATIONS_DETAIL: DetailAttribute[] = [
-  { id: "firstName",   label: "First Name",   category: "Basic Info",   create: true,  view: true  },
-  { id: "lastName",    label: "Last Name",    category: "Basic Info",   create: true,  view: true  },
-  { id: "email",       label: "Email",        category: "Contact Info", create: true,  view: true  },
-  { id: "phoneNumber", label: "Phone Number", category: "Contact Info", create: false, view: false },
-  { id: "accessRoles", label: "Access Roles", category: "Access Info",  create: true,  view: true  },
-  { id: "adminRoles",  label: "Admin Roles",  category: "Access Info",  create: false, view: false },
-  { id: "status",      label: "Status",       category: "System",       create: false, view: false },
-  { id: "invitedBy",   label: "Invited By",   category: "Access Info",  create: false, view: false },
-  { id: "expiryDate",  label: "Expiry Date",  category: "System",       create: true,  view: true  },
+  { id: "firstName",   label: "First Name",   category: "Basic Info",   create: true,  mandatory: true,  view: true },
+  { id: "lastName",    label: "Last Name",    category: "Basic Info",   create: true,  mandatory: true,  view: true },
+  { id: "email",       label: "Email",        category: "Contact Info", create: true,  mandatory: true,  view: true },
+  { id: "phoneNumber", label: "Phone Number", category: "Contact Info", create: false, mandatory: false, view: true },
+  { id: "accessRoles", label: "Access Roles", category: "Access Info",  create: true,  mandatory: true,  view: true },
+  { id: "adminRoles",  label: "Admin Roles",  category: "Access Info",  create: false, mandatory: false, view: true },
+  { id: "status",      label: "Status",       category: "System",       create: false, mandatory: false, view: true },
+  { id: "invitedBy",   label: "Invited By",   category: "Access Info",  create: false, mandatory: false, view: true },
+  { id: "expiryDate",  label: "Expiry Date",  category: "System",       create: true,  mandatory: true,  view: true },
 ];
 
 // ─── Default filter configs ──────────────────────────────────────────────────
@@ -110,10 +110,10 @@ interface EntityConfigProps {
   filterDefaults?: FilterAttributeConfig[];
   detailTabLabel?: string;
   detailDescription?: string;
-  showDetailCreateColumn?: boolean;
+  detailThreeColumnMode?: boolean;
 }
 
-function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", showDetailCreateColumn = false }: EntityConfigProps) {
+function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], detailTabLabel = "Detail View (Single Record)", detailDescription = "Configure which fields appear on the single record view. Visibility and editability can be further restricted per admin role.", detailThreeColumnMode = false }: EntityConfigProps) {
   const [overviewAttrs, setOverviewAttrs] = useState<AttributeCapability[]>(overviewDefaults);
   const [detailAttrs, setDetailAttrs] = useState<DetailAttribute[]>(detailDefaults);
   const [filterConfigs, setFilterConfigs] = useState<FilterAttributeConfig[]>(filterDefaults);
@@ -176,8 +176,8 @@ function EntityConfig({ overviewDefaults, detailDefaults, filterDefaults = [], d
           attributes={detailAttrs}
           onSave={setDetailAttrs}
           onReset={() => { setDetailAttrs(detailDefaults); return detailDefaults; }}
-          showCreateColumn={showDetailCreateColumn}
           showCategoryColumn={false}
+          threeColumnMode={detailThreeColumnMode}
         />
       </TabsContent>
     </Tabs>
@@ -222,8 +222,8 @@ function UsersAndInvitationsPanel() {
           overviewDefaults={DEFAULT_INVITATIONS_OVERVIEW}
           detailDefaults={DEFAULT_INVITATIONS_DETAIL}
           detailTabLabel="Invite / View"
-          detailDescription="Configure which fields will be available for create invite and view invite."
-          showDetailCreateColumn={true}
+          detailDescription="Configure which fields will be available for create invite, mandatory on invite, and view invite."
+          detailThreeColumnMode={true}
         />
       </TabsContent>
     </Tabs>

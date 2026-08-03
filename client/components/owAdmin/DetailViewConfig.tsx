@@ -10,6 +10,7 @@ export interface DetailAttribute {
   create: boolean;  // visible when creating / inviting
   view: boolean;    // visible when viewing the record
   createDisabled?: boolean; // system-generated attribute — Create toggle is locked off
+  mandatory?: boolean; // required when creating / inviting (Invitations three-column mode)
 }
 
 // Colour map for category badges — matches AttributeGlobalConfig
@@ -35,9 +36,14 @@ interface DetailViewConfigProps {
   // When true, Create and View render as two fully independent columns —
   // toggling one never affects the other (unlike the coupled Create/View mode).
   independentCreateView?: boolean;
+  // Invitations mode: three columns — Create Invitation, Mandatory attribute
+  // in invitation (only editable when Create is on), and View invitation
+  // (fully independent of the other two).
+  threeColumnMode?: boolean;
 }
 
-function gridColsClass(showCategoryColumn: boolean, showCreateColumn: boolean, showLastColumn: boolean, independentCreateView = false) {
+function gridColsClass(showCategoryColumn: boolean, showCreateColumn: boolean, showLastColumn: boolean, independentCreateView = false, threeColumnMode = false) {
+  if (threeColumnMode) return showCategoryColumn ? "grid-cols-[40px_1fr_150px_100px_100px_100px]" : "grid-cols-[40px_1fr_100px_100px_100px]";
   if (independentCreateView) return showCategoryColumn ? "grid-cols-[40px_1fr_150px_100px_100px]" : "grid-cols-[40px_1fr_100px_100px]";
   if (showCategoryColumn && showCreateColumn && showLastColumn) return "grid-cols-[40px_1fr_150px_100px_100px]";
   if (showCategoryColumn) return "grid-cols-[40px_1fr_150px_100px]";
@@ -116,7 +122,7 @@ function LivePreviewPanel({ attributes }: { attributes: DetailAttribute[] }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true, showMandatoryColumn = true, independentCreateView = false }: DetailViewConfigProps) {
+export default function DetailViewConfig({ attributes, onSave, onReset, showCreateColumn = false, showCategoryColumn = true, showMandatoryColumn = true, independentCreateView = false, threeColumnMode = false }: DetailViewConfigProps) {
   const [rows, setRows] = useState<DetailAttribute[]>(attributes);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -145,6 +151,23 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
       if (r.id !== id || r.createDisabled) return r;
       return { ...r, create: !r.create };
     }));
+    setIsDirty(true);
+  };
+
+  // Three-column mode: Create Invitation toggles on its own; turning it off
+  // also clears Mandatory (mandatory only makes sense when Create is on).
+  // View invitation is fully independent and handled by toggleView.
+  const toggleCreateThreeColumn = (id: string) => {
+    setRows((prev) => prev.map((r) => {
+      if (r.id !== id) return r;
+      const next = !r.create;
+      return { ...r, create: next, mandatory: next ? r.mandatory : false };
+    }));
+    setIsDirty(true);
+  };
+
+  const toggleMandatory = (id: string) => {
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, mandatory: !r.mandatory } : r)));
     setIsDirty(true);
   };
 
@@ -224,18 +247,26 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
         {/* Attribute list */}
         <div className="border border-bluegrey-200 rounded-md overflow-hidden">
           {/* Header */}
-          <div className={`grid ${gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn, independentCreateView)} bg-bluegrey-50 border-b border-bluegrey-200`}>
+          <div className={`grid ${gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn, independentCreateView, threeColumnMode)} bg-bluegrey-50 border-b border-bluegrey-200`}>
             <div className="px-3 py-3" />
             <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Attribute</div>
             {showCategoryColumn && (
               <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide">Category</div>
             )}
-            {independentCreateView ? (
+            {threeColumnMode && (
+              <>
+                <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create Invitation</div>
+                <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Mandatory attribute in invitation</div>
+                <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">View invitation</div>
+              </>
+            )}
+            {!threeColumnMode && independentCreateView && (
               <>
                 <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create</div>
                 <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">View</div>
               </>
-            ) : (
+            )}
+            {!threeColumnMode && !independentCreateView && (
               <>
                 {showCreateColumn && (
                   <div className="px-4 py-3 text-xs font-semibold text-bluegrey-600 uppercase tracking-wide text-center">Create / View</div>
@@ -262,7 +293,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                 onDrop={(e) => handleDrop(e, row.id)}
                 onDragEnd={handleDragEnd}
                 className={`grid ${
-                  gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn, independentCreateView)
+                  gridColsClass(showCategoryColumn, showCreateColumn, showLastColumn, independentCreateView, threeColumnMode)
                 } border-b border-bluegrey-100 last:border-b-0 transition-colors ${
                   isDragging ? "opacity-40 bg-bluegrey-50"
                   : isOver   ? "bg-blue-50 border-l-2 border-l-blue-400"
@@ -288,7 +319,37 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                   </div>
                 )}
 
-                {independentCreateView && (
+                {threeColumnMode && (
+                  <>
+                    {/* Create Invitation toggle — independent, clears Mandatory when off */}
+                    <div className="px-4 py-3 flex items-center justify-center">
+                      <Switch
+                        checked={row.create}
+                        onCheckedChange={() => toggleCreateThreeColumn(row.id)}
+                        aria-label={`${row.label} create invitation`}
+                      />
+                    </div>
+                    {/* Mandatory attribute in invitation — only editable when Create is on */}
+                    <div className="px-4 py-3 flex items-center justify-center">
+                      <Switch
+                        checked={!!row.mandatory && row.create}
+                        onCheckedChange={() => toggleMandatory(row.id)}
+                        disabled={!row.create}
+                        aria-label={`${row.label} mandatory in invitation`}
+                      />
+                    </div>
+                    {/* View invitation — fully independent */}
+                    <div className="px-4 py-3 flex items-center justify-center">
+                      <Switch
+                        checked={row.view}
+                        onCheckedChange={() => toggleView(row.id)}
+                        aria-label={`${row.label} view invitation`}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {!threeColumnMode && independentCreateView && (
                   <>
                     {/* Create toggle — independent, locked for system-generated attrs */}
                     <div className="px-4 py-3 flex flex-col items-center justify-center gap-1">
@@ -313,7 +374,7 @@ export default function DetailViewConfig({ attributes, onSave, onReset, showCrea
                   </>
                 )}
 
-                {!independentCreateView && (
+                {!threeColumnMode && !independentCreateView && (
                   <>
                     {/* Create toggle — Invitations only */}
                     {showCreateColumn && (
