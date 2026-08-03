@@ -28,13 +28,12 @@ const CAPABILITIES: Array<{ key: keyof AttributeCapability; label: string }> = [
 ];
 
 // An attribute that isn't visible in the overview can't meaningfully be
-// searched, filtered, or sorted on there, so those capabilities are forced
-// off whenever visibility is off. This keeps the saved config internally
-// consistent and prevents a hidden column from still being offered as a
-// filter/search/sort option elsewhere in the app.
+// searched or sorted on there, so those capabilities are forced off whenever
+// visibility is off. Filterable is independent of Visible — an attribute can
+// still be used as a filter even when it's hidden from the overview table.
 function sanitizeRow(row: AttributeCapability): AttributeCapability {
   if (row.visible) return row;
-  return { ...row, searchable: false, filterable: false, sortable: false };
+  return { ...row, searchable: false, sortable: false };
 }
 
 export default function OverviewConfigMatrix({ attributes, onSave, onReset }: OverviewConfigMatrixProps) {
@@ -79,8 +78,9 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
       prev.map((row) => {
         if (!selectedIds.has(row.id)) return row;
         if (row.disabledCaps?.includes(cap as any)) return row;
-        // Searchable/Filterable/Sortable can't be turned on for a hidden attribute.
-        if (value && cap !== "visible" && !row.visible) return row;
+        // Searchable/Sortable can't be turned on for a hidden attribute, but
+        // Filterable is independent of visibility.
+        if (value && cap !== "visible" && cap !== "filterable" && !row.visible) return row;
         return { ...row, [cap]: value };
       })
     );
@@ -239,7 +239,8 @@ export default function OverviewConfigMatrix({ attributes, onSave, onReset }: Ov
               {/* Capability toggles */}
               {CAPABILITIES.map((cap) => {
                 const isN_A = row.disabledCaps?.includes(cap.key as any);
-                const isHiddenByVisibility = cap.key !== "visible" && !row.visible;
+                const isHiddenByVisibility =
+                  cap.key !== "visible" && cap.key !== "filterable" && !row.visible;
                 const value = row[cap.key] as boolean;
                 return (
                   <div key={cap.key} className="flex items-center justify-center px-4 py-4">
