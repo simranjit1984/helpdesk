@@ -69,7 +69,7 @@ export type ScopeInclusionMode =
   | "all-children-excluding";
 
 export type ScopeOrgContextMode = "user-membership" | "select";
-export type ScopeAccessRoleContext = "org" | "any";
+export type ScopeAccessRoleContext = "org" | "any" | "none";
 
 export interface Scope {
   id: string;

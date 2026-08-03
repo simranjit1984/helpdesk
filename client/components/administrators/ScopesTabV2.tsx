@@ -27,6 +27,7 @@ import { type Scope, MOCK_SCOPES_V2 } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
 
 function accessRoleSummary(scope: Scope): string {
+  if (scope.accessRoleContext === "none") return "No access roles";
   if (scope.accessRoleMode === "all") {
     return scope.accessRoleContext === "any" ? "Any access role" : "All access roles";
   }

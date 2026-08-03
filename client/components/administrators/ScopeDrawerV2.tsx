@@ -221,15 +221,23 @@ export default function ScopeDrawerV2({
   // manually-selected organization, or when the context is "Any access
   // role" (system-wide list, not tied to an organization). Only when the
   // org context is the user's own membership org is custom selection not
-  // meaningful, so we force "All access roles" in that case.
+  // meaningful, so we force "All access roles" in that case. When "No
+  // access roles" is chosen, the picker is hidden entirely.
   const allowCustomAccessRoles =
     accessRoleContext === "any" || (accessRoleContext === "org" && orgContextMode === "select");
   useEffect(() => {
+    if (accessRoleContext === "none") {
+      if (accessRoleMode !== "custom" || accessRoleIds.length > 0) {
+        setAccessRoleMode("custom");
+        setAccessRoleIds([]);
+      }
+      return;
+    }
     if (!allowCustomAccessRoles && accessRoleMode !== "all") {
       setAccessRoleMode("all");
       setAccessRoleIds([]);
     }
-  }, [allowCustomAccessRoles, accessRoleMode]);
+  }, [accessRoleContext, allowCustomAccessRoles, accessRoleMode, accessRoleIds]);
 
   const selectedOrgLabel = SCOPE_ORG_OPTIONS.find((o) => o.value === selectedOrg)?.label ?? "";
 
@@ -408,28 +416,49 @@ export default function ScopeDrawerV2({
                   Any access role
                 </Label>
               </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="none" id="access-role-context-none" />
+                <Label
+                  htmlFor="access-role-context-none"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  No access roles
+                </Label>
+              </div>
             </RadioGroup>
           </div>
 
           {/* Access roles in scope */}
-          <AccessRolesSection
-            mode={accessRoleMode}
-            selectedIds={accessRoleIds}
-            onModeChange={(m) => {
-              setAccessRoleMode(m);
-              if (m === "all") setAccessRoleIds([]);
-            }}
-            onToggle={toggleRole}
-            allowCustom={allowCustomAccessRoles}
-            lockedMessage="All access roles available within the user's membership organization."
-            sourceNote={
-              accessRoleContext === "any"
-                ? "Showing every access role in the system — not limited to an organization."
-                : orgContextMode === "select"
-                  ? `Showing access roles available in ${selectedOrgLabel || "the selected organization"}.`
-                  : undefined
-            }
-          />
+          {accessRoleContext === "none" ? (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-bluegrey-900">Access roles in scope</p>
+              <div className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-bluegrey-25 px-3 py-2.5">
+                <Info className="w-4 h-4 text-bluegrey-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-bluegrey-600">
+                  No access roles will be granted through this scope.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <AccessRolesSection
+              mode={accessRoleMode}
+              selectedIds={accessRoleIds}
+              onModeChange={(m) => {
+                setAccessRoleMode(m);
+                if (m === "all") setAccessRoleIds([]);
+              }}
+              onToggle={toggleRole}
+              allowCustom={allowCustomAccessRoles}
+              lockedMessage="All access roles available within the user's membership organization."
+              sourceNote={
+                accessRoleContext === "any"
+                  ? "Showing every access role in the system — not limited to an organization."
+                  : orgContextMode === "select"
+                    ? `Showing access roles available in ${selectedOrgLabel || "the selected organization"}.`
+                    : undefined
+              }
+            />
+          )}
 
           {/* Description */}
           <div className="space-y-1.5">
