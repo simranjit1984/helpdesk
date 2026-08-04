@@ -140,10 +140,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
     location.pathname === "/administrators" ||
     location.pathname.startsWith("/administrators/");
 
-  const isJobsActive =
-    location.pathname === "/jobs" || location.pathname.startsWith("/jobs/");
-
-
   const isUsersActive = location.pathname === "/users" || location.pathname.startsWith("/users/");
   const navRef = useRef<HTMLElement>(null);
 
@@ -264,17 +260,6 @@ export default function LeftSidebar({ isOpen, onClose }: LeftSidebarProps) {
             label="Administrators"
             href="/administrators/all"
             active={isAdministratorsActive}
-          />
-          <MenuItem
-            icon={
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 3C12.55 3 13 3.45 13 4C13 4.55 12.55 5 12 5C11.45 5 11 4.55 11 4C11 3.45 11.45 3 12 3ZM19 19H5V5H7V8H17V5H19V19Z" fill="#131319"/>
-                <path d="M7 10H17V12H7V10ZM7 14H17V16H7V14Z" fill="#131319"/>
-              </svg>
-            }
-            label="Jobs and Reports"
-            href="/jobs"
-            active={isJobsActive}
           />
         </nav>
       </div>

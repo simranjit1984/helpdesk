@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import UIConfigurationTab from "@/components/owAdmin/UIConfigurationTab";
 import DMv2DeployTab from "@/components/owAdmin/DMv2DeployTab";
+import JobsPage from "@/components/jobs/JobsPage";
 
 // ─── Top bar ─────────────────────────────────────────────────────────────────
 
@@ -97,6 +98,14 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
       disabled: !uiConfigEnabled,
       iconComponent: <Icon icon={Icons.Grid} />,
     },
+    {
+      key: "jobs",
+      path: "jobs",
+      title: "Jobs and Reports",
+      active: activeSection === "jobs",
+      disabled: !uiConfigEnabled,
+      iconComponent: <Icon icon={Icons.Clock} />,
+    },
   ];
 }
 
@@ -105,6 +114,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "DM Tenant settings",
   "ui-config": "UI Configuration",
+  jobs: "Jobs and Reports",
 };
 
 // ─── Main page ────────────────────────────────────────────────────────────────
@@ -156,6 +166,8 @@ export default function OWAdminConsole() {
               ? isDeployed
                 ? `Tenant deployed · ${deployedOrgName}`
                 : "Update settings for your Delegated management tenant. Once deployed, the UI Configuration section will become available."
+              : activeSection === "jobs"
+              ? "Configure and monitor automated user cleanup jobs."
               : undefined}
           </ContentHeader>
 
@@ -169,6 +181,7 @@ export default function OWAdminConsole() {
               />
             )}
             {activeSection === "ui-config" && <UIConfigurationTab />}
+            {activeSection === "jobs" && <JobsPage />}
           </div>
         </main>
       </div>

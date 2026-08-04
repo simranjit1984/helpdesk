@@ -33,7 +33,6 @@ import AddAccessRolesToOrg from "./pages/AddAccessRolesToOrg";
 import Settings from "./pages/Settings";
 import OWAdminConsole from "./pages/OWAdminConsole";
 import SelfService from "./pages/SelfService";
-import Jobs from "./pages/Jobs";
 import BulkInvite from "./pages/BulkInvite";
 import BulkInvitationJobs from "./pages/BulkInvitationJobs";
 import BulkInvitationJobDetail from "./pages/BulkInvitationJobDetail";
@@ -78,7 +77,7 @@ export const App = () => (
           <Route path="/administrators/scopes" element={<Scopes />} />
           <Route path="/administrators/scopes/:scopeId" element={<ScopeDetail />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs" element={<Navigate to="/ow-admin?section=jobs" replace />} />
           <Route path="/bulk-invite" element={<BulkInvite />} />
           <Route path="/bulk-invite-jobs" element={<BulkInvitationJobs />} />
           <Route path="/bulk-invite-jobs/:jobId" element={<BulkInvitationJobDetail />} />
