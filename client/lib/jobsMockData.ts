@@ -60,6 +60,7 @@ export interface CleanupJob {
   createdBy: string;
   createdAt: string;
   lastRun?: string;
+  lastRunStatus?: LogStatus;
   nextRun: string;
   // New optional fields
   jobType?: JobType;
@@ -145,6 +146,7 @@ export const seedJobs: CleanupJob[] = [
     createdBy: "admin@example.com",
     createdAt: "2024-11-01T09:00:00Z",
     lastRun: "2025-06-16T23:00:00Z",
+    lastRunStatus: "success",
     nextRun: "2025-06-17T23:00:00Z",
   },
   {
@@ -159,6 +161,7 @@ export const seedJobs: CleanupJob[] = [
     createdBy: "admin@example.com",
     createdAt: "2024-12-15T14:30:00Z",
     lastRun: "2025-06-16T02:00:00Z",
+    lastRunStatus: "partial-success",
     nextRun: "2025-06-23T02:00:00Z",
   },
   {
@@ -177,6 +180,7 @@ export const seedJobs: CleanupJob[] = [
     createdBy: "admin@example.com",
     createdAt: "2025-01-15T10:00:00Z",
     lastRun: "2025-06-16T01:00:00Z",
+    lastRunStatus: "success",
     nextRun: "2025-06-17T01:00:00Z",
     orgMembershipBehavior: {
       revokeAccessRoles: true,
@@ -205,6 +209,7 @@ export const seedJobs: CleanupJob[] = [
     createdBy: "admin@example.com",
     createdAt: "2025-02-20T09:00:00Z",
     lastRun: "2025-06-11T03:00:00Z",
+    lastRunStatus: "failed",
     nextRun: "2025-06-18T03:00:00Z",
     accessRoleBehavior: {
       sendNotification: true,

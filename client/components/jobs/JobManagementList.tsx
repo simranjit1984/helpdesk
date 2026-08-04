@@ -16,6 +16,7 @@ import {
   MOCK_ACCESS_ROLE_OPTIONS,
   MOCK_ORGANIZATIONS,
   formatHour,
+  LogStatus,
 } from "@/lib/jobsMockData";
 import CleanupJobWizard from "./CleanupJobWizard";
 
@@ -34,6 +35,34 @@ function JobStatusBadge({ status }: { status: CleanupJob["status"] }) {
       }`}
     >
       {status === "active" ? "Active" : "Disabled"}
+    </span>
+  );
+}
+
+const LAST_RUN_STATUS_LABELS: Record<LogStatus, string> = {
+  success: "Success",
+  "partial-success": "Partial success",
+  failed: "Failed",
+};
+
+function LastRunStatusBadge({ status }: { status?: LogStatus }) {
+  if (!status) {
+    return <span className="text-xs text-bluegrey-400">Never run</span>;
+  }
+  const cls =
+    status === "success"
+      ? "bg-green-100 text-green-800"
+      : status === "partial-success"
+      ? "bg-amber-100 text-amber-800"
+      : "bg-red-100 text-red-800";
+  return (
+    <span
+      className={
+        "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap " +
+        cls
+      }
+    >
+      {LAST_RUN_STATUS_LABELS[status]}
     </span>
   );
 }
@@ -249,6 +278,9 @@ export default function JobManagementList({ jobs, onJobsChange }: Props) {
                   Last run
                 </th>
                 <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
+                  Last run status
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500 whitespace-nowrap">
                   Next run
                 </th>
                 <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-bluegrey-500">
@@ -287,6 +319,9 @@ export default function JobManagementList({ jobs, onJobsChange }: Props) {
                   </td>
                   <td className="px-4 py-3 align-top text-sm text-bluegrey-500 whitespace-nowrap">
                     {formatDate(job.lastRun)}
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <LastRunStatusBadge status={job.lastRunStatus} />
                   </td>
                   <td className="px-4 py-3 align-top text-sm text-bluegrey-500 whitespace-nowrap">
                     {formatDate(job.nextRun)}
