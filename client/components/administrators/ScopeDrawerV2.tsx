@@ -528,7 +528,7 @@ export default function ScopeDrawerV2({
                   htmlFor="application-context-at-assignment"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
-                  Application assigned at the time of assignment
+                  Select application at the time of assignment
                 </Label>
               </div>
               <div className="flex items-center gap-2.5">
