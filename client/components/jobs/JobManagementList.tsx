@@ -22,7 +22,6 @@ import CleanupJobWizard from "./CleanupJobWizard";
 interface Props {
   jobs: CleanupJob[];
   onJobsChange: (jobs: CleanupJob[]) => void;
-  onViewLogs: (jobId: string) => void;
 }
 
 function JobStatusBadge({ status }: { status: CleanupJob["status"] }) {
@@ -143,7 +142,7 @@ function JobScopeTags({ job }: { job: CleanupJob }) {
   return null;
 }
 
-export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Props) {
+export default function JobManagementList({ jobs, onJobsChange }: Props) {
   const { toast } = useToast();
   const [wizardOpen, setWizardOpen] = useState(false);
   const [editJob, setEditJob] = useState<CleanupJob | null>(null);
@@ -309,14 +308,6 @@ export default function JobManagementList({ jobs, onJobsChange, onViewLogs }: Pr
                         onClick={() => handleToggleStatus(job)}
                       >
                         {job.status === "active" ? "Disable" : "Enable"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-xs px-2 h-7"
-                        onClick={() => onViewLogs(job.id)}
-                      >
-                        Logs
                       </Button>
                       <Button
                         size="sm"
