@@ -8,7 +8,7 @@ import type { AttributeCapability } from "./OverviewConfigMatrix";
 export type ValueSourceType =
   | "app-object"       // (system/locked attributes only) fetched from an application object
   | "external-system"  // (system/locked attributes only) fetched from an external system (e.g. IDS)
-  | "canonical"         // Canonical values sourced from the IDS attribute where this attribute is configured
+  | "canonical"         // Auto-detected: canonical values from IDS, not user-selectable in the picker
   | "admin-list"        // Fixed list of values entered here by the admin
   | "free-text";        // No predefined values — the user enters a value in the application and it's matched as-is
 
@@ -31,8 +31,6 @@ export interface FilterAttributeConfig {
   // external-system
   externalSystemAttribute?: string;   // IDS attribute key, e.g. "userStatus"
   externalSystemFallback?: string[];  // admin-configured fallback values
-  // canonical
-  canonicalIdsAttribute?: string;     // IDS attribute key whose canonical values are used
   // admin-list
   adminListValues?: string[];         // fixed list of values entered by the admin
   // — Filter behaviour ———————————————————————————————————————————————————————
@@ -107,7 +105,19 @@ const IDS_ATTRIBUTES: IdsAttribute[] = [
   { value: "department",   label: "Department" },
   { value: "employeeType", label: "Employee Type" },
   { value: "locale",       label: "Locale" },
-  { value: "country",      label: "Country" },
+  {
+    value: "country",
+    label: "Country",
+    predefinedValues: [
+      "United States",
+      "United Kingdom",
+      "Germany",
+      "France",
+      "India",
+      "Netherlands",
+      "Australia",
+    ],
+  },
 ];
 
 // ─── Source type definitions ──────────────────────────────────────────────────
@@ -133,11 +143,6 @@ const SOURCE_TYPES: SourceDef[] = [
     description: "Options are retrieved from an IDS attribute. Fallback values apply if IDS returns nothing.",
   },
   {
-    value: "canonical",
-    label: "Canonical values (IDS)",
-    description: "Options are the canonical values defined for this attribute where it's configured in IDS.",
-  },
-  {
     value: "admin-list",
     label: "Admin-defined list",
     description: "A fixed list of values entered here by the admin.",
@@ -153,7 +158,7 @@ const SOURCE_TYPES: SourceDef[] = [
 // attributes. "app-object" / "external-system" are legacy types that remain
 // fixed for system attributes only and are not offered here.
 const EDITABLE_SOURCE_TYPES: SourceDef[] = SOURCE_TYPES.filter(
-  (s) => s.value === "canonical" || s.value === "admin-list" || s.value === "free-text"
+  (s) => s.value === "admin-list" || s.value === "free-text"
 );
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -385,6 +390,28 @@ function SourceConfig({
     return <LockedSourceSummary cfg={cfg} />;
   }
 
+  // Auto-detection: if this attribute is already configured in IDS (matched
+  // by attribute id) and has canonical values defined there, show them
+  // automatically. No manual "Canonical values" option or IDS attribute
+  // selection is needed — we already know which attribute it maps to.
+  const autoCanonicalAttr = IDS_ATTRIBUTES.find((a) => a.value === cfg.id);
+  if (autoCanonicalAttr?.predefinedValues && autoCanonicalAttr.predefinedValues.length > 0) {
+    return (
+      <div className="space-y-1.5 rounded-md border border-bluegrey-200 bg-bluegrey-25 p-3">
+        <p className="text-[11px] font-medium text-bluegrey-600">
+          Canonical values automatically detected from IDS for <span className="font-semibold text-bluegrey-800">{autoCanonicalAttr.label}</span>:
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {autoCanonicalAttr.predefinedValues.map((v) => (
+            <span key={v} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700">
+              {v}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2">
       {/* Source type picker */}
@@ -392,52 +419,6 @@ function SourceConfig({
         value={cfg.valueSource}
         onChange={(v) => onChange({ valueSource: v })}
       />
-
-      {/* ── Canonical values (IDS) ── */}
-      {cfg.valueSource === "canonical" && (
-        <div className="space-y-2">
-          <StyledSelect<string>
-            value={cfg.canonicalIdsAttribute}
-            onChange={(v) => onChange({ canonicalIdsAttribute: v })}
-            options={IDS_ATTRIBUTES.map((a) => ({ value: a.value, label: a.label }))}
-            placeholder="Select IDS attribute…"
-          />
-
-          {(() => {
-            const selectedCanonicalAttr = IDS_ATTRIBUTES.find(
-              (a) => a.value === cfg.canonicalIdsAttribute
-            );
-            if (!selectedCanonicalAttr) {
-              return (
-                <p className="text-[11px] text-bluegrey-400">
-                  Select the IDS attribute where this attribute is configured to show its canonical values.
-                </p>
-              );
-            }
-            if (!selectedCanonicalAttr.predefinedValues || selectedCanonicalAttr.predefinedValues.length === 0) {
-              return (
-                <p className="text-[11px] text-bluegrey-500 italic">
-                  No canonical values are defined for <span className="font-medium">{selectedCanonicalAttr.label}</span> in IDS. Values will be fetched dynamically at runtime.
-                </p>
-              );
-            }
-            return (
-              <div className="space-y-1.5 rounded-md border border-bluegrey-200 bg-bluegrey-25 p-3">
-                <p className="text-[11px] font-medium text-bluegrey-600">
-                  Canonical values for <span className="font-semibold text-bluegrey-800">{selectedCanonicalAttr.label}</span> (read-only, defined in IDS):
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedCanonicalAttr.predefinedValues.map((v) => (
-                    <span key={v} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700">
-                      {v}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })()}
-        </div>
-      )}
 
       {/* ── Admin-defined list ── */}
       {cfg.valueSource === "admin-list" && (
@@ -515,7 +496,7 @@ function buildInitialConfig(
     return {
       id: attr.id,
       label: attr.label,
-      valueSource: "canonical" as ValueSourceType,
+      valueSource: "admin-list" as ValueSourceType,
       valueSelectType: "single",
     };
   });
@@ -586,7 +567,9 @@ export default function FilterConfigTab({
                 <span className="text-sm font-medium text-bluegrey-900">{cfg.label}</span>
                 {!autoValueSource && (
                   <p className="text-[11px] text-bluegrey-400 mt-0.5">
-                    {SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.label}
+                    {!cfg.locked && IDS_ATTRIBUTES.find((a) => a.value === cfg.id)?.predefinedValues?.length
+                      ? "Canonical values (IDS)"
+                      : SOURCE_TYPES.find((s) => s.value === cfg.valueSource)?.label}
                   </p>
                 )}
               </div>
