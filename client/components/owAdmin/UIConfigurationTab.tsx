@@ -22,6 +22,7 @@ const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
   { id: "role",        label: "Access roles", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
+  { id: "country",     label: "Country",      visible: true,  searchable: false, filterable: true,  sortable: false },
 ];
 
 const DEFAULT_USERS_DETAIL: DetailAttribute[] = [
