@@ -45,6 +45,10 @@ function toDetailAttrs(attrs: OrgAttribute[]): DetailAttribute[] {
 const ORG_FILTER_ATTRS: AttributeCapability[] = [
   { id: "orgName", label: "Organization Name", visible: true, searchable: true, filterable: true, sortable: true },
   { id: "status", label: "Status", visible: true, searchable: true, filterable: true, sortable: true },
+  // Description is not a fixed system filter — like the other free-form
+  // attributes, an admin can decide whether it filters against a canonical
+  // value set (if configured), an admin-defined list, or free text.
+  { id: "description", label: "Description", visible: true, searchable: true, filterable: true, sortable: false },
 ];
 
 const DEFAULT_ORG_FILTER: FilterAttributeConfig[] = [
@@ -65,6 +69,12 @@ const DEFAULT_ORG_FILTER: FilterAttributeConfig[] = [
     appObjectAttribute: "status",
     valueSelectType: "single",
     locked: true,
+  },
+  {
+    id: "description",
+    label: "Description",
+    valueSource: "free-text",
+    valueSelectType: "single",
   },
 ];
 
@@ -175,7 +185,7 @@ export default function OrganizationConfig() {
         <div className="mb-4">
           <h3 className="text-base font-semibold text-bluegrey-900">Filter configuration</h3>
           <p className="text-sm text-bluegrey-500 mt-1">
-            Organizations can be filtered by <strong>Status</strong> and <strong>Organization Name</strong> only. These are fixed system filters — admins can only configure whether a single or multiple values may be selected.
+            Organizations can be filtered by <strong>Status</strong>, <strong>Organization Name</strong> and <strong>Description</strong>. Status and Organization Name are fixed system filters; Description's value source (canonical, admin-defined list, or free text) can be configured below.
           </p>
         </div>
         <FilterConfigTab
