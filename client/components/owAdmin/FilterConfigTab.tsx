@@ -6,8 +6,11 @@ import type { AttributeCapability } from "./OverviewConfigMatrix";
 // ─── Value source types ───────────────────────────────────────────────────────
 
 export type ValueSourceType =
-  | "app-object"       // Dynamically fetched from an application object
-  | "external-system"; // Fetched from an external system (e.g. IDS)
+  | "app-object"       // (system/locked attributes only) fetched from an application object
+  | "external-system"  // (system/locked attributes only) fetched from an external system (e.g. IDS)
+  | "canonical"         // Canonical values sourced from the IDS attribute where this attribute is configured
+  | "admin-list"        // Fixed list of values entered here by the admin
+  | "free-text";        // No predefined values — the user enters a value in the application and it's matched as-is
 
 export type AppObjectRef =
   | "access-roles"
@@ -28,6 +31,10 @@ export interface FilterAttributeConfig {
   // external-system
   externalSystemAttribute?: string;   // IDS attribute key, e.g. "userStatus"
   externalSystemFallback?: string[];  // admin-configured fallback values
+  // canonical
+  canonicalIdsAttribute?: string;     // IDS attribute key whose canonical values are used
+  // admin-list
+  adminListValues?: string[];         // fixed list of values entered by the admin
   // — Filter behaviour ———————————————————————————————————————————————————————
   valueSelectType: "single" | "multiple";
   /** System attributes have a fixed source config that admins cannot edit. */
@@ -111,6 +118,9 @@ interface SourceDef {
   description: string;
 }
 
+// All source types, including the two legacy types that remain in use only
+// for locked/system attributes (Access roles, Organization, Status). Used to
+// resolve labels for the read-only preview text under the attribute name.
 const SOURCE_TYPES: SourceDef[] = [
   {
     value: "app-object",
@@ -122,7 +132,29 @@ const SOURCE_TYPES: SourceDef[] = [
     label: "External system (IDS)",
     description: "Options are retrieved from an IDS attribute. Fallback values apply if IDS returns nothing.",
   },
+  {
+    value: "canonical",
+    label: "Canonical values (IDS)",
+    description: "Options are the canonical values defined for this attribute where it's configured in IDS.",
+  },
+  {
+    value: "admin-list",
+    label: "Admin-defined list",
+    description: "A fixed list of values entered here by the admin.",
+  },
+  {
+    value: "free-text",
+    label: "Free text",
+    description: "No predefined values \u2014 the user enters a value in the application and it's matched as-is.",
+  },
 ];
+
+// Source types offered in the picker for regular (non-locked, non-auto)
+// attributes. "app-object" / "external-system" are legacy types that remain
+// fixed for system attributes only and are not offered here.
+const EDITABLE_SOURCE_TYPES: SourceDef[] = SOURCE_TYPES.filter(
+  (s) => s.value === "canonical" || s.value === "admin-list" || s.value === "free-text"
+);
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -135,7 +167,7 @@ function SourcePill({
 }) {
   return (
     <div className="inline-flex flex-wrap gap-1">
-      {SOURCE_TYPES.map((src) => (
+      {EDITABLE_SOURCE_TYPES.map((src) => (
         <button
           key={src.value}
           type="button"
@@ -345,8 +377,6 @@ function SourceConfig({
   autoValueSource?: boolean;
   possibleValues?: string[];
 }) {
-  const selectedIdsAttr = IDS_ATTRIBUTES.find((a) => a.value === cfg.externalSystemAttribute);
-
   if (autoValueSource) {
     return <AutoSourceConfig possibleValues={possibleValues ?? []} />;
   }
@@ -363,93 +393,71 @@ function SourceConfig({
         onChange={(v) => onChange({ valueSource: v })}
       />
 
-      {/* ── Application object ── */}
-      {cfg.valueSource === "app-object" && (
+      {/* ── Canonical values (IDS) ── */}
+      {cfg.valueSource === "canonical" && (
         <div className="space-y-2">
-          {/* Step 1: object type */}
-          <StyledSelect<AppObjectRef>
-            value={cfg.appObjectRef}
-            onChange={(v) => onChange({ appObjectRef: v, appObjectAttribute: undefined })}
-            options={Object.entries(APP_OBJECT_LABELS).map(([k, label]) => ({
-              value: k as AppObjectRef,
-              label,
-            }))}
-            placeholder="Select object type…"
-          />
-
-          {/* Step 2: attribute (shown once object is selected) */}
-          {cfg.appObjectRef && (
-            <StyledSelect<string>
-              value={cfg.appObjectAttribute}
-              onChange={(v) => onChange({ appObjectAttribute: v })}
-              options={APP_OBJECT_ATTRIBUTES[cfg.appObjectRef]}
-              placeholder="Select attribute…"
-            />
-          )}
-
-          <p className="text-[11px] text-bluegrey-400">
-            Filter options will be populated from the selected object attribute at runtime.
-          </p>
-        </div>
-      )}
-
-      {/* ── External system (IDS) ── */}
-      {cfg.valueSource === "external-system" && (
-        <div className="space-y-2">
-          {/* IDS attribute picker */}
           <StyledSelect<string>
-            value={cfg.externalSystemAttribute}
-            onChange={(v) =>
-              onChange({
-                externalSystemAttribute: v,
-                externalSystemFallback: [],
-              })
-            }
+            value={cfg.canonicalIdsAttribute}
+            onChange={(v) => onChange({ canonicalIdsAttribute: v })}
             options={IDS_ATTRIBUTES.map((a) => ({ value: a.value, label: a.label }))}
             placeholder="Select IDS attribute…"
           />
 
-          {/* Once attribute is chosen */}
-          {selectedIdsAttr && (
-            <div className="space-y-2 rounded-md border border-bluegrey-200 bg-bluegrey-25 p-3">
-              {selectedIdsAttr.predefinedValues && selectedIdsAttr.predefinedValues.length > 0 ? (
-                <>
-                  <p className="text-[11px] font-medium text-bluegrey-600">
-                    Pre-defined values for <span className="font-semibold text-bluegrey-800">{selectedIdsAttr.label}</span> — check which should be pre-selected by default:
-                  </p>
-                  <PredefinedChecklist
-                    pool={selectedIdsAttr.predefinedValues}
-                    selected={cfg.externalSystemFallback ?? []}
-                    onChange={(v) => onChange({ externalSystemFallback: v })}
-                  />
-                  <p className="text-[11px] text-bluegrey-400">
-                    These values are used as fallback defaults if IDS returns no data at runtime.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-[11px] font-medium text-bluegrey-600">
-                    No pre-defined values for <span className="font-semibold text-bluegrey-800">{selectedIdsAttr.label}</span>. Configure fallback values:
-                  </p>
-                  <TagInput
-                    values={cfg.externalSystemFallback ?? []}
-                    onChange={(v) => onChange({ externalSystemFallback: v })}
-                    placeholder="Type fallback values, press Enter…"
-                  />
-                  <p className="text-[11px] text-bluegrey-400">
-                    Shown as defaults if IDS returns nothing. Leave empty to show no preset.
-                  </p>
-                </>
-              )}
-            </div>
-          )}
-
-          {!selectedIdsAttr && (
-            <p className="text-[11px] text-bluegrey-400">
-              Select an IDS attribute to configure default / fallback values.
-            </p>
-          )}
+          {(() => {
+            const selectedCanonicalAttr = IDS_ATTRIBUTES.find(
+              (a) => a.value === cfg.canonicalIdsAttribute
+            );
+            if (!selectedCanonicalAttr) {
+              return (
+                <p className="text-[11px] text-bluegrey-400">
+                  Select the IDS attribute where this attribute is configured to show its canonical values.
+                </p>
+              );
+            }
+            if (!selectedCanonicalAttr.predefinedValues || selectedCanonicalAttr.predefinedValues.length === 0) {
+              return (
+                <p className="text-[11px] text-bluegrey-500 italic">
+                  No canonical values are defined for <span className="font-medium">{selectedCanonicalAttr.label}</span> in IDS. Values will be fetched dynamically at runtime.
+                </p>
+              );
+            }
+            return (
+              <div className="space-y-1.5 rounded-md border border-bluegrey-200 bg-bluegrey-25 p-3">
+                <p className="text-[11px] font-medium text-bluegrey-600">
+                  Canonical values for <span className="font-semibold text-bluegrey-800">{selectedCanonicalAttr.label}</span> (read-only, defined in IDS):
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedCanonicalAttr.predefinedValues.map((v) => (
+                    <span key={v} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-bluegrey-100 text-bluegrey-700">
+                      {v}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
+      )}
+
+      {/* ── Admin-defined list ── */}
+      {cfg.valueSource === "admin-list" && (
+        <div className="space-y-2">
+          <TagInput
+            values={cfg.adminListValues ?? []}
+            onChange={(v) => onChange({ adminListValues: v })}
+            placeholder="Type a value, press Enter…"
+          />
+          <p className="text-[11px] text-bluegrey-400">
+            Only the values entered here will be offered as filter options.
+          </p>
+        </div>
+      )}
+
+      {/* ── Free text ── */}
+      {cfg.valueSource === "free-text" && (
+        <p className="text-[11px] text-bluegrey-400">
+          No configuration needed. The user types a value directly in the application, and filtering matches that free-text value.
+        </p>
       )}
     </div>
   );
@@ -507,7 +515,7 @@ function buildInitialConfig(
     return {
       id: attr.id,
       label: attr.label,
-      valueSource: "app-object" as ValueSourceType,
+      valueSource: "canonical" as ValueSourceType,
       valueSelectType: "single",
     };
   });
