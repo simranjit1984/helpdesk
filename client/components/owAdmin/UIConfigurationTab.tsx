@@ -23,6 +23,11 @@ const DEFAULT_USERS_OVERVIEW: AttributeCapability[] = [
   { id: "organization",label: "Organization", visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "status",      label: "Status",       visible: true,  searchable: false, filterable: true,  sortable: false, disabledCaps: ["searchable", "sortable"] },
   { id: "country",     label: "Country",      visible: true,  searchable: false, filterable: true,  sortable: false },
+  // Two additional "Country" filter attributes used to demonstrate the other
+  // available value-source configurations (admin-defined list & free text).
+  // They are filterable-only (not shown as table columns).
+  { id: "countryAdminList", label: "Country", visible: false, searchable: false, filterable: true, sortable: false },
+  { id: "countryFreeText",  label: "Country", visible: false, searchable: false, filterable: true, sortable: false },
 ];
 
 const DEFAULT_USERS_DETAIL: DetailAttribute[] = [
@@ -84,6 +89,19 @@ const DEFAULT_USERS_FILTER: FilterAttributeConfig[] = [
     externalSystemFallback: [],
     valueSelectType: "single",
     locked: true,
+  },
+  {
+    id: "countryAdminList",
+    label: "Country",
+    valueSource: "admin-list",
+    adminListValues: ["United States", "United Kingdom", "Germany", "France", "India"],
+    valueSelectType: "single",
+  },
+  {
+    id: "countryFreeText",
+    label: "Country",
+    valueSource: "free-text",
+    valueSelectType: "single",
   },
 ];
 
