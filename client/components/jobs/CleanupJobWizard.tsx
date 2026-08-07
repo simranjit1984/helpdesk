@@ -80,7 +80,7 @@ const DEFAULT_ROLE_BEHAVIOR: AccessRoleBehavior = {
 const DEFAULT_FORM: CleanupJobFormState = {
   jobType: null,
   name: "",
-  status: null,
+  statuses: [],
   organizationIds: [],
   includeAllOrgs: false,
   userStatusFilter: "active",
@@ -117,7 +117,7 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
     return {
       jobType,
       name: editJob.name,
-      status: editJob.statuses[0] ?? null,
+      statuses: editJob.statuses ?? [],
       organizationIds: editJob.organizationIds ?? [],
       includeAllOrgs: editJob.includeAllOrgs ?? false,
       userStatusFilter: editJob.userStatusFilter ?? "active",
@@ -169,7 +169,7 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
       case "job-type":
         return form.jobType !== null;
       case "user-status":
-        return form.status !== null;
+        return form.statuses.length > 0;
       case "org-scope":
         return form.includeAllOrgs || form.organizationIds.length > 0;
       case "grace-period":
@@ -208,7 +208,7 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
 
     const base = {
       name: form.name || "Unnamed cleanup job",
-      statuses: jobType === "user-status-cleanup" && form.status ? [form.status] : ([] as CleanupStatus[]),
+      statuses: jobType === "user-status-cleanup" ? form.statuses : ([] as CleanupStatus[]),
       jobType,
       frequency: form.frequency as Frequency,
       frequencyDays: form.frequencyDays,
@@ -277,8 +277,8 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
       case "user-status":
         return (
           <Step1StatusSelection
-            selected={form.status}
-            onChange={(s) => patch({ status: s })}
+            selected={form.statuses}
+            onChange={(statuses) => patch({ statuses })}
             showError={showErrors}
           />
         );

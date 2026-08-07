@@ -115,7 +115,7 @@ export interface LogEntry {
 
 export interface CleanupJobFormState {
   jobType: JobType | null;
-  status: CleanupStatus | null;
+  statuses: CleanupStatus[];
   organizationIds: string[];
   includeAllOrgs: boolean;
   userStatusFilter: UserStatusFilter;

@@ -118,15 +118,22 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
           />
           <Row label="Job type" value={<JobTypeBadge jobType={jobType} />} />
 
-          {/* User status cleanup: show status */}
+          {/* User status cleanup: show statuses */}
           {jobType === "user-status-cleanup" && (
             <Row
-              label="Status to delete"
+              label="Statuses to delete"
               value={
-                form.status ? (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800">
-                    {CLEANUP_STATUS_LABELS[form.status]}
-                  </span>
+                form.statuses.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {form.statuses.map((s) => (
+                      <span
+                        key={s}
+                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800"
+                      >
+                        {CLEANUP_STATUS_LABELS[s]}
+                      </span>
+                    ))}
+                  </div>
                 ) : (
                   <span className="text-bluegrey-400 italic">None selected</span>
                 )
