@@ -101,7 +101,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
     {
       key: "jobs",
       path: "jobs",
-      title: "Jobs and Reports",
+      title: "Jobs",
       active: activeSection === "jobs",
       disabled: !uiConfigEnabled,
       iconComponent: <Icon icon={Icons.Clock} />,
@@ -114,7 +114,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "DM Tenant settings",
   "ui-config": "UI Configuration",
-  jobs: "Jobs and Reports",
+  jobs: "Jobs",
 };
 
 // ─── Main page ────────────────────────────────────────────────────────────────
