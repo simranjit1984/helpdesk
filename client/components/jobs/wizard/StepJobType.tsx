@@ -25,6 +25,12 @@ const JOB_TYPES: { type: JobType; label: string; description: string }[] = [
     description:
       "Revokes access role assignments from users when the role's end date has passed.",
   },
+  {
+    type: "admin-role-cleanup",
+    label: "Admin Role Cleanup",
+    description:
+      "Revokes admin role assignments from administrators when the role's end date has passed.",
+  },
 ];
 
 export default function StepJobType({ selected, onChange, showError }: Props) {

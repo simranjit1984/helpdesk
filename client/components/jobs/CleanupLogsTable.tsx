@@ -44,6 +44,8 @@ function JobTypeBadge({ jobType }: { jobType: JobType }) {
       ? "bg-purple-100 text-purple-700"
       : jobType === "access-role-cleanup"
       ? "bg-teal-100 text-teal-700"
+      : jobType === "admin-role-cleanup"
+      ? "bg-indigo-100 text-indigo-700"
       : "bg-blue-100 text-blue-700";
   return (
     <span
@@ -128,24 +130,32 @@ function ExpandedDetails({ entry }: { entry: LogEntry }) {
             </div>
           )}
 
-          {/* Access Role: revoked roles */}
-          {jobType === "access-role-cleanup" && d.revokedRoles && d.revokedRoles.length > 0 && (
-            <div>
-              <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
-                Revoked roles ({d.revokedRoles.length})
-              </span>
-              <div className="space-y-1">
-                {d.revokedRoles.map((r, i) => (
-                  <div key={i} className="flex gap-3 items-center flex-wrap">
-                    <span className="text-xs text-teal-700 font-medium">{r.userId}</span>
-                    <span className="text-xs text-bluegrey-500">
-                      — {r.roleName} @ {r.orgName}
-                    </span>
-                  </div>
-                ))}
+          {/* Access Role / Admin Role: revoked roles */}
+          {(jobType === "access-role-cleanup" || jobType === "admin-role-cleanup") &&
+            d.revokedRoles &&
+            d.revokedRoles.length > 0 && (
+              <div>
+                <span className="text-xs font-semibold text-bluegrey-500 uppercase block mb-1">
+                  Revoked roles ({d.revokedRoles.length})
+                </span>
+                <div className="space-y-1">
+                  {d.revokedRoles.map((r, i) => (
+                    <div key={i} className="flex gap-3 items-center flex-wrap">
+                      <span
+                        className={`text-xs font-medium ${
+                          jobType === "admin-role-cleanup" ? "text-indigo-700" : "text-teal-700"
+                        }`}
+                      >
+                        {r.userId}
+                      </span>
+                      <span className="text-xs text-bluegrey-500">
+                        — {r.roleName} @ {r.orgName}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Failed records (all types) */}
           {d.failedUsers.length > 0 && (
@@ -256,6 +266,7 @@ export default function CleanupLogsTable({ logs, jobs, filterJobId }: Props) {
             <option value="user-status-cleanup">User Status Cleanup</option>
             <option value="org-membership-cleanup">Org Membership Cleanup</option>
             <option value="access-role-cleanup">Access Role Cleanup</option>
+            <option value="admin-role-cleanup">Admin Role Cleanup</option>
           </select>
         </div>
 

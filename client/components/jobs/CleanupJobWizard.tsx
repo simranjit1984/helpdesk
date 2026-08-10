@@ -228,7 +228,7 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
         gracePeriodDays: form.gracePeriodDays,
         orgMembershipBehavior: form.orgBehavior,
       });
-    } else if (jobType === "access-role-cleanup") {
+    } else if (jobType === "access-role-cleanup" || jobType === "admin-role-cleanup") {
       onSave({
         ...base,
         organizationIds: form.organizationIds,
@@ -325,7 +325,12 @@ export default function CleanupJobWizard({ open, editJob, onClose, onSave }: Pro
       case "behavior":
         return (
           <StepBehaviorConfig
-            jobType={form.jobType as "org-membership-cleanup" | "access-role-cleanup"}
+            jobType={
+              form.jobType as
+                | "org-membership-cleanup"
+                | "access-role-cleanup"
+                | "admin-role-cleanup"
+            }
             orgBehavior={form.orgBehavior}
             roleBehavior={form.roleBehavior}
             onChange={patch}

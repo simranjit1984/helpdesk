@@ -7,6 +7,7 @@ import {
   LAST_ORG_BEHAVIOR_LABELS,
   LAST_ROLE_BEHAVIOR_LABELS,
   MOCK_ACCESS_ROLE_OPTIONS,
+  MOCK_ADMIN_ROLE_OPTIONS,
   MOCK_ORGANIZATIONS,
   USER_STATUS_FILTER_LABELS,
   formatHour,
@@ -47,6 +48,8 @@ function JobTypeBadge({ jobType }: { jobType: string }) {
       ? "bg-purple-100 text-purple-800"
       : jobType === "access-role-cleanup"
       ? "bg-teal-100 text-teal-800"
+      : jobType === "admin-role-cleanup"
+      ? "bg-indigo-100 text-indigo-800"
       : "bg-blue-100 text-blue-800";
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cls}`}>
@@ -57,6 +60,10 @@ function JobTypeBadge({ jobType }: { jobType: string }) {
 
 export default function Step5Review({ form, confirmed, onConfirmChange, showError }: Props) {
   const jobType = form.jobType ?? "user-status-cleanup";
+  const isAdminRoleJob = jobType === "admin-role-cleanup";
+  const isAccessRoleJob = jobType === "access-role-cleanup";
+  const roleCatalog = isAdminRoleJob ? MOCK_ADMIN_ROLE_OPTIONS : MOCK_ACCESS_ROLE_OPTIONS;
+  const roleWord = isAdminRoleJob ? "admin role" : "access role";
 
   const orgNames = form.includeAllOrgs
     ? "All organizations"
@@ -67,17 +74,19 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
         .join(", ");
 
   const roleNames = form.includeAllRoles
-    ? "All access roles"
+    ? `All ${roleWord}s`
     : form.specificAccessRoles.length === 0
     ? "None selected"
-    : MOCK_ACCESS_ROLE_OPTIONS.filter((r) => form.specificAccessRoles.includes(r.id))
+    : roleCatalog
+        .filter((r) => form.specificAccessRoles.includes(r.id))
         .map((r) => r.name)
         .join(", ");
 
   const excludedRoleNames =
     form.excludeRoles.length === 0
       ? "None"
-      : MOCK_ACCESS_ROLE_OPTIONS.filter((r) => form.excludeRoles.includes(r.id))
+      : roleCatalog
+          .filter((r) => form.excludeRoles.includes(r.id))
           .map((r) => r.name)
           .join(", ");
 
@@ -90,8 +99,10 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
   const warningText =
     jobType === "org-membership-cleanup"
       ? "This job will repeatedly remove users from the selected organizations when their membership end date has passed."
-      : jobType === "access-role-cleanup"
+      : isAccessRoleJob
       ? "This job will repeatedly revoke access role assignments when the role's end date has passed."
+      : isAdminRoleJob
+      ? "This job will repeatedly revoke admin role assignments when the role's end date has passed."
       : "This action will permanently and repeatedly delete users matching the selected status.";
 
   return (
@@ -141,8 +152,8 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
             />
           )}
 
-          {/* Org / Access Role: shared fields */}
-          {(jobType === "org-membership-cleanup" || jobType === "access-role-cleanup") && (
+          {/* Org / Access Role / Admin Role: shared fields */}
+          {jobType !== "user-status-cleanup" && (
             <>
               <Row label="Target organizations" value={orgNames} />
               <Row label="User status filter" value={USER_STATUS_FILTER_LABELS[form.userStatusFilter]} />
@@ -169,10 +180,10 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
             </>
           )}
 
-          {/* Access Role: specific fields */}
-          {jobType === "access-role-cleanup" && (
+          {/* Access Role / Admin Role: specific fields */}
+          {(isAccessRoleJob || isAdminRoleJob) && (
             <>
-              <Row label="Target roles" value={roleNames} />
+              <Row label={isAdminRoleJob ? "Target admin roles" : "Target roles"} value={roleNames} />
               {form.excludeRoles.length > 0 && (
                 <Row label="Excluded roles" value={excludedRoleNames} />
               )}
@@ -185,7 +196,7 @@ export default function Step5Review({ form, confirmed, onConfirmChange, showErro
                 value={form.roleBehavior.sendNotification ? "Yes" : "No"}
               />
               <Row
-                label="If last role removed"
+                label={`If last ${roleWord} removed`}
                 value={LAST_ROLE_BEHAVIOR_LABELS[form.roleBehavior.lastRoleBehavior]}
               />
             </>

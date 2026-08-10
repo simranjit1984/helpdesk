@@ -10,7 +10,7 @@ import {
 } from "@/lib/jobsMockData";
 
 interface Props {
-  jobType: "org-membership-cleanup" | "access-role-cleanup";
+  jobType: "org-membership-cleanup" | "access-role-cleanup" | "admin-role-cleanup";
   orgBehavior: OrgMembershipBehavior;
   roleBehavior: AccessRoleBehavior;
   onChange: (patch: Partial<CleanupJobFormState>) => void;
@@ -129,9 +129,11 @@ function OrgBehaviorPanel({
 
 function RoleBehaviorPanel({
   roleBehavior,
+  roleLabel,
   onChange,
 }: {
   roleBehavior: AccessRoleBehavior;
+  roleLabel: string;
   onChange: (patch: Partial<CleanupJobFormState>) => void;
 }) {
   const patch = (updates: Partial<AccessRoleBehavior>) =>
@@ -152,7 +154,7 @@ function RoleBehaviorPanel({
             />
             <div>
               <span className="text-sm text-bluegrey-500">
-                Immediately revoke access role
+                Immediately revoke {roleLabel}
               </span>
               <p className="text-xs text-bluegrey-400 mt-0.5">
                 Always enabled. The role is revoked immediately upon job execution.
@@ -171,7 +173,7 @@ function RoleBehaviorPanel({
                 Notify user of access revocation
               </span>
               <p className="text-xs text-bluegrey-400 mt-0.5">
-                User receives an email informing them that their access role has been revoked.
+                User receives an email informing them that their {roleLabel} has been revoked.
               </p>
             </div>
           </label>
@@ -212,9 +214,9 @@ function RoleBehaviorPanel({
 
       {/* Section 2: Last role behavior */}
       <div className="p-4 rounded-lg border border-bluegrey-200 space-y-3">
-        <SectionHeader>If last access role is removed</SectionHeader>
+        <SectionHeader>If last {roleLabel} is removed</SectionHeader>
         <p className="text-xs text-bluegrey-500 -mt-1 mb-2">
-          Choose what to do when this is the user's last active access role in the organization.
+          Choose what to do when this is the user's last active {roleLabel} in the organization.
         </p>
         <div className="space-y-2">
           {LAST_ROLE_OPTIONS.map((option) => (
@@ -251,6 +253,9 @@ export default function StepBehaviorConfig({
   roleBehavior,
   onChange,
 }: Props) {
+  const isAdminRoleJob = jobType === "admin-role-cleanup";
+  const roleLabel = isAdminRoleJob ? "admin role" : "access role";
+
   return (
     <div className="space-y-6">
       <div>
@@ -259,7 +264,7 @@ export default function StepBehaviorConfig({
           Configure what actions to take when{" "}
           {jobType === "org-membership-cleanup"
             ? "a user is removed from an organization"
-            : "an access role is revoked from a user"}
+            : `${isAdminRoleJob ? "an admin role" : "an access role"} is revoked from a user`}
           .
         </p>
       </div>
@@ -267,7 +272,7 @@ export default function StepBehaviorConfig({
       {jobType === "org-membership-cleanup" ? (
         <OrgBehaviorPanel orgBehavior={orgBehavior} onChange={onChange} />
       ) : (
-        <RoleBehaviorPanel roleBehavior={roleBehavior} onChange={onChange} />
+        <RoleBehaviorPanel roleBehavior={roleBehavior} roleLabel={roleLabel} onChange={onChange} />
       )}
     </div>
   );

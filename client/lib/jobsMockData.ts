@@ -13,7 +13,8 @@ export type LogStatus = "success" | "partial-success" | "failed";
 export type JobType =
   | "user-status-cleanup"
   | "org-membership-cleanup"
-  | "access-role-cleanup";
+  | "access-role-cleanup"
+  | "admin-role-cleanup";
 
 export type UserStatusFilter = "active" | "all" | "custom";
 export type LastOrgBehavior = "orphan-org" | "delete-user";
@@ -211,6 +212,35 @@ export const seedJobs: CleanupJob[] = [
     lastRun: "2025-06-11T03:00:00Z",
     lastRunStatus: "failed",
     nextRun: "2025-06-18T03:00:00Z",
+    accessRoleBehavior: {
+      sendNotification: true,
+      logAuditTrail: true,
+      removeFromEntitlements: true,
+      lastRoleBehavior: "keep-in-org",
+    },
+  },
+  {
+    id: "job-005",
+    name: "Monthly Admin Role Expiry Revocation",
+    statuses: [],
+    jobType: "admin-role-cleanup",
+    organizationIds: [],
+    includeAllOrgs: true,
+    userStatusFilter: "all",
+    gracePeriodDays: 3,
+    specificAccessRoles: [],
+    includeAllRoles: true,
+    excludeRoles: [],
+    frequency: "monthly",
+    frequencyDayOfMonth: 1,
+    executionHour: 4,
+    dryRunEnabled: false,
+    status: "active",
+    createdBy: "admin@example.com",
+    createdAt: "2025-03-05T09:00:00Z",
+    lastRun: "2025-06-01T04:00:00Z",
+    lastRunStatus: "success",
+    nextRun: "2025-07-01T04:00:00Z",
     accessRoleBehavior: {
       sendNotification: true,
       logAuditTrail: true,
@@ -516,6 +546,54 @@ export const seedLogEntries: LogEntry[] = [
       durationSeconds: 748,
     },
   },
+  // ── New job-005 logs (admin-role-cleanup) ─────────────────────────────────
+  {
+    id: "log-013",
+    jobId: "job-005",
+    jobType: "admin-role-cleanup",
+    executionDate: "2025-06-01",
+    executionTime: "04:00",
+    status: "success",
+    usersDeleted: 0,
+    itemsProcessed: 5,
+    failedRecords: 0,
+    deletedStatuses: [],
+    details: {
+      deletedUsers: [],
+      failedUsers: [],
+      revokedRoles: [
+        { userId: "admin-abm@example.com", roleName: "Helpdesk Admin", orgName: "Acme Corp" },
+        { userId: "admin-abn@example.com", roleName: "Org Admin", orgName: "Tech Solutions" },
+      ],
+      notificationsSent: 5,
+      startTime: "2025-06-01T04:00:01Z",
+      endTime: "2025-06-01T04:02:47Z",
+      durationSeconds: 166,
+    },
+  },
+  {
+    id: "log-014",
+    jobId: "job-005",
+    jobType: "admin-role-cleanup",
+    executionDate: "2025-05-01",
+    executionTime: "04:00",
+    status: "partial-success",
+    usersDeleted: 0,
+    itemsProcessed: 3,
+    failedRecords: 1,
+    deletedStatuses: [],
+    details: {
+      deletedUsers: [],
+      failedUsers: [{ id: "admin-abo@example.com", reason: "Record locked" }],
+      revokedRoles: [
+        { userId: "admin-abp@example.com", roleName: "User Admin", orgName: "Global Services" },
+      ],
+      notificationsSent: 3,
+      startTime: "2025-05-01T04:00:02Z",
+      endTime: "2025-05-01T04:03:11Z",
+      durationSeconds: 189,
+    },
+  },
 ];
 
 // ─── Display helpers ──────────────────────────────────────────────────────────
@@ -538,6 +616,7 @@ export const JOB_TYPE_LABELS: Record<JobType, string> = {
   "user-status-cleanup": "User Status Cleanup",
   "org-membership-cleanup": "Org Membership Cleanup",
   "access-role-cleanup": "Access Role Cleanup",
+  "admin-role-cleanup": "Admin Role Cleanup",
 };
 
 export const USER_STATUS_FILTER_LABELS: Record<UserStatusFilter, string> = {
@@ -600,6 +679,20 @@ export const MOCK_ACCESS_ROLE_OPTIONS: MockAccessRoleOption[] = [
   { id: "ar-9", name: "Compliance Analyst", availableInOrgs: ["org-3"] },
   // Cross-org role (available everywhere)
   { id: "ar-5", name: "Viewer",           availableInOrgs: ["org-1", "org-2", "org-3"] },
+];
+
+// Admin roles (assigned to administrators, not end users) are global —
+// they are not scoped/inherited per organization the way access roles are.
+export interface MockAdminRoleOption {
+  id: string;
+  name: string;
+}
+
+export const MOCK_ADMIN_ROLE_OPTIONS: MockAdminRoleOption[] = [
+  { id: "adminrole-1", name: "User Admin" },
+  { id: "adminrole-2", name: "Helpdesk Admin" },
+  { id: "adminrole-3", name: "Viewer" },
+  { id: "adminrole-4", name: "Org Admin" },
 ];
 
 export const ALLOWED_HOURS = [22, 23, 0, 1, 2, 3, 4, 5];

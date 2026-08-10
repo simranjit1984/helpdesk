@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   CleanupJobFormState,
   JobType,
+  MOCK_ADMIN_ROLE_OPTIONS,
   MOCK_ORGANIZATIONS,
   USER_STATUS_FILTER_LABELS,
   UserStatusFilter,
@@ -46,10 +47,19 @@ export default function StepOrgScope({
     onChange({ organizationIds: next, specificAccessRoles: [], excludeRoles: [] });
   };
 
-  // Roles available for the currently selected orgs (respects parent inheritance)
-  const availableRoles = includeAllOrgs
+  const isAdminRoleJob = jobType === "admin-role-cleanup";
+  const isAccessRoleJob = jobType === "access-role-cleanup";
+  const showRolePanel = isAdminRoleJob || isAccessRoleJob;
+
+  // Admin roles are global (not scoped/inherited per organization), so the
+  // full catalogue is always shown. Access roles respect org inheritance.
+  const availableRoles = isAdminRoleJob
+    ? MOCK_ADMIN_ROLE_OPTIONS
+    : includeAllOrgs
     ? getAvailableRolesForOrgs([]) // all orgs → all roles
     : getAvailableRolesForOrgs(organizationIds);
+
+  const roleWord = isAdminRoleJob ? "admin role" : "access role";
 
   const toggleRole = (id: string) => {
     if (specificAccessRoles.includes(id)) {
@@ -181,12 +191,14 @@ export default function StepOrgScope({
         </div>
       </div>
 
-      {/* Panel 3: Access roles to target (access-role-cleanup only) */}
-      {jobType === "access-role-cleanup" && (
+      {/* Panel 3: Roles to target (access-role-cleanup / admin-role-cleanup only) */}
+      {showRolePanel && (
         <div className="p-4 rounded-lg border border-bluegrey-200 space-y-4">
           <div>
-            <h4 className="text-sm font-semibold text-bluegrey-700">Access roles to target</h4>
-            {!includeAllOrgs && organizationIds.length > 0 && (
+            <h4 className="text-sm font-semibold text-bluegrey-700">
+              {isAdminRoleJob ? "Admin roles to target" : "Access roles to target"}
+            </h4>
+            {isAccessRoleJob && !includeAllOrgs && organizationIds.length > 0 && (
               <p className="text-xs text-bluegrey-400 mt-0.5">
                 Showing roles available for the selected organization(s).
               </p>
@@ -202,7 +214,7 @@ export default function StepOrgScope({
               }
             />
             <span className="text-sm text-bluegrey-800 font-medium">
-              All access roles (default)
+              All {roleWord}s (default)
             </span>
           </label>
 

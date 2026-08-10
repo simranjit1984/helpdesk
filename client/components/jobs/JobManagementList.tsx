@@ -14,6 +14,7 @@ import {
   FREQUENCY_LABELS,
   JOB_TYPE_LABELS,
   MOCK_ACCESS_ROLE_OPTIONS,
+  MOCK_ADMIN_ROLE_OPTIONS,
   MOCK_ORGANIZATIONS,
   formatHour,
   LogStatus,
@@ -73,6 +74,8 @@ function JobTypeBadge({ jobType }: { jobType: string }) {
       ? "bg-purple-100 text-purple-800"
       : jobType === "access-role-cleanup"
       ? "bg-teal-100 text-teal-800"
+      : jobType === "admin-role-cleanup"
+      ? "bg-indigo-100 text-indigo-800"
       : "bg-blue-100 text-blue-800";
   const label = JOB_TYPE_LABELS[jobType as keyof typeof JOB_TYPE_LABELS] ?? jobType;
   return (
@@ -161,6 +164,41 @@ function JobScopeTags({ job }: { job: CleanupJob }) {
         ))}
         {remaining > 0 && (
           <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-teal-50 text-teal-500">
+            +{remaining} more
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (jobType === "admin-role-cleanup") {
+    if (job.includeAllRoles) {
+      return (
+        <div className="flex flex-wrap gap-1 mt-1">
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-indigo-50 text-indigo-700 whitespace-nowrap">
+            All admin roles
+          </span>
+        </div>
+      );
+    }
+    const roleIds = job.specificAccessRoles ?? [];
+    const roleNames = MOCK_ADMIN_ROLE_OPTIONS.filter((r) => roleIds.includes(r.id)).map(
+      (r) => r.name
+    );
+    const shown = roleNames.slice(0, 2);
+    const remaining = roleNames.length - shown.length;
+    return (
+      <div className="flex flex-wrap gap-1 mt-1">
+        {shown.map((name) => (
+          <span
+            key={name}
+            className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-indigo-50 text-indigo-700 whitespace-nowrap"
+          >
+            {name}
+          </span>
+        ))}
+        {remaining > 0 && (
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-indigo-50 text-indigo-500">
             +{remaining} more
           </span>
         )}
