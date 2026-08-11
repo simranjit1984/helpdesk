@@ -8,7 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import OrgTreeSelect, { OrgTreeNode } from "./OrgTreeSelect";
+import OrgDrillDownSelect, {
+  collectAllOrgIds,
+  collectDescendantIds,
+  findOrgPath,
+} from "./OrgDrillDownSelect";
+import type { OrgTreeNode } from "./OrgTreeSelect";
 import type { AccessRole, RoleInheritanceConfig } from "./accessRolesMockData";
 
 interface Props {
@@ -35,9 +40,14 @@ export default function AddAccessRoleModal({
   const isEditing = Boolean(initialRoleId);
   const [roleId, setRoleId] = useState(initialRoleId || "");
   const [inheritEnabled, setInheritEnabled] = useState(Boolean(initialInheritance && initialInheritance.enabled));
-  const [targetOrgIds, setTargetOrgIds] = useState<string[]>(
-    initialInheritance ? initialInheritance.targetOrgIds : []
-  );
+  // The org currently selected via the breadcrumb drill-down — null means the
+  // root org itself (i.e. "all" descendants) is the effective scope.
+  const [selectedOrgId, setSelectedOrgId] = useState<string | null>(() => {
+    const firstTarget = initialInheritance?.targetOrgIds?.[0];
+    if (!firstTarget) return null;
+    // Only honor it if it still resolves to a node in the current tree.
+    return findOrgPath(orgTree, firstTarget) ? firstTarget : null;
+  });
 
   const hasChildren = orgTree.length > 0;
 
@@ -45,24 +55,38 @@ export default function AddAccessRoleModal({
     if (open) {
       setRoleId(initialRoleId || "");
       setInheritEnabled(Boolean(initialInheritance && initialInheritance.enabled));
-      setTargetOrgIds(initialInheritance ? initialInheritance.targetOrgIds : []);
+      const firstTarget = initialInheritance?.targetOrgIds?.[0];
+      setSelectedOrgId(firstTarget && findOrgPath(orgTree, firstTarget) ? firstTarget : null);
     }
-  }, [open, initialRoleId, initialInheritance]);
+  }, [open, initialRoleId, initialInheritance, orgTree]);
 
   const handleSave = () => {
     if (!roleId) return;
-    onSave(
-      roleId,
-      inheritEnabled ? { enabled: true, targetOrgIds } : undefined,
-    );
+
+    let inheritance: RoleInheritanceConfig | undefined;
+    if (inheritEnabled) {
+      if (selectedOrgId) {
+        const path = findOrgPath(orgTree, selectedOrgId);
+        const selectedNode = path?.[path.length - 1];
+        const targetOrgIds = selectedNode
+          ? [selectedNode.id, ...collectDescendantIds(selectedNode)]
+          : [];
+        inheritance = { enabled: true, targetOrgIds };
+      } else {
+        // No specific org drilled into — cascade to every descendant org.
+        inheritance = { enabled: true, targetOrgIds: collectAllOrgIds(orgTree) };
+      }
+    }
+
+    onSave(roleId, inheritance);
     onClose();
   };
 
-  const canSave = !!roleId && (!inheritEnabled || targetOrgIds.length > 0);
+  const canSave = !!roleId;
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit access role" : "Add access role"}</DialogTitle>
         </DialogHeader>
@@ -111,7 +135,7 @@ export default function AddAccessRoleModal({
                     checked={inheritEnabled}
                     onCheckedChange={(v) => {
                       setInheritEnabled(v);
-                      if (!v) setTargetOrgIds([]);
+                      if (!v) setSelectedOrgId(null);
                     }}
                     aria-label="Inherit to child organizations"
                   />
@@ -120,7 +144,12 @@ export default function AddAccessRoleModal({
 
               {inheritEnabled && (
                 <div className="p-3">
-                  <OrgTreeSelect tree={orgTree} selectedIds={targetOrgIds} onChange={setTargetOrgIds} />
+                  <OrgDrillDownSelect
+                    rootLabel={orgName}
+                    tree={orgTree}
+                    value={selectedOrgId}
+                    onChange={setSelectedOrgId}
+                  />
                 </div>
               )}
             </div>
