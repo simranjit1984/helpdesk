@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, MoreHorizontal, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, MoreHorizontal, Trash2, ChevronLeft, ChevronRight, GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,14 @@ import {
   TableEmptyState,
 } from "@/components/ui/table";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import { getOrgAccessRoles, ORG_ACCESS_ROLE_ASSIGNMENTS } from "./accessRolesMockData";
+import AddAccessRoleModal from "./AddAccessRoleModal";
+import { getDescendantOrgTree } from "./orgTreeUtils";
+import {
+  ALL_ACCESS_ROLES,
+  getOrgAccessRoles,
+  ORG_ACCESS_ROLE_ASSIGNMENTS,
+  type RoleInheritanceConfig,
+} from "./accessRolesMockData";
 
 const PAGE_SIZE = 10;
 
@@ -38,9 +45,13 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
+  const [inheritanceRoleId, setInheritanceRoleId] = useState<string | null>(null);
+  const [, forceRefresh] = useState(0);
 
   // Derive roles from (potentially mutated) global mock store — re-reads on render
   const allRoles = getOrgAccessRoles(orgId);
+  const orgTree = getDescendantOrgTree(orgId);
+  const assignments = ORG_ACCESS_ROLE_ASSIGNMENTS[orgId] ?? [];
 
   const filtered = useMemo(
     () =>
@@ -66,6 +77,16 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
   };
 
   const removingRole = allRoles.find((r) => r.id === removeTarget);
+  const inheritanceAssignment = assignments.find((a) => a.roleId === inheritanceRoleId);
+
+  const handleSaveInheritance = (roleId: string, inheritance?: RoleInheritanceConfig) => {
+    const list = ORG_ACCESS_ROLE_ASSIGNMENTS[orgId];
+    if (list) {
+      const idx = list.findIndex((a) => a.roleId === roleId);
+      if (idx !== -1) list[idx] = { ...list[idx], inheritance };
+    }
+    forceRefresh((n) => n + 1);
+  };
 
   return (
     <div className="space-y-4">
@@ -133,9 +154,20 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
                 paged.map((role) => (
                   <TableRow key={role.id}>
                     <TableCell>
-                      <span className="text-sm font-medium text-bluegrey-900">
-                        {role.name}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-bluegrey-900">
+                          {role.name}
+                        </span>
+                        {assignments.find((a) => a.roleId === role.id)?.inheritance?.enabled && (
+                          <span
+                            title="Inherited to child organizations"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700"
+                          >
+                            <GitBranch className="h-3 w-3" />
+                            Inherited
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-bluegrey-500">
@@ -166,6 +198,15 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          {orgTree.length > 0 && (
+                            <DropdownMenuItem
+                              className="gap-2"
+                              onClick={() => setInheritanceRoleId(role.id)}
+                            >
+                              <GitBranch className="h-4 w-4" />
+                              Configure inheritance
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem
                             className="gap-2 text-red-600 focus:text-red-600"
                             onClick={() => setRemoveTarget(role.id)}
@@ -217,6 +258,20 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
         primaryAction={{ label: "Remove", onClick: handleRemove }}
         secondaryAction={{ label: "Cancel", onClick: () => setRemoveTarget(null) }}
       />
+
+      {/* Inheritance configuration */}
+      {inheritanceRoleId && (
+        <AddAccessRoleModal
+          open={inheritanceRoleId !== null}
+          onClose={() => setInheritanceRoleId(null)}
+          onSave={handleSaveInheritance}
+          availableRoles={ALL_ACCESS_ROLES.filter((r) => r.id === inheritanceRoleId)}
+          orgTree={orgTree}
+          orgName={orgName}
+          initialRoleId={inheritanceRoleId}
+          initialInheritance={inheritanceAssignment?.inheritance}
+        />
+      )}
     </div>
   );
 }
