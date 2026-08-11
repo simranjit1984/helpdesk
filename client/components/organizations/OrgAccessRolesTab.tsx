@@ -204,7 +204,7 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
                               onClick={() => setInheritanceRoleId(role.id)}
                             >
                               <GitBranch className="h-4 w-4" />
-                              Configure inheritance
+                              Inherit to child organizations
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuItem
