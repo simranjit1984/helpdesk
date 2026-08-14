@@ -233,11 +233,7 @@ export default function DMv2DeployTab({
     await new Promise((res) => setTimeout(res, 1200));
     setCreatingUser(false);
 
-    let suffix = " and an activation email was sent.";
-    if (createUser.setPassword) {
-      suffix = ".";
-    }
-    setCreateUserSuccess("User " + createUser.email + " was created with the superadmin role" + suffix);
+    setCreateUserSuccess("User " + createUser.email + " was created with the superadmin role.");
     setCreateUser({ email: "", setPassword: false, password: "" });
   }
 
@@ -525,8 +521,7 @@ export default function DMv2DeployTab({
                             Set a password now
                           </p>
                           <p className="text-xs text-bluegrey-500 mt-1">
-                            When disabled, the user is created without a password and
-                            receives an activation email instead.
+                            When disabled, the user is created without a password.
                           </p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-0.5">
