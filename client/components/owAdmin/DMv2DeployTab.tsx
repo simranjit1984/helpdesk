@@ -7,9 +7,19 @@ import {
   SelectWrapper,
   Option,
   Button,
+  Tabs,
+  Tab,
 } from "@onewelcome/react-lib-components";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
+
+const MOCK_EXISTING_USERS = [
+  "admin@tgs-root.com",
+  "jane.doe@tgs-root.com",
+  "john.smith@tgs-root.com",
+];
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,6 +36,17 @@ interface AdvancedForm {
 
 interface FieldError {
   rootOrgName?: string;
+}
+
+interface CreateUserForm {
+  email: string;
+  setPassword: boolean;
+  password: string;
+}
+
+interface CreateUserErrors {
+  email?: string;
+  password?: string;
 }
 
 interface DMv2DeployTabProps {
@@ -114,6 +135,24 @@ export default function DMv2DeployTab({
   const [basicExpanded, setBasicExpanded] = useState(true);
   const [advancedExpanded, setAdvancedExpanded] = useState(false);
   const [workflowExpanded, setWorkflowExpanded] = useState(false);
+  const [usersExpanded, setUsersExpanded] = useState(false);
+  const [userTab, setUserTab] = useState(0);
+
+  // Create user (with superadmin) form
+  const [createUser, setCreateUser] = useState<CreateUserForm>({
+    email: "",
+    setPassword: false,
+    password: "",
+  });
+  const [createUserErrors, setCreateUserErrors] = useState<CreateUserErrors>({});
+  const [creatingUser, setCreatingUser] = useState(false);
+  const [createUserSuccess, setCreateUserSuccess] = useState<string | null>(null);
+
+  // Assign superadmin to existing user form
+  const [assignEmail, setAssignEmail] = useState("");
+  const [assignEmailError, setAssignEmailError] = useState<string | undefined>();
+  const [assigningUser, setAssigningUser] = useState(false);
+  const [assignSuccess, setAssignSuccess] = useState<string | null>(null);
 
   // ── Basic helpers ────────────────────────────────────────────────────────────
 
@@ -172,6 +211,63 @@ export default function DMv2DeployTab({
   }
 
   const formDisabled = isDeployed;
+
+  async function handleCreateUser() {
+    const userErrs: CreateUserErrors = {};
+    if (!createUser.email.trim()) {
+      userErrs.email = "Email address is required.";
+    } else if (!EMAIL_REGEX.test(createUser.email.trim())) {
+      userErrs.email = "Enter a valid email address.";
+    }
+    if (createUser.setPassword && createUser.password.length < 8) {
+      userErrs.password = "Password must be at least 8 characters.";
+    }
+    if (Object.keys(userErrs).length > 0) {
+      setCreateUserErrors(userErrs);
+      setCreateUserSuccess(null);
+      return;
+    }
+
+    setCreateUserErrors({});
+    setCreatingUser(true);
+    await new Promise((res) => setTimeout(res, 1200));
+    setCreatingUser(false);
+
+    let suffix = " and an activation email was sent.";
+    if (createUser.setPassword) {
+      suffix = ".";
+    }
+    setCreateUserSuccess("User " + createUser.email + " was created with the superadmin role" + suffix);
+    setCreateUser({ email: "", setPassword: false, password: "" });
+  }
+
+  async function handleAssignSuperadmin() {
+    const email = assignEmail.trim();
+    if (!email) {
+      setAssignEmailError("Email address is required.");
+      setAssignSuccess(null);
+      return;
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      setAssignEmailError("Enter a valid email address.");
+      setAssignSuccess(null);
+      return;
+    }
+
+    setAssignEmailError(undefined);
+    setAssigningUser(true);
+    await new Promise((res) => setTimeout(res, 1000));
+    setAssigningUser(false);
+
+    if (!MOCK_EXISTING_USERS.includes(email.toLowerCase())) {
+      setAssignEmailError("No user was found with this email address.");
+      setAssignSuccess(null);
+      return;
+    }
+
+    setAssignSuccess("Superadmin role granted to " + email + ".");
+    setAssignEmail("");
+  }
 
   return (
     <div className="px-6 py-8 max-w-2xl">
@@ -381,6 +477,151 @@ export default function DMv2DeployTab({
             {workflowExpanded && (
               <div className="px-5 pb-6 pt-4">
                 <LoginWorkflowConfig />
+              </div>
+            )}
+          </div>
+
+          {/* ── User & Superadmin Management ───────────────────── */}
+          <div className="rounded-lg border border-bluegrey-200 overflow-hidden bg-white">
+            <div className="px-5 py-4 border-b border-bluegrey-100">
+              <SectionHeader
+                title="User & superadmin management"
+                description="Create a new superadmin user or grant the superadmin role to an existing user."
+                expanded={usersExpanded}
+                onToggle={() => setUsersExpanded((v) => !v)}
+              />
+            </div>
+
+            {usersExpanded && (
+              <div className="px-5 pb-6 pt-4">
+                <Tabs
+                  selected={userTab}
+                  onTabChange={(index) => {
+                    setUserTab(index);
+                    setCreateUserSuccess(null);
+                    setAssignSuccess(null);
+                  }}
+                >
+                  <Tab title="Create user">
+                    <div className="pt-4 space-y-4">
+                      <InputWrapper
+                        label="Email address"
+                        type="email"
+                        name="createUserEmail"
+                        value={createUser.email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          setCreateUser((prev) => ({ ...prev, email: e.target.value }));
+                          setCreateUserErrors((prev) => ({ ...prev, email: undefined }));
+                          setCreateUserSuccess(null);
+                        }}
+                        required
+                        error={!!createUserErrors.email}
+                        errorMessage={createUserErrors.email}
+                      />
+
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-bluegrey-800">
+                            Set a password now
+                          </p>
+                          <p className="text-xs text-bluegrey-500 mt-1">
+                            When disabled, the user is created without a password and
+                            receives an activation email instead.
+                          </p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-0.5">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={createUser.setPassword}
+                            onChange={(e) => {
+                              setCreateUser((prev) => ({
+                                ...prev,
+                                setPassword: e.target.checked,
+                              }));
+                              setCreateUserErrors((prev) => ({ ...prev, password: undefined }));
+                            }}
+                          />
+                          <div className="w-11 h-6 bg-bluegrey-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-bluegrey-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
+                          <span className="ml-2 text-sm font-medium text-bluegrey-700">
+                            {createUser.setPassword ? "Yes" : "No"}
+                          </span>
+                        </label>
+                      </div>
+
+                      {createUser.setPassword && (
+                        <InputWrapper
+                          label="Password"
+                          type="password"
+                          name="createUserPassword"
+                          value={createUser.password}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setCreateUser((prev) => ({ ...prev, password: e.target.value }));
+                            setCreateUserErrors((prev) => ({ ...prev, password: undefined }));
+                          }}
+                          required
+                          error={!!createUserErrors.password}
+                          errorMessage={createUserErrors.password}
+                          helperText="Minimum 8 characters."
+                        />
+                      )}
+
+                      {createUserSuccess && (
+                        <div className="rounded-md border border-green-200 bg-green-50 px-3 py-2 flex gap-2 items-start">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                          <p className="text-xs text-green-700">{createUserSuccess}</p>
+                        </div>
+                      )}
+
+                      <Button
+                        variant="fill"
+                        color="primary"
+                        loading={creatingUser}
+                        disabled={!createUser.email.trim()}
+                        onClick={handleCreateUser}
+                      >
+                        Create superadmin user
+                      </Button>
+                    </div>
+                  </Tab>
+
+                  <Tab title="Assign to existing user">
+                    <div className="pt-4 space-y-4">
+                      <InputWrapper
+                        label="Email address"
+                        type="email"
+                        name="assignUserEmail"
+                        value={assignEmail}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          setAssignEmail(e.target.value);
+                          setAssignEmailError(undefined);
+                          setAssignSuccess(null);
+                        }}
+                        required
+                        error={!!assignEmailError}
+                        errorMessage={assignEmailError}
+                        helperText="The user must already exist. Only the superadmin role will be granted."
+                      />
+
+                      {assignSuccess && (
+                        <div className="rounded-md border border-green-200 bg-green-50 px-3 py-2 flex gap-2 items-start">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                          <p className="text-xs text-green-700">{assignSuccess}</p>
+                        </div>
+                      )}
+
+                      <Button
+                        variant="fill"
+                        color="primary"
+                        loading={assigningUser}
+                        disabled={!assignEmail.trim()}
+                        onClick={handleAssignSuperadmin}
+                      >
+                        Grant superadmin role
+                      </Button>
+                    </div>
+                  </Tab>
+                </Tabs>
               </div>
             )}
           </div>
