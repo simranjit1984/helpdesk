@@ -27,6 +27,7 @@ interface WorkflowState {
   endpoint: WorkflowEndpointState;
   auth: WorkflowAuthState;
   payloadTemplate: string;
+  acsAlias: string;
 }
 
 interface AuthSectionState {
@@ -262,6 +263,48 @@ function TextField({
         </p>
       )}
       {helperText && <p className="text-xs text-bluegrey-500">{helperText}</p>}
+    </div>
+  );
+}
+
+const CUSTOM_ALIAS_OPTION = "__custom__";
+
+function AliasField(props: {
+  id: string;
+  presets: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const { id, presets, value, onChange } = props;
+  const isKnownPreset = presets.includes(value);
+  const [customMode, setCustomMode] = useState(value !== "" && !isKnownPreset);
+
+  const handleSelect = (v: string) => {
+    if (v === CUSTOM_ALIAS_OPTION) {
+      setCustomMode(true);
+      onChange("");
+    } else {
+      setCustomMode(false);
+      onChange(v);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <SelectField id={id} value={customMode ? CUSTOM_ALIAS_OPTION : value} onChange={handleSelect}>
+        {presets.map((p) => (
+          <option key={p} value={p}>{p}</option>
+        ))}
+        <option value={CUSTOM_ALIAS_OPTION}>Custom</option>
+      </SelectField>
+      {customMode && (
+        <TextField
+          id={id + "-custom"}
+          value={value}
+          onChange={onChange}
+          placeholder="Enter a custom alias"
+        />
+      )}
     </div>
   );
 }
@@ -823,13 +866,14 @@ function TestWebhookPanel({
 // ─── Workflow section (reused for Invitation + Password Reset) ────────────────
 
 function WorkflowSection({
-  title, description, pathPlaceholder, attrGroups,
+  title, description, pathPlaceholder, attrGroups, acsAliasPresets,
   state, onChange, dirty, onDirty,
 }: {
   title: string;
   description: string;
   pathPlaceholder: string;
   attrGroups: { group: string; options: AttrOption[] }[];
+  acsAliasPresets: string[];
   state: WorkflowState;
   onChange: (s: WorkflowState) => void;
   dirty: boolean;
@@ -1020,6 +1064,21 @@ function WorkflowSection({
                   Selected scopes will be included in the token request.
                 </p>
               </div>
+            </div>
+          )}
+
+          {!showAdvanced && (
+            <div className="space-y-1">
+              <FieldLabel label="ACS alias" required />
+              <AliasField
+                id={title + "-acsalias"}
+                presets={acsAliasPresets}
+                value={state.acsAlias}
+                onChange={(v) => patch("acsAlias", v)}
+              />
+              <p className="text-xs text-bluegrey-500">
+                Select a predefined ACS alias or type a custom one to identify this webhook.
+              </p>
             </div>
           )}
 
@@ -1263,6 +1322,7 @@ export default function LoginWorkflowConfig() {
     endpoint: { baseUrl: DEFAULT_TENANT_BASE_URL, path: "", method: "POST" },
     auth: { type: "none", oauthClientId: "", scopes: [] },
     payloadTemplate: "{}",
+    acsAlias: "",
   });
 
   const [invState, setInvState] = useState<WorkflowState>(() => ({
@@ -1294,6 +1354,8 @@ export default function LoginWorkflowConfig() {
     ),
   }));
   const [pwDirty, setPwDirty] = useState(false);
+  const invitationAcsAliasPresets = ["B2B-invite-core", "b2b-invite-IO"];
+  const passwordResetAcsAliasPresets = ["password-reset-core", "password-reset-IO"];
 
   return (
     <div className="space-y-3">
@@ -1308,6 +1370,7 @@ export default function LoginWorkflowConfig() {
         description="Configure the webhook invoked when DMv2 generates a user invitation."
         pathPlaceholder="/api/invitations"
         attrGroups={INVITATION_ATTRS}
+        acsAliasPresets={invitationAcsAliasPresets}
         state={invState}
         onChange={setInvState}
         dirty={invDirty}
@@ -1318,6 +1381,7 @@ export default function LoginWorkflowConfig() {
         description="Configure the webhook invoked when DMv2 generates a password reset request."
         pathPlaceholder="/api/password-reset"
         attrGroups={PASSWORD_RESET_ATTRS}
+        acsAliasPresets={passwordResetAcsAliasPresets}
         state={pwState}
         onChange={setPwState}
         dirty={pwDirty}
