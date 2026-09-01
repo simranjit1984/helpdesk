@@ -9,6 +9,7 @@ import {
 
 type AuthType = "none" | "oauth2";
 type HttpMethod = "POST";
+type WorkflowConfigMode = "basic" | "advanced";
 
 interface WorkflowEndpointState {
   baseUrl: string;
@@ -835,6 +836,9 @@ function WorkflowSection({
   onDirty: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [mode, setMode] = useState<WorkflowConfigMode>("advanced");
+  const showAdvanced = mode === "advanced";
+  const showOAuthConfig = showAdvanced && state.auth.type === "oauth2";
 
   const baseUrl = state.endpoint.baseUrl || DEFAULT_TENANT_BASE_URL;
   const resultingUrl = state.endpoint.path ? `${baseUrl}${state.endpoint.path}` : baseUrl + pathPlaceholder;
@@ -884,7 +888,20 @@ function WorkflowSection({
 
       {expanded && (
         <div className="px-4 pb-5 pt-1 space-y-4 border-t border-bluegrey-100">
-          {/* Endpoint */}
+          {/* Configuration mode */}
+          <div className="space-y-1 pt-4">
+            <FieldLabel label="Configuration mode" />
+            <SelectField
+              id={title + "-configmode"}
+              value={mode}
+              onChange={(v) => setMode(v as WorkflowConfigMode)}
+            >
+              <option value="basic">Basic (ACS)</option>
+              <option value="advanced">Advanced (Tulip/IO)</option>
+            </SelectField>
+          </div>
+          {mode === "advanced" && (
+          <>
           <SubSectionTitle title="Endpoint configuration" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -925,24 +942,30 @@ function WorkflowSection({
             copyable
             badge="Auto-generated"
           />
+          </>
+          )}
 
           {/* Auth */}
-          <SubSectionTitle
-            title="Authentication"
-            description="Secure the webhook invocation with an OAuth 2.0 access token."
-          />
-          <div className="space-y-1">
-            <FieldLabel label="Authentication type" />
-            <SelectField
-              id={`${title}-authtype`}
-              value={state.auth.type}
-              onChange={(v) => patch("auth", { ...state.auth, type: v as AuthType })}
-            >
-              <option value="none">None</option>
-              <option value="oauth2">OAuth 2.0 Client Credentials</option>
-            </SelectField>
-          </div>
-          {state.auth.type === "oauth2" && (
+          {showAdvanced && (
+            <SubSectionTitle
+              title="Authentication"
+              description="Secure the webhook invocation with an OAuth 2.0 access token."
+            />
+          )}
+          {showAdvanced && (
+            <div className="space-y-1">
+              <FieldLabel label="Authentication type" />
+              <SelectField
+                id={`${title}-authtype`}
+                value={state.auth.type}
+                onChange={(v) => patch("auth", { ...state.auth, type: v as AuthType })}
+              >
+                <option value="none">None</option>
+                <option value="oauth2">OAuth 2.0 Client Credentials</option>
+              </SelectField>
+            </div>
+          )}
+          {showOAuthConfig && (
             <div className="pl-4 border-l-2 border-blue-200 space-y-4">
               <div className="space-y-1">
                 <FieldLabel label="OAuth Client" required />
