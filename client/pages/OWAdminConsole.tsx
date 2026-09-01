@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import UIConfigurationTab from "@/components/owAdmin/UIConfigurationTab";
 import DMv2DeployTab from "@/components/owAdmin/DMv2DeployTab";
+import UserManagementPage from "@/components/owAdmin/UserManagementPage";
 import JobsPage from "@/components/jobs/JobsPage";
 
 // ─── Top bar ─────────────────────────────────────────────────────────────────
@@ -87,7 +88,7 @@ function buildNavItems(activeSection: string, uiConfigEnabled: boolean): LeftNav
       key: "dashboard",
       path: "dashboard",
       title: "DM Tenant settings",
-      active: activeSection === "dashboard",
+      active: activeSection === "dashboard" || activeSection === "users",
       iconComponent: <Icon icon={Icons.Build} />,
     },
     {
@@ -115,6 +116,7 @@ const PAGE_TITLES: Record<string, string> = {
   dashboard: "DM Tenant settings",
   "ui-config": "UI Configuration",
   jobs: "Jobs",
+  users: "User & superadmin management",
 };
 
 // ─── Main page ────────────────────────────────────────────────────────────────
@@ -168,6 +170,8 @@ export default function OWAdminConsole() {
                 : "Update settings for your Delegated management tenant. Once deployed, the UI Configuration section will become available."
               : activeSection === "jobs"
               ? "Configure and monitor automated user cleanup jobs."
+              : activeSection === "users"
+              ? "Manage superadmin users and invitations for the root organisation."
               : undefined}
           </ContentHeader>
 
@@ -178,10 +182,17 @@ export default function OWAdminConsole() {
                 isDeployed={isDeployed}
                 deployedOrgName={deployedOrgName}
                 onDeployed={(orgName) => handleDeployed(orgName)}
+                onOpenUserManagement={() => setSection("users")}
               />
             )}
             {activeSection === "ui-config" && <UIConfigurationTab />}
             {activeSection === "jobs" && <JobsPage />}
+            {activeSection === "users" && (
+              <UserManagementPage
+                rootOrgName={deployedOrgName || "tgs-root"}
+                onBack={() => setSection("dashboard")}
+              />
+            )}
           </div>
         </main>
       </div>
