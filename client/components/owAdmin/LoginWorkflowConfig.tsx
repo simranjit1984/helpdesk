@@ -958,8 +958,8 @@ function WorkflowSection({
               value={mode}
               onChange={(v) => setMode(v as WorkflowConfigMode)}
             >
-              <option value="basic">Basic (ACS)</option>
-              <option value="advanced">Advanced (Tulip/IO)</option>
+              <option value="basic">Built-in (ACS)</option>
+              <option value="advanced">External (Tulip/IO)</option>
             </SelectField>
           </div>
           {mode === "advanced" && (
