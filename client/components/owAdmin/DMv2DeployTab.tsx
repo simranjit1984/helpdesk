@@ -13,6 +13,7 @@ import {
 
 interface BasicForm {
   rootOrgName: string;
+  theme: string;
 }
 
 type LastOrgBehavior = "hard-delete" | "orphan-org";
@@ -98,6 +99,7 @@ export default function DMv2DeployTab({
   // Basic form
   const [basic, setBasic] = useState<BasicForm>({
     rootOrgName: "tgs-root",
+    theme: "theme1",
   });
 
   // Advanced form
@@ -225,6 +227,24 @@ export default function DMv2DeployTab({
                     >
                       {orgNameSaved ? "Saved ✓" : "Save to continue"}
                     </Button>
+                  </div>
+                </Fieldset>
+
+                <Fieldset legend="Localization" legendStyle="h3" background="transparent">
+                  <div style={{ maxWidth: "320px" }}>
+                    <SelectWrapper
+                      label="Theme"
+                      name="theme"
+                      value={basic.theme}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                        updateBasic("theme")(e.target.value)
+                      }
+                      helperText="DMv2 pulls translations from the selected theme."
+                    >
+                      <Option value="theme1">theme1</Option>
+                      <Option value="theme2">theme 2</Option>
+                      <Option value="theme3">theme3</Option>
+                    </SelectWrapper>
                   </div>
                 </Fieldset>
 
