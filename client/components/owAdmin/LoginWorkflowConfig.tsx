@@ -28,6 +28,7 @@ interface WorkflowState {
   auth: WorkflowAuthState;
   payloadTemplate: string;
   acsAlias: string;
+  selectedAttrs: string[];
 }
 
 interface AuthSectionState {
@@ -438,9 +439,12 @@ function ScopeSelector({
 // ─── Payload mapping table ────────────────────────────────────────────────────
 
 function AttributeReferencePanel({
-  attrGroups,
+  attrGroups, selectable, selected, onToggle,
 }: {
   attrGroups: { group: string; options: AttrOption[] }[];
+  selectable?: boolean;
+  selected?: string[];
+  onToggle?: (value: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
@@ -468,7 +472,9 @@ function AttributeReferencePanel({
       {expanded && (
         <div className="px-3 py-3 space-y-3 bg-white">
           <p className="text-[11px] text-bluegrey-500">
-            Reference any of the following codes directly inside the payload structure below.
+            {selectable
+              ? "Check the attributes to include in the payload."
+              : "Reference any of the following codes directly inside the payload structure below."}
           </p>
           {attrGroups.map((g) => (
             <div key={g.group} className="space-y-1">
@@ -479,19 +485,31 @@ function AttributeReferencePanel({
                     key={opt.value}
                     className="flex items-center justify-between gap-2 rounded px-2 py-1 hover:bg-bluegrey-50 transition-colors"
                   >
-                    <span className="text-xs text-bluegrey-700">
-                      {opt.label} — <code className="font-mono text-[11px] text-blue-700">{`{{${opt.value}}}`}</code>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => copyCode(opt.value)}
-                      title="Copy code"
-                      className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded hover:bg-bluegrey-200 text-bluegrey-500 transition-colors"
-                    >
-                      {copiedValue === opt.value
-                        ? <Check className="w-3 h-3 text-green-600" />
-                        : <Copy className="w-3 h-3" />}
-                    </button>
+                    <label className="flex items-center gap-2 min-w-0 cursor-pointer">
+                      {selectable && (
+                        <input
+                          type="checkbox"
+                          checked={!!selected?.includes(opt.value)}
+                          onChange={() => onToggle?.(opt.value)}
+                          className="w-3.5 h-3.5 accent-blue-600 flex-shrink-0"
+                        />
+                      )}
+                      <span className="text-xs text-bluegrey-700">
+                        {opt.label} — <code className="font-mono text-[11px] text-blue-700">{`{{${opt.value}}}`}</code>
+                      </span>
+                    </label>
+                    {!selectable && (
+                      <button
+                        type="button"
+                        onClick={() => copyCode(opt.value)}
+                        title="Copy code"
+                        className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded hover:bg-bluegrey-200 text-bluegrey-500 transition-colors"
+                      >
+                        {copiedValue === opt.value
+                          ? <Check className="w-3 h-3 text-green-600" />
+                          : <Copy className="w-3 h-3" />}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1091,12 +1109,28 @@ function WorkflowSection({
             Only attributes from the reference list below may be used. Passwords, secrets, and
             sensitive security attributes are not available.
           </InfoBox>
-          <AttributeReferencePanel attrGroups={attrGroups} />
-          <PayloadStructureEditor
-            template={state.payloadTemplate}
-            onChange={(v) => patch("payloadTemplate", v)}
-            attrGroups={attrGroups}
-          />
+          {showAdvanced ? (
+            <>
+              <AttributeReferencePanel attrGroups={attrGroups} />
+              <PayloadStructureEditor
+                template={state.payloadTemplate}
+                onChange={(v) => patch("payloadTemplate", v)}
+                attrGroups={attrGroups}
+              />
+            </>
+          ) : (
+            <AttributeReferencePanel
+              attrGroups={attrGroups}
+              selectable
+              selected={state.selectedAttrs}
+              onToggle={(value) => {
+                const next = state.selectedAttrs.includes(value)
+                  ? state.selectedAttrs.filter((a) => a !== value)
+                  : [...state.selectedAttrs, value];
+                patch("selectedAttrs", next);
+              }}
+            />
+          )}
 
           {/* Test */}
           <SubSectionTitle
@@ -1323,6 +1357,7 @@ export default function LoginWorkflowConfig() {
     auth: { type: "none", oauthClientId: "", scopes: [] },
     payloadTemplate: "{}",
     acsAlias: "",
+    selectedAttrs: [],
   });
 
   const [invState, setInvState] = useState<WorkflowState>(() => ({
