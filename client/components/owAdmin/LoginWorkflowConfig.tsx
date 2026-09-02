@@ -268,8 +268,6 @@ function TextField({
   );
 }
 
-const CUSTOM_ALIAS_OPTION = "__custom__";
-
 function AliasField(props: {
   id: string;
   presets: string[];
@@ -277,36 +275,13 @@ function AliasField(props: {
   onChange: (v: string) => void;
 }) {
   const { id, presets, value, onChange } = props;
-  const isKnownPreset = presets.includes(value);
-  const [customMode, setCustomMode] = useState(value !== "" && !isKnownPreset);
-
-  const handleSelect = (v: string) => {
-    if (v === CUSTOM_ALIAS_OPTION) {
-      setCustomMode(true);
-      onChange("");
-    } else {
-      setCustomMode(false);
-      onChange(v);
-    }
-  };
 
   return (
-    <div className="space-y-2">
-      <SelectField id={id} value={customMode ? CUSTOM_ALIAS_OPTION : value} onChange={handleSelect}>
-        {presets.map((p) => (
-          <option key={p} value={p}>{p}</option>
-        ))}
-        <option value={CUSTOM_ALIAS_OPTION}>Custom</option>
-      </SelectField>
-      {customMode && (
-        <TextField
-          id={id + "-custom"}
-          value={value}
-          onChange={onChange}
-          placeholder="Enter a custom alias"
-        />
-      )}
-    </div>
+    <SelectField id={id} value={value} onChange={onChange}>
+      {presets.map((preset) => (
+        <option key={preset} value={preset}>{preset}</option>
+      ))}
+    </SelectField>
   );
 }
 
@@ -1095,7 +1070,7 @@ function WorkflowSection({
                 onChange={(v) => patch("acsAlias", v)}
               />
               <p className="text-xs text-bluegrey-500">
-                Select a predefined ACS alias or type a custom one to identify this webhook.
+                Select the predefined ACS alias that identifies this webhook.
               </p>
             </div>
           )}
