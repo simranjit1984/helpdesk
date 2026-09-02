@@ -14,6 +14,7 @@ import {
 interface BasicForm {
   rootOrgName: string;
   theme: string;
+  invitationTtlHours: number;
 }
 
 type LastOrgBehavior = "hard-delete" | "orphan-org";
@@ -100,6 +101,7 @@ export default function DMv2DeployTab({
   const [basic, setBasic] = useState<BasicForm>({
     rootOrgName: "tgs-root",
     theme: "theme1",
+    invitationTtlHours: 72,
   });
 
   // Advanced form
@@ -190,7 +192,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Basic configuration"
-                description="Core tenant root organisation identifier."
+                description="Core tenant root organisation identifier and invitation TTL configuration."
                 expanded={basicExpanded}
                 onToggle={() => setBasicExpanded((v) => !v)}
               />
@@ -245,6 +247,24 @@ export default function DMv2DeployTab({
                       <Option value="theme2">theme 2</Option>
                       <Option value="theme3">theme3</Option>
                     </SelectWrapper>
+                  </div>
+                </Fieldset>
+
+                <Fieldset legend="Invitation TTL" legendStyle="h3" background="transparent">
+                  <div style={{ maxWidth: "320px" }}>
+                    <InputWrapper
+                      label="Invitation expiry (hours)"
+                      type="number"
+                      name="invitationTtlHours"
+                      value={String(basic.invitationTtlHours)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const v = parseInt(e.target.value, 10);
+                        updateBasic("invitationTtlHours")(String(Number.isNaN(v) ? 0 : v));
+                      }}
+                      required
+                      helperText="Number of hours before a sent invitation expires."
+                      inputProps={{ min: 1 }}
+                    />
                   </div>
                 </Fieldset>
 
