@@ -1,13 +1,14 @@
 import { useState } from "react";
 import {
   Plus, Trash2, RotateCcw, Globe, AlertCircle,
-  Lock, Check, X, Code, ToggleLeft, Hash, Type, CalendarClock, ListChecks,
+  Lock, Check, X, Code, ToggleLeft, Hash, Type, CalendarClock, ListChecks, Save,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -411,6 +412,7 @@ function PossibleValuesEditor({ attr, onChange }: {
 function AttributePanel({ attr, onChange, onDelete }: {
   attr: OrgAttribute; onChange: (a: OrgAttribute) => void; onDelete: () => void;
 }) {
+  const { toast } = useToast();
   const usedLabelLangs = attr.translations.map((t) => t.language);
   const usedValidLangs = attr.validationTranslations.map((t) => t.language);
   const rules = activeRules(attr);
@@ -437,6 +439,14 @@ function AttributePanel({ attr, onChange, onDelete }: {
     onChange({ ...attr, validationTranslations: next });
   };
   const removeValidation = (i: number) => onChange({ ...attr, validationTranslations: attr.validationTranslations.filter((_, idx) => idx !== i) });
+
+  const handleSaveTranslations = () => {
+    toast({
+      title: "Attribute configuration saved",
+      description:
+        "Translations will be saved in the theme management but you will need to publish manually by going here. Publishing a theme can affect styling if unpublished changes exist.",
+    });
+  };
 
   return (
     <div className="border border-bluegrey-200 rounded-md overflow-hidden">
@@ -707,6 +717,17 @@ function AttributePanel({ attr, onChange, onDelete }: {
             </div>
           </>
         )}
+
+        <div className="border-t border-bluegrey-100 pt-4 flex justify-end">
+          <button
+            type="button"
+            onClick={handleSaveTranslations}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
+            <Save className="w-3.5 h-3.5" />
+            Save
+          </button>
+        </div>
       </div>
     </div>
   );
