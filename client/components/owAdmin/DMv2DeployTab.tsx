@@ -192,7 +192,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Basic configuration"
-                description="Core tenant root organisation identifier and invitation TTL configuration."
+                description="Core tenant root organisation identifier and localization theme."
                 expanded={basicExpanded}
                 onToggle={() => setBasicExpanded((v) => !v)}
               />
@@ -250,24 +250,6 @@ export default function DMv2DeployTab({
                   </div>
                 </Fieldset>
 
-                <Fieldset legend="Invitation TTL" legendStyle="h3" background="transparent">
-                  <div style={{ maxWidth: "320px" }}>
-                    <InputWrapper
-                      label="Invitation expiry (hours)"
-                      type="number"
-                      name="invitationTtlHours"
-                      value={String(basic.invitationTtlHours)}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        const v = parseInt(e.target.value, 10);
-                        updateBasic("invitationTtlHours")(String(Number.isNaN(v) ? 0 : v));
-                      }}
-                      required
-                      helperText="Number of hours before a sent invitation expires."
-                      inputProps={{ min: 1 }}
-                    />
-                  </div>
-                </Fieldset>
-
               </div>
             )}
           </div>
@@ -277,7 +259,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Advanced configuration"
-                description="Invitation policy and user lifecycle behaviour settings."
+                description="Invitation policy, invitation TTL, and user lifecycle behaviour settings."
                 expanded={advancedExpanded}
                 onToggle={() => setAdvancedExpanded((v) => !v)}
               />
@@ -403,6 +385,22 @@ export default function DMv2DeployTab({
                       </p>
                     </div>
                   )}
+
+                  <div className="mt-4" style={{ maxWidth: "320px" }}>
+                    <InputWrapper
+                      label="Invitation expiry (hours)"
+                      type="number"
+                      name="invitationTtlHours"
+                      value={String(basic.invitationTtlHours)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const v = parseInt(e.target.value, 10);
+                        updateBasic("invitationTtlHours")(String(Number.isNaN(v) ? 0 : v));
+                      }}
+                      required
+                      helperText="Number of hours before a sent invitation expires."
+                      inputProps={{ min: 1 }}
+                    />
+                  </div>
                 </div>
               </div>
             )}
