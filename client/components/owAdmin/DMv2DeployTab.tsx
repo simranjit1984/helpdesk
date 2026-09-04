@@ -4,8 +4,6 @@ import LoginWorkflowConfig from "./LoginWorkflowConfig";
 import {
   Fieldset,
   InputWrapper,
-  SelectWrapper,
-  Option,
   Button,
 } from "@onewelcome/react-lib-components";
 
@@ -13,7 +11,6 @@ import {
 
 interface BasicForm {
   rootOrgName: string;
-  theme: string;
   invitationTtlHours: number;
 }
 
@@ -100,7 +97,6 @@ export default function DMv2DeployTab({
   // Basic form
   const [basic, setBasic] = useState<BasicForm>({
     rootOrgName: "tgs-root",
-    theme: "theme1",
     invitationTtlHours: 72,
   });
 
@@ -192,7 +188,7 @@ export default function DMv2DeployTab({
             <div className="px-5 py-4 border-b border-bluegrey-100">
               <SectionHeader
                 title="Basic configuration"
-                description="Core tenant root organisation identifier and localization theme."
+                description="Core tenant root organisation identifier."
                 expanded={basicExpanded}
                 onToggle={() => setBasicExpanded((v) => !v)}
               />
@@ -229,24 +225,6 @@ export default function DMv2DeployTab({
                     >
                       {orgNameSaved ? "Saved ✓" : "Save to continue"}
                     </Button>
-                  </div>
-                </Fieldset>
-
-                <Fieldset legend="Localization" legendStyle="h3" background="transparent">
-                  <div style={{ maxWidth: "320px" }}>
-                    <SelectWrapper
-                      label="Theme"
-                      name="theme"
-                      value={basic.theme}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                        updateBasic("theme")(e.target.value)
-                      }
-                      helperText="DMv2 pulls translations from the selected theme."
-                    >
-                      <Option value="theme1">theme1</Option>
-                      <Option value="theme2">theme 2</Option>
-                      <Option value="theme3">theme3</Option>
-                    </SelectWrapper>
                   </div>
                 </Fieldset>
 
