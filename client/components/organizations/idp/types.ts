@@ -124,9 +124,10 @@ export interface ScopeClaim {
 }
 
 export interface PostSetupData {
-  audienceValue: string;
+  claimName: string;
+  claimValue: string;
   sameIdpForChildren: boolean | null;
-  childOrgAudiences: Array<{ orgId: string; orgName: string; audience: string }>;
+  childOrgClaims: Array<{ orgId: string; orgName: string; claimValue: string }>;
   accessRoleClaims: AccessRoleClaim[];
   adminRoleClaims: AdminRoleClaim[];
   scopeClaims: ScopeClaim[];

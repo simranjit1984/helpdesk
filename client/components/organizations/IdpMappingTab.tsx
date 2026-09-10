@@ -196,35 +196,36 @@ function ClaimDisplayTable({
 }
 
 function LoginConfigPanel({ postSetup }: { postSetup: PostSetupData }) {
-  const hasChildAudiences =
-    postSetup.sameIdpForChildren && postSetup.childOrgAudiences.some((c) => c.audience);
+  const hasChildClaims =
+    postSetup.sameIdpForChildren && postSetup.childOrgClaims.some((c) => c.claimValue);
   const hasAccessRoles = postSetup.accessRoleClaims.some((r) => r.claimName || r.claimValue);
   const hasAdminRoles  = postSetup.adminRoleClaims.some((r) => r.claimName || r.claimValue);
   const hasScopeClaims = postSetup.scopeClaims?.some((s) => s.claimName || s.claimValue);
 
   return (
     <div className="space-y-6">
-      {/* Audience */}
+      {/* Organization claim mapping */}
       <div>
         <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3">
-          Audience
+          Organization claim mapping
         </h4>
         <div className="bg-white border border-bluegrey-200 rounded-md px-4">
-          <FieldRow label="Audience value" value={postSetup.audienceValue || "—"} mono />
+          <FieldRow label="Claim name" value={postSetup.claimName || "—"} mono />
+          <FieldRow label="Claim value" value={postSetup.claimValue || "—"} mono />
         </div>
       </div>
 
-      {/* Child org audiences */}
-      {hasChildAudiences && (
+      {/* Child org claim values */}
+      {hasChildClaims && (
         <div>
           <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3">
-            Child org audiences
+            Child organization claim values
           </h4>
           <div className="bg-white border border-bluegrey-200 rounded-md px-4">
-            {postSetup.childOrgAudiences
-              .filter((c) => c.audience)
+            {postSetup.childOrgClaims
+              .filter((c) => c.claimValue)
               .map((c) => (
-                <FieldRow key={c.orgId} label={c.orgName} value={c.audience} mono />
+                <FieldRow key={c.orgId} label={c.orgName} value={c.claimValue} mono />
               ))}
           </div>
         </div>

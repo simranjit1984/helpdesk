@@ -86,9 +86,10 @@ export default function PostSetupStep({
   const adminRoles  = MOCK_ADMIN_ROLES;
   const scopes      = getScopesForOrg(orgId);
 
-  const [audienceValue, setAudienceValue] = useState("");
+  const [claimName, setClaimName] = useState("");
+  const [claimValue, setClaimValue] = useState("");
   const [sameIdpForChildren, setSameIdpForChildren] = useState<boolean | null>(null);
-  const [childAudiences, setChildAudiences] = useState<Record<string, string>>(
+  const [childClaimValues, setChildClaimValues] = useState<Record<string, string>>(
     Object.fromEntries(childOrgs.map((c) => [c.id, ""]))
   );
   const [accessRoleClaims, setAccessRoleClaims] = useState<AccessRoleClaim[]>(
@@ -103,12 +104,13 @@ export default function PostSetupStep({
 
   function handleFinish() {
     onComplete({
-      audienceValue,
+      claimName,
+      claimValue,
       sameIdpForChildren: sameIdpForChildren ?? false,
-      childOrgAudiences: childOrgs.map((c) => ({
+      childOrgClaims: childOrgs.map((c) => ({
         orgId: c.id,
         orgName: c.name,
-        audience: childAudiences[c.id] ?? "",
+        claimValue: childClaimValues[c.id] ?? "",
       })),
       accessRoleClaims,
       adminRoleClaims,
@@ -150,23 +152,37 @@ export default function PostSetupStep({
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="max-w-2xl space-y-10">
 
-          {/* ── 1. Audience ──────────────────────────────────────────────── */}
+          {/* ── 1. Organization claim mapping ────────────────────────────── */}
           <section>
             <SectionTitle
-              title="Audience"
-              description={`Specify the audience value this identity provider will use for ${orgName}. This is typically the client ID or a URI that identifies your service as the intended audience.`}
+              title="Organization claim mapping"
+              description={`Specify the claim name and value this identity provider will send to identify ${orgName}. The claim name is shared across this organization and its children; each organization is identified by its own claim value.`}
             />
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-bluegrey-800">
-                Audience value for <strong>{orgName}</strong>
-              </label>
-              <input
-                type="text"
-                value={audienceValue}
-                onChange={(e) => setAudienceValue(e.target.value)}
-                placeholder="e.g. https://api.acme-corp.com"
-                className="w-full h-10 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              />
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-bluegrey-800">
+                  Claim name
+                </label>
+                <input
+                  type="text"
+                  value={claimName}
+                  onChange={(e) => setClaimName(e.target.value)}
+                  placeholder="e.g. org"
+                  className="w-full h-10 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-bluegrey-800">
+                  Claim value for <strong>{orgName}</strong>
+                </label>
+                <input
+                  type="text"
+                  value={claimValue}
+                  onChange={(e) => setClaimValue(e.target.value)}
+                  placeholder="e.g. https://api.acme-corp.com"
+                  className="w-full h-10 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+                />
+              </div>
             </div>
           </section>
 
@@ -200,7 +216,8 @@ export default function PostSetupStep({
               {sameIdpForChildren === true && (
                 <div className="space-y-3">
                   <p className="text-sm text-bluegrey-600">
-                    Specify the audience value for each child organization:
+                    Using claim name <code className="font-mono text-blue-700">{claimName || "—"}</code>,
+                    specify the claim value that identifies each child organization:
                   </p>
                   {childOrgs.map((child) => (
                     <div key={child.id} className="flex items-center gap-3">
@@ -209,12 +226,12 @@ export default function PostSetupStep({
                       </label>
                       <input
                         type="text"
-                        value={childAudiences[child.id] ?? ""}
+                        value={childClaimValues[child.id] ?? ""}
                         onChange={(e) =>
-                          setChildAudiences((prev) => ({ ...prev, [child.id]: e.target.value }))
+                          setChildClaimValues((prev) => ({ ...prev, [child.id]: e.target.value }))
                         }
                         placeholder="e.g. https://api.acme-europe.com"
-                        className="flex-1 h-10 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 h-10 px-3 text-sm border border-bluegrey-300 rounded-sm bg-white text-bluegrey-900 placeholder:text-bluegrey-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
                       />
                     </div>
                   ))}

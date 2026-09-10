@@ -49,11 +49,12 @@ export const ACME_CORP_DEFAULT_IDP: ConfiguredIdp = {
   id: "idp-acme-corp-oidc",
   ...ACME_SSO_BASE,
   postSetup: {
-    audienceValue: "https://api.acme-corp.com",
+    claimName: "org",
+    claimValue: "https://api.acme-corp.com",
     sameIdpForChildren: true,
-    childOrgAudiences: [
-      { orgId: "1-1", orgName: "Acme Europe",   audience: "https://api.acme-europe.com"   },
-      { orgId: "1-2", orgName: "Acme Americas", audience: "https://api.acme-americas.com" },
+    childOrgClaims: [
+      { orgId: "1-1", orgName: "Acme Europe",   claimValue: "https://api.acme-europe.com"   },
+      { orgId: "1-2", orgName: "Acme Americas", claimValue: "https://api.acme-americas.com" },
     ],
     // Access roles assigned to org "1": ar-3 (Sales general), ar-5 (Normal_User_K)
     accessRoleClaims: [
@@ -88,9 +89,10 @@ export const ACME_EUROPE_DEFAULT_IDP: ConfiguredIdp = {
     clientId: "acme-europe-client-001",
   },
   postSetup: {
-    audienceValue: "https://api.acme-europe.com",
+    claimName: "org",
+    claimValue: "https://api.acme-europe.com",
     sameIdpForChildren: false,
-    childOrgAudiences: [],
+    childOrgClaims: [],
     accessRoleClaims: [],
     adminRoleClaims: [
       { roleId: "role-1", roleName: "User Admin",     claimName: "admin_role", claimValue: "user-admin" },
@@ -117,9 +119,10 @@ export const ACME_AMERICAS_DEFAULT_IDP: ConfiguredIdp = {
     clientId: "acme-americas-client-001",
   },
   postSetup: {
-    audienceValue: "https://api.acme-americas.com",
+    claimName: "org",
+    claimValue: "https://api.acme-americas.com",
     sameIdpForChildren: false,
-    childOrgAudiences: [],
+    childOrgClaims: [],
     accessRoleClaims: [],
     adminRoleClaims: [
       { roleId: "role-1", roleName: "User Admin",     claimName: "admin_role", claimValue: "user-admin" },
