@@ -100,6 +100,91 @@ import {
 } from "@/components/ui/table";
 import { getUserByUsername } from "@/lib/usersMockData";
 
+interface ContactEntry {
+  id: string;
+  type: string;
+  value: string;
+  primary: boolean;
+}
+
+function ContactEntryList({
+  entries,
+  onUpdate,
+  onAdd,
+  onRemove,
+  disabled,
+  inputType = "text",
+  addLabel,
+}: {
+  entries: ContactEntry[];
+  onUpdate: (id: string, field: "type" | "value", value: string) => void;
+  onAdd: () => void;
+  onRemove: (id: string) => void;
+  disabled?: boolean;
+  inputType?: string;
+  addLabel: string;
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      {entries.map((entry) => (
+        <div
+          key={entry.id}
+          className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-white p-3"
+        >
+          <div className="flex flex-1 flex-col gap-2 sm:flex-row">
+            <Select
+              value={entry.type}
+              onValueChange={(value) => onUpdate(entry.id, "type", value)}
+              disabled={disabled}
+            >
+              <SelectTrigger className="h-auto rounded-[2px] border-bluegrey-500 px-2 py-2 text-sm text-bluegrey-900 sm:w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Personal">Personal</SelectItem>
+                <SelectItem value="Work">Work</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <input
+              type={inputType}
+              value={entry.value}
+              onChange={(e) => onUpdate(entry.id, "value", e.target.value)}
+              disabled={disabled}
+              className="flex-1 rounded-[2px] border border-bluegrey-500 bg-white px-2 py-2 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+          <div className="flex flex-shrink-0 items-center gap-1.5 pt-2">
+            <Checkbox checked={entry.primary} disabled />
+            <Label className="text-xs font-normal text-bluegrey-500">
+              Primary
+            </Label>
+          </div>
+          <button
+            type="button"
+            onClick={() => onRemove(entry.id)}
+            disabled={disabled}
+            aria-label="Remove"
+            className="mt-1.5 flex-shrink-0 text-bluegrey-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="outline"
+        onClick={onAdd}
+        disabled={disabled}
+        className="gap-2 self-start rounded-[2px]"
+      >
+        <Plus className="h-4 w-4" />
+        {addLabel}
+      </Button>
+    </div>
+  );
+}
+
 export default function UserDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -136,10 +221,6 @@ export default function UserDetail() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
-    workEmail: "",
-    phone: "",
-    workPhone: "",
     address1: "",
     address2: "",
     city: "",
@@ -148,6 +229,17 @@ export default function UserDetail() {
     startDate: "2025-04-18",
     endDate: "2025-04-18",
   });
+
+  // Multi-valued complex attribute: repeatable entries with a type, value,
+  // and a primary flag. Primary is informational and cannot be toggled here.
+  const [emailEntries, setEmailEntries] = useState<ContactEntry[]>([
+    { id: "email-personal", type: "Personal", value: "", primary: false },
+    { id: "email-work", type: "Work", value: "", primary: true },
+  ]);
+  const [phoneEntries, setPhoneEntries] = useState<ContactEntry[]>([
+    { id: "phone-personal", type: "Personal", value: "", primary: false },
+    { id: "phone-work", type: "Work", value: "", primary: true },
+  ]);
 
   // Complex attribute: a single structured attribute with multiple sub-attributes.
   interface AddressFields {
@@ -529,10 +621,6 @@ export default function UserDetail() {
       setFormData({
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
-        workEmail: user.workEmail,
-        phone: user.phone,
-        workPhone: user.workPhone,
         address1: user.address1,
         address2: user.address2,
         city: user.city,
@@ -541,6 +629,34 @@ export default function UserDetail() {
         startDate: user.startDate,
         endDate: user.endDate,
       });
+      setEmailEntries([
+        {
+          id: "email-personal",
+          type: "Personal",
+          value: user.email,
+          primary: false,
+        },
+        {
+          id: "email-work",
+          type: "Work",
+          value: user.workEmail,
+          primary: true,
+        },
+      ]);
+      setPhoneEntries([
+        {
+          id: "phone-personal",
+          type: "Personal",
+          value: user.phone,
+          primary: false,
+        },
+        {
+          id: "phone-work",
+          type: "Work",
+          value: user.workPhone,
+          primary: true,
+        },
+      ]);
     }
   }, [user]);
 
@@ -565,6 +681,52 @@ export default function UserDetail() {
       ...prev,
       country: value,
     }));
+  };
+
+  const updateEmailEntry = (
+    id: string,
+    field: "type" | "value",
+    value: string,
+  ) => {
+    setEmailEntries((prev) =>
+      prev.map((entry) =>
+        entry.id === id ? { ...entry, [field]: value } : entry,
+      ),
+    );
+  };
+
+  const addEmailEntry = () => {
+    setEmailEntries((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), type: "Personal", value: "", primary: false },
+    ]);
+  };
+
+  const removeEmailEntry = (id: string) => {
+    setEmailEntries((prev) => prev.filter((entry) => entry.id !== id));
+  };
+
+  const updatePhoneEntry = (
+    id: string,
+    field: "type" | "value",
+    value: string,
+  ) => {
+    setPhoneEntries((prev) =>
+      prev.map((entry) =>
+        entry.id === id ? { ...entry, [field]: value } : entry,
+      ),
+    );
+  };
+
+  const addPhoneEntry = () => {
+    setPhoneEntries((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), type: "Personal", value: "", primary: false },
+    ]);
+  };
+
+  const removePhoneEntry = (id: string) => {
+    setPhoneEntries((prev) => prev.filter((entry) => entry.id !== id));
   };
 
   const handlePrimaryAddressChange =
@@ -850,48 +1012,27 @@ export default function UserDetail() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="email">Personal email</Label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleFormChange}
+                    <Label>Email addresses</Label>
+                    <ContactEntryList
+                      entries={emailEntries}
+                      onUpdate={updateEmailEntry}
+                      onAdd={addEmailEntry}
+                      onRemove={removeEmailEntry}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                      inputType="email"
+                      addLabel="Add email"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <Label htmlFor="workEmail">Work email (Primary)</Label>
-                    <input
-                      id="workEmail"
-                      type="email"
-                      value={formData.workEmail}
-                      readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="phone">Personal phone</Label>
-                    <input
-                      id="phone"
-                      type="text"
-                      value={formData.phone}
-                      onChange={handleFormChange}
+                    <Label>Phone numbers</Label>
+                    <ContactEntryList
+                      entries={phoneEntries}
+                      onUpdate={updatePhoneEntry}
+                      onAdd={addPhoneEntry}
+                      onRemove={removePhoneEntry}
                       disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="workPhone">Work phone (Primary)</Label>
-                    <input
-                      id="workPhone"
-                      type="text"
-                      value={formData.workPhone}
-                      readOnly
-                      className="flex w-full rounded-[2px] border border-bluegrey-100 bg-white px-2 py-3 text-sm text-bluegrey-900 cursor-text"
+                      addLabel="Add phone"
                     />
                   </div>
 
