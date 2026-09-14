@@ -7,7 +7,6 @@ import {
   Calendar,
   ChevronDown,
   ChevronRight,
-  PlusCircle,
   Search,
   Trash2,
   ArrowLeft,
@@ -26,6 +25,9 @@ import {
   AlertTriangle,
   Loader2,
   CheckCircle,
+  Building2,
+  Home,
+  Plus,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import UserDetailHeader from "@/components/UserDetailHeader";
@@ -50,6 +52,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   DropdownMenu,
@@ -146,28 +149,64 @@ export default function UserDetail() {
     endDate: "2025-04-18",
   });
 
-  // Complex attribute: a single grouped set of related sub-fields.
-  interface EmergencyContact {
-    name: string;
-    relationship: string;
-    phone: string;
+  // Complex attribute: a single structured attribute with multiple sub-attributes.
+  interface AddressFields {
+    type: string;
+    street: string;
+    city: string;
+    stateProvince: string;
+    postalCode: string;
+    country: string;
   }
-  const [emergencyContact, setEmergencyContact] = useState<EmergencyContact>({
-    name: "",
-    relationship: "",
-    phone: "",
+  const [primaryAddress, setPrimaryAddress] = useState<AddressFields>({
+    type: "Work",
+    street: "123 Main Street",
+    city: "Dubai",
+    stateProvince: "Dubai",
+    postalCode: "00000",
+    country: "United Arab Emirates",
   });
 
-  // Multi-valued complex attribute: a repeatable list of grouped sub-fields.
-  interface AdditionalEmail {
+  // Multi-valued complex attribute: multiple instances of a structured attribute.
+  interface AddressEntry extends AddressFields {
     id: string;
-    type: "Personal" | "Work" | "Other";
-    email: string;
     primary: boolean;
   }
-  const [additionalEmails, setAdditionalEmails] = useState<AdditionalEmail[]>(
-    [],
+  const [addresses, setAddresses] = useState<AddressEntry[]>([
+    {
+      id: "addr-1",
+      type: "Work",
+      street: "123 Main Street",
+      city: "Dubai",
+      stateProvince: "Dubai",
+      postalCode: "00000",
+      country: "United Arab Emirates",
+      primary: true,
+    },
+    {
+      id: "addr-2",
+      type: "Home",
+      street: "456 Park Avenue",
+      city: "Dubai",
+      stateProvince: "Dubai",
+      postalCode: "00000",
+      country: "United Arab Emirates",
+      primary: false,
+    },
+  ]);
+  const [addressDialogOpen, setAddressDialogOpen] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(
+    null,
   );
+  const [addressDraft, setAddressDraft] = useState<AddressFields>({
+    type: "Home",
+    street: "",
+    city: "",
+    stateProvince: "",
+    postalCode: "",
+    country: "",
+  });
+  const [addressDraftPrimary, setAddressDraftPrimary] = useState(false);
 
   const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
   const [usernameEmail, setUsernameEmail] = useState("");
@@ -528,50 +567,84 @@ export default function UserDetail() {
     }));
   };
 
-  const handleEmergencyContactChange =
-    (field: keyof EmergencyContact) =>
+  const handlePrimaryAddressChange =
+    (field: keyof AddressFields) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEmergencyContact((prev) => ({ ...prev, [field]: e.target.value }));
+      setPrimaryAddress((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
-  const addAdditionalEmail = () => {
-    setAdditionalEmails((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        type: "Personal",
-        email: "",
-        primary: prev.length === 0,
-      },
-    ]);
-  };
-
-  const updateAdditionalEmail = (
-    id: string,
-    field: "type" | "email",
-    value: string,
-  ) => {
-    setAdditionalEmails((prev) =>
-      prev.map((entry) =>
-        entry.id === id ? { ...entry, [field]: value } : entry,
-      ),
+  const addressTypeIcon = (type: string) =>
+    type === "Home" ? (
+      <Home className="h-4 w-4" />
+    ) : (
+      <Building2 className="h-4 w-4" />
     );
+
+  const openAddAddressDialog = () => {
+    setEditingAddressId(null);
+    setAddressDraft({
+      type: "Home",
+      street: "",
+      city: "",
+      stateProvince: "",
+      postalCode: "",
+      country: "",
+    });
+    setAddressDraftPrimary(addresses.length === 0);
+    setAddressDialogOpen(true);
   };
 
-  const removeAdditionalEmail = (id: string) => {
-    setAdditionalEmails((prev) => {
+  const openEditAddressDialog = (entry: AddressEntry) => {
+    setEditingAddressId(entry.id);
+    setAddressDraft({
+      type: entry.type,
+      street: entry.street,
+      city: entry.city,
+      stateProvince: entry.stateProvince,
+      postalCode: entry.postalCode,
+      country: entry.country,
+    });
+    setAddressDraftPrimary(entry.primary);
+    setAddressDialogOpen(true);
+  };
+
+  const handleAddressDraftChange =
+    (field: keyof AddressFields) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setAddressDraft((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const saveAddressDraft = () => {
+    setAddresses((prev) => {
+      const targetId = editingAddressId ?? crypto.randomUUID();
+      let next: AddressEntry[] = editingAddressId
+        ? prev.map((entry) =>
+            entry.id === editingAddressId
+              ? { ...entry, ...addressDraft, primary: addressDraftPrimary }
+              : entry,
+          )
+        : [...prev, { id: targetId, ...addressDraft, primary: addressDraftPrimary }];
+
+      if (addressDraftPrimary) {
+        next = next.map((entry) => ({
+          ...entry,
+          primary: entry.id === targetId,
+        }));
+      } else if (!next.some((entry) => entry.primary) && next.length > 0) {
+        next[0] = { ...next[0], primary: true };
+      }
+      return next;
+    });
+    setAddressDialogOpen(false);
+  };
+
+  const removeAddress = (id: string) => {
+    setAddresses((prev) => {
       const next = prev.filter((entry) => entry.id !== id);
       if (next.length > 0 && !next.some((entry) => entry.primary)) {
         next[0] = { ...next[0], primary: true };
       }
       return next;
     });
-  };
-
-  const setAdditionalEmailPrimary = (id: string) => {
-    setAdditionalEmails((prev) =>
-      prev.map((entry) => ({ ...entry, primary: entry.id === id })),
-    );
   };
 
   const handleSaveBasicInfo = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -974,180 +1047,234 @@ export default function UserDetail() {
                 </div>
 
                 <div className="flex w-full max-w-2xl flex-col gap-10">
-                  {/* Complex attribute: single grouped set of sub-fields */}
+                  {/* Complex attribute: a structured attribute with multiple sub-attributes */}
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
                       <h3 className="text-xl font-bold text-blue-500">
-                        Emergency contact
+                        Address
                       </h3>
                       <p className="text-xs text-bluegrey-700">
-                        A complex attribute — a single grouped set of related
-                        sub-fields.
+                        A complex attribute — a structured attribute with
+                        multiple sub-attributes.
                       </p>
                     </div>
 
-                    <div className="rounded bg-bluegrey-50 p-6">
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="rounded-md border border-bluegrey-200 bg-white p-6">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="flex flex-col gap-1">
-                          <Label htmlFor="emergencyContactName">Name</Label>
+                          <Label htmlFor="primaryAddressType">
+                            Address type
+                          </Label>
+                          <Select
+                            value={primaryAddress.type}
+                            onValueChange={(value) =>
+                              setPrimaryAddress((prev) => ({
+                                ...prev,
+                                type: value,
+                              }))
+                            }
+                            disabled={isSaving}
+                          >
+                            <SelectTrigger
+                              id="primaryAddressType"
+                              className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto"
+                            >
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Work">Work</SelectItem>
+                              <SelectItem value="Home">Home</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex flex-col gap-1 sm:col-span-2">
+                          <Label htmlFor="primaryAddressStreet">
+                            Street address
+                          </Label>
                           <input
-                            id="emergencyContactName"
+                            id="primaryAddressStreet"
                             type="text"
-                            value={emergencyContact.name}
-                            onChange={handleEmergencyContactChange("name")}
+                            value={primaryAddress.street}
+                            onChange={handlePrimaryAddressChange("street")}
                             disabled={isSaving}
                             className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
                         <div className="flex flex-col gap-1">
-                          <Label htmlFor="emergencyContactRelationship">
-                            Relationship
+                          <Label htmlFor="primaryAddressCity">City</Label>
+                          <input
+                            id="primaryAddressCity"
+                            type="text"
+                            value={primaryAddress.city}
+                            onChange={handlePrimaryAddressChange("city")}
+                            disabled={isSaving}
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="primaryAddressStateProvince">
+                            State / Province
                           </Label>
                           <input
-                            id="emergencyContactRelationship"
+                            id="primaryAddressStateProvince"
                             type="text"
-                            value={emergencyContact.relationship}
-                            onChange={handleEmergencyContactChange(
-                              "relationship",
+                            value={primaryAddress.stateProvince}
+                            onChange={handlePrimaryAddressChange(
+                              "stateProvince",
                             )}
                             disabled={isSaving}
                             className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
                         <div className="flex flex-col gap-1">
-                          <Label htmlFor="emergencyContactPhone">Phone</Label>
+                          <Label htmlFor="primaryAddressPostalCode">
+                            Postal code
+                          </Label>
                           <input
-                            id="emergencyContactPhone"
+                            id="primaryAddressPostalCode"
                             type="text"
-                            value={emergencyContact.phone}
-                            onChange={handleEmergencyContactChange("phone")}
+                            value={primaryAddress.postalCode}
+                            onChange={handlePrimaryAddressChange(
+                              "postalCode",
+                            )}
                             disabled={isSaving}
                             className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
                           />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="primaryAddressCountry">
+                            Country
+                          </Label>
+                          <Select
+                            value={primaryAddress.country}
+                            onValueChange={(value) =>
+                              setPrimaryAddress((prev) => ({
+                                ...prev,
+                                country: value,
+                              }))
+                            }
+                            disabled={isSaving}
+                          >
+                            <SelectTrigger
+                              id="primaryAddressCountry"
+                              className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto"
+                            >
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="United Arab Emirates">
+                                United Arab Emirates
+                              </SelectItem>
+                              <SelectItem value="Netherlands">
+                                Netherlands
+                              </SelectItem>
+                              <SelectItem value="Belgium">Belgium</SelectItem>
+                              <SelectItem value="Germany">Germany</SelectItem>
+                              <SelectItem value="France">France</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Multi-valued complex attribute: repeatable list of grouped sub-fields */}
+                  {/* Multi-valued complex attribute: multiple instances of a structured attribute */}
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex flex-col gap-1">
                         <h3 className="text-xl font-bold text-blue-500">
-                          Additional email addresses
+                          Addresses
                         </h3>
                         <p className="text-xs text-bluegrey-700">
-                          A multi-valued complex attribute — repeatable
-                          entries, each with its own type and primary flag.
+                          A multi-valued complex attribute — multiple
+                          instances of a structured attribute.
                         </p>
                       </div>
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={addAdditionalEmail}
+                        onClick={openAddAddressDialog}
                         disabled={isSaving}
                         className="gap-2 rounded-[2px] shrink-0"
                       >
-                        <PlusCircle className="h-4 w-4" />
-                        Add email
+                        <Plus className="h-4 w-4" />
+                        Add address
                       </Button>
                     </div>
 
-                    {additionalEmails.length === 0 ? (
+                    {addresses.length === 0 ? (
                       <p className="text-sm italic text-bluegrey-500">
-                        No additional email addresses.
+                        No addresses added.
                       </p>
                     ) : (
                       <div className="flex flex-col gap-3">
-                        {additionalEmails.map((entry) => (
+                        {addresses.map((entry) => (
                           <div
                             key={entry.id}
-                            className="flex flex-col gap-4 rounded bg-bluegrey-50 p-4"
+                            className="flex items-start justify-between gap-4 rounded-md border border-bluegrey-200 bg-white p-4"
                           >
-                            <div className="flex items-start gap-4">
-                              <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div className="flex flex-col gap-1">
-                                  <Label htmlFor={`additionalEmailType-${entry.id}`}>
-                                    Type
-                                  </Label>
-                                  <Select
-                                    value={entry.type}
-                                    onValueChange={(value) =>
-                                      updateAdditionalEmail(
-                                        entry.id,
-                                        "type",
-                                        value,
-                                      )
-                                    }
-                                    disabled={isSaving}
-                                  >
-                                    <SelectTrigger
-                                      id={`additionalEmailType-${entry.id}`}
-                                      className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto"
-                                    >
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="Personal">
-                                        Personal
-                                      </SelectItem>
-                                      <SelectItem value="Work">Work</SelectItem>
-                                      <SelectItem value="Other">Other</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                  <Label htmlFor={`additionalEmailValue-${entry.id}`}>
-                                    Email
-                                  </Label>
-                                  <input
-                                    id={`additionalEmailValue-${entry.id}`}
-                                    type="email"
-                                    value={entry.email}
-                                    onChange={(e) =>
-                                      updateAdditionalEmail(
-                                        entry.id,
-                                        "email",
-                                        e.target.value,
-                                      )
-                                    }
-                                    disabled={isSaving}
-                                    className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                  />
-                                </div>
+                            <div className="flex items-start gap-3">
+                              <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                                {addressTypeIcon(entry.type)}
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => removeAdditionalEmail(entry.id)}
-                                disabled={isSaving}
-                                aria-label="Remove email"
-                                className="mt-6 flex-shrink-0 text-bluegrey-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
+                              <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-semibold text-bluegrey-900">
+                                    {entry.type}
+                                  </span>
+                                  {entry.primary && (
+                                    <span className="text-xs font-medium text-green-600">
+                                      (Primary)
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-sm text-bluegrey-700">
+                                  {entry.street}
+                                </p>
+                                <p className="text-sm text-bluegrey-700">
+                                  {entry.city}, {entry.stateProvince}{" "}
+                                  {entry.postalCode}
+                                </p>
+                                <p className="text-sm text-bluegrey-700">
+                                  {entry.country}
+                                </p>
+                              </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                              <RadioGroup
-                                value={entry.primary ? entry.id : ""}
-                                onValueChange={() =>
-                                  setAdditionalEmailPrimary(entry.id)
-                                }
+                            <div className="flex flex-shrink-0 items-center gap-1">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openEditAddressDialog(entry)}
                                 disabled={isSaving}
+                                className="gap-1.5 rounded-[2px] text-bluegrey-700"
                               >
-                                <div className="flex items-center gap-2">
-                                  <RadioGroupItem
-                                    value={entry.id}
-                                    id={`additionalEmailPrimary-${entry.id}`}
-                                  />
-                                  <Label
-                                    htmlFor={`additionalEmailPrimary-${entry.id}`}
-                                    className="cursor-pointer font-normal"
+                                <Pencil className="h-3.5 w-3.5" />
+                                Edit
+                              </Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    type="button"
+                                    disabled={isSaving}
+                                    aria-label="More address actions"
+                                    className="flex h-8 w-8 items-center justify-center rounded-[2px] text-bluegrey-400 hover:bg-bluegrey-50 hover:text-bluegrey-700 disabled:cursor-not-allowed disabled:opacity-50"
                                   >
-                                    Primary
-                                  </Label>
-                                </div>
-                              </RadioGroup>
+                                    <MoreVertical className="h-4 w-4" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() => removeAddress(entry.id)}
+                                    className="text-red-600 focus:text-red-600"
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Remove
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </div>
                         ))}
@@ -1177,6 +1304,152 @@ export default function UserDetail() {
                 </div>
               </form>
             </TabsContent>
+
+            <Dialog open={addressDialogOpen} onOpenChange={setAddressDialogOpen}>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingAddressId ? "Edit address" : "Add address"}
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className="flex flex-col gap-4 py-2">
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="addressDraftType">Address type</Label>
+                    <Select
+                      value={addressDraft.type}
+                      onValueChange={(value) =>
+                        setAddressDraft((prev) => ({ ...prev, type: value }))
+                      }
+                    >
+                      <SelectTrigger
+                        id="addressDraftType"
+                        className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Work">Work</SelectItem>
+                        <SelectItem value="Home">Home</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="addressDraftStreet">Street address</Label>
+                    <input
+                      id="addressDraftStreet"
+                      type="text"
+                      value={addressDraft.street}
+                      onChange={handleAddressDraftChange("street")}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="addressDraftCity">City</Label>
+                    <input
+                      id="addressDraftCity"
+                      type="text"
+                      value={addressDraft.city}
+                      onChange={handleAddressDraftChange("city")}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="addressDraftStateProvince">
+                      State / Province
+                    </Label>
+                    <input
+                      id="addressDraftStateProvince"
+                      type="text"
+                      value={addressDraft.stateProvince}
+                      onChange={handleAddressDraftChange("stateProvince")}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="addressDraftPostalCode">Postal code</Label>
+                    <input
+                      id="addressDraftPostalCode"
+                      type="text"
+                      value={addressDraft.postalCode}
+                      onChange={handleAddressDraftChange("postalCode")}
+                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label htmlFor="addressDraftCountry">Country</Label>
+                    <Select
+                      value={addressDraft.country}
+                      onValueChange={(value) =>
+                        setAddressDraft((prev) => ({
+                          ...prev,
+                          country: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger
+                        id="addressDraftCountry"
+                        className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="United Arab Emirates">
+                          United Arab Emirates
+                        </SelectItem>
+                        <SelectItem value="Netherlands">
+                          Netherlands
+                        </SelectItem>
+                        <SelectItem value="Belgium">Belgium</SelectItem>
+                        <SelectItem value="Germany">Germany</SelectItem>
+                        <SelectItem value="France">France</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <Checkbox
+                      id="addressDraftPrimary"
+                      checked={addressDraftPrimary}
+                      onCheckedChange={(checked) =>
+                        setAddressDraftPrimary(checked === true)
+                      }
+                    />
+                    <Label
+                      htmlFor="addressDraftPrimary"
+                      className="cursor-pointer font-normal"
+                    >
+                      Set as primary address
+                    </Label>
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="rounded-[2px] text-bluegrey-700"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    type="button"
+                    onClick={saveAddressDraft}
+                    className="rounded-[2px] bg-blue-500 hover:bg-opacity-90"
+                  >
+                    Save
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <TabsContent value="security" className="pt-6">
               {user?.status === "Inactive" ? (
