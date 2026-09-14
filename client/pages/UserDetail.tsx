@@ -145,6 +145,30 @@ export default function UserDetail() {
     startDate: "2025-04-18",
     endDate: "2025-04-18",
   });
+
+  // Complex attribute: a single grouped set of related sub-fields.
+  interface EmergencyContact {
+    name: string;
+    relationship: string;
+    phone: string;
+  }
+  const [emergencyContact, setEmergencyContact] = useState<EmergencyContact>({
+    name: "",
+    relationship: "",
+    phone: "",
+  });
+
+  // Multi-valued complex attribute: a repeatable list of grouped sub-fields.
+  interface AdditionalEmail {
+    id: string;
+    type: "Personal" | "Work" | "Other";
+    email: string;
+    primary: boolean;
+  }
+  const [additionalEmails, setAdditionalEmails] = useState<AdditionalEmail[]>(
+    [],
+  );
+
   const [openSideSheet, setOpenSideSheet] = useState<string | null>(null);
   const [usernameEmail, setUsernameEmail] = useState("");
   const [temporaryPassword, setTemporaryPassword] = useState("");
@@ -502,6 +526,52 @@ export default function UserDetail() {
       ...prev,
       country: value,
     }));
+  };
+
+  const handleEmergencyContactChange =
+    (field: keyof EmergencyContact) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEmergencyContact((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const addAdditionalEmail = () => {
+    setAdditionalEmails((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        type: "Personal",
+        email: "",
+        primary: prev.length === 0,
+      },
+    ]);
+  };
+
+  const updateAdditionalEmail = (
+    id: string,
+    field: "type" | "email",
+    value: string,
+  ) => {
+    setAdditionalEmails((prev) =>
+      prev.map((entry) =>
+        entry.id === id ? { ...entry, [field]: value } : entry,
+      ),
+    );
+  };
+
+  const removeAdditionalEmail = (id: string) => {
+    setAdditionalEmails((prev) => {
+      const next = prev.filter((entry) => entry.id !== id);
+      if (next.length > 0 && !next.some((entry) => entry.primary)) {
+        next[0] = { ...next[0], primary: true };
+      }
+      return next;
+    });
+  };
+
+  const setAdditionalEmailPrimary = (id: string) => {
+    setAdditionalEmails((prev) =>
+      prev.map((entry) => ({ ...entry, primary: entry.id === id })),
+    );
   };
 
   const handleSaveBasicInfo = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -900,6 +970,189 @@ export default function UserDetail() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <div className="flex w-full max-w-2xl flex-col gap-10">
+                  {/* Complex attribute: single grouped set of sub-fields */}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-xl font-bold text-blue-500">
+                        Emergency contact
+                      </h3>
+                      <p className="text-xs text-bluegrey-700">
+                        A complex attribute — a single grouped set of related
+                        sub-fields.
+                      </p>
+                    </div>
+
+                    <div className="rounded bg-bluegrey-50 p-6">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="emergencyContactName">Name</Label>
+                          <input
+                            id="emergencyContactName"
+                            type="text"
+                            value={emergencyContact.name}
+                            onChange={handleEmergencyContactChange("name")}
+                            disabled={isSaving}
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="emergencyContactRelationship">
+                            Relationship
+                          </Label>
+                          <input
+                            id="emergencyContactRelationship"
+                            type="text"
+                            value={emergencyContact.relationship}
+                            onChange={handleEmergencyContactChange(
+                              "relationship",
+                            )}
+                            disabled={isSaving}
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label htmlFor="emergencyContactPhone">Phone</Label>
+                          <input
+                            id="emergencyContactPhone"
+                            type="text"
+                            value={emergencyContact.phone}
+                            onChange={handleEmergencyContactChange("phone")}
+                            disabled={isSaving}
+                            className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Multi-valued complex attribute: repeatable list of grouped sub-fields */}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="text-xl font-bold text-blue-500">
+                          Additional email addresses
+                        </h3>
+                        <p className="text-xs text-bluegrey-700">
+                          A multi-valued complex attribute — repeatable
+                          entries, each with its own type and primary flag.
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={addAdditionalEmail}
+                        disabled={isSaving}
+                        className="gap-2 rounded-[2px] shrink-0"
+                      >
+                        <PlusCircle className="h-4 w-4" />
+                        Add email
+                      </Button>
+                    </div>
+
+                    {additionalEmails.length === 0 ? (
+                      <p className="text-sm italic text-bluegrey-500">
+                        No additional email addresses.
+                      </p>
+                    ) : (
+                      <div className="flex flex-col gap-3">
+                        {additionalEmails.map((entry) => (
+                          <div
+                            key={entry.id}
+                            className="flex flex-col gap-4 rounded bg-bluegrey-50 p-4"
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div className="flex flex-col gap-1">
+                                  <Label htmlFor={`additionalEmailType-${entry.id}`}>
+                                    Type
+                                  </Label>
+                                  <Select
+                                    value={entry.type}
+                                    onValueChange={(value) =>
+                                      updateAdditionalEmail(
+                                        entry.id,
+                                        "type",
+                                        value,
+                                      )
+                                    }
+                                    disabled={isSaving}
+                                  >
+                                    <SelectTrigger
+                                      id={`additionalEmailType-${entry.id}`}
+                                      className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto"
+                                    >
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="Personal">
+                                        Personal
+                                      </SelectItem>
+                                      <SelectItem value="Work">Work</SelectItem>
+                                      <SelectItem value="Other">Other</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                  <Label htmlFor={`additionalEmailValue-${entry.id}`}>
+                                    Email
+                                  </Label>
+                                  <input
+                                    id={`additionalEmailValue-${entry.id}`}
+                                    type="email"
+                                    value={entry.email}
+                                    onChange={(e) =>
+                                      updateAdditionalEmail(
+                                        entry.id,
+                                        "email",
+                                        e.target.value,
+                                      )
+                                    }
+                                    disabled={isSaving}
+                                    className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                  />
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeAdditionalEmail(entry.id)}
+                                disabled={isSaving}
+                                aria-label="Remove email"
+                                className="mt-6 flex-shrink-0 text-bluegrey-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <RadioGroup
+                                value={entry.primary ? entry.id : ""}
+                                onValueChange={() =>
+                                  setAdditionalEmailPrimary(entry.id)
+                                }
+                                disabled={isSaving}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <RadioGroupItem
+                                    value={entry.id}
+                                    id={`additionalEmailPrimary-${entry.id}`}
+                                  />
+                                  <Label
+                                    htmlFor={`additionalEmailPrimary-${entry.id}`}
+                                    className="cursor-pointer font-normal"
+                                  >
+                                    Primary
+                                  </Label>
+                                </div>
+                              </RadioGroup>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
