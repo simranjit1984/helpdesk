@@ -126,51 +126,54 @@ function ContactEntryList({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      {entries.map((entry) => (
-        <div
-          key={entry.id}
-          className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-white p-3"
-        >
-          <div className="flex flex-1 flex-col gap-2 sm:flex-row">
-            <Select
-              value={entry.type}
-              onValueChange={(value) => onUpdate(entry.id, "type", value)}
-              disabled={disabled}
-            >
-              <SelectTrigger className="h-auto rounded-[2px] border-bluegrey-500 px-2 py-2 text-sm text-bluegrey-900 sm:w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Personal">Personal</SelectItem>
-                <SelectItem value="Work">Work</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-            <input
-              type={inputType}
-              value={entry.value}
-              onChange={(e) => onUpdate(entry.id, "value", e.target.value)}
-              disabled={disabled}
-              className="flex-1 rounded-[2px] border border-bluegrey-500 bg-white px-2 py-2 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-          </div>
-          <div className="flex flex-shrink-0 items-center gap-1.5 pt-2">
-            <Checkbox checked={entry.primary} disabled />
-            <Label className="text-xs font-normal text-bluegrey-500">
-              Primary
-            </Label>
-          </div>
-          <button
-            type="button"
-            onClick={() => onRemove(entry.id)}
-            disabled={disabled}
-            aria-label="Remove"
-            className="mt-1.5 flex-shrink-0 text-bluegrey-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+      {entries.map((entry) => {
+        const rowDisabled = disabled || entry.primary;
+        return (
+          <div
+            key={entry.id}
+            className="flex items-start gap-2 rounded-md border border-bluegrey-200 bg-white p-3"
           >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      ))}
+            <div className="flex flex-1 flex-col gap-2 sm:flex-row">
+              <Select
+                value={entry.type}
+                onValueChange={(value) => onUpdate(entry.id, "type", value)}
+                disabled={rowDisabled}
+              >
+                <SelectTrigger className="h-auto rounded-[2px] border-bluegrey-500 px-2 py-2 text-sm text-bluegrey-900 sm:w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Personal">Personal</SelectItem>
+                  <SelectItem value="Work">Work</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              <input
+                type={inputType}
+                value={entry.value}
+                onChange={(e) => onUpdate(entry.id, "value", e.target.value)}
+                disabled={rowDisabled}
+                className="flex-1 rounded-[2px] border border-bluegrey-500 bg-white px-2 py-2 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+            <div className="flex flex-shrink-0 items-center gap-1.5 pt-2">
+              <Checkbox checked={entry.primary} disabled />
+              <Label className="text-xs font-normal text-bluegrey-500">
+                Primary
+              </Label>
+            </div>
+            <button
+              type="button"
+              onClick={() => onRemove(entry.id)}
+              disabled={rowDisabled}
+              aria-label="Remove"
+              className="mt-1.5 flex-shrink-0 text-bluegrey-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        );
+      })}
       <Button
         type="button"
         variant="outline"
@@ -221,11 +224,6 @@ export default function UserDetail() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    address1: "",
-    address2: "",
-    city: "",
-    postalCode: "",
-    country: "",
     startDate: "2025-04-18",
     endDate: "2025-04-18",
   });
@@ -621,11 +619,6 @@ export default function UserDetail() {
       setFormData({
         firstName: user.firstName,
         lastName: user.lastName,
-        address1: user.address1,
-        address2: user.address2,
-        city: user.city,
-        postalCode: user.postalCode,
-        country: user.country,
         startDate: user.startDate,
         endDate: user.endDate,
       });
@@ -673,13 +666,6 @@ export default function UserDetail() {
     setFormData((prev) => ({
       ...prev,
       [id]: value,
-    }));
-  };
-
-  const handleCountryChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      country: value,
     }));
   };
 
@@ -1034,73 +1020,6 @@ export default function UserDetail() {
                       disabled={isSaving}
                       addLabel="Add phone"
                     />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="address1">Address 1</Label>
-                    <input
-                      id="address1"
-                      type="text"
-                      value={formData.address1}
-                      onChange={handleFormChange}
-                      disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="address2">Address 2</Label>
-                    <input
-                      id="address2"
-                      type="text"
-                      value={formData.address2}
-                      onChange={handleFormChange}
-                      disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="city">City</Label>
-                    <input
-                      id="city"
-                      type="text"
-                      value={formData.city}
-                      onChange={handleFormChange}
-                      disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="postalCode">Postal code</Label>
-                    <input
-                      id="postalCode"
-                      type="text"
-                      value={formData.postalCode}
-                      onChange={handleFormChange}
-                      disabled={isSaving}
-                      className="flex w-full rounded-[2px] border border-bluegrey-500 bg-white px-2 py-3 text-sm text-bluegrey-900 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="country">Country</Label>
-                    <Select
-                      value={formData.country}
-                      onValueChange={handleCountryChange}
-                      disabled={isSaving}
-                    >
-                      <SelectTrigger className="rounded-[2px] border-bluegrey-500 px-2 py-3 text-sm text-bluegrey-900 h-auto">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Netherlands">Netherlands</SelectItem>
-                        <SelectItem value="Belgium">Belgium</SelectItem>
-                        <SelectItem value="Germany">Germany</SelectItem>
-                        <SelectItem value="France">France</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
 
                   <div className="flex flex-col gap-4 pt-6">
