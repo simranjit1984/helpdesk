@@ -9,7 +9,7 @@ import type {
   ChildOrg,
   ConfiguredIdp,
 } from "./idp/types";
-import { DEFAULT_OIDC_DATA } from "./idp/types";
+import { DEFAULT_OIDC_DATA, PREFILLED_OIDC_DATA } from "./idp/types";
 
 // ─── Wizard phases ────────────────────────────────────────────────────────────
 
@@ -23,6 +23,12 @@ interface AddIdpWizardProps {
   childOrgs: ChildOrg[];
   onClose: () => void;
   onComplete: (idp: ConfiguredIdp) => void;
+  /**
+   * Skip the provider type-selection screen, preselect OpenID Connect,
+   * pre-fill the basic/connection details, and jump straight to the
+   * Attribute mappings section.
+   */
+  quickStart?: boolean;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -33,10 +39,11 @@ export default function AddIdpWizard({
   childOrgs,
   onClose,
   onComplete,
+  quickStart,
 }: AddIdpWizardProps) {
-  const [phase, setPhase] = useState<Phase>("type-selection");
+  const [phase, setPhase] = useState<Phase>(quickStart ? "oidc-config" : "type-selection");
   const [selectedType, setSelectedType] = useState<IdpType>("oidc");
-  const [oidcData, setOidcData] = useState<OIDCFormData>(DEFAULT_OIDC_DATA);
+  const [oidcData, setOidcData] = useState<OIDCFormData>(quickStart ? PREFILLED_OIDC_DATA : DEFAULT_OIDC_DATA);
 
   // Prevent background scroll while wizard is open
   useEffect(() => {
@@ -77,6 +84,7 @@ export default function AddIdpWizard({
       {phase === "oidc-config" && (
         <OIDCConfigStep
           initialData={oidcData}
+          initialSection={quickStart ? 3 : 0}
           onComplete={handleOIDCComplete}
           onCancel={onClose}
         />

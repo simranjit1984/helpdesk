@@ -95,6 +95,36 @@ export const DEFAULT_OIDC_DATA: OIDCFormData = {
   attributeMappings: [],
 };
 
+// ─── Pre-filled OIDC preset ─────────────────────────────────────────────────
+// Used by the "Add identity provider" quick-start flow, which preselects
+// OpenID Connect and jumps straight to Attribute mappings.
+
+export const PREFILLED_OIDC_DATA: OIDCFormData = {
+  ...DEFAULT_OIDC_DATA,
+  displayName: "New Identity Provider",
+  description: "OpenID Connect provider.",
+  clientId: "new-idp-client-id",
+  authMethod: "client_secret_basic",
+  clientSecret: "changeme",
+  pkce: true,
+  issuer: "https://accounts.example.com",
+  authorizationEndpoint: "https://accounts.example.com/oauth2/authorize",
+  tokenEndpoint: "https://accounts.example.com/oauth2/token",
+  userInfoEndpoint: "https://accounts.example.com/oauth2/userinfo",
+  certSource: "dynamic_jwks",
+  jwksUri: "https://accounts.example.com/.well-known/jwks.json",
+  variants: [
+    {
+      id: "v1",
+      variantName: "default",
+      scopeNames: ["openid", "profile", "email"],
+      claims: ["sub", "name", "email"],
+      acrValues: [],
+    },
+  ],
+  userIdentifier: "sub",
+};
+
 // ─── Post-Setup ───────────────────────────────────────────────────────────────
 
 export interface ChildOrg {

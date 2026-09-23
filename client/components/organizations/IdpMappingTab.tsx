@@ -524,6 +524,7 @@ export default function IdpMappingTab({ orgId, orgName, readOnly }: IdpMappingTa
           childOrgs={childOrgs}
           onClose={() => setWizardOpen(false)}
           onComplete={handleWizardComplete}
+          quickStart
         />
       )}
 

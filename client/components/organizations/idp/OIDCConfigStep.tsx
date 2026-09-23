@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Bookmark, ArrowRight, Plus, X, Download, ChevronDown, AlertCircle } from "lucide-react";
 import type { OIDCFormData, OIDCVariant, AttributeMapping, AuthMethod, CertSource } from "./types";
 import { DEFAULT_OIDC_DATA } from "./types";
@@ -192,11 +192,12 @@ function VariantCard({
 
 interface Props {
   initialData: OIDCFormData;
+  initialSection?: number;
   onComplete: (data: OIDCFormData) => void;
   onCancel: () => void;
 }
 
-export default function OIDCConfigStep({ initialData, onComplete, onCancel }: Props) {
+export default function OIDCConfigStep({ initialData, initialSection = 0, onComplete, onCancel }: Props) {
   const [form, setForm] = useState<OIDCFormData>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeSection, setActiveSection] = useState(0);
@@ -223,6 +224,15 @@ export default function OIDCConfigStep({ initialData, onComplete, onCancel }: Pr
     }
     setActiveSection(index);
   }
+
+  useEffect(() => {
+    if (initialSection > 0) {
+      setActiveSection(initialSection);
+      requestAnimationFrame(() => scrollToSection(initialSection));
+    }
+    // Only run once, on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleLoad() {
     if (!form.wellKnownEndpoint.trim() || isLoadingWellKnown) return;
