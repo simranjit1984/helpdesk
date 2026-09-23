@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, Link2, PencilLine, Unlink } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Link2, Unlink } from "lucide-react";
 import type { ChildOrgInheritance } from "../types";
 
 interface Props {
@@ -8,13 +8,10 @@ interface Props {
 }
 
 export default function ReviewSaveStep({ idpName, orgName, childOrgs }: Props) {
-  const inheritAll = childOrgs.filter((c) => c.mode === "inherit_all").length;
-  const customClaims = childOrgs.filter(
-    (c) => c.mode === "inherit_idp_custom_claims",
-  ).length;
+  const inheritIdp = childOrgs.filter((c) => c.mode === "inherit_idp").length;
   const own = childOrgs.filter((c) => c.mode === "own").length;
   const missingClaimValue = childOrgs.filter(
-    (c) => c.mode !== "own" && !c.orgClaimValue,
+    (c) => c.mode === "inherit_idp" && !c.orgClaimValue,
   ).length;
 
   return (
@@ -58,28 +55,22 @@ export default function ReviewSaveStep({ idpName, orgName, childOrgs }: Props) {
           <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-red-500" />
           <span>
             <strong>{missingClaimValue}</strong> organization
-            {missingClaimValue > 1 ? "s" : ""} still need an organization claim
-            value defined before this configuration can reliably identify
-            them. Go back to "Apply to child organizations" to set it.
+            {missingClaimValue > 1 ? "s" : ""} still need their own claims
+            mapping defined before this configuration can reliably identify
+            and authorize them. Go back to "Apply to child organizations" to
+            configure it.
           </span>
         </div>
       )}
 
       <section className="space-y-3">
-        <div className="flex items-center gap-3 p-3.5 rounded-md border border-green-200 bg-green-50">
-          <Link2 className="w-4 h-4 text-green-600 shrink-0" />
-          <span className="text-sm text-green-800">
-            <strong>{inheritAll}</strong> — Inherit IDP & claims mapping.{" "}
-            {inheritAll} organizations will inherit future changes to this IDP
-            and claims mapping.
-          </span>
-        </div>
         <div className="flex items-center gap-3 p-3.5 rounded-md border border-amber-200 bg-amber-50">
-          <PencilLine className="w-4 h-4 text-amber-600 shrink-0" />
+          <Link2 className="w-4 h-4 text-amber-600 shrink-0" />
           <span className="text-sm text-amber-800">
-            <strong>{customClaims}</strong> — Inherit IDP, customize claims
-            mapping. {customClaims} organizations will inherit future IDP
-            changes but retain their own claims mapping.
+            <strong>{inheritIdp}</strong> — Inherit IDP, define claims
+            mapping. {inheritIdp} organizations will inherit future changes to
+            this IDP, but always keep their own organization claim, access
+            role, admin role, and scope claims mapping.
           </span>
         </div>
         <div className="flex items-center gap-3 p-3.5 rounded-md border border-bluegrey-200 bg-bluegrey-50">

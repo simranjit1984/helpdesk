@@ -1,8 +1,8 @@
 import type { ChildOrgInheritance } from "@/components/organizations/idp/types";
 
 // ─── Generate 100 child organizations for the "Acme Group has 100 child
-// organizations" demo scenario: 70 inherit IDP + claims, 20 inherit IDP but
-// customize claims, 10 use their own IDP & claims. ────────────────────────────
+// organizations" demo scenario: 90 inherit the IDP (and define their own
+// claims mapping), 10 use their own IDP & claims mapping entirely. ────────────
 
 const REGION_NAMES = [
   "Europe",
@@ -30,13 +30,12 @@ function buildChildOrgs(): ChildOrgInheritance[] {
 
   // First 3 follow the exact examples from the spec.
   // Acme Europe intentionally has no claim value yet, to demonstrate the
-  // "claim value required" state even though it fully inherits the IDP
-  // and claims mapping.
-  orgs.push({ orgId: "acme-100-1", orgName: "Acme Europe", mode: "inherit_all" });
+  // "claims mapping required" state even though it inherits the IDP.
+  orgs.push({ orgId: "acme-100-1", orgName: "Acme Europe", mode: "inherit_idp" });
   orgs.push({
     orgId: "acme-100-2",
     orgName: "Acme Americas",
-    mode: "inherit_idp_custom_claims",
+    mode: "inherit_idp",
     orgClaimValue: "https://api.acme-americas.com",
   });
   orgs.push({
@@ -46,19 +45,15 @@ function buildChildOrgs(): ChildOrgInheritance[] {
     ownIdpName: "Okta",
   });
 
-  // Remaining 97 orgs — distributed to reach totals of 70 / 20 / 10
-  let inheritAllLeft = 70 - 1;
-  let customLeft = 20 - 1;
+  // Remaining 97 orgs — distributed to reach totals of 90 / 10
+  let inheritLeft = 90 - 2;
   let ownLeft = 10 - 1;
 
   for (let i = 4; i <= 100; i++) {
     let mode: ChildOrgInheritance["mode"];
-    if (inheritAllLeft > 0) {
-      mode = "inherit_all";
-      inheritAllLeft--;
-    } else if (customLeft > 0) {
-      mode = "inherit_idp_custom_claims";
-      customLeft--;
+    if (inheritLeft > 0) {
+      mode = "inherit_idp";
+      inheritLeft--;
     } else {
       mode = "own";
       ownLeft--;
@@ -73,10 +68,11 @@ function buildChildOrgs(): ChildOrgInheritance[] {
       mode,
       ownIdpName:
         mode === "own" ? OWN_IDP_NAMES[i % OWN_IDP_NAMES.length] : undefined,
-      // Every organization that inherits the IDP (whether it also inherits
-      // or customizes the claims mapping) still needs its own claim value.
+      // Organizations that inherit the IDP still always define their own
+      // claims mapping — organization claim, access roles, admin roles and
+      // scopes can never simply be shared across organizations.
       orgClaimValue:
-        mode !== "own"
+        mode === "inherit_idp"
           ? `https://api.${orgName.toLowerCase().replace(/\s+/g, "-")}.com`
           : undefined,
     });

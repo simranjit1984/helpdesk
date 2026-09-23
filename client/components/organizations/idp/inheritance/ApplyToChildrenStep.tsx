@@ -4,17 +4,12 @@ import { Button } from "@/components/ui/button";
 import type { ChildInheritanceMode, ChildOrgInheritance } from "../types";
 import {
   InheritanceBadge,
-  CustomClaimsBadge,
-  ClaimValueRequiredBadge,
+  ClaimsRequiredBadge,
   MODE_LABELS,
   MODE_SHORT_DESCRIPTIONS,
 } from "./InheritanceBadge";
 
-const MODES: ChildInheritanceMode[] = [
-  "inherit_all",
-  "inherit_idp_custom_claims",
-  "own",
-];
+const MODES: ChildInheritanceMode[] = ["inherit_idp", "own"];
 
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
@@ -29,10 +24,10 @@ interface Props {
 }
 
 function currentConfigLabel(child: ChildOrgInheritance, parentOrgName: string) {
-  if (child.mode === "inherit_all")
-    return `Inherited from ${parentOrgName}${child.orgClaimValue ? ` · ${child.orgClaimValue}` : ""}`;
-  if (child.mode === "inherit_idp_custom_claims")
-    return `Uses parent IDP, customized claims mapping${child.orgClaimValue ? ` · ${child.orgClaimValue}` : ""}`;
+  if (child.mode === "inherit_idp")
+    return `Uses ${parentOrgName}'s IDP, own claims mapping${
+      child.orgClaimValue ? ` · ${child.orgClaimValue}` : ""
+    }`;
   return `Own IDP — ${child.ownIdpName ?? "Unknown"}`;
 }
 
@@ -57,7 +52,7 @@ export default function ApplyToChildrenStep({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [bulkMode, setBulkMode] = useState<ChildInheritanceMode>("inherit_all");
+  const [bulkMode, setBulkMode] = useState<ChildInheritanceMode>("inherit_idp");
 
   const filtered = useMemo(() => {
     return childOrgs.filter((c) => {
@@ -113,8 +108,9 @@ export default function ApplyToChildrenStep({
           Apply to child organizations
         </h2>
         <p className="text-sm text-bluegrey-600 mt-1 leading-relaxed">
-          Choose how this IDP and its claims mapping should be applied to
-          child organizations.
+          Choose whether child organizations use this IDP or their own. Claims
+          mapping — organization claim, access roles, admin roles, and scopes
+          — always has to be defined per organization.
         </p>
 
         <div className="mt-4 flex items-start gap-2.5 p-3.5 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800">
@@ -130,7 +126,7 @@ export default function ApplyToChildrenStep({
       {/* Quick apply */}
       <section>
         <h3 className="text-sm font-semibold text-bluegrey-900 mb-3">Quick apply</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {MODES.map((mode) => (
             <button
               key={mode}
@@ -225,11 +221,9 @@ export default function ApplyToChildrenStep({
             </Button>
             <span className="text-xs text-blue-700 ml-auto">
               {selected.size} organizations will{" "}
-              {bulkMode === "inherit_all"
-                ? "inherit the IDP and claims mapping"
-                : bulkMode === "inherit_idp_custom_claims"
-                  ? "inherit the IDP but keep/define their own claims mapping"
-                  : "use their own IDP and claims mapping"}{" "}
+              {bulkMode === "inherit_idp"
+                ? "inherit the IDP but must define their own claims mapping"
+                : "use their own IDP and claims mapping"}{" "}
               from {parentOrgName}.
             </span>
           </div>
@@ -270,11 +264,8 @@ export default function ApplyToChildrenStep({
                   </div>
                   <div className="mt-1 flex items-center gap-1.5 flex-wrap">
                     <InheritanceBadge mode={child.mode} />
-                    {child.mode === "inherit_idp_custom_claims" && (
-                      <CustomClaimsBadge />
-                    )}
-                    {child.mode !== "own" && !child.orgClaimValue && (
-                      <ClaimValueRequiredBadge />
+                    {child.mode === "inherit_idp" && !child.orgClaimValue && (
+                      <ClaimsRequiredBadge />
                     )}
                   </div>
                 </div>
@@ -295,17 +286,14 @@ export default function ApplyToChildrenStep({
                   {currentConfigLabel(child, parentOrgName)}
                 </span>
                 <div>
-                  {(child.mode === "inherit_idp_custom_claims" ||
-                    child.mode === "inherit_all") && (
+                  {child.mode === "inherit_idp" && (
                     <button
                       type="button"
                       onClick={() => onConfigureClaims(child)}
                       className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
                     >
                       <Settings2 className="w-3.5 h-3.5" />
-                      {child.mode === "inherit_all"
-                        ? "Set claim value"
-                        : "Configure claims"}
+                      Configure claims
                     </button>
                   )}
                   {child.mode === "own" && (

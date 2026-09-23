@@ -109,11 +109,9 @@ export default function ConfigureIdpClaimsFlow({
     toast({
       title: "Inheritance mode applied",
       description: `All ${childOrgs.length} child organizations now use "${
-        mode === "inherit_all"
-          ? "Inherit IDP & claims mapping"
-          : mode === "inherit_idp_custom_claims"
-            ? "Inherit IDP, customize claims mapping"
-            : "Use own IDP & claims mapping"
+        mode === "inherit_idp"
+          ? "Inherit IDP, define claims mapping"
+          : "Use own IDP & claims mapping"
       }".`,
     });
   }

@@ -175,8 +175,7 @@ export interface ConfiguredIdp {
 // ─── IDP & claims inheritance (child organization) ────────────────────────────
 
 export type ChildInheritanceMode =
-  | "inherit_all" // Inherit IDP & claims mapping
-  | "inherit_idp_custom_claims" // Inherit IDP, customize claims mapping
+  | "inherit_idp" // Inherit IDP, define own claims mapping
   | "own"; // Use own IDP & claims mapping
 
 export interface ChildOrgInheritance {
@@ -187,9 +186,11 @@ export interface ChildOrgInheritance {
   ownIdpName?: string;
   /**
    * The organization claim value that identifies this child organization.
-   * Required for "inherit_all" and "inherit_idp_custom_claims" — even when
-   * the IDP and full claims mapping are inherited, each organization still
-   * needs its own organization claim value defined. Not used for "own".
+   * Organization claim, access role, admin role and scope claims can never
+   * be shared across organizations — even when the IDP is inherited, each
+   * organization must always define its own claims mapping. Not used for
+   * "own", which has its own independent claims mapping configured via its
+   * own IDP setup.
    */
   orgClaimValue?: string;
 }

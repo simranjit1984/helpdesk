@@ -21,15 +21,13 @@ export default function ChildClaimsDialog({
   onSave,
 }: Props) {
   const [claimValue, setClaimValue] = useState(child.orgClaimValue ?? "");
-  const isCustomizing = child.mode === "inherit_idp_custom_claims";
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-4">
       <div className="bg-white rounded-md shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 py-4 border-b border-bluegrey-200">
           <h3 className="text-sm font-semibold text-bluegrey-900">
-            {isCustomizing ? "Configure claims" : "Set organization claim value"} —{" "}
-            {child.orgName}
+            Configure claims — {child.orgName}
           </h3>
           <button
             type="button"
@@ -54,9 +52,10 @@ export default function ChildClaimsDialog({
           <div className="flex items-start gap-2.5 p-3 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800">
             <Info className="w-4 h-4 mt-0.5 shrink-0 text-blue-500" />
             <span>
-              {isCustomizing
-                ? `This organization uses the IDP inherited from ${parentOrgName}. You can customize claims mapping for this organization.`
-                : `This organization inherits the IDP and claims mapping from ${parentOrgName}. It still needs its own organization claim value to be uniquely identified.`}
+              This organization uses the IDP inherited from {parentOrgName}, but
+              organization claim, access role, admin role, and scope claims
+              mapping can never be shared — they must always be defined for
+              this organization.
             </span>
           </div>
 
@@ -82,7 +81,7 @@ export default function ChildClaimsDialog({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={() => onSave(claimValue)}>Save claim value</Button>
+          <Button onClick={() => onSave(claimValue)}>Save claims</Button>
         </div>
       </div>
     </div>
