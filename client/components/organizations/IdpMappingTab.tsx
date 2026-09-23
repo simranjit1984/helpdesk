@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { baseOrganizations } from "@/components/OrganizationsTable";
 import AddIdpWizard from "./AddIdpWizard";
+import ConfigureIdpClaimsFlow from "./idp/inheritance/ConfigureIdpClaimsFlow";
 import type { ConfiguredIdp, ChildOrg, OIDCFormData, PostSetupData } from "./idp/types";
 import { getDefaultIdpsForOrg } from "@/lib/idpMockData";
 
@@ -394,6 +395,7 @@ export default function IdpMappingTab({ orgId, orgName, readOnly }: IdpMappingTa
     getDefaultIdpsForOrg(orgId)
   );
   const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
+  const [claimsFlowOpen, setClaimsFlowOpen] = useState(false);
 
   const childOrgs = getChildOrgs(orgId);
 
@@ -446,22 +448,34 @@ export default function IdpMappingTab({ orgId, orgName, readOnly }: IdpMappingTa
               Identity Provider
               {configuredIdps.length > 0 && (
                 <span className="ml-2 text-xs font-normal text-bluegrey-400">
-                  (1 configured)
+                  ({configuredIdps.length} configured)
                 </span>
               )}
             </h3>
 
-            {/* Only show button when no IDP is configured yet */}
-            {canAddIdp && (
-              <button
-                type="button"
-                onClick={() => setWizardOpen(true)}
-                className="inline-flex items-center gap-1.5 h-9 px-3 border border-dashed border-bluegrey-400 rounded-md text-sm text-bluegrey-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Add identity provider
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {!readOnly && configuredIdps.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => setClaimsFlowOpen(true)}
+                  className="h-9 px-3"
+                >
+                  Configure IDP & Claims
+                </Button>
+              )}
+
+              {/* Only show button when no IDP is configured yet */}
+              {canAddIdp && (
+                <button
+                  type="button"
+                  onClick={() => setWizardOpen(true)}
+                  className="inline-flex items-center gap-1.5 h-9 px-3 border border-dashed border-bluegrey-400 rounded-md text-sm text-bluegrey-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add identity provider
+                </button>
+              )}
+            </div>
           </div>
 
           {configuredIdps.length === 0 ? (
@@ -510,6 +524,16 @@ export default function IdpMappingTab({ orgId, orgName, readOnly }: IdpMappingTa
           childOrgs={childOrgs}
           onClose={() => setWizardOpen(false)}
           onComplete={handleWizardComplete}
+        />
+      )}
+
+      {/* Configure IDP & Claims flow overlay */}
+      {claimsFlowOpen && (
+        <ConfigureIdpClaimsFlow
+          orgId={orgId}
+          orgName={orgName}
+          idps={configuredIdps}
+          onClose={() => setClaimsFlowOpen(false)}
         />
       )}
     </>

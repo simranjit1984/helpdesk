@@ -141,3 +141,20 @@ export interface ConfiguredIdp {
   oidc: OIDCFormData;
   postSetup: PostSetupData;
 }
+
+// ─── IDP & claims inheritance (child organization) ────────────────────────────
+
+export type ChildInheritanceMode =
+  | "inherit_all" // Inherit IDP & claims mapping
+  | "inherit_idp_custom_claims" // Inherit IDP, customize claims mapping
+  | "own"; // Use own IDP & claims mapping
+
+export interface ChildOrgInheritance {
+  orgId: string;
+  orgName: string;
+  mode: ChildInheritanceMode;
+  /** Only meaningful when mode === "own" */
+  ownIdpName?: string;
+  /** Only meaningful when mode === "inherit_idp_custom_claims" */
+  customClaimValue?: string;
+}

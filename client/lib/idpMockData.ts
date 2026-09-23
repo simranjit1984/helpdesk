@@ -76,6 +76,35 @@ export const ACME_CORP_DEFAULT_IDP: ConfiguredIdp = {
   },
 };
 
+// ─── Acme Partner SSO — second IDP on Acme Corp (org "1") ─────────────────────
+
+export const ACME_PARTNER_DEFAULT_IDP: ConfiguredIdp = {
+  id: "idp-acme-partner-oidc",
+  ...ACME_SSO_BASE,
+  oidc: {
+    ...ACME_SSO_BASE.oidc,
+    displayName: "Acme Partner SSO",
+    description: "OpenID Connect provider used by external partners and resellers.",
+    domainAliases: ["partners.acme-corp.com"],
+    clientId: "acme-partner-client-001",
+  },
+  postSetup: {
+    claimName: "org",
+    claimValue: "https://api.partners.acme-corp.com",
+    sameIdpForChildren: true,
+    childOrgClaims: [],
+    accessRoleClaims: [
+      { roleId: "ar-3", roleName: "Sales general", claimName: "role", claimValue: "partner-sales" },
+    ],
+    adminRoleClaims: [
+      { roleId: "role-3", roleName: "Viewer", claimName: "admin_role", claimValue: "viewer" },
+    ],
+    scopeClaims: [
+      { scopeId: "scope-1-a", scopeName: "Acme Corp — Full Access", claimName: "scope", claimValue: "partner-full-access" },
+    ],
+  },
+};
+
 // ─── Acme Europe (org "1-1") — derived from parent ────────────────────────────
 
 export const ACME_EUROPE_DEFAULT_IDP: ConfiguredIdp = {
@@ -139,7 +168,7 @@ export const ACME_AMERICAS_DEFAULT_IDP: ConfiguredIdp = {
 // ─── Lookup helper ────────────────────────────────────────────────────────────
 
 const DEFAULT_IDP_MAP: Record<string, ConfiguredIdp[]> = {
-  "1":   [ACME_CORP_DEFAULT_IDP],
+  "1":   [ACME_CORP_DEFAULT_IDP, ACME_PARTNER_DEFAULT_IDP],
   "1-1": [ACME_EUROPE_DEFAULT_IDP],
   "1-2": [ACME_AMERICAS_DEFAULT_IDP],
 };
