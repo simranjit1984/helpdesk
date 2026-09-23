@@ -5,6 +5,7 @@ import type { ChildInheritanceMode, ChildOrgInheritance } from "../types";
 import {
   InheritanceBadge,
   CustomClaimsBadge,
+  ClaimValueRequiredBadge,
   MODE_LABELS,
   MODE_SHORT_DESCRIPTIONS,
 } from "./InheritanceBadge";
@@ -28,9 +29,10 @@ interface Props {
 }
 
 function currentConfigLabel(child: ChildOrgInheritance, parentOrgName: string) {
-  if (child.mode === "inherit_all") return `Inherited from ${parentOrgName}`;
+  if (child.mode === "inherit_all")
+    return `Inherited from ${parentOrgName}${child.orgClaimValue ? ` · ${child.orgClaimValue}` : ""}`;
   if (child.mode === "inherit_idp_custom_claims")
-    return `Uses parent IDP, customized claims mapping`;
+    return `Uses parent IDP, customized claims mapping${child.orgClaimValue ? ` · ${child.orgClaimValue}` : ""}`;
   return `Own IDP — ${child.ownIdpName ?? "Unknown"}`;
 }
 
@@ -266,10 +268,13 @@ export default function ApplyToChildrenStep({
                   >
                     {child.orgName}
                   </div>
-                  <div className="mt-1 flex items-center gap-1.5">
+                  <div className="mt-1 flex items-center gap-1.5 flex-wrap">
                     <InheritanceBadge mode={child.mode} />
                     {child.mode === "inherit_idp_custom_claims" && (
                       <CustomClaimsBadge />
+                    )}
+                    {child.mode !== "own" && !child.orgClaimValue && (
+                      <ClaimValueRequiredBadge />
                     )}
                   </div>
                 </div>
@@ -290,14 +295,17 @@ export default function ApplyToChildrenStep({
                   {currentConfigLabel(child, parentOrgName)}
                 </span>
                 <div>
-                  {child.mode === "inherit_idp_custom_claims" && (
+                  {(child.mode === "inherit_idp_custom_claims" ||
+                    child.mode === "inherit_all") && (
                     <button
                       type="button"
                       onClick={() => onConfigureClaims(child)}
                       className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
                     >
                       <Settings2 className="w-3.5 h-3.5" />
-                      Configure claims
+                      {child.mode === "inherit_all"
+                        ? "Set claim value"
+                        : "Configure claims"}
                     </button>
                   )}
                   {child.mode === "own" && (

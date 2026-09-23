@@ -155,6 +155,11 @@ export interface ChildOrgInheritance {
   mode: ChildInheritanceMode;
   /** Only meaningful when mode === "own" */
   ownIdpName?: string;
-  /** Only meaningful when mode === "inherit_idp_custom_claims" */
-  customClaimValue?: string;
+  /**
+   * The organization claim value that identifies this child organization.
+   * Required for "inherit_all" and "inherit_idp_custom_claims" — even when
+   * the IDP and full claims mapping are inherited, each organization still
+   * needs its own organization claim value defined. Not used for "own".
+   */
+  orgClaimValue?: string;
 }

@@ -1,4 +1,4 @@
-import { CheckCircle2, Link2, PencilLine, Unlink } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Link2, PencilLine, Unlink } from "lucide-react";
 import type { ChildOrgInheritance } from "../types";
 
 interface Props {
@@ -13,6 +13,9 @@ export default function ReviewSaveStep({ idpName, orgName, childOrgs }: Props) {
     (c) => c.mode === "inherit_idp_custom_claims",
   ).length;
   const own = childOrgs.filter((c) => c.mode === "own").length;
+  const missingClaimValue = childOrgs.filter(
+    (c) => c.mode !== "own" && !c.orgClaimValue,
+  ).length;
 
   return (
     <div className="max-w-2xl space-y-8">
@@ -49,6 +52,18 @@ export default function ReviewSaveStep({ idpName, orgName, childOrgs }: Props) {
           </span>
         </div>
       </section>
+
+      {missingClaimValue > 0 && (
+        <div className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+          <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-red-500" />
+          <span>
+            <strong>{missingClaimValue}</strong> organization
+            {missingClaimValue > 1 ? "s" : ""} still need an organization claim
+            value defined before this configuration can reliably identify
+            them. Go back to "Apply to child organizations" to set it.
+          </span>
+        </div>
+      )}
 
       <section className="space-y-3">
         <div className="flex items-center gap-3 p-3.5 rounded-md border border-green-200 bg-green-50">

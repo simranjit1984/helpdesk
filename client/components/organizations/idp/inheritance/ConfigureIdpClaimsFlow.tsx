@@ -269,14 +269,14 @@ export default function ConfigureIdpClaimsFlow({
             setChildOrgs((prev) =>
               prev.map((c) =>
                 c.orgId === claimsDialogChild.orgId
-                  ? { ...c, customClaimValue: value }
+                  ? { ...c, orgClaimValue: value }
                   : c,
               ),
             );
             setClaimsDialogChild(null);
             toast({
-              title: "Claims updated",
-              description: `Custom claims saved for ${claimsDialogChild.orgName}.`,
+              title: "Claim value saved",
+              description: `Organization claim value saved for ${claimsDialogChild.orgName}.`,
             });
           }}
         />

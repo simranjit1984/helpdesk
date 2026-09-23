@@ -28,13 +28,16 @@ const OWN_IDP_NAMES = [
 function buildChildOrgs(): ChildOrgInheritance[] {
   const orgs: ChildOrgInheritance[] = [];
 
-  // First 3 follow the exact examples from the spec
+  // First 3 follow the exact examples from the spec.
+  // Acme Europe intentionally has no claim value yet, to demonstrate the
+  // "claim value required" state even though it fully inherits the IDP
+  // and claims mapping.
   orgs.push({ orgId: "acme-100-1", orgName: "Acme Europe", mode: "inherit_all" });
   orgs.push({
     orgId: "acme-100-2",
     orgName: "Acme Americas",
     mode: "inherit_idp_custom_claims",
-    customClaimValue: "https://api.acme-americas.com",
+    orgClaimValue: "https://api.acme-americas.com",
   });
   orgs.push({
     orgId: "acme-100-3",
@@ -70,8 +73,10 @@ function buildChildOrgs(): ChildOrgInheritance[] {
       mode,
       ownIdpName:
         mode === "own" ? OWN_IDP_NAMES[i % OWN_IDP_NAMES.length] : undefined,
-      customClaimValue:
-        mode === "inherit_idp_custom_claims"
+      // Every organization that inherits the IDP (whether it also inherits
+      // or customizes the claims mapping) still needs its own claim value.
+      orgClaimValue:
+        mode !== "own"
           ? `https://api.${orgName.toLowerCase().replace(/\s+/g, "-")}.com`
           : undefined,
     });
