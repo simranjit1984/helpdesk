@@ -193,4 +193,10 @@ export interface ChildOrgInheritance {
    * own IDP setup.
    */
   orgClaimValue?: string;
+  /** Access role claims defined specifically for this organization. */
+  accessRoleClaims?: AccessRoleClaim[];
+  /** Admin role claims defined specifically for this organization. */
+  adminRoleClaims?: AdminRoleClaim[];
+  /** Scope claims defined specifically for this organization. */
+  scopeClaims?: ScopeClaim[];
 }

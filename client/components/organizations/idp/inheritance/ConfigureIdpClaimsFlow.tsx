@@ -263,18 +263,18 @@ export default function ConfigureIdpClaimsFlow({
           claimName={claimName}
           child={claimsDialogChild}
           onClose={() => setClaimsDialogChild(null)}
-          onSave={(value) => {
+          onSave={(claims) => {
             setChildOrgs((prev) =>
               prev.map((c) =>
                 c.orgId === claimsDialogChild.orgId
-                  ? { ...c, orgClaimValue: value }
+                  ? { ...c, ...claims }
                   : c,
               ),
             );
             setClaimsDialogChild(null);
             toast({
-              title: "Claim value saved",
-              description: `Organization claim value saved for ${claimsDialogChild.orgName}.`,
+              title: "Claims saved",
+              description: `Claims mapping saved for ${claimsDialogChild.orgName}.`,
             });
           }}
         />
