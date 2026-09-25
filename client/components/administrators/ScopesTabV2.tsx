@@ -28,9 +28,7 @@ import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData
 
 function accessRoleSummary(scope: Scope): string {
   if (scope.accessRoleContext === "none") return "No access roles";
-  if (scope.accessRoleMode === "all") {
-    return scope.accessRoleContext === "any" ? "Any access role" : "All access roles";
-  }
+  if (scope.accessRoleMode === "all") return "All access roles";
   if (scope.accessRoleIds.length === 0) return "None selected";
   const names = scope.accessRoleIds
     .map((id) => ALL_ACCESS_ROLES.find((r) => r.id === id)?.name ?? id)
@@ -38,8 +36,15 @@ function accessRoleSummary(scope: Scope): string {
   return names.length > 40 ? `${names.slice(0, 40)}…` : names;
 }
 
+function sanitizeForV2(scopes: Scope[]): Scope[] {
+  return scopes.map((s) => {
+    if (s.accessRoleContext !== "any") return s;
+    return { ...s, accessRoleContext: "org" };
+  });
+}
+
 export default function ScopesTabV2() {
-  const [scopes, setScopes] = useState<Scope[]>(MOCK_SCOPES_V2);
+  const [scopes, setScopes] = useState<Scope[]>(sanitizeForV2(MOCK_SCOPES_V2));
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingScope, setEditingScope] = useState<Scope | null>(null);

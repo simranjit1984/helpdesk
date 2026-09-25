@@ -236,20 +236,20 @@ export default function ScopeDrawerV2({
           : "",
       );
       setInclusionMode(scope?.inclusionMode ?? "only");
-      setAccessRoleContext(scope?.accessRoleContext ?? "org");
+      setAccessRoleContext(
+        scope?.accessRoleContext === "any" ? "org" : (scope?.accessRoleContext ?? "org"),
+      );
       setAccessRoleMode(scope?.accessRoleMode ?? "all");
       setAccessRoleIds(scope?.accessRoleIds ?? []);
     }
   }, [open, scope]);
 
-  // Access roles can be custom-selected either when scoped to a specific,
-  // manually-selected organization, or when the context is "Any access
-  // role" (system-wide list, not tied to an organization). Only when the
-  // org context is the user's own membership org is custom selection not
-  // meaningful, so we force "All access roles" in that case. When "No
-  // access roles" is chosen, the picker is hidden entirely.
-  const allowCustomAccessRoles =
-    accessRoleContext === "any" || (accessRoleContext === "org" && orgContextMode === "select");
+  // Access roles can be custom-selected when scoped to a specific,
+  // manually-selected organization. Only when the org context is the
+  // user's own membership org is custom selection not meaningful, so we
+  // force "All access roles" in that case. When "No access roles" is
+  // chosen, the picker is hidden entirely.
+  const allowCustomAccessRoles = accessRoleContext === "org" && orgContextMode === "select";
   useEffect(() => {
     if (accessRoleContext === "none") {
       if (accessRoleMode !== "custom" || accessRoleIds.length > 0) {
@@ -432,15 +432,6 @@ export default function ScopeDrawerV2({
                 </Label>
               </div>
               <div className="flex items-center gap-2.5">
-                <RadioGroupItem value="any" id="access-role-context-any" />
-                <Label
-                  htmlFor="access-role-context-any"
-                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
-                >
-                  Any access role
-                </Label>
-              </div>
-              <div className="flex items-center gap-2.5">
                 <RadioGroupItem value="none" id="access-role-context-none" />
                 <Label
                   htmlFor="access-role-context-none"
@@ -475,11 +466,9 @@ export default function ScopeDrawerV2({
               allowCustom={allowCustomAccessRoles}
               lockedMessage="All access roles available within the user's membership organization."
               sourceNote={
-                accessRoleContext === "any"
-                  ? "Showing every access role in the system — not limited to an organization."
-                  : orgContextMode === "select"
-                    ? `Showing access roles available in ${selectedOrgLabel || "the selected organization"}.`
-                    : undefined
+                orgContextMode === "select"
+                  ? `Showing access roles available in ${selectedOrgLabel || "the selected organization"}.`
+                  : undefined
               }
             />
           )}
