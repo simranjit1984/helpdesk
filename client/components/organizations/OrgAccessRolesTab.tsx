@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import AddAccessRoleModal from "./AddAccessRoleModal";
+import AssignRolesToChildOrgsModal from "./AssignRolesToChildOrgsModal";
 import { getDescendantOrgTree } from "./orgTreeUtils";
 import {
   ALL_ACCESS_ROLES,
@@ -46,6 +47,7 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
   const [page, setPage] = useState(1);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [inheritanceRoleId, setInheritanceRoleId] = useState<string | null>(null);
+  const [assignToChildrenOpen, setAssignToChildrenOpen] = useState(false);
   const [, forceRefresh] = useState(0);
 
   // Derive roles from (potentially mutated) global mock store — re-reads on render
@@ -88,6 +90,19 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
     forceRefresh((n) => n + 1);
   };
 
+  const handleAssignRolesToChildren = (roleIds: string[], targetOrgIds: string[]) => {
+    const list = ORG_ACCESS_ROLE_ASSIGNMENTS[orgId];
+    if (list) {
+      roleIds.forEach((roleId) => {
+        const idx = list.findIndex((a) => a.roleId === roleId);
+        if (idx !== -1) {
+          list[idx] = { ...list[idx], inheritance: { enabled: true, targetOrgIds } };
+        }
+      });
+    }
+    forceRefresh((n) => n + 1);
+  };
+
   return (
     <div className="space-y-4">
       {/* Toolbar */}
@@ -117,15 +132,27 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
           />
         </div>
 
-        <Button
-          className="gap-2 whitespace-nowrap"
-          onClick={() =>
-            navigate(`/organizations/${orgId}/access-roles/add`)
-          }
-        >
-          <Plus className="h-4 w-4" />
-          Add access roles to organization
-        </Button>
+        <div className="flex items-center gap-2">
+          {orgTree.length > 0 && (
+            <Button
+              variant="outline"
+              className="gap-2 whitespace-nowrap"
+              onClick={() => setAssignToChildrenOpen(true)}
+            >
+              <GitBranch className="h-4 w-4" />
+              Assign access roles to child organizations
+            </Button>
+          )}
+          <Button
+            className="gap-2 whitespace-nowrap"
+            onClick={() =>
+              navigate(`/organizations/${orgId}/access-roles/add`)
+            }
+          >
+            <Plus className="h-4 w-4" />
+            Add access roles to organization
+          </Button>
+        </div>
       </div>
 
       {/* Table */}
@@ -272,6 +299,16 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
           initialInheritance={inheritanceAssignment?.inheritance}
         />
       )}
+
+      {/* Assign access roles to child organizations */}
+      <AssignRolesToChildOrgsModal
+        open={assignToChildrenOpen}
+        onClose={() => setAssignToChildrenOpen(false)}
+        onSave={handleAssignRolesToChildren}
+        availableRoles={allRoles}
+        orgTree={orgTree}
+        orgName={orgName}
+      />
     </div>
   );
 }
