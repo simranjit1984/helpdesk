@@ -25,9 +25,11 @@ import {
   type ScopeInclusionMode,
   type ScopeOrgContextMode,
   type ScopeAccessRoleContext,
+  type ScopeApplicationContext,
   SCOPE_ORG_OPTIONS,
 } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
+import { MOCK_APPLICATIONS } from "@/lib/applicationsMockData";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -132,14 +134,14 @@ function AccessRolesSection({
         className="space-y-2"
       >
         <div className="flex items-center gap-2.5">
-          <RadioGroupItem value="all" id="role-mode-all-v2" />
-          <Label htmlFor="role-mode-all-v2" className="text-sm font-normal text-bluegrey-900 cursor-pointer">
+          <RadioGroupItem value="all" id="role-mode-all-v3" />
+          <Label htmlFor="role-mode-all-v3" className="text-sm font-normal text-bluegrey-900 cursor-pointer">
             All access roles
           </Label>
         </div>
         <div className="flex items-center gap-2.5">
-          <RadioGroupItem value="custom" id="role-mode-custom-v2" />
-          <Label htmlFor="role-mode-custom-v2" className="text-sm font-normal text-bluegrey-900 cursor-pointer">
+          <RadioGroupItem value="custom" id="role-mode-custom-v3" />
+          <Label htmlFor="role-mode-custom-v3" className="text-sm font-normal text-bluegrey-900 cursor-pointer">
             Custom selection
           </Label>
         </div>
@@ -201,19 +203,19 @@ function AccessRolesSection({
 
 // ─── Main drawer ──────────────────────────────────────────────────────────────
 
-interface ScopeDrawerV2Props {
+interface ScopeDrawerV3Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   scope: Scope | null;
   onSave: (scope: Omit<Scope, "id">) => void;
 }
 
-export default function ScopeDrawerV2({
+export default function ScopeDrawerV3({
   open,
   onOpenChange,
   scope,
   onSave,
-}: ScopeDrawerV2Props) {
+}: ScopeDrawerV3Props) {
   const isEditing = scope !== null;
 
   const [name, setName] = useState("");
@@ -224,6 +226,8 @@ export default function ScopeDrawerV2({
   const [accessRoleContext, setAccessRoleContext] = useState<ScopeAccessRoleContext>("org");
   const [accessRoleMode, setAccessRoleMode] = useState<"all" | "custom">("all");
   const [accessRoleIds, setAccessRoleIds] = useState<string[]>([]);
+  const [applicationContext, setApplicationContext] = useState<ScopeApplicationContext>("at-assignment");
+  const [applicationId, setApplicationId] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -239,8 +243,18 @@ export default function ScopeDrawerV2({
       setAccessRoleContext(scope?.accessRoleContext ?? "org");
       setAccessRoleMode(scope?.accessRoleMode ?? "all");
       setAccessRoleIds(scope?.accessRoleIds ?? []);
+      setApplicationContext(scope?.applicationContext ?? "at-assignment");
+      setApplicationId(scope?.applicationId ?? "");
     }
   }, [open, scope]);
+
+  // Clear the selected application whenever the application context moves
+  // away from "specific".
+  useEffect(() => {
+    if (applicationContext !== "specific" && applicationId) {
+      setApplicationId("");
+    }
+  }, [applicationContext, applicationId]);
 
   // Access roles can be custom-selected either when scoped to a specific,
   // manually-selected organization, or when the context is "Any access
@@ -274,7 +288,10 @@ export default function ScopeDrawerV2({
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const canSave = name.trim() && (orgContextMode === "user-membership" || selectedOrg);
+  const canSave =
+    name.trim() &&
+    (orgContextMode === "user-membership" || selectedOrg) &&
+    (applicationContext !== "specific" || applicationId);
 
   const handleSaveClick = () => {
     if (!canSave) return;
@@ -295,6 +312,8 @@ export default function ScopeDrawerV2({
       accessRoleIds: accessRoleMode === "custom" ? accessRoleIds : [],
       orgContextMode,
       accessRoleContext,
+      applicationContext,
+      applicationId: applicationContext === "specific" ? applicationId : undefined,
     });
     setConfirmOpen(false);
     onOpenChange(false);
@@ -345,18 +364,18 @@ export default function ScopeDrawerV2({
               className="space-y-2"
             >
               <div className="flex items-center gap-2.5">
-                <RadioGroupItem value="user-membership" id="org-context-membership" />
+                <RadioGroupItem value="user-membership" id="org-context-membership-v3" />
                 <Label
-                  htmlFor="org-context-membership"
+                  htmlFor="org-context-membership-v3"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
                   User membership org
                 </Label>
               </div>
               <div className="flex items-center gap-2.5">
-                <RadioGroupItem value="select" id="org-context-select" />
+                <RadioGroupItem value="select" id="org-context-select-v3" />
                 <Label
-                  htmlFor="org-context-select"
+                  htmlFor="org-context-select-v3"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
                   Select the org
@@ -368,11 +387,11 @@ export default function ScopeDrawerV2({
           {/* Organization — only shown when "Select the org" is chosen */}
           {orgContextMode === "select" && (
             <div className="space-y-1.5">
-              <Label htmlFor="scope-org" className="text-sm font-medium text-bluegrey-900">
+              <Label htmlFor="scope-org-v3" className="text-sm font-medium text-bluegrey-900">
                 Organization <span className="text-red-500">*</span>
               </Label>
               <Select value={selectedOrg} onValueChange={setSelectedOrg}>
-                <SelectTrigger id="scope-org">
+                <SelectTrigger id="scope-org-v3">
                   <SelectValue placeholder="Select organization" />
                 </SelectTrigger>
                 <SelectContent>
@@ -399,9 +418,9 @@ export default function ScopeDrawerV2({
               >
                 {INCLUSION_MODES.map((mode) => (
                   <div key={mode} className="flex items-center gap-3">
-                    <RadioGroupItem value={mode} id={`inclusion-${mode}-v2`} />
+                    <RadioGroupItem value={mode} id={`inclusion-${mode}-v3`} />
                     <Label
-                      htmlFor={`inclusion-${mode}-v2`}
+                      htmlFor={`inclusion-${mode}-v3`}
                       className="text-sm font-normal text-bluegrey-900 cursor-pointer leading-snug"
                     >
                       {inclusionLabel(mode, selectedOrgLabel)}
@@ -423,27 +442,27 @@ export default function ScopeDrawerV2({
               className="space-y-2"
             >
               <div className="flex items-center gap-2.5">
-                <RadioGroupItem value="org" id="access-role-context-org" />
+                <RadioGroupItem value="org" id="access-role-context-org-v3" />
                 <Label
-                  htmlFor="access-role-context-org"
+                  htmlFor="access-role-context-org-v3"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
                   Access role from organization
                 </Label>
               </div>
               <div className="flex items-center gap-2.5">
-                <RadioGroupItem value="any" id="access-role-context-any" />
+                <RadioGroupItem value="any" id="access-role-context-any-v3" />
                 <Label
-                  htmlFor="access-role-context-any"
+                  htmlFor="access-role-context-any-v3"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
                   Any access role
                 </Label>
               </div>
               <div className="flex items-center gap-2.5">
-                <RadioGroupItem value="none" id="access-role-context-none" />
+                <RadioGroupItem value="none" id="access-role-context-none-v3" />
                 <Label
-                  htmlFor="access-role-context-none"
+                  htmlFor="access-role-context-none-v3"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
                   No access roles
@@ -484,13 +503,74 @@ export default function ScopeDrawerV2({
             />
           )}
 
+          {/* Application context */}
+          <div className="space-y-3">
+            <InfoLabel text="The applications you can manage">
+              Application context <span className="text-red-500">*</span>
+            </InfoLabel>
+            <RadioGroup
+              value={applicationContext}
+              onValueChange={(v) => setApplicationContext(v as ScopeApplicationContext)}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="specific" id="application-context-specific-v3" />
+                <Label
+                  htmlFor="application-context-specific-v3"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  Add a specific application
+                </Label>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="at-assignment" id="application-context-at-assignment-v3" />
+                <Label
+                  htmlFor="application-context-at-assignment-v3"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  Select application at the time of assignment
+                </Label>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem value="none" id="application-context-none-v3" />
+                <Label
+                  htmlFor="application-context-none-v3"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  No application
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Application — only shown when a specific application is chosen */}
+          {applicationContext === "specific" && (
+            <div className="space-y-1.5">
+              <Label htmlFor="scope-application-v3" className="text-sm font-medium text-bluegrey-900">
+                Application <span className="text-red-500">*</span>
+              </Label>
+              <Select value={applicationId} onValueChange={setApplicationId}>
+                <SelectTrigger id="scope-application-v3">
+                  <SelectValue placeholder="Select application" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOCK_APPLICATIONS.map((app) => (
+                    <SelectItem key={app.id} value={app.id}>
+                      {app.displayName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           {/* Description */}
           <div className="space-y-1.5">
-            <Label htmlFor="scope-description" className="text-sm font-medium text-bluegrey-900">
+            <Label htmlFor="scope-description-v3" className="text-sm font-medium text-bluegrey-900">
               Description
             </Label>
             <Textarea
-              id="scope-description"
+              id="scope-description-v3"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the scope"

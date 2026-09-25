@@ -22,9 +22,10 @@ import {
   TableEmptyState,
 } from "@/components/ui/table";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import ScopeDrawerV2 from "./ScopeDrawerV2";
+import ScopeDrawerV3 from "./ScopeDrawerV3";
 import { type Scope, MOCK_SCOPES_V2 } from "./mockData";
 import { ALL_ACCESS_ROLES } from "@/components/organizations/accessRolesMockData";
+import { MOCK_APPLICATIONS } from "@/lib/applicationsMockData";
 
 function accessRoleSummary(scope: Scope): string {
   if (scope.accessRoleContext === "none") return "No access roles";
@@ -38,7 +39,15 @@ function accessRoleSummary(scope: Scope): string {
   return names.length > 40 ? `${names.slice(0, 40)}…` : names;
 }
 
-export default function ScopesTabV2() {
+function applicationSummary(scope: Scope): string {
+  if (scope.applicationContext === "specific") {
+    return MOCK_APPLICATIONS.find((a) => a.id === scope.applicationId)?.displayName ?? "—";
+  }
+  if (scope.applicationContext === "none") return "No application";
+  return "Assigned at time of assignment";
+}
+
+export default function ScopesTabV3() {
   const [scopes, setScopes] = useState<Scope[]>(MOCK_SCOPES_V2);
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -103,6 +112,7 @@ export default function ScopesTabV2() {
                 <TableHeadCell>Scope Name</TableHeadCell>
                 <TableHeadCell>Organization</TableHeadCell>
                 <TableHeadCell>Access Roles</TableHeadCell>
+                <TableHeadCell>Application</TableHeadCell>
                 <TableHeadCell>Description</TableHeadCell>
                 <TableHeadCell />
               </TableHeadRow>
@@ -110,7 +120,7 @@ export default function ScopesTabV2() {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableEmptyState
-                  colSpan={5}
+                  colSpan={6}
                   message={
                     search ? "No scopes match your search." : "No scopes defined yet."
                   }
@@ -132,6 +142,9 @@ export default function ScopesTabV2() {
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-bluegrey-600">{accessRoleSummary(scope)}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-bluegrey-600">{applicationSummary(scope)}</span>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-bluegrey-500 max-w-[200px] truncate block">
@@ -171,7 +184,7 @@ export default function ScopesTabV2() {
         </TableScroll>
       </Table>
 
-      <ScopeDrawerV2
+      <ScopeDrawerV3
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         scope={editingScope}
