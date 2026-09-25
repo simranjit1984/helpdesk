@@ -133,16 +133,6 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
         </div>
 
         <div className="flex items-center gap-2">
-          {orgTree.length > 0 && (
-            <Button
-              variant="outline"
-              className="gap-2 whitespace-nowrap"
-              onClick={() => setAssignToChildrenOpen(true)}
-            >
-              <GitBranch className="h-4 w-4" />
-              Assign access roles to child organizations
-            </Button>
-          )}
           <Button
             className="gap-2 whitespace-nowrap"
             onClick={() =>
@@ -152,6 +142,16 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
             <Plus className="h-4 w-4" />
             Add access roles to organization
           </Button>
+          {orgTree.length > 0 && (
+            <Button
+              variant="outline"
+              className="gap-2 whitespace-nowrap"
+              onClick={() => setAssignToChildrenOpen(true)}
+            >
+              <GitBranch className="h-4 w-4" />
+              Cascade access roles to child orgs
+            </Button>
+          )}
         </div>
       </div>
 
