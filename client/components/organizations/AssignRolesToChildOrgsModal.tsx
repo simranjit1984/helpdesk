@@ -38,15 +38,21 @@ export default function AssignRolesToChildOrgsModal({
 }: Props) {
   const [step, setStep] = useState<Step>("roles");
   const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
-  const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
+  const [selectedOrgIds, setSelectedOrgIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (open) {
       setStep("roles");
       setSelectedRoleIds([]);
-      setSelectedOrgId(null);
+      setSelectedOrgIds([]);
     }
   }, [open]);
+
+  const toggleOrg = (id: string) => {
+    setSelectedOrgIds((prev) =>
+      prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id],
+    );
+  };
 
   const toggleRole = (id: string) => {
     setSelectedRoleIds((prev) =>
@@ -56,12 +62,16 @@ export default function AssignRolesToChildOrgsModal({
 
   const handleAssign = () => {
     let targetOrgIds: string[];
-    if (selectedOrgId) {
-      const path = findOrgPath(orgTree, selectedOrgId);
-      const selectedNode = path?.[path.length - 1];
-      targetOrgIds = selectedNode
-        ? [selectedNode.id, ...collectDescendantIds(selectedNode)]
-        : [];
+    if (selectedOrgIds.length > 0) {
+      const idSet = new Set<string>();
+      selectedOrgIds.forEach((id) => {
+        const path = findOrgPath(orgTree, id);
+        const node = path?.[path.length - 1];
+        if (!node) return;
+        idSet.add(node.id);
+        collectDescendantIds(node).forEach((d) => idSet.add(d));
+      });
+      targetOrgIds = Array.from(idSet);
     } else {
       targetOrgIds = collectAllOrgIds(orgTree);
     }
@@ -126,15 +136,18 @@ export default function AssignRolesToChildOrgsModal({
         {step === "organization" && (
           <div className="space-y-3">
             <p className="text-sm text-bluegrey-500">
-              Choose which organization to assign the selected role
-              {selectedRoleIds.length > 1 ? "s" : ""} to. Selecting an
-              organization also includes all of its descendants.
+              Choose which organizations to assign the selected role
+              {selectedRoleIds.length > 1 ? "s" : ""} to. You can select
+              multiple organizations; selecting a parent also includes
+              everything underneath it. Leave nothing selected to apply to
+              every child organization.
             </p>
             <OrgDrillDownSelect
               rootLabel={orgName}
               tree={orgTree}
-              value={selectedOrgId}
-              onChange={setSelectedOrgId}
+              multiple
+              selectedIds={selectedOrgIds}
+              onToggle={toggleOrg}
             />
           </div>
         )}
