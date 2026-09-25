@@ -118,7 +118,11 @@ export default function OrgDrillDownSelect({ rootLabel, tree, value, onChange }:
   };
 
   const selectedLabel = currentNode ? currentNode.name : rootLabel;
-  const childCount = children.length;
+  // Full descendant count (all levels), not just the directly-visible children —
+  // selecting an org always implicitly includes everything underneath it.
+  const descendantCount = currentNode
+    ? collectDescendantIds(currentNode).length
+    : collectAllOrgIds(tree).length;
 
   return (
     <div className="rounded-lg border border-bluegrey-200 bg-white overflow-hidden">
@@ -295,15 +299,21 @@ export default function OrgDrillDownSelect({ rootLabel, tree, value, onChange }:
       )}
 
       {/* Selection summary */}
-      <div className="flex items-center justify-between px-3 py-2.5 bg-bluegrey-25 border-t border-bluegrey-200">
+      <div className="flex flex-col gap-1 px-3 py-2.5 bg-bluegrey-25 border-t border-bluegrey-200">
         <span className="text-xs text-bluegrey-600">
           Selected: <strong className="text-bluegrey-900">{selectedLabel}</strong>
-          {childCount > 0 && (
+          {descendantCount > 0 && (
             <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-bluegrey-100 text-bluegrey-600">
-              +{childCount} {childCount === 1 ? "child" : "children"}
+              +{descendantCount} {descendantCount === 1 ? "organization" : "organizations"} underneath
             </span>
           )}
         </span>
+        {descendantCount > 0 && (
+          <span className="text-[11px] text-bluegrey-400">
+            This automatically applies to every organization under {selectedLabel} too — no
+            need to select them individually.
+          </span>
+        )}
       </div>
     </div>
   );
