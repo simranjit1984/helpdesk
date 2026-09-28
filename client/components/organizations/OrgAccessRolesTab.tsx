@@ -76,13 +76,25 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
 
   const removingRole = allRoles.find((r) => r.id === removeTarget);
 
-  const handleAssignRolesToChildren = (roleIds: string[], targetOrgIds: string[]) => {
+  const handleAssignRolesToChildren = (
+    roleIds: string[],
+    targetOrgIds: string[],
+    mode: "add" | "replace",
+  ) => {
     const list = ORG_ACCESS_ROLE_ASSIGNMENTS[orgId];
     if (list) {
       roleIds.forEach((roleId) => {
         const idx = list.findIndex((a) => a.roleId === roleId);
         if (idx !== -1) {
-          list[idx] = { ...list[idx], inheritance: { enabled: true, targetOrgIds } };
+          const existingTargetOrgIds =
+            mode === "add" ? (list[idx].inheritance?.targetOrgIds ?? []) : [];
+          const mergedTargetOrgIds = Array.from(
+            new Set([...existingTargetOrgIds, ...targetOrgIds]),
+          );
+          list[idx] = {
+            ...list[idx],
+            inheritance: { enabled: true, targetOrgIds: mergedTargetOrgIds },
+          };
         }
       });
     }

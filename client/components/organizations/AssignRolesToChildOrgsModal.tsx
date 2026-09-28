@@ -10,7 +10,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableScroll,
@@ -32,11 +38,13 @@ import type { OrgTreeNode } from "./OrgTreeSelect";
 import type { AccessRole } from "./accessRolesMockData";
 
 type Step = "roles" | "organization";
+type OrgScope = "self" | "immediate" | "all";
+type ApplyMode = "add" | "replace";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSave: (roleIds: string[], targetOrgIds: string[]) => void;
+  onSave: (roleIds: string[], targetOrgIds: string[], mode: ApplyMode) => void;
   availableRoles: (AccessRole & { status: "active" | "inactive" })[];
   orgTree: OrgTreeNode[];
   orgName: string;
@@ -54,7 +62,8 @@ export default function AssignRolesToChildOrgsModal({
   const [roleSearch, setRoleSearch] = useState("");
   const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
-  const [applyToAllChildren, setApplyToAllChildren] = useState(false);
+  const [orgScope, setOrgScope] = useState<OrgScope>("self");
+  const [applyMode, setApplyMode] = useState<ApplyMode>("add");
 
   useEffect(() => {
     if (open) {
@@ -62,7 +71,8 @@ export default function AssignRolesToChildOrgsModal({
       setRoleSearch("");
       setSelectedRoleIds([]);
       setSelectedOrgId(null);
-      setApplyToAllChildren(false);
+      setOrgScope("self");
+      setApplyMode("add");
     }
   }, [open]);
 
@@ -95,16 +105,23 @@ export default function AssignRolesToChildOrgsModal({
       const path = findOrgPath(orgTree, selectedOrgId);
       const selectedNode = path?.[path.length - 1];
       if (selectedNode) {
-        targetOrgIds = applyToAllChildren
-          ? [selectedNode.id, ...collectDescendantIds(selectedNode)]
-          : [selectedNode.id];
+        if (orgScope === "self") {
+          targetOrgIds = [selectedNode.id];
+        } else if (orgScope === "immediate") {
+          targetOrgIds = [
+            selectedNode.id,
+            ...(selectedNode.children ?? []).map((c) => c.id),
+          ];
+        } else {
+          targetOrgIds = [selectedNode.id, ...collectDescendantIds(selectedNode)];
+        }
       } else {
         targetOrgIds = [];
       }
     } else {
       targetOrgIds = collectAllOrgIds(orgTree);
     }
-    onSave(selectedRoleIds, targetOrgIds);
+    onSave(selectedRoleIds, targetOrgIds, applyMode);
     onClose();
   };
 
@@ -225,22 +242,40 @@ export default function AssignRolesToChildOrgsModal({
             />
 
             {selectedOrgDescendantCount > 0 && (
-              <div className="flex items-center justify-between rounded-lg border border-bluegrey-200 bg-white px-4 py-3">
+              <div className="rounded-lg border border-bluegrey-200 bg-white px-4 py-3 space-y-3">
                 <div>
-                  <p className="text-sm font-semibold text-bluegrey-900">
-                    Add to all child orgs of this org
+                  <p className="text-sm font-semibold text-bluegrey-900 mb-1.5">
+                    Apply to
                   </p>
-                  <p className="text-xs text-bluegrey-500 mt-0.5">
-                    Also apply the selected role
-                    {selectedRoleIds.length > 1 ? "s" : ""} to every organization
-                    underneath the one selected above.
-                  </p>
+                  <Select value={orgScope} onValueChange={(v) => setOrgScope(v as OrgScope)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="self">Selected org only</SelectItem>
+                      <SelectItem value="immediate">
+                        Selected org and immediate child orgs
+                      </SelectItem>
+                      <SelectItem value="all">
+                        Selected org and all descendant orgs
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Switch
-                  checked={applyToAllChildren}
-                  onCheckedChange={setApplyToAllChildren}
-                  aria-label="Add to all child orgs of this org"
-                />
+                <div>
+                  <p className="text-sm font-semibold text-bluegrey-900 mb-1.5">
+                    Role assignment
+                  </p>
+                  <Select value={applyMode} onValueChange={(v) => setApplyMode(v as ApplyMode)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="add">Add only</SelectItem>
+                      <SelectItem value="replace">Replace with existing</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
           </div>
