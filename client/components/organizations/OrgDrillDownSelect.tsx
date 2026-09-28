@@ -49,22 +49,11 @@ interface Props {
   /** Direct children of the root org. */
   tree: OrgTreeNode[];
   /** Currently selected org id — null means the root org itself is selected. */
-  value?: string | null;
-  onChange?: (id: string | null) => void;
-  multiple?: boolean;
-  selectedIds?: string[];
-  onToggle?: (id: string) => void;
+  value: string | null;
+  onChange: (id: string | null) => void;
 }
 
-export default function OrgDrillDownSelect({
-  rootLabel,
-  tree,
-  value = null,
-  onChange,
-  multiple = false,
-  selectedIds = [],
-  onToggle,
-}: Props) {
+export default function OrgDrillDownSelect({ rootLabel, tree, value, onChange }: Props) {
   const [path, setPath] = useState<OrgTreeNode[]>(() => findOrgPath(tree, value ?? "") ?? []);
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState<"name" | "referenceId">("name");
@@ -101,7 +90,7 @@ export default function OrgDrillDownSelect({
 
   const drillInto = (node: OrgTreeNode) => {
     setPath((prev) => [...prev, node]);
-    if (!multiple) onChange?.(node.id);
+    onChange(node.id);
     setSearch("");
     setPage(1);
   };
@@ -109,11 +98,11 @@ export default function OrgDrillDownSelect({
   const goToBreadcrumb = (index: number) => {
     if (index < 0) {
       setPath([]);
-      if (!multiple) onChange?.(null);
+      onChange(null);
     } else {
       const nextPath = path.slice(0, index + 1);
       setPath(nextPath);
-      if (!multiple) onChange?.(nextPath[nextPath.length - 1].id);
+      onChange(nextPath[nextPath.length - 1].id);
     }
     setSearch("");
     setPage(1);
@@ -196,7 +185,6 @@ export default function OrgDrillDownSelect({
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-bluegrey-50 border-b border-bluegrey-200 sticky top-0">
-              {multiple && <th className="w-8 px-3 py-2" />}
               <th className="text-left px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-bluegrey-500">
                 <button
                   type="button"
@@ -220,7 +208,7 @@ export default function OrgDrillDownSelect({
           <tbody>
             {pagedRows.length === 0 ? (
               <tr>
-                <td colSpan={multiple ? 3 : 2} className="px-3 py-8 text-center text-xs text-bluegrey-400">
+                <td colSpan={2} className="px-3 py-8 text-center text-xs text-bluegrey-400">
                   {search ? "No organizations match your search." : "No child organizations."}
                 </td>
               </tr>
@@ -229,20 +217,8 @@ export default function OrgDrillDownSelect({
                 <tr
                   key={node.id}
                   onClick={() => drillInto(node)}
-                  className={`border-b border-bluegrey-100 last:border-0 hover:bg-blue-50/40 cursor-pointer transition-colors ${
-                    multiple && selectedIds.includes(node.id) ? "bg-blue-50/60" : ""
-                  }`}
+                  className="border-b border-bluegrey-100 last:border-0 hover:bg-blue-50/40 cursor-pointer transition-colors"
                 >
-                  {multiple && (
-                    <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(node.id)}
-                        onChange={() => onToggle?.(node.id)}
-                        className="h-3.5 w-3.5 accent-blue-600 cursor-pointer"
-                      />
-                    </td>
-                  )}
                   <td className="px-3 py-2 text-sm text-bluegrey-900">{node.name}</td>
                   <td className="px-3 py-2 text-sm text-bluegrey-500">{node.referenceId}</td>
                 </tr>
@@ -323,67 +299,16 @@ export default function OrgDrillDownSelect({
       )}
 
       {/* Selection summary */}
-      {multiple ? (
-        <div className="flex flex-col gap-1 px-3 py-2.5 bg-bluegrey-25 border-t border-bluegrey-200">
-          {selectedIds.length === 0 ? (
-            <span className="text-xs text-bluegrey-500">
-              No organizations selected yet. Check the boxes next to the
-              organizations you want, and drill in to pick specific children
-              instead of an entire branch.
-            </span>
-          ) : (
-            <>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-xs text-bluegrey-600">Selected:</span>
-                {selectedIds.map((id) => {
-                  const node = findOrgPath(tree, id)?.slice(-1)[0];
-                  const count = node ? collectDescendantIds(node).length : 0;
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-100 text-blue-700"
-                    >
-                      {node?.name ?? id}
-                      {count > 0 && (
-                        <span className="text-blue-500">+{count}</span>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => onToggle?.(id)}
-                        className="text-blue-500 hover:text-blue-800"
-                        aria-label={`Remove ${node?.name ?? id}`}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                })}
-              </div>
-              <span className="text-[11px] text-bluegrey-400">
-                Each selected organization automatically includes everything
-                underneath it too.
-              </span>
-            </>
-          )}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1 px-3 py-2.5 bg-bluegrey-25 border-t border-bluegrey-200">
-          <span className="text-xs text-bluegrey-600">
-            Selected: <strong className="text-bluegrey-900">{selectedLabel}</strong>
-            {descendantCount > 0 && (
-              <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-bluegrey-100 text-bluegrey-600">
-                +{descendantCount} {descendantCount === 1 ? "organization" : "organizations"} underneath
-              </span>
-            )}
-          </span>
+      <div className="flex flex-col gap-1 px-3 py-2.5 bg-bluegrey-25 border-t border-bluegrey-200">
+        <span className="text-xs text-bluegrey-600">
+          Selected: <strong className="text-bluegrey-900">{selectedLabel}</strong>
           {descendantCount > 0 && (
-            <span className="text-[11px] text-bluegrey-400">
-              This automatically applies to every organization under {selectedLabel} too, no
-              need to select them individually.
+            <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-bluegrey-100 text-bluegrey-600">
+              +{descendantCount} {descendantCount === 1 ? "organization" : "organizations"} underneath
             </span>
           )}
-        </div>
-      )}
+        </span>
+      </div>
     </div>
   );
 }

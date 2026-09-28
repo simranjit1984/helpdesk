@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,6 +9,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableScroll,
+  TableContent,
+  TableHeader,
+  TableHeadRow,
+  TableHeadCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableEmptyState,
+} from "@/components/ui/table";
 import OrgDrillDownSelect, {
   collectAllOrgIds,
   collectDescendantIds,
@@ -37,22 +51,20 @@ export default function AssignRolesToChildOrgsModal({
   orgName,
 }: Props) {
   const [step, setStep] = useState<Step>("roles");
+  const [roleSearch, setRoleSearch] = useState("");
   const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
-  const [selectedOrgIds, setSelectedOrgIds] = useState<string[]>([]);
+  const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
+  const [applyToAllChildren, setApplyToAllChildren] = useState(true);
 
   useEffect(() => {
     if (open) {
       setStep("roles");
+      setRoleSearch("");
       setSelectedRoleIds([]);
-      setSelectedOrgIds([]);
+      setSelectedOrgId(null);
+      setApplyToAllChildren(true);
     }
   }, [open]);
-
-  const toggleOrg = (id: string) => {
-    setSelectedOrgIds((prev) =>
-      prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id],
-    );
-  };
 
   const toggleRole = (id: string) => {
     setSelectedRoleIds((prev) =>
@@ -60,18 +72,28 @@ export default function AssignRolesToChildOrgsModal({
     );
   };
 
+  const filteredRoles = useMemo(() => {
+    const q = roleSearch.trim().toLowerCase();
+    if (!q) return availableRoles;
+    return availableRoles.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q),
+    );
+  }, [availableRoles, roleSearch]);
+
   const handleAssign = () => {
     let targetOrgIds: string[];
-    if (selectedOrgIds.length > 0) {
-      const idSet = new Set<string>();
-      selectedOrgIds.forEach((id) => {
-        const path = findOrgPath(orgTree, id);
-        const node = path?.[path.length - 1];
-        if (!node) return;
-        idSet.add(node.id);
-        collectDescendantIds(node).forEach((d) => idSet.add(d));
-      });
-      targetOrgIds = Array.from(idSet);
+    if (selectedOrgId) {
+      const path = findOrgPath(orgTree, selectedOrgId);
+      const selectedNode = path?.[path.length - 1];
+      if (selectedNode) {
+        targetOrgIds = applyToAllChildren
+          ? [selectedNode.id, ...collectDescendantIds(selectedNode)]
+          : [selectedNode.id];
+      } else {
+        targetOrgIds = [];
+      }
     } else {
       targetOrgIds = collectAllOrgIds(orgTree);
     }
@@ -98,57 +120,120 @@ export default function AssignRolesToChildOrgsModal({
               Select which access roles from &ldquo;{orgName}&rdquo; should be
               propagated to child organizations.
             </p>
-            <div className="rounded-lg border border-bluegrey-200 divide-y divide-bluegrey-100 overflow-hidden">
-              {availableRoles.length === 0 ? (
-                <p className="px-4 py-6 text-sm text-bluegrey-400 italic text-center">
-                  No access roles assigned to this organization yet.
-                </p>
-              ) : (
-                availableRoles.map((role) => {
-                  const checked = selectedRoleIds.includes(role.id);
-                  return (
-                    <label
-                      key={role.id}
-                      className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                        checked ? "bg-blue-50" : "hover:bg-bluegrey-25"
-                      }`}
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={() => toggleRole(role.id)}
-                      />
-                      <span className="text-sm font-medium text-bluegrey-900">
-                        {role.name}
-                      </span>
-                      {role.description && (
-                        <span className="text-xs text-bluegrey-500">
-                          {role.description}
-                        </span>
-                      )}
-                    </label>
-                  );
-                })
-              )}
+
+            <div className="relative max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-bluegrey-400" />
+              <input
+                value={roleSearch}
+                onChange={(e) => setRoleSearch(e.target.value)}
+                placeholder="Search"
+                className="w-full h-10 pl-9 pr-3 text-sm border border-bluegrey-300 rounded-[2px] focus:outline-none focus:ring-1 focus:ring-blue-400"
+              />
             </div>
+
+            <Table>
+              <TableScroll>
+                <TableContent>
+                  <TableHeader>
+                    <TableHeadRow>
+                      <TableHeadCell className="w-10" />
+                      <TableHeadCell>Access roles</TableHeadCell>
+                      <TableHeadCell>Description</TableHeadCell>
+                      <TableHeadCell>Status</TableHeadCell>
+                    </TableHeadRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredRoles.length === 0 ? (
+                      <TableEmptyState
+                        colSpan={4}
+                        message={
+                          roleSearch
+                            ? "No access roles match your search."
+                            : "No access roles assigned to this organization yet."
+                        }
+                      />
+                    ) : (
+                      filteredRoles.map((role) => {
+                        const checked = selectedRoleIds.includes(role.id);
+                        return (
+                          <TableRow
+                            key={role.id}
+                            className="cursor-pointer"
+                            onClick={() => toggleRole(role.id)}
+                          >
+                            <TableCell onClick={(e) => e.stopPropagation()}>
+                              <Checkbox
+                                checked={checked}
+                                onCheckedChange={() => toggleRole(role.id)}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <span className="text-sm font-medium text-bluegrey-900">
+                                {role.name}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <span className="text-sm text-bluegrey-500">
+                                {role.description || ""}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                className={
+                                  role.status === "active"
+                                    ? "border-0 text-xs font-normal bg-green-50 text-green-700 gap-1.5"
+                                    : "border-0 text-xs font-normal bg-bluegrey-50 text-bluegrey-500 gap-1.5"
+                                }
+                              >
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full ${
+                                    role.status === "active" ? "bg-green-600" : "bg-bluegrey-400"
+                                  }`}
+                                />
+                                {role.status === "active" ? "Active" : "Inactive"}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </TableContent>
+              </TableScroll>
+            </Table>
           </div>
         )}
 
         {step === "organization" && (
           <div className="space-y-3">
             <p className="text-sm text-bluegrey-500">
-              Choose which organizations to assign the selected role
-              {selectedRoleIds.length > 1 ? "s" : ""} to. You can select
-              multiple organizations; selecting a parent also includes
-              everything underneath it. Leave nothing selected to apply to
-              every child organization.
+              Choose which organization to assign the selected role
+              {selectedRoleIds.length > 1 ? "s" : ""} to.
             </p>
             <OrgDrillDownSelect
               rootLabel={orgName}
               tree={orgTree}
-              multiple
-              selectedIds={selectedOrgIds}
-              onToggle={toggleOrg}
+              value={selectedOrgId}
+              onChange={setSelectedOrgId}
             />
+
+            <div className="flex items-center justify-between rounded-lg border border-bluegrey-200 bg-white px-4 py-3">
+              <div>
+                <p className="text-sm font-semibold text-bluegrey-900">
+                  Add to all child orgs of this org
+                </p>
+                <p className="text-xs text-bluegrey-500 mt-0.5">
+                  Also apply the selected role
+                  {selectedRoleIds.length > 1 ? "s" : ""} to every organization
+                  underneath the one selected above.
+                </p>
+              </div>
+              <Switch
+                checked={applyToAllChildren}
+                onCheckedChange={setApplyToAllChildren}
+                aria-label="Add to all child orgs of this org"
+              />
+            </div>
           </div>
         )}
 
