@@ -99,6 +99,22 @@ export default function AssignRolesToChildOrgsModal({
     );
   }, [availableRoles, roleSearch]);
 
+  const allFilteredSelected =
+    filteredRoles.length > 0 &&
+    filteredRoles.every((r) => selectedRoleIds.includes(r.id));
+
+  const toggleSelectAllRoles = () => {
+    if (allFilteredSelected) {
+      setSelectedRoleIds((prev) =>
+        prev.filter((id) => !filteredRoles.some((r) => r.id === id)),
+      );
+    } else {
+      setSelectedRoleIds((prev) =>
+        Array.from(new Set([...prev, ...filteredRoles.map((r) => r.id)])),
+      );
+    }
+  };
+
   const handleAssign = () => {
     let targetOrgIds: string[];
     if (selectedOrgId) {
@@ -160,7 +176,15 @@ export default function AssignRolesToChildOrgsModal({
                 <TableContent>
                   <TableHeader>
                     <TableHeadRow>
-                      <TableHeadCell className="w-10" />
+                      <TableHeadCell className="w-10">
+                        {filteredRoles.length > 0 && (
+                          <Checkbox
+                            checked={allFilteredSelected}
+                            onCheckedChange={toggleSelectAllRoles}
+                            aria-label="Select all access roles"
+                          />
+                        )}
+                      </TableHeadCell>
                       <TableHeadCell>Access roles</TableHeadCell>
                       <TableHeadCell>Description</TableHeadCell>
                       <TableHeadCell>Status</TableHeadCell>
