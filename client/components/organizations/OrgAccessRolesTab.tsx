@@ -4,6 +4,7 @@ import { Plus, MoreHorizontal, Trash2, ChevronLeft, ChevronRight, GitBranch } fr
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +45,8 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
   const [page, setPage] = useState(1);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [assignToChildrenOpen, setAssignToChildrenOpen] = useState(false);
+  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
+  const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
   const [, forceRefresh] = useState(0);
 
   // Derive roles from (potentially mutated) global mock store — re-reads on render
@@ -75,6 +78,39 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
   };
 
   const removingRole = allRoles.find((r) => r.id === removeTarget);
+
+  const allPagedSelected =
+    paged.length > 0 && paged.every((r) => selectedRoleIds.includes(r.id));
+
+  const toggleSelectAll = () => {
+    if (allPagedSelected) {
+      setSelectedRoleIds((prev) =>
+        prev.filter((id) => !paged.some((r) => r.id === id)),
+      );
+    } else {
+      setSelectedRoleIds((prev) =>
+        Array.from(new Set([...prev, ...paged.map((r) => r.id)])),
+      );
+    }
+  };
+
+  const toggleSelectRole = (roleId: string) => {
+    setSelectedRoleIds((prev) =>
+      prev.includes(roleId) ? prev.filter((id) => id !== roleId) : [...prev, roleId],
+    );
+  };
+
+  const handleBulkRemove = () => {
+    const list = ORG_ACCESS_ROLE_ASSIGNMENTS[orgId];
+    if (list) {
+      selectedRoleIds.forEach((roleId) => {
+        const idx = list.findIndex((a) => a.roleId === roleId);
+        if (idx !== -1) list.splice(idx, 1);
+      });
+    }
+    setSelectedRoleIds([]);
+    setBulkRemoveOpen(false);
+  };
 
   const handleAssignRolesToChildren = (
     roleIds: string[],
@@ -131,6 +167,16 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
         </div>
 
         <div className="flex items-center gap-2">
+          {selectedRoleIds.length > 0 && (
+            <Button
+              variant="outline"
+              className="gap-2 whitespace-nowrap text-red-600 hover:text-red-600"
+              onClick={() => setBulkRemoveOpen(true)}
+            >
+              <Trash2 className="h-4 w-4" />
+              Remove selected ({selectedRoleIds.length})
+            </Button>
+          )}
           <Button
             className="gap-2 whitespace-nowrap"
             onClick={() =>
@@ -159,6 +205,15 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
           <TableContent>
             <TableHeader>
               <TableHeadRow>
+                <TableHeadCell className="w-10">
+                  {paged.length > 0 && (
+                    <Checkbox
+                      checked={allPagedSelected}
+                      onCheckedChange={toggleSelectAll}
+                      aria-label="Select all access roles"
+                    />
+                  )}
+                </TableHeadCell>
                 <TableHeadCell>Access roles</TableHeadCell>
                 <TableHeadCell>Description</TableHeadCell>
                 <TableHeadCell>Status</TableHeadCell>
@@ -168,7 +223,7 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
             <TableBody>
               {paged.length === 0 ? (
                 <TableEmptyState
-                  colSpan={4}
+                  colSpan={5}
                   message={
                     search
                       ? "No access roles match your search."
@@ -178,6 +233,13 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
               ) : (
                 paged.map((role) => (
                   <TableRow key={role.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedRoleIds.includes(role.id)}
+                        onCheckedChange={() => toggleSelectRole(role.id)}
+                        aria-label={`Select ${role.name}`}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-bluegrey-900">
@@ -273,6 +335,16 @@ export default function OrgAccessRolesTab({ orgId, orgName }: OrgAccessRolesTabP
         description={`Remove "${removingRole?.name}" from ${orgName}? This will revoke access for all users in this organization with this role.`}
         primaryAction={{ label: "Remove", onClick: handleRemove }}
         secondaryAction={{ label: "Cancel", onClick: () => setRemoveTarget(null) }}
+      />
+
+      {/* Bulk remove confirmation */}
+      <ConfirmationModal
+        open={bulkRemoveOpen}
+        onOpenChange={(open) => !open && setBulkRemoveOpen(false)}
+        title="Remove Access Roles"
+        description={`Remove ${selectedRoleIds.length} selected access role${selectedRoleIds.length > 1 ? "s" : ""} from ${orgName}? This will revoke access for all users in this organization with ${selectedRoleIds.length > 1 ? "these roles" : "this role"}.`}
+        primaryAction={{ label: "Remove", onClick: handleBulkRemove }}
+        secondaryAction={{ label: "Cancel", onClick: () => setBulkRemoveOpen(false) }}
       />
 
       {/* Assign access roles to child organizations */}
