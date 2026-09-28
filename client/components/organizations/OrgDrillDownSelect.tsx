@@ -302,11 +302,6 @@ export default function OrgDrillDownSelect({ rootLabel, tree, value, onChange }:
       <div className="flex flex-col gap-1 px-3 py-2.5 bg-bluegrey-25 border-t border-bluegrey-200">
         <span className="text-xs text-bluegrey-600">
           Selected: <strong className="text-bluegrey-900">{selectedLabel}</strong>
-          {descendantCount > 0 && (
-            <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-bluegrey-100 text-bluegrey-600">
-              +{descendantCount} {descendantCount === 1 ? "organization" : "organizations"} underneath
-            </span>
-          )}
         </span>
       </div>
     </div>
