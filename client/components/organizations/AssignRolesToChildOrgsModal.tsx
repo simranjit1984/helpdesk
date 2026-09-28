@@ -54,7 +54,7 @@ export default function AssignRolesToChildOrgsModal({
   const [roleSearch, setRoleSearch] = useState("");
   const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
-  const [applyToAllChildren, setApplyToAllChildren] = useState(true);
+  const [applyToAllChildren, setApplyToAllChildren] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -62,9 +62,16 @@ export default function AssignRolesToChildOrgsModal({
       setRoleSearch("");
       setSelectedRoleIds([]);
       setSelectedOrgId(null);
-      setApplyToAllChildren(true);
+      setApplyToAllChildren(false);
     }
   }, [open]);
+
+  const selectedOrgDescendantCount = useMemo(() => {
+    if (!selectedOrgId) return collectAllOrgIds(orgTree).length;
+    const path = findOrgPath(orgTree, selectedOrgId);
+    const selectedNode = path?.[path.length - 1];
+    return selectedNode ? collectDescendantIds(selectedNode).length : 0;
+  }, [orgTree, selectedOrgId]);
 
   const toggleRole = (id: string) => {
     setSelectedRoleIds((prev) =>
@@ -217,23 +224,25 @@ export default function AssignRolesToChildOrgsModal({
               onChange={setSelectedOrgId}
             />
 
-            <div className="flex items-center justify-between rounded-lg border border-bluegrey-200 bg-white px-4 py-3">
-              <div>
-                <p className="text-sm font-semibold text-bluegrey-900">
-                  Add to all child orgs of this org
-                </p>
-                <p className="text-xs text-bluegrey-500 mt-0.5">
-                  Also apply the selected role
-                  {selectedRoleIds.length > 1 ? "s" : ""} to every organization
-                  underneath the one selected above.
-                </p>
+            {selectedOrgDescendantCount > 0 && (
+              <div className="flex items-center justify-between rounded-lg border border-bluegrey-200 bg-white px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold text-bluegrey-900">
+                    Add to all child orgs of this org
+                  </p>
+                  <p className="text-xs text-bluegrey-500 mt-0.5">
+                    Also apply the selected role
+                    {selectedRoleIds.length > 1 ? "s" : ""} to every organization
+                    underneath the one selected above.
+                  </p>
+                </div>
+                <Switch
+                  checked={applyToAllChildren}
+                  onCheckedChange={setApplyToAllChildren}
+                  aria-label="Add to all child orgs of this org"
+                />
               </div>
-              <Switch
-                checked={applyToAllChildren}
-                onCheckedChange={setApplyToAllChildren}
-                aria-label="Add to all child orgs of this org"
-              />
-            </div>
+            )}
           </div>
         )}
 
