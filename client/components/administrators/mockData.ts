@@ -68,7 +68,10 @@ export type ScopeInclusionMode =
   | "direct-children-excluding"
   | "all-children-excluding";
 
-export type ScopeOrgContextMode = "user-membership" | "select";
+export type ScopeOrgContextMode =
+  | "user-membership"
+  | "user-membership-all-children"
+  | "select";
 export type ScopeAccessRoleContext = "org" | "any" | "none";
 export type ScopeApplicationContext = "specific" | "at-assignment" | "none";
 

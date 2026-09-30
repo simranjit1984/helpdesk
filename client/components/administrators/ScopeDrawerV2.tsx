@@ -274,7 +274,11 @@ export default function ScopeDrawerV2({
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const canSave = name.trim() && (orgContextMode === "user-membership" || selectedOrg);
+  const isMembershipMode =
+    orgContextMode === "user-membership" ||
+    orgContextMode === "user-membership-all-children";
+
+  const canSave = name.trim() && (isMembershipMode || selectedOrg);
 
   const handleSaveClick = () => {
     if (!canSave) return;
@@ -289,7 +293,7 @@ export default function ScopeDrawerV2({
     onSave({
       name: name.trim(),
       description: description.trim(),
-      organization: orgContextMode === "user-membership" ? USER_MEMBERSHIP_ORG_LABEL : selectedOrgLabel,
+      organization: isMembershipMode ? USER_MEMBERSHIP_ORG_LABEL : selectedOrgLabel,
       inclusionMode,
       accessRoleMode,
       accessRoleIds: accessRoleMode === "custom" ? accessRoleIds : [],
@@ -339,6 +343,10 @@ export default function ScopeDrawerV2({
             <Label className="text-sm font-medium text-bluegrey-900">
               Org context <span className="text-red-500">*</span>
             </Label>
+            <p className="text-sm text-bluegrey-500">
+              When you assign this scope, you will need to select the
+              organization user is member of.
+            </p>
             <RadioGroup
               value={orgContextMode}
               onValueChange={(v) => setOrgContextMode(v as ScopeOrgContextMode)}
@@ -350,7 +358,19 @@ export default function ScopeDrawerV2({
                   htmlFor="org-context-membership"
                   className="text-sm font-normal text-bluegrey-900 cursor-pointer"
                 >
-                  User membership org
+                  User membership org. No child
+                </Label>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <RadioGroupItem
+                  value="user-membership-all-children"
+                  id="org-context-membership-all-children"
+                />
+                <Label
+                  htmlFor="org-context-membership-all-children"
+                  className="text-sm font-normal text-bluegrey-900 cursor-pointer"
+                >
+                  User membership org, all child included
                 </Label>
               </div>
               <div className="flex items-center gap-2.5">
